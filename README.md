@@ -1,6 +1,4 @@
 # znote
-Here are a few versions you can pick from depending on where it's going:
-
 **znote** is a lightweight desktop editor for Typst, built with Tauri. Type on one side and watch your document render instantly on the other. No compile step, no waiting.
 
 Make it yours with fully customizable themes for both the editor and the interface, so your workspace looks the way you want it to.
