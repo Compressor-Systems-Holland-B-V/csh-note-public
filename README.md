@@ -11,5 +11,3 @@ znote also brings Claude directly into your writing workflow. Connect your Claud
 - Claude chat to generate and edit Typst files conversationally
 - Native, fast, and small, powered by Tauri
 - Works with your local files
-
-If you tell me the platforms it supports (macOS/Windows/Linux) or anything that sets it apart, like offline use, templates, or export options, I can tighten it further.

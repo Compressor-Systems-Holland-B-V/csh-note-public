@@ -1,10 +1,25 @@
-.DS_Store
+# Dependencies
 node_modules
+
+# Build output
 /build
 /.svelte-kit
 /package
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# Environment
 .env
 .env.*
 !.env.example
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+
+# Local tooling
+.DS_Store
+/.serena
+/.zed
+/.claude
+AGENTS.md
+GUIDELINES.md
+
+# Planning notes
+/roadmap

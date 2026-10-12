@@ -32,3 +32,7 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+[[test]]
+name = "versions"
+path = "../test/versions.rs"
