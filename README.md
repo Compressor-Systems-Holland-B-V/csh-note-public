@@ -1,2 +1,17 @@
 # znote
-A fast, native Typst editor with live preview, custom themes, and a built-in Claude chat that writes and edits your documents for you.
+Here are a few versions you can pick from depending on where it's going:
+
+**znote** is a lightweight desktop editor for Typst, built with Tauri. Type on one side and watch your document render instantly on the other. No compile step, no waiting.
+
+Make it yours with fully customizable themes for both the editor and the interface, so your workspace looks the way you want it to.
+
+znote also brings Claude directly into your writing workflow. Connect your Claude subscription and use the chat panel to generate new documents from a prompt, restructure sections, fix formatting, or ask for edits in plain language. Claude works directly on your `.typ` files, and every change shows up live in the preview.
+
+**Features**
+- Live Typst preview that updates as you type
+- Custom themes for the editor and UI
+- Claude chat to generate and edit Typst files conversationally
+- Native, fast, and small, powered by Tauri
+- Works with your local files
+
+If you tell me the platforms it supports (macOS/Windows/Linux) or anything that sets it apart, like offline use, templates, or export options, I can tighten it further.
