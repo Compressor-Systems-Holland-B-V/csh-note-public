@@ -18,7 +18,14 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@tauri-apps/api": "^2"
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/lint": "^6.9.7",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.14",
+    "@lezer/highlight": "^1.2.5",
+    "@tauri-apps/api": "^2",
+    "codemirror": "^6.0.2",
+    "codemirror-lang-typst": "^0.6.0"
   },
   "devDependencies": {
     "@internationalized/date": "^3.12.4",

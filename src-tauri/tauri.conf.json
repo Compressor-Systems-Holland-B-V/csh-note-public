@@ -3,7 +3,7 @@
   "productName": "znote",
   "identifier": "com.zalanalytics.znote",
   "build": {
-    "beforeDevCommand": "pnpm dev",
+    "beforeDevCommand": "pnpm dev --port 1420 --strictPort",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "pnpm build",
     "frontendDist": "dist"
@@ -22,7 +22,7 @@
       "csp": {
         "default-src": "'self'",
         "style-src": "'self' 'unsafe-inline'",
-        "img-src": "'self' data:",
+        "img-src": "'self' data: blob:",
         "connect-src": "'self' ipc: http://ipc.localhost"
       },
       "dangerousDisableAssetCspModification": [
