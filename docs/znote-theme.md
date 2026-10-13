@@ -24,6 +24,9 @@ Zip the three entries themselves, not a folder that contains them.
   "id": "acme",
   "name": "Acme",
   "version": "0.1.0",
+  "description": "The Acme company look with report templates.",
+  "category": "Business",
+  "tags": ["navy", "corporate"],
   "ui": {
     "logo": "ui/logo.svg",
     "logoDark": "ui/logo-white.svg",
@@ -49,6 +52,9 @@ Zip the three entries themselves, not a folder that contains them.
 | `id` | Lowercase letters, digits and dashes, starting with a letter. Importing a theme replaces the installed theme with the same id. |
 | `name` | Shown in Settings. Letters, digits, spaces and `- _ . &`, at most 60 characters. |
 | `version` | Three numbers, like `0.1.0`. |
+| `description` | Optional. One or two sentences shown on the theme card, at most 200 characters. |
+| `category` | Optional. One word or short name the Themes page can filter on, such as `Academic`, `Business`, `Technical`, `Education`, `Personal`, `Creative` or `Interface`. |
+| `tags` | Optional. Up to 10 short words that the search box also looks at. |
 | `ui.logo`, `ui.logoDark` | Shown in the title bar. `svg`, `png`, `jpg` or `jpeg`. The dark logo is used in dark mode and falls back to `logo`. |
 | `ui.font` | `family` is the name the app uses; `files` are `ttf` or `otf`. List one file per weight and style; the weight and style are read from each file. |
 | `ui.light`, `ui.dark` | Colour settings for light and dark mode. Anything left out keeps the default. |
@@ -101,3 +107,16 @@ Picking another template replaces that block and leaves the rest of the page alo
 - The file is at most 50 MB, 200 MB unpacked, 2000 entries.
 - Every entry must stay inside the theme folder; names with `..`, `\` or `:` are refused.
 - A theme that breaks any rule on this page is not imported, and the app says which rule.
+
+## The theme store
+
+The Themes page also lists the themes published at
+<https://huggingface.co/datasets/zal-analytics-core/znote-data>. That list is `index.json`, an
+array with the `theme.json` of every published theme, and each theme is downloaded from
+`themes/<id>.znote-theme`. A downloaded theme goes through the same checks as an imported file.
+
+The sources live in the local `data/src/<id>/` folders, one folder per theme laid out like the
+archive. `scripts/sync_data --build` zips them and writes `index.json`, `--upload` also checks that
+every theme installs and every template compiles and then publishes `data/`, and `--download`
+fetches what is published. Raise `version` when you change a published theme so the app offers the
+update.

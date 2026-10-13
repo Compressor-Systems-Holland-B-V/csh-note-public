@@ -15,7 +15,7 @@
     {/snippet}
   </DropdownMenu.Trigger>
   <DropdownMenu.Content align="start">
-    {#each theme.templates as template (template.id)}
+    {#each theme.offered as template (template.id)}
       <DropdownMenu.Item onSelect={() => workspace.rewrite((text) => withTemplate(text, template))}>
         {template.label}
       </DropdownMenu.Item>

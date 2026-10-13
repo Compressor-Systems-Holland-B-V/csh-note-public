@@ -15,8 +15,8 @@
   import { Button } from "$lib/components/ui/button";
   import * as Dialog from "$lib/components/ui/dialog";
   import { Input } from "$lib/components/ui/input";
-  import * as NativeSelect from "$lib/components/ui/native-select";
   import { messageOf } from "$lib/utils";
+  import Picker from "./Picker.svelte";
 
   let { ask, onclose }: { ask: Ask; onclose: () => void } = $props();
 
@@ -55,17 +55,15 @@
         <Input bind:value aria-label="Name" aria-invalid={failure !== null} autocomplete="off" />
       {/if}
       {#if ask.options}
-        <NativeSelect.Root
+        <Picker
           aria-label="Template"
-          value={String(option)}
-          onchange={(event) => (option = Number(event.currentTarget.value))}
-        >
-          {#each ask.options as label, index (index)}
-            <NativeSelect.Option value={String(index)}>{label}</NativeSelect.Option>
-          {/each}
-        </NativeSelect.Root>
+          class="w-full"
+          value={option}
+          options={ask.options.map((label, value) => ({ value, label }))}
+          onchange={(chosen) => (option = chosen)}
+        />
       {/if}
-      {#if failure}<p class="text-sm text-destructive" role="alert">{failure}</p>{/if}
+      {#if failure}<p class="text-sm whitespace-pre-line text-destructive" role="alert">{failure}</p>{/if}
       <Dialog.Footer>
         <Button type="button" variant="outline" onclick={onclose}>Cancel</Button>
         <Button type="submit" variant={ask.destructive ? "destructive" : "default"} disabled={busy}>

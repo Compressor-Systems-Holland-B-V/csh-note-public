@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+data="$root/data"
+repo="zal-analytics-core/znote-data"
+
+stop() {
+  echo "sync_data: $1" >&2
+  exit 1
+}
+
+build() {
+  mkdir -p "$data/themes"
+  rm -f "$data"/themes/*.znote-theme
+  for source in "$data"/src/*/; do
+    id="$(basename "$source")"
+    [ "$(jq -r .id "$source/theme.json")" = "$id" ] || stop "data/src/$id/theme.json must have the id \"$id\""
+    [ ! -e "$root/.zed/themes/$id" ] || stop "\"$id\" is a private theme and must not be published"
+    (cd "$source" && zip -qrX "$data/themes/$id.znote-theme" . -x ".*")
+  done
+  jq -s . "$data"/src/*/theme.json > "$data/index.json"
+  echo "Built $(jq length "$data/index.json") themes into data/themes"
+}
+
+check() {
+  cargo test --manifest-path "$root/src-tauri/Cargo.toml" --lib every_theme_in_the_data_folder -- --ignored
+}
+
+case "${1:-}" in
+  --build)
+    build
+    ;;
+  --upload)
+    build
+    check
+    hf upload "$repo" "$data" . --type dataset --exclude ".cache/*" --delete "themes/*" --delete "src/*" \
+      --commit-message "Sync themes from znote"
+    ;;
+  --download)
+    hf download "$repo" --type dataset --local-dir "$data"
+    ;;
+  *)
+    cat >&2 <<'USAGE'
+Usage: scripts/sync_data --build | --upload | --download
+
+  --build     zip every theme in data/src into data/themes and write data/index.json
+  --upload    build, check that every theme installs and compiles, then publish data/ to Hugging Face
+  --download  fetch the published data from Hugging Face into data/
+USAGE
+    exit 2
+    ;;
+esac

@@ -443,7 +443,7 @@ export class Agent {
   }
 }
 
-export const agent = new Agent(ipc, workspace, doc, settings, () => theme.templates, chats);
+export const agent = new Agent(ipc, workspace, doc, settings, () => theme.offered, chats);
 
 if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;

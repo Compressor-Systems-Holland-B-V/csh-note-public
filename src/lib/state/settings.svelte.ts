@@ -9,6 +9,8 @@ export type Settings = {
   zoom: number | null;
   theme: "light" | "dark";
   uiTheme: string | null;
+  hiddenTemplates: string[];
+  hiddenLooks: string[];
   assistantModel: string | null;
   assistantEffort: string | null;
   confirmDeletes: boolean;
@@ -27,6 +29,8 @@ export const defaults: Settings = {
   zoom: null,
   theme: "light",
   uiTheme: null,
+  hiddenTemplates: [],
+  hiddenLooks: [],
   assistantModel: null,
   assistantEffort: null,
   confirmDeletes: true,
@@ -36,6 +40,7 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
   const text = (value: unknown) => (typeof value === "string" ? value : null);
   const flag = (value: unknown, fallback: boolean) => (typeof value === "boolean" ? value : fallback);
   const { fontSize, zoom, theme } = stored;
+  const ids = (value: unknown) => (Array.isArray(value) ? value.filter((id) => typeof id === "string") : []);
   return {
     workspace: text(stored.workspace),
     lastPage: text(stored.lastPage),
@@ -48,6 +53,8 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     zoom: typeof zoom === "number" && zoom > 0 ? zoom : null,
     theme: theme === "light" || theme === "dark" ? theme : osPrefersDark ? "dark" : "light",
     uiTheme: text(stored.uiTheme),
+    hiddenTemplates: ids(stored.hiddenTemplates),
+    hiddenLooks: ids(stored.hiddenLooks),
     assistantModel: text(stored.assistantModel),
     assistantEffort: text(stored.assistantEffort),
     confirmDeletes: flag(stored.confirmDeletes, defaults.confirmDeletes),
@@ -85,9 +92,9 @@ if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;
 
   test("saved settings win, and anything missing or wrong falls back to the default", () => {
-    const stored = { workspace: "C:\\notes", fontSize: 18, wordWrap: false, zoom: 1.5, theme: "light", uiTheme: "acme" };
+    const stored = { workspace: "C:\\notes", fontSize: 18, wordWrap: false, zoom: 1.5, theme: "light", uiTheme: "acme", hiddenTemplates: ["acme"], hiddenLooks: ["acme"] };
     expect(merged(stored, true)).toEqual({ ...defaults, ...stored });
-    expect(merged({ fontSize: "huge", wordWrap: 1, zoom: -1, theme: "pink", workspace: 7, uiTheme: 3 }, false)).toEqual(defaults);
+    expect(merged({ fontSize: "huge", wordWrap: 1, zoom: -1, theme: "pink", workspace: 7, uiTheme: 3, hiddenTemplates: "all", hiddenLooks: [7] }, false)).toEqual(defaults);
     expect(merged({ fontSize: 400 }, false).fontSize).toBe(defaults.fontSize);
   });
 

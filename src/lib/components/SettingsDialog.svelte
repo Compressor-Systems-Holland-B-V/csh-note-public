@@ -3,16 +3,24 @@
   import * as Dialog from "$lib/components/ui/dialog";
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
-  import * as NativeSelect from "$lib/components/ui/native-select";
   import { Switch } from "$lib/components/ui/switch";
   import { pickFolder } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";
+  import { theme } from "$lib/state/theme.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
+  import Picker from "./Picker.svelte";
 
   let { open = $bindable() }: { open: boolean } = $props();
 
-  const zooms = [0.5, 0.75, 1, 1.25, 1.5, 2];
+  const zooms = [
+    { value: null, label: "Fit width" },
+    ...[0.5, 0.75, 1, 1.25, 1.5, 2].map((zoom) => ({ value: zoom, label: `${zoom * 100}%` })),
+  ];
+  const appearances = [
+    { value: "light" as const, label: "Light" },
+    { value: "dark" as const, label: "Dark" },
+  ];
 
   function changeFolder() {
     return workspace.attempt(async () => {
@@ -73,29 +81,21 @@
       />
 
       <Label for="settings-zoom">Preview size at start</Label>
-      <NativeSelect.Root
-        id="settings-zoom"
-        value={String(settings.values.zoom ?? "fit")}
-        onchange={(event) => {
-          const chosen = event.currentTarget.value;
-          settings.set("zoom", chosen === "fit" ? null : Number(chosen));
-        }}
-      >
-        <NativeSelect.Option value="fit">Fit width</NativeSelect.Option>
-        {#each zooms as zoom (zoom)}
-          <NativeSelect.Option value={String(zoom)}>{zoom * 100}%</NativeSelect.Option>
-        {/each}
-      </NativeSelect.Root>
+      <Picker id="settings-zoom" value={settings.values.zoom} options={zooms} onchange={(zoom) => settings.set("zoom", zoom)} />
 
       <Label for="settings-theme">Appearance</Label>
-      <NativeSelect.Root
+      <Picker
         id="settings-theme"
         value={settings.values.theme}
-        onchange={(event) => settings.set("theme", event.currentTarget.value === "dark" ? "dark" : "light")}
-      >
-        <NativeSelect.Option value="light">Light</NativeSelect.Option>
-        <NativeSelect.Option value="dark">Dark</NativeSelect.Option>
-      </NativeSelect.Root>
+        options={appearances}
+        onchange={(appearance) => settings.set("theme", appearance)}
+      />
+
+      <div>
+        <Label for="settings-look">Look</Label>
+        <p class="text-xs text-muted-foreground">Add more looks on the Themes page.</p>
+      </div>
+      <Picker id="settings-look" value={settings.values.uiTheme} options={theme.looks} onchange={(id) => settings.set("uiTheme", id)} />
 
       <div>
         <Label for="settings-assistant">Assistant</Label>

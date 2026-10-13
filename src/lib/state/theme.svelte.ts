@@ -45,6 +45,56 @@ export function templatesOf(themes: Theme[]): TemplateChoice[] {
   ];
 }
 
+export type Entry = { theme: Theme; installed: boolean; update: boolean };
+
+export type Kind = "look" | "both" | "templates";
+
+export type Filter = { search: string; category: string | null; kind: Kind | null; installedOnly: boolean };
+
+export function newer(candidate: string | undefined, current: string) {
+  if (!candidate) return false;
+  const [theirs, ours] = [candidate, current].map((version) => version.split(".").map(Number));
+  const at = theirs.findIndex((part, index) => part !== ours[index]);
+  return at >= 0 && theirs[at] > ours[at];
+}
+
+export function entriesOf(installed: Theme[], store: Theme[]): Entry[] {
+  const offered = (id: string) => store.find((theme) => theme.id === id);
+  return [
+    ...installed.map((theme) => ({ theme, installed: true, update: newer(offered(theme.id)?.version, theme.version) })),
+    ...store
+      .filter(({ id }) => !installed.some((theme) => theme.id === id))
+      .map((theme) => ({ theme, installed: false, update: false })),
+  ];
+}
+
+export const hasLook = ({ light, dark, fontFamily, logo }: Theme) =>
+  Object.keys(light).length + Object.keys(dark).length > 0 || fontFamily !== null || logo !== null;
+
+export function kindOf(theme: Theme): Kind {
+  if (theme.templates.length === 0) return "look";
+  return hasLook(theme) ? "both" : "templates";
+}
+
+export function looksOf(installed: Theme[], hidden: string[]) {
+  return [
+    { value: null as string | null, label: "Default" },
+    ...installed.filter((theme) => hasLook(theme) && !hidden.includes(theme.id)).map(({ id, name }) => ({ value: id, label: name })),
+  ];
+}
+
+export function matches({ theme, installed }: Entry, { search, category, kind, installedOnly }: Filter) {
+  const words = [theme.name, theme.description, theme.category, ...theme.tags, ...theme.templates.map(({ label }) => label)]
+    .join(" ")
+    .toLowerCase();
+  return (
+    search.toLowerCase().split(/\s+/).every((word) => words.includes(word)) &&
+    (category === null || theme.category === category) &&
+    (kind === null || kindOf(theme) === kind) &&
+    (!installedOnly || installed)
+  );
+}
+
 export function rootStyle(theme: Theme | undefined, dark: boolean): Record<string, string> {
   if (!theme) return {};
   const style = { ...(dark ? theme.dark : theme.light) };
@@ -54,12 +104,18 @@ export function rootStyle(theme: Theme | undefined, dark: boolean): Record<strin
 
 class ThemeState {
   installed = $state<Theme[]>([]);
+  store = $state<Theme[]>([]);
+  installing = $state<string | null>(null);
   failure = $state<string | null>(null);
+  storeFailure = $state<string | null>(null);
 
   active = $derived(this.installed.find((theme) => theme.id === settings.values.uiTheme));
   dark = $derived(settings.values.theme === "dark");
   style = $derived(rootStyle(this.active, this.dark));
   templates = $derived(templatesOf(this.installed));
+  offered = $derived(templatesOf(this.installed.filter(({ id }) => !settings.values.hiddenTemplates.includes(id))));
+  entries = $derived(entriesOf(this.installed, this.store));
+  looks = $derived(looksOf(this.installed, settings.values.hiddenLooks));
 
   logo = $derived.by(() => {
     const file = (this.dark ? this.active?.logoDark : null) ?? this.active?.logo;
@@ -104,10 +160,40 @@ class ThemeState {
     });
   }
 
+  async browse() {
+    if (!ipc.inDesktopApp()) return;
+    try {
+      this.store = await ipc.storeThemes();
+      this.storeFailure = null;
+    } catch (error) {
+      this.storeFailure = messageOf(error);
+    }
+  }
+
+  install(id: string) {
+    return this.attempt(async () => {
+      this.installing = id;
+      try {
+        await ipc.installStoreTheme(id);
+        await this.changed();
+      } finally {
+        this.installing = null;
+      }
+    });
+  }
+
+  offer(part: "hiddenLooks" | "hiddenTemplates", id: string, on: boolean) {
+    const others = settings.values[part].filter((hidden) => hidden !== id);
+    settings.set(part, on ? others : [...others, id]);
+    if (part === "hiddenLooks" && !on && settings.values.uiTheme === id) settings.set("uiTheme", null);
+  }
+
   remove(id: string) {
     return this.attempt(async () => {
       await ipc.removeTheme(id);
       if (settings.values.uiTheme === id) settings.set("uiTheme", null);
+      this.offer("hiddenLooks", id, true);
+      this.offer("hiddenTemplates", id, true);
       await this.changed();
     });
   }
@@ -164,6 +250,9 @@ if (import.meta.vitest) {
       id: "acme",
       name: "Acme",
       version: "0.1.0",
+      description: "Company look",
+      category: "Business",
+      tags: ["navy"],
       logo: null,
       logoDark: null,
       fontFamily: "Acme Sans",
@@ -179,5 +268,31 @@ if (import.meta.vitest) {
       "--font-sans": '"Acme Sans", ui-sans-serif, system-ui, sans-serif',
     });
     expect(rootStyle({ ...acme, fontFamily: null }, false)).toEqual({ "--primary": "#0F172A" });
+
+    const paper: Theme = { ...acme, id: "paper", name: "Paper", category: "Interface", tags: [], templates: [] };
+    const plain: Theme = { ...paper, id: "plain", light: {}, dark: {}, fontFamily: null, templates: acme.templates };
+    const entries = entriesOf([acme], [{ ...acme, version: "0.2.0" }, paper, plain]);
+    expect(entries.map(({ theme, installed, update }) => [theme.id, installed, update])).toEqual([
+      ["acme", true, true],
+      ["paper", false, false],
+      ["plain", false, false],
+    ]);
+    expect(newer("0.10.0", "0.9.9")).toBe(true);
+    expect(newer("1.0.0", "1.0.0")).toBe(false);
+    expect(newer("0.9.0", "1.0.0")).toBe(false);
+
+    const all = { search: "", category: null, kind: null, installedOnly: false };
+    const found = (filter: Partial<Filter>) => entries.filter((entry) => matches(entry, { ...all, ...filter })).map(({ theme }) => theme.id);
+    expect(found({})).toEqual(["acme", "paper", "plain"]);
+    expect(found({ search: "  NAVY report" })).toEqual(["acme"]);
+    expect(found({ category: "Interface" })).toEqual(["paper", "plain"]);
+    expect(found({ kind: "look" })).toEqual(["paper"]);
+    expect(found({ kind: "both" })).toEqual(["acme"]);
+    expect(found({ kind: "templates" })).toEqual(["plain"]);
+    expect(looksOf([acme, paper, plain], ["paper"])).toEqual([
+      { value: null, label: "Default" },
+      { value: "acme", label: "Acme" },
+    ]);
+    expect(found({ installedOnly: true })).toEqual(["acme"]);
   });
 }

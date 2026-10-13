@@ -1,6 +1,7 @@
 mod agent;
 mod compile;
 mod export;
+mod snapshot;
 mod theme;
 mod workspace;
 
@@ -34,7 +35,11 @@ pub fn run() {
             workspace::write_page,
             theme::list_themes,
             theme::import_theme,
+            theme::store_themes,
+            theme::install_store_theme,
             theme::remove_theme,
+            snapshot::save_snapshot,
+            snapshot::open_snapshot,
             export::export_page,
             export::open_export,
             export::show_export,

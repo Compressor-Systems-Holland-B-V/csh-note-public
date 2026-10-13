@@ -80,6 +80,9 @@ export type Theme = {
   id: string;
   name: string;
   version: string;
+  description: string;
+  category: string;
+  tags: string[];
   logo: string | null;
   logoDark: string | null;
   fontFamily: string | null;
@@ -93,9 +96,19 @@ export const listThemes = () => invoke<Theme[]>("list_themes");
 
 export const importTheme = () => invoke<Theme | null>("import_theme");
 
+export const storeThemes = () => invoke<Theme[]>("store_themes");
+
+export const installStoreTheme = (id: string) => invoke<Theme>("install_store_theme", { id });
+
 export const removeTheme = (id: string) => invoke<void>("remove_theme", { id });
 
 export const themeFileUrl = (path: string) => convertFileSrc(path);
+
+export type OpenedSnapshot = { look: string | null };
+
+export const saveSnapshot = (look: string | null) => invoke<string | null>("save_snapshot", { look });
+
+export const openSnapshot = () => invoke<OpenedSnapshot | null>("open_snapshot");
 
 export type ExportFormat = "pdf" | "pptx";
 

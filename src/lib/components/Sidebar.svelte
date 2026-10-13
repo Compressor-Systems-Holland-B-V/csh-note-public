@@ -28,7 +28,7 @@
   }
 
   function addPage(notebook: string) {
-    const templates = theme.templates;
+    const templates = theme.offered;
     ask = {
       title: "New page",
       value: "",

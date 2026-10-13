@@ -418,4 +418,30 @@ mod tests {
         world.forget_sent_pages();
         assert_eq!(world.compile("One #pagebreak() Changed".into()).pages.len(), 2);
     }
+
+    #[test]
+    #[ignore = "needs the local data folder and the network"]
+    fn every_theme_in_the_data_folder_installs_and_its_templates_compile() {
+        let data = Path::new(env!("CARGO_MANIFEST_DIR")).join("../data");
+        let index = std::fs::read(data.join("index.json")).unwrap();
+        let entries: Vec<serde_json::Value> = serde_json::from_slice(&index).unwrap();
+        assert!(!entries.is_empty());
+        assert_eq!(theme::catalog(&index).unwrap().len(), entries.len());
+
+        let folder = std::env::temp_dir().join(format!("znote-compile-data-{}", std::process::id()));
+        let themes = folder.join("themes");
+        for entry in &entries {
+            let id = entry["id"].as_str().unwrap();
+            theme::install(&themes, &data.join("themes").join(format!("{id}.znote-theme"))).unwrap();
+        }
+        assert_eq!(theme::list(&themes).len(), entries.len());
+
+        let fonts = Arc::new(font_store(&themes));
+        for template in entries.iter().flat_map(|entry| entry["typst"]["templates"].as_array().into_iter().flatten()) {
+            let mut world = PageWorld::new(&folder, "main.typ", &themes, fonts.clone(), |_| {}).unwrap();
+            let result = world.compile(format!("{}\n= Heading\nSome text.\n", template["snippet"].as_str().unwrap()));
+            let errors: Vec<_> = result.diagnostics.iter().filter(|problem| problem.severity == "error").collect();
+            assert!(result.page_count.is_some() && errors.is_empty(), "{}: {errors:?}", template["label"]);
+        }
+    }
 }

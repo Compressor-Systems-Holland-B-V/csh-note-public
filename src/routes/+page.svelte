@@ -20,6 +20,7 @@
   import ProblemsBadge from "$lib/components/ProblemsBadge.svelte";
   import SettingsDialog from "$lib/components/SettingsDialog.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
+  import SnapshotButtons from "$lib/components/SnapshotButtons.svelte";
   import ThemeGallery from "$lib/components/ThemeGallery.svelte";
   import TemplatePicker from "$lib/components/TemplatePicker.svelte";
   import WorkspaceSetup from "$lib/components/WorkspaceSetup.svelte";
@@ -59,7 +60,6 @@
         title: `Replace this page with “${file.name}”?`,
         text: "The text on this page is replaced by the text of the file.",
         action: "Replace",
-        destructive: true,
         run: replace,
       };
     });
@@ -94,9 +94,12 @@
         </Button>
       {/each}
     </div>
-    <Button variant="ghost" size="icon-sm" aria-label="Settings" title="Settings" onclick={() => (settingsOpen = true)}>
-      <Settings />
-    </Button>
+    <div class="flex items-center gap-1">
+      <SnapshotButtons />
+      <Button variant="ghost" size="icon-sm" aria-label="Settings" title="Settings" onclick={() => (settingsOpen = true)}>
+        <Settings />
+      </Button>
+    </div>
   </header>
 
   {#if mode === "export"}

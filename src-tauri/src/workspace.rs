@@ -33,7 +33,7 @@ fn depth(path: &str) -> usize {
     path.split('/').count()
 }
 
-fn check_name(name: &str) -> Result<(), String> {
+pub fn check_name(name: &str) -> Result<(), String> {
     let stem = name.split('.').next().unwrap_or_default().trim_end().to_ascii_uppercase();
     let numbered = stem.len() == 4
         && (stem.starts_with("COM") || stem.starts_with("LPT"))

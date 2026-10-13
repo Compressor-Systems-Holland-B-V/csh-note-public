@@ -11,10 +11,10 @@
   import X from "@lucide/svelte/icons/x";
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import * as NativeSelect from "$lib/components/ui/native-select";
   import { agent, efforts, models } from "$lib/state/agent.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
+  import Picker from "./Picker.svelte";
 
   let host: HTMLDivElement;
   let view: EditorView | undefined;
@@ -118,30 +118,22 @@
         {/each}
       </DropdownMenu.Content>
     </DropdownMenu.Root>
-    <NativeSelect.Root
+    <Picker
       size="sm"
       aria-label="Model"
       title="Model"
-      value={settings.values.assistantModel ?? ""}
-      onchange={(event) => settings.set("assistantModel", event.currentTarget.value || null)}
-    >
-      <NativeSelect.Option value="">Default model</NativeSelect.Option>
-      {#each models as { id, label } (id)}
-        <NativeSelect.Option value={id}>{label}</NativeSelect.Option>
-      {/each}
-    </NativeSelect.Root>
-    <NativeSelect.Root
+      value={settings.values.assistantModel}
+      options={[{ value: null, label: "Default model" }, ...models.map(({ id, label }) => ({ value: id, label }))]}
+      onchange={(model) => settings.set("assistantModel", model)}
+    />
+    <Picker
       size="sm"
       aria-label="How hard the assistant thinks"
       title="How hard the assistant thinks"
-      value={settings.values.assistantEffort ?? ""}
-      onchange={(event) => settings.set("assistantEffort", event.currentTarget.value || null)}
-    >
-      <NativeSelect.Option value="">Default thinking</NativeSelect.Option>
-      {#each efforts as { id, label } (id)}
-        <NativeSelect.Option value={id}>{label}</NativeSelect.Option>
-      {/each}
-    </NativeSelect.Root>
+      value={settings.values.assistantEffort}
+      options={[{ value: null, label: "Default thinking" }, ...efforts.map(({ id, label }) => ({ value: id, label }))]}
+      onchange={(effort) => settings.set("assistantEffort", effort)}
+    />
     <span class="flex-1"></span>
     {#if agent.here}
       <Button variant="destructive" size="sm" onclick={() => agent.stop()}><Square /> Stop</Button>
