@@ -9,6 +9,9 @@ export type Settings = {
   zoom: number | null;
   theme: "light" | "dark";
   uiTheme: string | null;
+  assistantModel: string | null;
+  assistantEffort: string | null;
+  confirmDeletes: boolean;
 };
 
 type Persist = (key: string, value: unknown) => Promise<void>;
@@ -24,6 +27,9 @@ export const defaults: Settings = {
   zoom: null,
   theme: "light",
   uiTheme: null,
+  assistantModel: null,
+  assistantEffort: null,
+  confirmDeletes: true,
 };
 
 export function merged(stored: Record<string, unknown>, osPrefersDark: boolean): Settings {
@@ -42,6 +48,9 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     zoom: typeof zoom === "number" && zoom > 0 ? zoom : null,
     theme: theme === "light" || theme === "dark" ? theme : osPrefersDark ? "dark" : "light",
     uiTheme: text(stored.uiTheme),
+    assistantModel: text(stored.assistantModel),
+    assistantEffort: text(stored.assistantEffort),
+    confirmDeletes: flag(stored.confirmDeletes, defaults.confirmDeletes),
   };
 }
 

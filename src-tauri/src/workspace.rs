@@ -182,7 +182,7 @@ pub struct Workspace {
 }
 
 impl Workspace {
-    fn root(&self) -> Result<PathBuf, String> {
+    pub fn root(&self) -> Result<PathBuf, String> {
         let root = self.root.lock().map_err(|error| error.to_string())?;
         root.clone().ok_or_else(|| "Choose a workspace folder first.".to_string())
     }

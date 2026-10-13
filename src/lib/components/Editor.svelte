@@ -3,8 +3,8 @@
   import { minimalSetup } from "codemirror";
   import { HighlightStyle, LanguageSupport, syntaxHighlighting } from "@codemirror/language";
   import { setDiagnostics } from "@codemirror/lint";
-  import { Compartment } from "@codemirror/state";
-  import { EditorView, lineNumbers } from "@codemirror/view";
+  import { Compartment, EditorState } from "@codemirror/state";
+  import { Decoration, EditorView, lineNumbers } from "@codemirror/view";
   import { tags } from "@lezer/highlight";
   import { typst_lezer } from "codemirror-lang-typst/lezer";
   import type { Diagnostic } from "$lib/ipc";
@@ -14,12 +14,16 @@
     diagnostics,
     fontSize,
     wordWrap,
+    locked = false,
+    highlight = null,
     onchange,
   }: {
     text: string;
     diagnostics: Diagnostic[];
     fontSize: number;
     wordWrap: boolean;
+    locked?: boolean;
+    highlight?: { from: number; to: number } | null;
     onchange: (text: string) => void;
   } = $props();
 
@@ -27,6 +31,9 @@
   let view: EditorView | undefined;
 
   const look = new Compartment();
+  const lock = new Compartment();
+  const marks = new Compartment();
+  const written = Decoration.line({ class: "cm-written" });
 
   const colours = EditorView.theme({
     "&": { height: "100%", color: "var(--foreground)", backgroundColor: "var(--background)" },
@@ -47,6 +54,7 @@
       backgroundColor: "var(--popover)",
       border: "1px solid var(--border)",
     },
+    ".cm-written": { backgroundColor: "color-mix(in oklab, var(--chart-2) 25%, transparent)" },
     ".cm-diagnostic-error": { borderLeftColor: "var(--destructive)" },
     ".cm-diagnostic-warning": { borderLeftColor: "var(--chart-4)" },
     ".cm-lintRange-error": {
@@ -82,6 +90,8 @@
         minimalSetup,
         lineNumbers(),
         look.of([]),
+        lock.of([]),
+        marks.of([]),
         new LanguageSupport(typst_lezer().language),
         syntaxHighlighting(highlighting),
         colours,
@@ -101,6 +111,23 @@
         wordWrap ? EditorView.lineWrapping : [],
         EditorView.theme({ "&": { fontSize: `${fontSize}px` } }),
       ]),
+    });
+  });
+
+  $effect(() => {
+    view?.dispatch({ effects: lock.reconfigure([EditorState.readOnly.of(locked), EditorView.editable.of(!locked)]) });
+  });
+
+  $effect(() => {
+    const text = view?.state.doc;
+    if (!view || !text) return;
+    const numbers = highlight ? Array.from({ length: highlight.to - highlight.from + 1 }, (_, line) => highlight.from + line) : [];
+    const starts = numbers.filter((line) => line >= 1 && line <= text.lines).map((line) => text.line(line).from);
+    view.dispatch({
+      effects: [
+        marks.reconfigure(EditorView.decorations.of(Decoration.set(starts.map((start) => written.range(start))))),
+        ...starts.slice(0, 1).map((start) => EditorView.scrollIntoView(start, { y: "center" })),
+      ],
     });
   });
 

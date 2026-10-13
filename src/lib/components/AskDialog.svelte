@@ -45,7 +45,7 @@
     if (!open) onclose();
   }}
 >
-  <Dialog.Content>
+  <Dialog.Content showCloseButton={false}>
     <form class="grid gap-4" onsubmit={submit}>
       <Dialog.Header>
         <Dialog.Title>{ask.title}</Dialog.Title>

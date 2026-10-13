@@ -6,6 +6,7 @@
   import * as NativeSelect from "$lib/components/ui/native-select";
   import { Switch } from "$lib/components/ui/switch";
   import { pickFolder } from "$lib/ipc";
+  import { agent } from "$lib/state/agent.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
 
@@ -19,6 +20,10 @@
       if (folder !== null) await workspace.useFolder(folder, false);
     });
   }
+
+  $effect(() => {
+    if (open) agent.check();
+  });
 
   function setFontSize(size: number) {
     if (size >= fontSizes.min && size <= fontSizes.max) settings.set("fontSize", size);
@@ -91,6 +96,35 @@
         <NativeSelect.Option value="light">Light</NativeSelect.Option>
         <NativeSelect.Option value="dark">Dark</NativeSelect.Option>
       </NativeSelect.Root>
+
+      <div>
+        <Label for="settings-assistant">Assistant</Label>
+        <p class="text-xs text-muted-foreground">
+          Runs Claude Code and uses your own Claude account.
+          {agent.account?.connected ? "Connected." : "Not connected."}
+        </p>
+      </div>
+      {#if agent.account?.connected}
+        <Button id="settings-assistant" variant="outline" size="sm" disabled={agent.running} onclick={() => agent.disconnect()}>
+          Disconnect
+        </Button>
+      {:else if agent.stage}
+        <Button id="settings-assistant" variant="outline" size="sm" onclick={() => agent.stop()}>
+          {agent.stage === "installing" ? "Downloading… Cancel" : "Waiting for sign-in… Cancel"}
+        </Button>
+      {:else}
+        <Button id="settings-assistant" variant="outline" size="sm" onclick={() => agent.connect()}>Connect</Button>
+      {/if}
+
+      <div>
+        <Label for="settings-confirm-deletes">Ask before the assistant deletes</Label>
+        <p class="text-xs text-muted-foreground">Deleted items always go to the Recycle Bin.</p>
+      </div>
+      <Switch
+        id="settings-confirm-deletes"
+        checked={settings.values.confirmDeletes}
+        onCheckedChange={(checked) => settings.set("confirmDeletes", checked)}
+      />
     </div>
   </Dialog.Content>
 </Dialog.Root>

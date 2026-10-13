@@ -1,5 +1,6 @@
 <script lang="ts">
   import "../app.css";
+  import { loadChats } from "$lib/state/chats.svelte";
   import { connect } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { loadThemes, theme } from "$lib/state/theme.svelte";
@@ -30,6 +31,7 @@
   connect();
   start();
   loadThemes();
+  loadChats();
 </script>
 
 {@render children()}

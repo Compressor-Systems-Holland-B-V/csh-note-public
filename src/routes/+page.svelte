@@ -4,10 +4,14 @@
   import Palette from "@lucide/svelte/icons/palette";
   import Pencil from "@lucide/svelte/icons/pencil";
   import FolderOpen from "@lucide/svelte/icons/folder-open";
+  import LoaderCircle from "@lucide/svelte/icons/loader-circle";
+  import Lock from "@lucide/svelte/icons/lock";
+  import LockOpen from "@lucide/svelte/icons/lock-open";
   import Save from "@lucide/svelte/icons/save";
   import Settings from "@lucide/svelte/icons/settings";
   import Sparkles from "@lucide/svelte/icons/sparkles";
   import Sun from "@lucide/svelte/icons/sun";
+  import AgentPanel from "$lib/components/AgentPanel.svelte";
   import ExportPanel from "$lib/components/ExportPanel.svelte";
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
   import Editor from "$lib/components/Editor.svelte";
@@ -22,6 +26,8 @@
   import { Button } from "$lib/components/ui/button";
   import * as Resizable from "$lib/components/ui/resizable";
   import { appVersion, pickTypstFile } from "$lib/ipc";
+  import { agent } from "$lib/state/agent.svelte";
+  import { chats } from "$lib/state/chats.svelte";
   import { doc } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
@@ -41,7 +47,7 @@
   const dark = $derived(settings.values.theme === "dark");
   const themeLabel = $derived(dark ? "Switch to light mode" : "Switch to dark mode");
   const assistantLabel = $derived(assistantOpen ? "Hide the assistant" : "Show the assistant");
-  const problem = $derived(workspace.failure ?? settings.failure ?? theme.failure);
+  const problem = $derived(workspace.failure ?? settings.failure ?? theme.failure ?? chats.failure);
 
   function load() {
     return workspace.attempt(async () => {
@@ -112,7 +118,7 @@
     <Resizable.Pane defaultSize={32} minSize={15}>
       <div class="flex h-full flex-col">
         {#if workspace.page !== null}
-          <div class="flex h-9 shrink-0 items-center gap-1 border-b px-2">
+          <fieldset class="flex h-9 min-w-0 shrink-0 items-center gap-1 border-b px-2" disabled={agent.locked}>
             <TemplatePicker />
             <Button variant="ghost" size="sm" disabled={!workspace.unsaved} title="Save this page" onclick={() => workspace.save()}>
               <Save /> Save
@@ -121,10 +127,17 @@
               <FolderOpen /> Load
             </Button>
             <span class="flex-1"></span>
+            {#if agent.locked}
+              <span class="text-destructive" role="status" aria-label="The assistant is writing this page. You can edit again when it is done." title="The assistant is writing this page. You can edit again when it is done.">
+                <Lock class="size-3.5" />
+              </span>
+            {:else if assistantOpen}
+              <span class="text-muted-foreground" aria-label="You can edit this page" title="You can edit this page"><LockOpen class="size-3.5" /></span>
+            {/if}
             <ProblemsBadge diagnostics={doc.diagnostics} />
-          </div>
+          </fieldset>
         {/if}
-        <div class="min-h-0 flex-1">
+        <div class="min-h-0 flex-1 {agent.locked ? 'ring-2 ring-chart-2 ring-inset' : ''}">
           {#if workspace.page === null}
             {@render placeholder("Choose a page, or create one, to start writing.")}
           {:else}
@@ -134,6 +147,8 @@
                 diagnostics={doc.diagnostics}
                 fontSize={settings.values.fontSize}
                 wordWrap={settings.values.wordWrap}
+                locked={agent.locked}
+                highlight={agent.highlight}
                 onchange={(text) => workspace.edit(text)}
               />
             {/key}
@@ -149,7 +164,7 @@
     {#if assistantOpen}
       <Resizable.Handle />
       <Resizable.Pane defaultSize={20} minSize={10} class="bg-sidebar">
-        {@render placeholder("Assistant")}
+        <AgentPanel />
       </Resizable.Pane>
     {/if}
   </Resizable.PaneGroup>
@@ -160,22 +175,26 @@
     <span class="min-w-0 flex-1 truncate px-3" role="status">
       {#if problem}
         {problem}
+      {:else if agent.running}
+        <LoaderCircle class="inline size-3 animate-spin" /> Assistant: {agent.activity ?? "Working…"}
       {:else if doc.downloading}
         Downloading package {doc.downloading}…
       {:else if doc.failure}
         The preview could not be updated: {doc.failure}
       {/if}
     </span>
-    <Button
-      variant={assistantOpen ? "secondary" : "ghost"}
-      size="icon-xs"
-      aria-label={assistantLabel}
-      aria-pressed={assistantOpen}
-      title={assistantLabel}
-      onclick={() => (assistantOpen = !assistantOpen)}
-    >
-      <Sparkles />
-    </Button>
+    {#if mode === "edit"}
+      <Button
+        variant={assistantOpen ? "secondary" : "ghost"}
+        size="icon-xs"
+        aria-label={assistantLabel}
+        aria-pressed={assistantOpen}
+        title={assistantLabel}
+        onclick={() => (assistantOpen = !assistantOpen)}
+      >
+        <Sparkles />
+      </Button>
+    {/if}
     <Button variant="ghost" size="icon-xs" aria-label={themeLabel} title={themeLabel} onclick={() => settings.set("theme", dark ? "light" : "dark")}>
       {#if dark}<Sun />{:else}<Moon />{/if}
     </Button>

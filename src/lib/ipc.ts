@@ -1,4 +1,4 @@
-import { convertFileSrc, invoke, isTauri } from "@tauri-apps/api/core";
+import { Channel, convertFileSrc, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { LazyStore } from "@tauri-apps/plugin-store";
@@ -107,6 +107,67 @@ export const exportPage = (page: string, text: string, format: ExportFormat) =>
 export const openExport = () => invoke<void>("open_export");
 
 export const showExport = () => invoke<void>("show_export");
+
+export type AgentStatus = { installed: boolean; connected: boolean };
+
+export type AgentEvent =
+  | { kind: "text"; text: string }
+  | { kind: "step"; tool: string; page: string }
+  | { kind: "edited"; page: string }
+  | { kind: "read"; page: string }
+  | { kind: "done"; session: string; failure: string | null };
+
+export type AgentTurn = {
+  chat: string;
+  prompt: string;
+  system: string;
+  session: string | null;
+  model: string | null;
+  effort: string | null;
+};
+
+export type Attachment = { name: string; path: string };
+
+export const agentStatus = () => invoke<AgentStatus>("agent_status");
+
+export const agentInstall = () => invoke<void>("agent_install");
+
+export function agentConnect(method: string | null, onLink: (link: string) => void) {
+  const link = new Channel<string>();
+  link.onmessage = onLink;
+  return invoke<AgentStatus>("agent_connect", { method, link });
+}
+
+export const agentCode = (code: string) => invoke<void>("agent_code", { code });
+
+export const agentDisconnect = () => invoke<AgentStatus>("agent_disconnect");
+
+export const agentCancel = () => invoke<void>("agent_cancel");
+
+export function agentRun(turn: AgentTurn, handler: (event: AgentEvent) => void) {
+  const events = new Channel<AgentEvent>();
+  events.onmessage = handler;
+  return invoke<void>("agent_run", { turn, events });
+}
+
+export const agentAttach = (chat: string) => invoke<Attachment[]>("agent_attach", { chat });
+
+export const agentForget = (chat: string) => invoke<void>("agent_forget", { chat });
+
+export type StoredChat = {
+  id: string;
+  title: string;
+  session: string | null;
+  messages: { from: "you" | "assistant"; parts: { kind: "text" | "note"; text: string }[] }[];
+  archived: boolean;
+  updated: number;
+};
+
+const chatStore = new LazyStore("chats.json");
+
+export const readChats = () => chatStore.get<unknown>("chats");
+
+export const writeChats = (chats: StoredChat[]) => chatStore.set("chats", chats);
 
 const settingsStore = new LazyStore("settings.json");
 

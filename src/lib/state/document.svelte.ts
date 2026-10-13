@@ -20,6 +20,7 @@ export class Document {
   private applied = 0;
   private fresh = true;
   private timer: ReturnType<typeof setTimeout> | undefined;
+  private waiting: (() => void)[] = [];
 
   constructor(
     private send: Send,
@@ -39,6 +40,15 @@ export class Document {
     this.opened += 1;
     this.loading = false;
     if (page) this.request();
+    this.release();
+  }
+
+  settled() {
+    return this.loading ? new Promise<void>((resolve) => this.waiting.push(resolve)) : Promise.resolve();
+  }
+
+  private release() {
+    if (!this.loading) this.waiting.splice(0).forEach((resolve) => resolve());
   }
 
   edit(text: string) {
@@ -63,6 +73,7 @@ export class Document {
     this.loading = false;
     this.downloading = null;
     this.failure = message;
+    this.release();
   }
 
   receive(result: Compiled) {
@@ -85,6 +96,7 @@ export class Document {
     }
 
     if (result.seq === this.sent) this.diagnostics = result.diagnostics;
+    this.release();
   }
 }
 

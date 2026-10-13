@@ -1,3 +1,4 @@
+mod agent;
 mod compile;
 mod export;
 mod theme;
@@ -17,6 +18,7 @@ pub fn run() {
         .manage(compile::Compiler::default())
         .manage(workspace::Workspace::default())
         .manage(export::Exports::default())
+        .manage(agent::Agent::default())
         .invoke_handler(tauri::generate_handler![
             app_version,
             compile::compile,
@@ -36,6 +38,15 @@ pub fn run() {
             export::export_page,
             export::open_export,
             export::show_export,
+            agent::agent_status,
+            agent::agent_install,
+            agent::agent_connect,
+            agent::agent_code,
+            agent::agent_disconnect,
+            agent::agent_cancel,
+            agent::agent_run,
+            agent::agent_attach,
+            agent::agent_forget,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
