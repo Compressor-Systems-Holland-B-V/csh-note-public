@@ -1,0 +1,18 @@
+{
+  "title": "Eksporter",
+  "format": "Format",
+  "pdfHint": "Ser nøyaktig ut som forhåndsvisningen.",
+  "pptxHint": "Én lysbilde per side. Tekst forblir redigerbar; alt annet er et bilde.",
+  "blocked": {
+    "noPage": "Velg en side som skal eksporteres.",
+    "problems": "Denne siden har problemer. Gå tilbake til Rediger og fiks dem før du eksporterer.",
+    "empty": "Denne siden har ingenting å eksportere ennå."
+  },
+  "run": "Eksporter…",
+  "running": "Eksporterer…",
+  "runningPage": "Eksporterer siden din…",
+  "savedTo": "Lagret til {path}",
+  "missingFonts": "PowerPoint vil erstatte disse skriftene: {fonts}",
+  "openFile": "Åpne fil",
+  "showInFolder": "Vis i mappe"
+}

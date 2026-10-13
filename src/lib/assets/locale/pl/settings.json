@@ -1,0 +1,20 @@
+{
+  "fontSize": "Rozmiar tekstu w edytorze",
+  "wrap": "Zawijaj długie linie",
+  "autosave": "Zapisuj automatycznie",
+  "autosaveHint": "Gdy ta opcja jest wyłączona, użyj Ctrl+S, aby zapisać.",
+  "zoom": "Początkowy rozmiar podglądu",
+  "appearance": "Wygląd",
+  "light": "Jasny",
+  "dark": "Ciemny",
+  "look": "Motyw",
+  "lookHint": "Dodaj więcej motywów na stronie Motywy.",
+  "language": "Język",
+  "languageAuto": "Taki sam jak w systemie",
+  "assistant": "Asystent",
+  "uses": "Używa {provider}.",
+  "notConnected": "Jeszcze nie połączono.",
+  "providers": "Dostawcy…",
+  "file": "Twój plik znote",
+  "switch": "Przełącz…"
+}

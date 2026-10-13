@@ -1,0 +1,133 @@
+{
+  "title": "Assistente",
+  "checking": "A verificar a ligação…",
+  "timeSoFar": "Tempo decorrido",
+  "seconds": "{seconds}s",
+  "showMore": "Mostrar mais",
+  "showLess": "Mostrar menos",
+  "chatSaveFailed": "Não foi possível guardar a sua conversa: {reason}",
+  "empty": {
+    "title": "O que devo escrever?"
+  },
+  "deletion": {
+    "label": "Confirmar eliminação",
+    "text": "O assistente pretende eliminar “{path}”. Será movido para o Reciclagem, juntamente com tudo o que contém."
+  },
+  "composer": {
+    "placeholder": "Pergunte ao assistente… Ctrl+Enter para enviar",
+    "message": "Mensagem para o assistente",
+    "references": "O que o assistente irá analisar",
+    "removeReference": "Remover {label}",
+    "add": "Adicionar uma página ou um ficheiro",
+    "addTitle": "Indique ao assistente uma página ou anexe um ficheiro",
+    "attach": "Anexar ficheiros deste computador…",
+    "web": "Permitir que o assistente use a internet nesta conversa",
+    "wholeProject": "Todo o projeto",
+    "wholeNotebook": "Todo o bloco de notas",
+    "presets": "Como o assistente deve trabalhar",
+    "advanced": "Definições avançadas do assistente",
+    "advancedTitle": "Avançadas: altere estas opções ou crie as suas próprias",
+    "send": "Enviar",
+    "sendTitle": "Enviar (Ctrl+Enter)",
+    "stop": "Parar",
+    "busyElsewhere": "O assistente está ocupado noutra conversa"
+  },
+  "history": {
+    "title": "Conversas anteriores",
+    "newChat": "Nova conversa",
+    "which": "Que conversas mostrar",
+    "chats": "Conversas",
+    "archived": "Arquivadas",
+    "none": "Ainda não existem conversas.",
+    "noneArchived": "Não há nada arquivado.",
+    "working": "O assistente está a trabalhar nesta conversa",
+    "archive": "Arquivar",
+    "archiveChat": "Arquivar “{title}”",
+    "restore": "Mover de volta para as conversas",
+    "restoreChat": "Mover “{title}” de volta para as conversas",
+    "deleteChat": "Eliminar “{title}”",
+    "deleteTitle": "Eliminar a conversa “{title}”?",
+    "deleteText": "A conversa será removida permanentemente. As suas páginas não serão alteradas.",
+    "archiveAll": "Arquivar tudo",
+    "deleteAll": "Eliminar tudo",
+    "archiveAllTitle": "Arquivar todas as conversas?",
+    "deleteAllTitle": "Eliminar todas as conversas arquivadas?",
+    "deleteAllText": "As conversas serão removidas permanentemente. As suas páginas não serão alteradas."
+  },
+  "steps": {
+    "thought": "Pensamento",
+    "review": "Revisão",
+    "reviewTitle": "Abra a página e veja o que mudou"
+  },
+  "summary": {
+    "read_one": "leu {count} página",
+    "read_other": "leu {count} páginas",
+    "edited_one": "editou {count} página",
+    "edited_other": "editou {count} páginas",
+    "other_one": "{count} outro passo",
+    "other_other": "{count} outros passos",
+    "thought": "refletiu sobre o assunto"
+  },
+  "activity": {
+    "thinking": "A pensar…",
+    "replying": "A responder…",
+    "reading": "A ler…",
+    "readingPage": "A ler {page}…",
+    "writing": "A escrever uma página…",
+    "writingPage": "A escrever {page}…",
+    "looking": "A analisar as suas páginas…",
+    "waiting": "À espera da sua resposta…",
+    "checking": "A verificar se existem problemas na página…",
+    "renaming": "A mudar o nome de {path}…",
+    "creating": "A criar {path}…",
+    "deleting": "A eliminar {path}…"
+  },
+  "note": {
+    "read": "Ler {page}",
+    "edited": "Editou {page}",
+    "renamed": "Mudou o nome de {from} para {to}",
+    "created": "Criou {path}",
+    "deleted": "Eliminou {path}"
+  },
+  "preset": {
+    "title": "Definições avançadas do assistente",
+    "text": "Uma predefinição decide a rapidez e o cuidado do assistente com {provider}. Escolha uma para a alterar ou crie a sua própria.",
+    "label": "Predefinição",
+    "new": "Nova predefinição",
+    "mine": "A minha predefinição",
+    "model": "Modelo",
+    "defaultModel": "Modelo predefinido",
+    "effort": "Nível de raciocínio",
+    "effortHint": "Mais raciocínio é mais lento e consome mais do seu plano.",
+    "access": "O que pode fazer",
+    "web": "Internet",
+    "webAsk": "Escolher em cada conversa",
+    "webOn": "Sempre permitida",
+    "webOff": "Nunca permitida",
+    "fast": "Modo rápido",
+    "fastHint": "Respostas mais rápidas do mesmo modelo, a um preço mais elevado.",
+    "backToStandard": "Voltar à “{name}” padrão",
+    "delete": "Eliminar esta predefinição"
+  },
+  "effort": {
+    "low": "Rápido",
+    "medium": "Equilibrado",
+    "high": "Minucioso",
+    "xhigh": "Muito minucioso",
+    "max": "Máximo"
+  },
+  "access": {
+    "read": "Apenas ler as minhas páginas",
+    "edit": "Editar páginas, perguntar antes de eliminar",
+    "full": "Editar e eliminar sem perguntar"
+  },
+  "size": {
+    "quick": "Rápido",
+    "quickHint": "Notas curtas e pequenas correções. O mais rápido.",
+    "balanced": "Equilibrado",
+    "balancedHint": "Documentos do dia a dia. Uma boa predefinição.",
+    "thorough": "Minucioso",
+    "thoroughHint": "Relatórios longos e reescritas cuidadosas. O mais lento.",
+    "custom": "Personalizado"
+  }
+}

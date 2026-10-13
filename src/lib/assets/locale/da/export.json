@@ -1,0 +1,18 @@
+{
+  "title": "Eksportér",
+  "format": "Format",
+  "pdfHint": "Ser præcis ud som forhåndsvisningen.",
+  "pptxHint": "Ét slide pr. side. Tekst forbliver redigerbar; alt andet er et billede.",
+  "blocked": {
+    "noPage": "Vælg en side, der skal eksporteres.",
+    "problems": "Denne side har problemer. Gå tilbage til Redigér og ret dem, før du eksporterer.",
+    "empty": "Denne side indeholder endnu intet at eksportere."
+  },
+  "run": "Eksportér…",
+  "running": "Eksporterer…",
+  "runningPage": "Eksporterer din side…",
+  "savedTo": "Gemt i {path}",
+  "missingFonts": "PowerPoint vil erstatte disse skrifttyper: {fonts}",
+  "openFile": "Åbn fil",
+  "showInFolder": "Vis i mappe"
+}

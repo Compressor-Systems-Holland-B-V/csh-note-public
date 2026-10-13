@@ -1,0 +1,133 @@
+{
+  "title": "Asystent",
+  "checking": "Sprawdzanie połączenia…",
+  "timeSoFar": "Czas trwania",
+  "seconds": "{seconds}s",
+  "showMore": "Pokaż więcej",
+  "showLess": "Pokaż mniej",
+  "chatSaveFailed": "Nie udało się zapisać czatu: {reason}",
+  "empty": {
+    "title": "O czym mam napisać?"
+  },
+  "deletion": {
+    "label": "Potwierdź usunięcie",
+    "text": "Asystent chce usunąć „{path}”. Element zostanie przeniesiony do Kosza wraz z całą zawartością."
+  },
+  "composer": {
+    "placeholder": "Zapytaj asystenta… Ctrl+Enter, aby wysłać",
+    "message": "Wiadomość do asystenta",
+    "references": "Elementy, które asystent weźmie pod uwagę",
+    "removeReference": "Usuń {label}",
+    "add": "Dodaj stronę lub plik",
+    "addTitle": "Wskaż asystentowi stronę lub dołącz plik",
+    "attach": "Dołącz pliki z tego komputera…",
+    "web": "Pozwól asystentowi korzystać z internetu w tym czacie",
+    "wholeProject": "Cały projekt",
+    "wholeNotebook": "Cały notatnik",
+    "presets": "Jak ma pracować asystent",
+    "advanced": "Zaawansowane ustawienia asystenta",
+    "advancedTitle": "Zaawansowane: zmień te ustawienia lub stwórz własne",
+    "send": "Wyślij",
+    "sendTitle": "Wyślij (Ctrl+Enter)",
+    "stop": "Zatrzymaj",
+    "busyElsewhere": "Asystent jest zajęty w innym czacie"
+  },
+  "history": {
+    "title": "Poprzednie czaty",
+    "newChat": "Nowy czat",
+    "which": "Które czaty wyświetlić",
+    "chats": "Czaty",
+    "archived": "Zarchiwizowane",
+    "none": "Brak czatów.",
+    "noneArchived": "Brak zarchiwizowanych elementów.",
+    "working": "Asystent pracuje w tym czacie",
+    "archive": "Archiwizuj",
+    "archiveChat": "Archiwizuj „{title}”",
+    "restore": "Przenieś z powrotem do czatów",
+    "restoreChat": "Przenieś „{title}” z powrotem do czatów",
+    "deleteChat": "Usuń „{title}”",
+    "deleteTitle": "Usunąć czat „{title}”?",
+    "deleteText": "Czat zostanie trwale usunięty. Twoje strony nie zostaną zmienione.",
+    "archiveAll": "Archiwizuj wszystkie",
+    "deleteAll": "Usuń wszystkie",
+    "archiveAllTitle": "Zarchiwizować wszystkie czaty?",
+    "deleteAllTitle": "Usunąć wszystkie zarchiwizowane czaty?",
+    "deleteAllText": "Czaty zostaną trwale usunięte. Twoje strony nie zostaną zmienione."
+  },
+  "steps": {
+    "thought": "Przemyślenia",
+    "review": "Przegląd",
+    "reviewTitle": "Otwórz stronę i zobacz, co się zmieniło"
+  },
+  "summary": {
+    "read_one": "przeczytano {count} stronę",
+    "read_other": "przeczytano {count} stron",
+    "edited_one": "edytowano {count} stronę",
+    "edited_other": "edytowano {count} stron",
+    "other_one": "{count} inny krok",
+    "other_other": "{count} innych kroków",
+    "thought": "przemyślano to"
+  },
+  "activity": {
+    "thinking": "Myślenie…",
+    "replying": "Odpowiadanie…",
+    "reading": "Czytanie…",
+    "readingPage": "Czytanie {page}…",
+    "writing": "Pisanie strony…",
+    "writingPage": "Pisanie {page}…",
+    "looking": "Przeglądanie Twoich stron…",
+    "waiting": "Oczekiwanie na Twoją odpowiedź…",
+    "checking": "Sprawdzanie strony pod kątem problemów…",
+    "renaming": "Zmiana nazwy {path}…",
+    "creating": "Tworzenie {path}…",
+    "deleting": "Usuwanie {path}…"
+  },
+  "note": {
+    "read": "Przeczytano {page}",
+    "edited": "Edytowano {page}",
+    "renamed": "Zmieniono nazwę z {from} na {to}",
+    "created": "Utworzono {path}",
+    "deleted": "Usunięto {path}"
+  },
+  "preset": {
+    "title": "Zaawansowane ustawienia asystenta",
+    "text": "Ustawienie wstępne określa, jak szybko i jak dokładnie asystent pracuje z {provider}. Wybierz jedno, aby je zmienić, lub stwórz własne.",
+    "label": "Ustawienie wstępne",
+    "new": "Nowe ustawienie wstępne",
+    "mine": "Moje ustawienie wstępne",
+    "model": "Model",
+    "defaultModel": "Domyślny model",
+    "effort": "Poziom przemyśleń",
+    "effortHint": "Więcej przemyśleń oznacza wolniejszą pracę i większe zużycie planu.",
+    "access": "Uprawnienia",
+    "web": "Internet",
+    "webAsk": "Wybór w każdym czacie",
+    "webOn": "Zawsze dozwolony",
+    "webOff": "Nigdy niedozwolony",
+    "fast": "Tryb szybki",
+    "fastHint": "Szybsze odpowiedzi z tego samego modelu, w wyższej cenie.",
+    "backToStandard": "Powrót do standardowego „{name}”",
+    "delete": "Usuń to ustawienie wstępne"
+  },
+  "effort": {
+    "low": "Szybki",
+    "medium": "Zrównoważony",
+    "high": "Dokładny",
+    "xhigh": "Bardzo dokładny",
+    "max": "Maksymalny"
+  },
+  "access": {
+    "read": "Tylko odczyt moich stron",
+    "edit": "Edytuj strony, pytaj przed usunięciem",
+    "full": "Edytuj i usuwaj bez pytania"
+  },
+  "size": {
+    "quick": "Szybki",
+    "quickHint": "Krótkie notatki i drobne poprawki. Najszybszy.",
+    "balanced": "Zrównoważony",
+    "balancedHint": "Codzienne dokumenty. Dobre ustawienie domyślne.",
+    "thorough": "Dokładny",
+    "thoroughHint": "Długie raporty i staranne przeredagowania. Najwolniejszy.",
+    "custom": "Własne"
+  }
+}

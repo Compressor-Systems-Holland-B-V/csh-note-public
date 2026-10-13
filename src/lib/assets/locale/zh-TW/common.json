@@ -1,0 +1,37 @@
+{
+  "cancel": "取消",
+  "create": "建立",
+  "rename": "重新命名",
+  "delete": "刪除",
+  "keep": "保留",
+  "replace": "取代",
+  "done": "完成",
+  "connect": "連線",
+  "settings": "設定",
+  "name": "名稱",
+  "template": "範本",
+  "default": "預設",
+  "fitWidth": "符合頁寬",
+  "version": "版本 {version}",
+  "mode": {
+    "edit": "編輯",
+    "export": "匯出",
+    "themes": "主題"
+  },
+  "appearance": {
+    "toLight": "切換至淺色模式",
+    "toDark": "切換至深色模式"
+  },
+  "assistant": {
+    "show": "顯示助理",
+    "hide": "隱藏助理"
+  },
+  "status": {
+    "more": "{problem} (還有 {count} 個)",
+    "assistant": "助理:{activity}",
+    "working": "處理中…",
+    "downloading": "正在下載套件 {name}…",
+    "previewFailed": "無法更新預覽:{reason}",
+    "desktopOnly": "僅在桌面版應用程式中可用。"
+  }
+}

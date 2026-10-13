@@ -1,0 +1,20 @@
+{
+  "fontSize": "Textstorlek i redigeraren",
+  "wrap": "Radbryt långa rader",
+  "autosave": "Spara automatiskt",
+  "autosaveHint": "När detta är avstängt, tryck på Ctrl+S för att spara.",
+  "zoom": "Förhandsgranskningsstorlek vid start",
+  "appearance": "Utseende",
+  "light": "Ljust",
+  "dark": "Mörkt",
+  "look": "Tema",
+  "lookHint": "Lägg till fler teman på sidan Teman.",
+  "language": "Språk",
+  "languageAuto": "Samma som på den här datorn",
+  "assistant": "Assistent",
+  "uses": "Använder {provider}.",
+  "notConnected": "Inte ansluten än.",
+  "providers": "Leverantörer…",
+  "file": "Din znote-fil",
+  "switch": "Växla…"
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Temi",
+  "look": "Aspetto",
+  "import": "Importa un file tema…",
+  "intro": "Un tema può modificare l'aspetto di znote, aggiungere modelli di pagina, o entrambi. Gli interruttori su un tema determinano se il suo aspetto e i suoi modelli vengono proposti; scegli l'aspetto da utilizzare dall'elenco qui sopra.",
+  "storeFailure": "{reason} I temi già installati sono mostrati di seguito.",
+  "search": "Cerca temi",
+  "installed": "Installati",
+  "none": "Nessun tema corrisponde.",
+  "kind": {
+    "look": "Solo aspetto",
+    "both": "Aspetto e modelli",
+    "templates": "Solo modelli"
+  },
+  "contents": {
+    "look": "Modifica l'aspetto",
+    "both": "Modifica l'aspetto e aggiunge modelli di pagina",
+    "templates": "Aggiunge modelli di pagina"
+  },
+  "version": "Versione {version}",
+  "lookSwitch": "Aspetto",
+  "lookSwitchTitle": "Mostra questo tema nell'elenco degli aspetti",
+  "templatesSwitch": "Modelli",
+  "templatesSwitchTitle": "Mostra i modelli di questo tema quando ne scegli uno",
+  "install": "Installa",
+  "installing": "Installazione in corso…",
+  "update": "Aggiorna",
+  "updating": "Aggiornamento in corso…",
+  "remove": "Rimuovi",
+  "removeTheme": "Rimuovi il tema {name}"
+}

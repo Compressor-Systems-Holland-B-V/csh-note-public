@@ -1,0 +1,48 @@
+{
+  "connectTitle": "De assistent verbinden",
+  "connectText": "Hij schrijft en bewerkt je pagina's voor je. Kies eerst waarop hij moet draaien.",
+  "chooseElse": "Iets anders kiezen",
+  "nameConnected": "{name} · verbonden",
+  "dialogTitle": "Providers voor de assistent",
+  "dialogText": "Verbind er een of meer en kies daarna welke de assistent gebruikt.",
+  "connected": "Verbonden",
+  "connectedTo": "Verbonden met {url}",
+  "use": "Als standaard instellen",
+  "disconnect": "Verbinding verbreken",
+  "checking": "Controleren…",
+  "list": {
+    "claude": "Claude Code",
+    "claudeHint": "Je Claude-abonnement of API-account",
+    "openrouter": "OpenRouter",
+    "openrouterHint": "Eén API-sleutel voor modellen van veel bedrijven",
+    "custom": "Je eigen server",
+    "customHint": "Ollama, LM Studio of een andere OpenAI-compatibele server"
+  },
+  "model": {
+    "type": "Typ de naam van een model",
+    "missing": "Kies een model voordat je begint. Het moet tools ondersteunen.",
+    "hint": "Wordt gebruikt als een chat of voorinstelling geen ander model kiest."
+  },
+  "signIn": {
+    "installing": "Claude Code downloaden…",
+    "finish": "Rond het aanmelden af in je browser…",
+    "noBrowser": "Browser niet geopend? Kopieer deze koppeling, open die in een browser en plak daarna de code die je te zien krijgt.",
+    "link": "Aanmeldkoppeling",
+    "copyLink": "De aanmeldkoppeling kopiëren",
+    "code": "Code uit de browser",
+    "unfinished": "Het aanmelden is niet voltooid. Druk op Verbinden om het opnieuw te proberen.",
+    "note": "Voert Claude Code uit met je eigen account. Je meldt je één keer aan in je browser.",
+    "subscription": "Claude-abonnement",
+    "subscriptionHint": "Pro-, Max- of Team-abonnement",
+    "console": "API-account",
+    "consoleHint": "Betalen per gebruik",
+    "sso": "Eenmalige aanmelding",
+    "ssoHint": "Via je bedrijf"
+  },
+  "key": {
+    "server": "Serveradres",
+    "label": "API-sleutel",
+    "labelOptional": "API-sleutel (als de server er een nodig heeft)",
+    "note": "De sleutel wordt versleuteld bewaard in de wachtwoordkluis van deze computer en wordt nooit meer weergegeven."
+  }
+}

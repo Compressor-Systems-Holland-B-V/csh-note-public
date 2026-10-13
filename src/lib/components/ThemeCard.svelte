@@ -9,6 +9,7 @@
   import { themeFileUrl } from "$lib/ipc";
   import { settings } from "$lib/state/settings.svelte";
   import { kindOf, theme, type Entry } from "$lib/state/theme.svelte";
+  import { t } from "$lib/i18n.svelte";
 
   let { entry }: { entry: Entry } = $props();
 
@@ -23,11 +24,11 @@
   const listed = $derived(!settings.values.hiddenLooks.includes(shown.id));
   const offered = $derived(!settings.values.hiddenTemplates.includes(shown.id));
   const contents = $derived(
-    { look: "Changes the look", both: "Changes the look and adds page templates", templates: "Adds page templates" }[kind],
+    t(`themes.contents.${kind}`),
   );
   const busy = $derived(theme.installing === shown.id);
   const facts = $derived(
-    [shown.category, `Version ${shown.version}`, ...shown.templates.map(({ label }) => label)].filter(Boolean).join(" · "),
+    [shown.category, t("themes.version", { version: shown.version }), ...shown.templates.map(({ label }) => label)].filter(Boolean).join(" · "),
   );
 </script>
 
@@ -57,29 +58,29 @@
     {#if entry.installed}
       <div class="flex flex-wrap gap-x-4 gap-y-2">
         {#if kind !== "templates"}
-          <Label title="Show this theme in the list of looks">
+          <Label title={t("themes.lookSwitchTitle")}>
             <Switch checked={listed} onCheckedChange={(on) => theme.offer("hiddenLooks", shown.id, on)} />
-            Look
+            {t("themes.lookSwitch")}
           </Label>
         {/if}
         {#if kind !== "look"}
-          <Label title="Show this theme's templates when you pick a template">
+          <Label title={t("themes.templatesSwitchTitle")}>
             <Switch checked={offered} onCheckedChange={(on) => theme.offer("hiddenTemplates", shown.id, on)} />
-            Templates
+            {t("themes.templatesSwitch")}
           </Label>
         {/if}
       </div>
       <div class="flex items-center gap-1">
         {#if entry.update}
           <Button variant="outline" size="sm" disabled={busy} onclick={() => theme.install(shown.id)}>
-            {busy ? "Updating…" : "Update"}
+            {t(busy ? "themes.updating" : "themes.update")}
           </Button>
         {/if}
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Remove the theme {shown.name}"
-          title="Remove"
+          aria-label={t("themes.removeTheme", { name: shown.name })}
+          title={t("themes.remove")}
           onclick={() => theme.remove(shown.id)}
         >
           <Trash2 />
@@ -87,7 +88,7 @@
       </div>
     {:else}
       <Button size="sm" disabled={busy} onclick={() => theme.install(shown.id)}>
-        {busy ? "Installing…" : "Install"}
+        {t(busy ? "themes.installing" : "themes.install")}
       </Button>
     {/if}
   </Card.Footer>

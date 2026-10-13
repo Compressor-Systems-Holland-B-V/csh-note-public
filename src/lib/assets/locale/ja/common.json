@@ -1,0 +1,37 @@
+{
+  "cancel": "キャンセル",
+  "create": "作成",
+  "rename": "名前の変更",
+  "delete": "削除",
+  "keep": "保持",
+  "replace": "置き換え",
+  "done": "完了",
+  "connect": "接続",
+  "settings": "設定",
+  "name": "名前",
+  "template": "テンプレート",
+  "default": "既定",
+  "fitWidth": "幅に合わせる",
+  "version": "バージョン {version}",
+  "mode": {
+    "edit": "編集",
+    "export": "エクスポート",
+    "themes": "テーマ"
+  },
+  "appearance": {
+    "toLight": "ライトモードに切り替える",
+    "toDark": "ダークモードに切り替える"
+  },
+  "assistant": {
+    "show": "アシスタントを表示",
+    "hide": "アシスタントを非表示"
+  },
+  "status": {
+    "more": "{problem}（他 {count} 件）",
+    "assistant": "アシスタント: {activity}",
+    "working": "処理中…",
+    "downloading": "パッケージ {name} をダウンロード中…",
+    "previewFailed": "プレビューを更新できませんでした: {reason}",
+    "desktopOnly": "デスクトップアプリでのみ動作します。"
+  }
+}

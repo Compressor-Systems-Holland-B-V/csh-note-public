@@ -2,7 +2,8 @@ import * as ipc from "$lib/ipc";
 import type { Project } from "$lib/ipc";
 import { messageOf } from "$lib/utils";
 import { Document, doc } from "./document.svelte";
-import { SettingsState, loadSettings, settings } from "./settings.svelte";
+import { SettingsState, settings } from "./settings.svelte";
+import { t } from "$lib/i18n.svelte";
 
 type Files = Pick<
   typeof ipc,
@@ -12,24 +13,14 @@ type Files = Pick<
 const saveDelayMs = 1000;
 const refreshDelayMs = 200;
 
-const sample = { project: "Getting started", notebook: "Notes", page: "Welcome" };
-
-const sampleText = `= Welcome to znote
-
-Type Typst on the left. The pages on the right update as you type.
-
-- *Bold*, _emphasis_ and \`code\`
-- Maths: $ sum_(k=1)^n k = (n(n+1)) / 2 $
-`;
-
 export const nameOf = (path: string) => path.slice(path.lastIndexOf("/") + 1);
 
 export const parentOf = (path: string) => path.slice(0, Math.max(0, path.lastIndexOf("/")));
 
 export function childOf(parent: string, name: string) {
   const trimmed = name.trim();
-  if (trimmed === "") throw new Error("Type a name first.");
-  if (trimmed.includes("/")) throw new Error("A name cannot contain a slash.");
+  if (trimmed === "") throw new Error(t("workspace.name.missing"));
+  if (trimmed.includes("/")) throw new Error(t("workspace.name.slash"));
   return parent === "" ? trimmed : `${parent}/${trimmed}`;
 }
 
@@ -55,7 +46,6 @@ export class Workspace {
   project = $state<string | null>(null);
   page = $state<string | null>(null);
   failure = $state<string | null>(null);
-  needsFolder = $state(false);
 
   private saved = $state("");
   private timer: ReturnType<typeof setTimeout> | undefined;
@@ -129,15 +119,15 @@ export class Workspace {
     await this.flush();
     this.tree = await this.files.openWorkspace(folder);
     this.settings.set("workspace", folder);
-    this.needsFolder = false;
     this.page = null;
     if (firstRun && this.tree.length === 0) {
-      const notebook = `${sample.project}/${sample.notebook}`;
-      const page = `${notebook}/${sample.page}`;
-      await this.files.createEntry(sample.project);
+      const project = t("workspace.sample.project");
+      const notebook = `${project}/${t("workspace.sample.notebook")}`;
+      const page = `${notebook}/${t("workspace.sample.page")}`;
+      await this.files.createEntry(project);
       await this.files.createEntry(notebook);
       await this.files.createEntry(page);
-      await this.files.writePage(page, sampleText);
+      await this.files.writePage(page, t("workspace.sample.text"));
       this.tree = await this.files.listTree();
     }
     const pages = pagesOf(this.tree);
@@ -202,35 +192,6 @@ export class Workspace {
 }
 
 export const workspace = new Workspace(ipc, doc, settings);
-
-export async function start() {
-  if (!ipc.inDesktopApp()) return;
-  let refreshTimer: ReturnType<typeof setTimeout> | undefined;
-  let warned = false;
-  await workspace.attempt(async () => {
-    await loadSettings();
-    await Promise.all([
-      ipc.onPageChanged((page) => workspace.attempt(() => workspace.reload(page))),
-      ipc.onWorkspaceChanged(() => {
-        clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(() => workspace.attempt(() => workspace.refresh()), refreshDelayMs);
-      }),
-      ipc.onClosing(async (keepOpen) => {
-        try {
-          await workspace.flush();
-        } catch (error) {
-          if (warned) return;
-          warned = true;
-          keepOpen();
-          workspace.failure = `Your latest changes could not be saved. Close again to leave without them. ${messageOf(error)}`;
-        }
-      }),
-    ]);
-    const folder = settings.values.workspace;
-    if (folder === null) workspace.needsFolder = true;
-    else await workspace.useFolder(folder, false);
-  });
-}
 
 if (import.meta.vitest) {
   const { test, expect, vi, beforeEach } = import.meta.vitest;

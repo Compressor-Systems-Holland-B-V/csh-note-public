@@ -1,0 +1,37 @@
+{
+  "cancel": "取消",
+  "create": "创建",
+  "rename": "重命名",
+  "delete": "删除",
+  "keep": "保留",
+  "replace": "替换",
+  "done": "完成",
+  "connect": "连接",
+  "settings": "设置",
+  "name": "名称",
+  "template": "模板",
+  "default": "默认",
+  "fitWidth": "适应宽度",
+  "version": "版本 {version}",
+  "mode": {
+    "edit": "编辑",
+    "export": "导出",
+    "themes": "主题"
+  },
+  "appearance": {
+    "toLight": "切换到浅色模式",
+    "toDark": "切换到深色模式"
+  },
+  "assistant": {
+    "show": "显示助手",
+    "hide": "隐藏助手"
+  },
+  "status": {
+    "more": "{problem}（还有 {count} 个）",
+    "assistant": "助手：{activity}",
+    "working": "正在处理…",
+    "downloading": "正在下载软件包 {name}…",
+    "previewFailed": "无法更新预览：{reason}",
+    "desktopOnly": "它仅在桌面应用中可用。"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "fontSize": "Tekststørrelse i editor",
+  "wrap": "Ombryd lange linjer",
+  "autosave": "Gem automatisk",
+  "autosaveHint": "Når denne er slået fra, skal du trykke på Ctrl+S for at gemme.",
+  "zoom": "Forhåndsvisningsstørrelse ved start",
+  "appearance": "Udseende",
+  "light": "Lys",
+  "dark": "Mørk",
+  "look": "Tema",
+  "lookHint": "Tilføj flere temaer på siden Temaer.",
+  "language": "Sprog",
+  "languageAuto": "Samme som denne computer",
+  "assistant": "Assistent",
+  "uses": "Bruger {provider}.",
+  "notConnected": "Ikke forbundet endnu.",
+  "providers": "Udbydere…",
+  "file": "Din znote-fil",
+  "switch": "Skift…"
+}

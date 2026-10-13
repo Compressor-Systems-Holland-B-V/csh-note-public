@@ -1,0 +1,38 @@
+{
+  "source": "Typst ソース",
+  "save": "保存",
+  "saveTitle": "このページを保存",
+  "load": "読み込む",
+  "loadTitle": "このページをファイルの内容で置き換えます",
+  "templateTitle": "このページにテンプレートを使う",
+  "locked": "アシスタントがこのページを書いています。完了したら再度編集できます。",
+  "review": {
+    "button": "変更を確認",
+    "show": "アシスタントの変更内容を確認し、それぞれ維持または取り消せます",
+    "hide": "アシスタントの変更内容を隠す",
+    "keep": "維持",
+    "keepTitle": "この変更を維持します",
+    "undo": "取り消す",
+    "undoTitle": "元の内容に戻します",
+    "keepAll": "すべて維持",
+    "keepAllTitle": "このページでアシスタントが変更した内容をすべて維持します",
+    "undoAll": "すべて取り消す",
+    "undoAllTitle": "アシスタントが変更する前の状態にこのページを戻します"
+  },
+  "problems": {
+    "label": "問題",
+    "error": "エラー: {message}",
+    "warning": "警告: {message}",
+    "none": "このページに問題はありません",
+    "count": "このページに {errors} 件のエラーと {warnings} 件の警告があります"
+  },
+  "preview": {
+    "refresh": "プレビューを更新",
+    "updating": "更新中…",
+    "fit": "全体表示",
+    "zoomOut": "縮小",
+    "zoomIn": "拡大",
+    "empty": "ここにページが表示されます。",
+    "page": "{number} ページ"
+  }
+}

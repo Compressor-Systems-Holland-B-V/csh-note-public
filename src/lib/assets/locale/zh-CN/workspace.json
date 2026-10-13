@@ -1,0 +1,78 @@
+{
+  "placeholder": "选择一个页面，或新建一个，开始写作。",
+  "pages": "页面",
+  "switchProject": "切换项目",
+  "noProject": "还没有项目",
+  "noNotebooks": "此项目还没有笔记本。",
+  "noProjects": "创建一个项目即可开始。",
+  "noTemplate": "无模板",
+  "assistantChanged": "助手修改了此页面",
+  "new": {
+    "project": "新建项目",
+    "notebook": "新建笔记本",
+    "page": "新建页面",
+    "pageIn": "在 {notebook} 中新建页面"
+  },
+  "rename": {
+    "project": "重命名项目",
+    "notebook": "重命名笔记本",
+    "page": "重命名页面"
+  },
+  "remove": {
+    "project": "删除项目“{name}”？",
+    "notebook": "删除笔记本“{name}”？",
+    "page": "删除页面“{name}”？",
+    "text": "它将连同其中的所有内容移到回收站。"
+  },
+  "menu": {
+    "newProject": "新建项目…",
+    "renameProject": "重命名此项目…",
+    "deleteProject": "删除此项目…",
+    "newPage": "新建页面…",
+    "importPage": "从文件导入页面…",
+    "rename": "重命名…",
+    "delete": "删除…",
+    "moveTo": "移动到 {notebook}"
+  },
+  "name": {
+    "missing": "请先输入名称。",
+    "slash": "名称中不能包含斜杠。"
+  },
+  "replacePage": {
+    "title": "用“{name}”替换此页面？",
+    "text": "此页面上的文本将被文件中的文本替换。"
+  },
+  "sample": {
+    "project": "入门",
+    "notebook": "笔记",
+    "page": "欢迎",
+    "text": "= 欢迎使用 znote\n\n在左侧输入 Typst。右侧的页面会随您的输入实时更新。\n\n- *粗体*、_强调_ 和 `代码`\n- 数学：$ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "空白文档",
+    "slides": "幻灯片"
+  },
+  "unsavedOnClose": "您的最新更改未能保存。再次关闭将不保存这些更改而退出。{reason}",
+  "file": {
+    "welcome": "欢迎使用 znote",
+    "title": "您的 znote 文件",
+    "text": "您的笔记保存在一个 znote 文件中。您写下的所有内容都会保存到其中，并且可以复制到另一台电脑上。",
+    "new": "新建 znote 文件…",
+    "open": "打开 znote 文件…",
+    "bringIn": "导入我已有的笔记…",
+    "recent": "以前打开过",
+    "forget": "从此列表中移除",
+    "forgetFile": "将 {name} 从此列表中移除",
+    "copy": "保存此 znote 文件的副本",
+    "switch": "打开或创建另一个 znote 文件",
+    "savedAt": "保存于 {time}",
+    "themesTitle": "要安装此文件中的主题吗？",
+    "themesText": "此 znote 文件带有这台电脑上还没有的主题。文件中的页面需要这些主题。",
+    "themesInstall": "安装并打开",
+    "fontsTitle": "部分字体不可用",
+    "fontsFallback": "当某个字体不可用时，znote 会改用其他字体。文字占用的空间可能变多或变少，因此换行位置和页数都可能发生变化。",
+    "fontsMissing": "此文件使用了以下字体，但这台电脑上没有：",
+    "fontsLeftOut": "以下字体不允许复制到 znote 文件中。在没有这些字体的电脑上会改用其他字体：",
+    "fontsSeen": "确定"
+  }
+}

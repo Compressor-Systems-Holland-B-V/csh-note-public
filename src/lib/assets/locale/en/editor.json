@@ -1,0 +1,38 @@
+{
+  "source": "Typst source",
+  "save": "Save",
+  "saveTitle": "Save this page",
+  "load": "Load",
+  "loadTitle": "Replace this page with the text of a file",
+  "templateTitle": "Use a template for this page",
+  "locked": "The assistant is writing this page. You can edit again when it is done.",
+  "review": {
+    "button": "Review changes",
+    "show": "See what the assistant changed, and keep or undo each part",
+    "hide": "Hide what the assistant changed",
+    "keep": "Keep",
+    "keepTitle": "Keep this change",
+    "undo": "Undo",
+    "undoTitle": "Put back what was here before",
+    "keepAll": "Keep all",
+    "keepAllTitle": "Keep everything the assistant changed on this page",
+    "undoAll": "Undo all",
+    "undoAllTitle": "Put this page back to how it was before the assistant changed it"
+  },
+  "problems": {
+    "label": "Problems",
+    "error": "Error: {message}",
+    "warning": "Warning: {message}",
+    "none": "No problems on this page",
+    "count": "{errors} errors and {warnings} warnings on this page"
+  },
+  "preview": {
+    "refresh": "Refresh the preview",
+    "updating": "Updating…",
+    "fit": "Fit",
+    "zoomOut": "Zoom out",
+    "zoomIn": "Zoom in",
+    "empty": "Your pages will show here.",
+    "page": "Page {number}"
+  }
+}

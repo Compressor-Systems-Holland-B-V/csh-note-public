@@ -1,0 +1,38 @@
+{
+  "source": "Typst-kilde",
+  "save": "Gem",
+  "saveTitle": "Gem denne side",
+  "load": "Indlæs",
+  "loadTitle": "Erstat denne side med teksten fra en fil",
+  "templateTitle": "Brug en skabelon til denne side",
+  "locked": "Assistenten skriver på denne side. Du kan redigere igen, når den er færdig.",
+  "review": {
+    "button": "Gennemse ændringer",
+    "show": "Se hvad assistenten ændrede, og behold eller fortryd hver del",
+    "hide": "Skjul hvad assistenten ændrede",
+    "keep": "Behold",
+    "keepTitle": "Behold denne ændring",
+    "undo": "Fortryd",
+    "undoTitle": "Gendan det, der var her før",
+    "keepAll": "Behold alle",
+    "keepAllTitle": "Behold alt, hvad assistenten ændrede på denne side",
+    "undoAll": "Fortryd alle",
+    "undoAllTitle": "Gendan denne side til hvordan den var, før assistenten ændrede den"
+  },
+  "problems": {
+    "label": "Problemer",
+    "error": "Fejl: {message}",
+    "warning": "Advarsel: {message}",
+    "none": "Ingen problemer på denne side",
+    "count": "{errors} fejl og {warnings} advarsler på denne side"
+  },
+  "preview": {
+    "refresh": "Opdater forhåndsvisningen",
+    "updating": "Opdaterer…",
+    "fit": "Tilpas",
+    "zoomOut": "Zoom ud",
+    "zoomIn": "Zoom ind",
+    "empty": "Dine sider vil blive vist her.",
+    "page": "Side {number}"
+  }
+}

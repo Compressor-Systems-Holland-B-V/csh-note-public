@@ -1,0 +1,38 @@
+{
+  "source": "Typst-bron",
+  "save": "Opslaan",
+  "saveTitle": "Deze pagina opslaan",
+  "load": "Laden",
+  "loadTitle": "Deze pagina vervangen door de tekst van een bestand",
+  "templateTitle": "Een sjabloon gebruiken voor deze pagina",
+  "locked": "De assistent schrijft deze pagina. Je kunt weer bewerken wanneer hij klaar is.",
+  "review": {
+    "button": "Wijzigingen bekijken",
+    "show": "Bekijk wat de assistent heeft gewijzigd en behoud elk deel of maak het ongedaan",
+    "hide": "Verbergen wat de assistent heeft gewijzigd",
+    "keep": "Behouden",
+    "keepTitle": "Deze wijziging behouden",
+    "undo": "Ongedaan maken",
+    "undoTitle": "Terugzetten wat hier eerst stond",
+    "keepAll": "Alles behouden",
+    "keepAllTitle": "Alles behouden wat de assistent op deze pagina heeft gewijzigd",
+    "undoAll": "Alles ongedaan maken",
+    "undoAllTitle": "Deze pagina terugzetten naar hoe ze was voordat de assistent haar wijzigde"
+  },
+  "problems": {
+    "label": "Problemen",
+    "error": "Fout: {message}",
+    "warning": "Waarschuwing: {message}",
+    "none": "Geen problemen op deze pagina",
+    "count": "{errors} fouten en {warnings} waarschuwingen op deze pagina"
+  },
+  "preview": {
+    "refresh": "Het voorbeeld vernieuwen",
+    "updating": "Bijwerken…",
+    "fit": "Passend",
+    "zoomOut": "Uitzoomen",
+    "zoomIn": "Inzoomen",
+    "empty": "Je pagina's verschijnen hier.",
+    "page": "Pagina {number}"
+  }
+}

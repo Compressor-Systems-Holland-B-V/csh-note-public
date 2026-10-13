@@ -1,0 +1,38 @@
+{
+  "source": "Codice sorgente Typst",
+  "save": "Salva",
+  "saveTitle": "Salva questa pagina",
+  "load": "Carica",
+  "loadTitle": "Sostituisci questa pagina con il testo di un file",
+  "templateTitle": "Usa un modello per questa pagina",
+  "locked": "L'assistente sta scrivendo questa pagina. Potrai modificarla di nuovo al termine.",
+  "review": {
+    "button": "Revisiona modifiche",
+    "show": "Vedi cosa ha modificato l'assistente e decidi se mantenere o annullare ogni parte",
+    "hide": "Nascondi le modifiche dell'assistente",
+    "keep": "Mantieni",
+    "keepTitle": "Mantieni questa modifica",
+    "undo": "Annulla",
+    "undoTitle": "Ripristina ciò che c'era prima",
+    "keepAll": "Mantieni tutto",
+    "keepAllTitle": "Mantieni tutte le modifiche apportate dall'assistente in questa pagina",
+    "undoAll": "Annulla tutto",
+    "undoAllTitle": "Ripristina la pagina com'era prima delle modifiche dell'assistente"
+  },
+  "problems": {
+    "label": "Problemi",
+    "error": "Errore: {message}",
+    "warning": "Avviso: {message}",
+    "none": "Nessun problema in questa pagina",
+    "count": "{errors} errori e {warnings} avvisi in questa pagina"
+  },
+  "preview": {
+    "refresh": "Aggiorna l'anteprima",
+    "updating": "Aggiornamento in corso…",
+    "fit": "Adatta",
+    "zoomOut": "Riduci zoom",
+    "zoomIn": "Ingrandisci zoom",
+    "empty": "Le tue pagine verranno visualizzate qui.",
+    "page": "Pagina {number}"
+  }
+}

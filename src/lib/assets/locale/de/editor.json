@@ -1,0 +1,38 @@
+{
+  "source": "Typst-Quelltext",
+  "save": "Speichern",
+  "saveTitle": "Diese Seite speichern",
+  "load": "Laden",
+  "loadTitle": "Diese Seite durch den Text einer Datei ersetzen",
+  "templateTitle": "Eine Vorlage für diese Seite verwenden",
+  "locked": "Der Assistent schreibt gerade an dieser Seite. Sie können sie wieder bearbeiten, sobald er fertig ist.",
+  "review": {
+    "button": "Änderungen überprüfen",
+    "show": "Sehen Sie, was der Assistent geändert hat, und behalten oder verwerfen Sie die einzelnen Teile",
+    "hide": "Änderungen des Assistenten ausblenden",
+    "keep": "Behalten",
+    "keepTitle": "Diese Änderung behalten",
+    "undo": "Rückgängig",
+    "undoTitle": "Den vorherigen Zustand wiederherstellen",
+    "keepAll": "Alle behalten",
+    "keepAllTitle": "Alles behalten, was der Assistent auf dieser Seite geändert hat",
+    "undoAll": "Alle rückgängig machen",
+    "undoAllTitle": "Diese Seite auf den Zustand vor den Änderungen des Assistenten zurücksetzen"
+  },
+  "problems": {
+    "label": "Probleme",
+    "error": "Fehler: {message}",
+    "warning": "Warnung: {message}",
+    "none": "Keine Probleme auf dieser Seite",
+    "count": "{errors} Fehler und {warnings} Warnungen auf dieser Seite"
+  },
+  "preview": {
+    "refresh": "Vorschau aktualisieren",
+    "updating": "Aktualisiere…",
+    "fit": "Anpassen",
+    "zoomOut": "Herauszoomen",
+    "zoomIn": "Hineinzoomen",
+    "empty": "Ihre Seiten werden hier angezeigt.",
+    "page": "Seite {number}"
+  }
+}

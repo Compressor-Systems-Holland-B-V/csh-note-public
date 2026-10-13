@@ -1,0 +1,18 @@
+{
+  "title": "Exportar",
+  "format": "Formato",
+  "pdfHint": "Se ve exactamente igual que en la vista previa.",
+  "pptxHint": "Una diapositiva por página. El texto permanece editable; todo lo demás es una imagen.",
+  "blocked": {
+    "noPage": "Elige una página para exportar.",
+    "problems": "Esta página tiene problemas. Vuelve a Editar y corrígelos antes de exportar.",
+    "empty": "Esta página aún no tiene nada que exportar."
+  },
+  "run": "Exportar…",
+  "running": "Exportando…",
+  "runningPage": "Exportando tu página…",
+  "savedTo": "Guardado en {path}",
+  "missingFonts": "PowerPoint sustituirá estas fuentes: {fonts}",
+  "openFile": "Abrir archivo",
+  "showInFolder": "Mostrar en carpeta"
+}

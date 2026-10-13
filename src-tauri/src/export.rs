@@ -73,6 +73,10 @@ fn short(bytes: &[u8], at: usize) -> Option<u16> {
     Some(u16::from_be_bytes(bytes.get(at..at + 2)?.try_into().ok()?))
 }
 
+pub fn restricted(font: &Font) -> bool {
+    table(font, b"OS/2").and_then(|os2| short(os2, 8)).is_some_and(|permissions| permissions & EMBEDDING_RESTRICTED != 0)
+}
+
 fn name(font: &FontInstance, id: u16) -> Option<String> {
     font.ttf().names().into_iter().filter(|name| name.name_id == id).find_map(|name| name.to_string())
 }

@@ -1,0 +1,31 @@
+{
+  "title": "Temaer",
+  "look": "Udseende",
+  "import": "Importér en temafil…",
+  "intro": "Et tema kan ændre, hvordan znote ser ud, tilføje sidetabeler eller begge dele. Kontakterne på et tema afgør, om dets udseende og skabeloner tilbydes; vælg det udseende, der skal bruges, fra listen ovenfor.",
+  "storeFailure": "{reason} Temaer, du allerede har installeret, vises nedenfor.",
+  "search": "Søg efter temaer",
+  "installed": "Installeret",
+  "none": "Ingen temaer matcher.",
+  "kind": {
+    "look": "Kun udseende",
+    "both": "Udseende og skabeloner",
+    "templates": "Kun skabeloner"
+  },
+  "contents": {
+    "look": "Ændrer udseendet",
+    "both": "Ændrer udseendet og tilføjer sidetabeler",
+    "templates": "Tilføjer sidetabeler"
+  },
+  "version": "Version {version}",
+  "lookSwitch": "Udseende",
+  "lookSwitchTitle": "Vis dette tema på listen over udseender",
+  "templatesSwitch": "Skabeloner",
+  "templatesSwitchTitle": "Vis dette temas skabeloner, når du vælger en skabelon",
+  "install": "Installér",
+  "installing": "Installerer…",
+  "update": "Opdatér",
+  "updating": "Opdaterer…",
+  "remove": "Fjern",
+  "removeTheme": "Fjern temaet {name}"
+}

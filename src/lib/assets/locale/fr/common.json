@@ -1,0 +1,37 @@
+{
+  "cancel": "Annuler",
+  "create": "Créer",
+  "rename": "Renommer",
+  "delete": "Supprimer",
+  "keep": "Conserver",
+  "replace": "Remplacer",
+  "done": "Terminé",
+  "connect": "Connecter",
+  "settings": "Paramètres",
+  "name": "Nom",
+  "template": "Modèle",
+  "default": "Par défaut",
+  "fitWidth": "Ajuster à la largeur",
+  "version": "Version {version}",
+  "mode": {
+    "edit": "Modifier",
+    "export": "Exporter",
+    "themes": "Thèmes"
+  },
+  "appearance": {
+    "toLight": "Passer au mode clair",
+    "toDark": "Passer au mode sombre"
+  },
+  "assistant": {
+    "show": "Afficher l'assistant",
+    "hide": "Masquer l'assistant"
+  },
+  "status": {
+    "more": "{problem} (et {count} autres)",
+    "assistant": "Assistant : {activity}",
+    "working": "Travail en cours…",
+    "downloading": "Téléchargement du paquet {name}…",
+    "previewFailed": "La prévisualisation n'a pas pu être mise à jour : {reason}",
+    "desktopOnly": "cela ne fonctionne que dans l'application de bureau."
+  }
+}

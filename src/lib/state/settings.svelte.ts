@@ -1,19 +1,26 @@
+import { storedPresets } from "$lib/assistant";
+import type { Preset } from "$lib/assistant";
 import { readSettings, writeSetting } from "$lib/ipc";
+import { messageOf } from "$lib/utils";
 
 export type Settings = {
   workspace: string | null;
+  project: string | null;
+  recentProjects: string[];
   lastPage: string | null;
   fontSize: number;
   wordWrap: boolean;
   autosave: boolean;
   zoom: number | null;
   theme: "light" | "dark";
+  language: string | null;
   uiTheme: string | null;
   hiddenTemplates: string[];
   hiddenLooks: string[];
-  assistantModel: string | null;
-  assistantEffort: string | null;
-  confirmDeletes: boolean;
+  assistantProvider: string | null;
+  assistantPreset: string | null;
+  assistantModels: Record<string, string>;
+  assistantPresets: Record<string, Preset[]>;
 };
 
 type Persist = (key: string, value: unknown) => Promise<void>;
@@ -22,18 +29,22 @@ export const fontSizes = { min: 8, max: 32 };
 
 export const defaults: Settings = {
   workspace: null,
+  project: null,
+  recentProjects: [],
   lastPage: null,
   fontSize: 14,
   wordWrap: true,
   autosave: true,
   zoom: null,
   theme: "light",
+  language: null,
   uiTheme: null,
   hiddenTemplates: [],
   hiddenLooks: [],
-  assistantModel: null,
-  assistantEffort: null,
-  confirmDeletes: true,
+  assistantProvider: null,
+  assistantPreset: null,
+  assistantModels: {},
+  assistantPresets: {},
 };
 
 export function merged(stored: Record<string, unknown>, osPrefersDark: boolean): Settings {
@@ -41,8 +52,12 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
   const flag = (value: unknown, fallback: boolean) => (typeof value === "boolean" ? value : fallback);
   const { fontSize, zoom, theme } = stored;
   const ids = (value: unknown) => (Array.isArray(value) ? value.filter((id) => typeof id === "string") : []);
+  const names = (value: unknown) =>
+    Object.fromEntries(Object.entries(typeof value === "object" && value !== null ? value : {}).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
   return {
     workspace: text(stored.workspace),
+    project: text(stored.project),
+    recentProjects: ids(stored.recentProjects),
     lastPage: text(stored.lastPage),
     fontSize:
       typeof fontSize === "number" && fontSize >= fontSizes.min && fontSize <= fontSizes.max
@@ -52,12 +67,14 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     autosave: flag(stored.autosave, defaults.autosave),
     zoom: typeof zoom === "number" && zoom > 0 ? zoom : null,
     theme: theme === "light" || theme === "dark" ? theme : osPrefersDark ? "dark" : "light",
+    language: text(stored.language),
     uiTheme: text(stored.uiTheme),
     hiddenTemplates: ids(stored.hiddenTemplates),
     hiddenLooks: ids(stored.hiddenLooks),
-    assistantModel: text(stored.assistantModel),
-    assistantEffort: text(stored.assistantEffort),
-    confirmDeletes: flag(stored.confirmDeletes, defaults.confirmDeletes),
+    assistantProvider: text(stored.assistantProvider),
+    assistantPreset: text(stored.assistantPreset),
+    assistantModels: names(stored.assistantModels),
+    assistantPresets: storedPresets(stored.assistantPresets),
   };
 }
 
@@ -78,7 +95,7 @@ export class SettingsState {
     this.values[key] = value;
     this.persist(key, value).then(
       () => (this.failure = null),
-      (error: unknown) => (this.failure = String(error)),
+      (error: unknown) => (this.failure = messageOf(error)),
     );
   }
 }
@@ -96,6 +113,7 @@ if (import.meta.vitest) {
     expect(merged(stored, true)).toEqual({ ...defaults, ...stored });
     expect(merged({ fontSize: "huge", wordWrap: 1, zoom: -1, theme: "pink", workspace: 7, uiTheme: 3, hiddenTemplates: "all", hiddenLooks: [7] }, false)).toEqual(defaults);
     expect(merged({ fontSize: 400 }, false).fontSize).toBe(defaults.fontSize);
+    expect(merged({ assistantModels: { custom: "llama", claude: 7 }, assistantProvider: "custom" }, false)).toMatchObject({ assistantModels: { custom: "llama" }, assistantProvider: "custom" });
   });
 
   test("with no saved theme the OS decides", () => {

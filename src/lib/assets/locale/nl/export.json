@@ -1,0 +1,18 @@
+{
+  "title": "Exporteren",
+  "format": "Indeling",
+  "pdfHint": "Ziet er precies zo uit als het voorbeeld.",
+  "pptxHint": "Eén dia per pagina. Tekst blijft bewerkbaar; al het andere is een afbeelding.",
+  "blocked": {
+    "noPage": "Kies een pagina om te exporteren.",
+    "problems": "Deze pagina heeft problemen. Ga terug naar Bewerken en los ze op voordat je exporteert.",
+    "empty": "Deze pagina heeft nog niets om te exporteren."
+  },
+  "run": "Exporteren…",
+  "running": "Exporteren…",
+  "runningPage": "Je pagina exporteren…",
+  "savedTo": "Opgeslagen in {path}",
+  "missingFonts": "PowerPoint vervangt deze lettertypen: {fonts}",
+  "openFile": "Bestand openen",
+  "showInFolder": "In map weergeven"
+}

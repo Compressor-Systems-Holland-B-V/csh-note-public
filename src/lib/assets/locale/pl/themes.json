@@ -1,0 +1,31 @@
+{
+  "title": "Motywy",
+  "look": "Wygląd",
+  "import": "Importuj plik motywu…",
+  "intro": "Motyw może zmienić wygląd znote, dodać szablony stron lub jedno i drugie. Przełączniki motywu decydują o tym, czy jego wygląd i szablony będą dostępne; wybierz wygląd z powyższej listy.",
+  "storeFailure": "{reason} Zainstalowane motywy znajdują się poniżej.",
+  "search": "Szukaj motywów",
+  "installed": "Zainstalowane",
+  "none": "Brak pasujących motywów.",
+  "kind": {
+    "look": "Tylko wygląd",
+    "both": "Wygląd i szablony",
+    "templates": "Tylko szablony"
+  },
+  "contents": {
+    "look": "Zmienia wygląd",
+    "both": "Zmienia wygląd i dodaje szablony stron",
+    "templates": "Dodaje szablony stron"
+  },
+  "version": "Wersja {version}",
+  "lookSwitch": "Wygląd",
+  "lookSwitchTitle": "Pokaż ten motyw na liście wyglądów",
+  "templatesSwitch": "Szablony",
+  "templatesSwitchTitle": "Pokaż szablony tego motywu podczas wyboru szablonu",
+  "install": "Zainstaluj",
+  "installing": "Instalowanie…",
+  "update": "Aktualizuj",
+  "updating": "Aktualizowanie…",
+  "remove": "Usuń",
+  "removeTheme": "Usuń motyw {name}"
+}

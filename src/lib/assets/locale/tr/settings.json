@@ -1,0 +1,20 @@
+{
+  "fontSize": "Düzenleyici metin boyutu",
+  "wrap": "Uzun satırları kaydır",
+  "autosave": "Otomatik kaydet",
+  "autosaveHint": "Bu kapalıyken, kaydetmek için Ctrl+S tuşlarına basın.",
+  "zoom": "Başlangıçta önizleme boyutu",
+  "appearance": "Görünüm",
+  "light": "Açık",
+  "dark": "Koyu",
+  "look": "Tema",
+  "lookHint": "Temalar sayfasından daha fazla tema ekleyin.",
+  "language": "Dil",
+  "languageAuto": "Bu bilgisayarla aynı",
+  "assistant": "Asistan",
+  "uses": "{provider} kullanılıyor.",
+  "notConnected": "Henüz bağlanmadı.",
+  "providers": "Sağlayıcılar…",
+  "file": "znote dosyanız",
+  "switch": "Değiştir…"
+}

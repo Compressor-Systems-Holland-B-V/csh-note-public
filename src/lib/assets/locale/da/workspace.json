@@ -1,0 +1,78 @@
+{
+  "placeholder": "Vælg en side, eller opret en, for at begynde at skrive.",
+  "pages": "Sider",
+  "switchProject": "Skift projekt",
+  "noProject": "Intet projekt endnu",
+  "noNotebooks": "Dette projekt har ingen notesbøger endnu.",
+  "noProjects": "Opret et projekt for at komme i gang.",
+  "noTemplate": "Ingen skabelon",
+  "assistantChanged": "Assistenten ændrede denne side",
+  "new": {
+    "project": "Nyt projekt",
+    "notebook": "Ny notesbog",
+    "page": "Ny side",
+    "pageIn": "Ny side i {notebook}"
+  },
+  "rename": {
+    "project": "Omdøb projekt",
+    "notebook": "Omdøb notesbog",
+    "page": "Omdøb side"
+  },
+  "remove": {
+    "project": "Slet projektet ”{name}”?",
+    "notebook": "Slet notesbogen ”{name}”?",
+    "page": "Slet siden ”{name}”?",
+    "text": "Den flyttes til papirkurven sammen med alt dens indhold."
+  },
+  "menu": {
+    "newProject": "Nyt projekt…",
+    "renameProject": "Omdøb dette projekt…",
+    "deleteProject": "Slet dette projekt…",
+    "newPage": "Ny side…",
+    "importPage": "Importér en side fra en fil…",
+    "rename": "Omdøb…",
+    "delete": "Slet…",
+    "moveTo": "Flyt til {notebook}"
+  },
+  "name": {
+    "missing": "Indtast et navn først.",
+    "slash": "Et navn må ikke indeholde en skråstreg."
+  },
+  "replacePage": {
+    "title": "Erstat denne side med ”{name}”?",
+    "text": "Teksten på denne side erstattes af tekst fra filen."
+  },
+  "sample": {
+    "project": "Kom i gang",
+    "notebook": "Noter",
+    "page": "Velkommen",
+    "text": "= Velkommen til znote\n\nSkriv Typst til venstre. Siderne til højre opdateres, mens du skriver.\n\n- *Fed*, _fremhævet_ og `kode`\n- Matematik: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Almindeligt dokument",
+    "slides": "Slides"
+  },
+  "unsavedOnClose": "Dine seneste ændringer kunne ikke gemmes. Luk igen for at forlade uden dem. {reason}",
+  "file": {
+    "welcome": "Velkommen til znote",
+    "title": "Dine znote-filer",
+    "text": "Dine noter ligger i én znote-fil. Alt, hvad du skriver, gemmes i den, og du kan kopiere den til en anden computer.",
+    "new": "Ny znote-fil…",
+    "open": "Åbn en znote-fil…",
+    "bringIn": "Hent de noter, jeg allerede har…",
+    "recent": "Åbnet tidligere",
+    "forget": "Fjern fra denne liste",
+    "forgetFile": "Fjern {name} fra denne liste",
+    "copy": "Gem en kopi af denne znote-fil",
+    "switch": "Åbn eller opret en anden znote-fil",
+    "savedAt": "Gemt kl. {time}",
+    "themesTitle": "Installer temaerne i denne fil?",
+    "themesText": "Denne znote-fil medbringer temaer, som endnu ikke findes på denne computer. Siderne har brug for dem.",
+    "themesInstall": "Installer og åbn",
+    "fontsTitle": "Nogle skrifttyper er ikke tilgængelige",
+    "fontsFallback": "Når en skrifttype ikke er tilgængelig, bruger znote en anden. Teksten kan så fylde mere eller mindre, så linjer kan blive brudt andre steder, og antallet af sider kan ændre sig.",
+    "fontsMissing": "Disse skrifttyper bruges i denne fil, men findes ikke på denne computer:",
+    "fontsLeftOut": "Disse skrifttyper må ikke kopieres ind i en znote-fil. På en computer uden dem bruges en anden skrifttype:",
+    "fontsSeen": "OK"
+  }
+}

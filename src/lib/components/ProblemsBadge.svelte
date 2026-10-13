@@ -5,13 +5,14 @@
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import type { Diagnostic } from "$lib/ipc";
+  import { t } from "$lib/i18n.svelte";
 
   let { diagnostics }: { diagnostics: Diagnostic[] } = $props();
 
   const errors = $derived(diagnostics.filter((diagnostic) => diagnostic.severity === "error").length);
   const warnings = $derived(diagnostics.length - errors);
   const label = $derived(
-    diagnostics.length === 0 ? "No problems on this page" : `${errors} errors and ${warnings} warnings on this page`,
+    diagnostics.length === 0 ? t("editor.problems.none") : t("editor.problems.count", { errors, warnings }),
   );
 </script>
 

@@ -1,0 +1,78 @@
+{
+  "placeholder": "Wybierz stronę lub utwórz nową, aby rozpocząć pisanie.",
+  "pages": "Strony",
+  "switchProject": "Przełącz projekt",
+  "noProject": "Brak projektu",
+  "noNotebooks": "Ten projekt nie ma jeszcze żadnych notatników.",
+  "noProjects": "Utwórz projekt, aby rozpocząć.",
+  "noTemplate": "Brak szablonu",
+  "assistantChanged": "Asystent zmienił tę stronę",
+  "new": {
+    "project": "Nowy projekt",
+    "notebook": "Nowy notatnik",
+    "page": "Nowa strona",
+    "pageIn": "Nowa strona w {notebook}"
+  },
+  "rename": {
+    "project": "Zmień nazwę projektu",
+    "notebook": "Zmień nazwę notatnika",
+    "page": "Zmień nazwę strony"
+  },
+  "remove": {
+    "project": "Usunąć projekt „{name}”?",
+    "notebook": "Usunąć notatnik „{name}”?",
+    "page": "Usunąć stronę „{name}”?",
+    "text": "Zostanie przeniesiona do Kosza wraz z całą zawartością."
+  },
+  "menu": {
+    "newProject": "Nowy projekt…",
+    "renameProject": "Zmień nazwę tego projektu…",
+    "deleteProject": "Usuń ten projekt…",
+    "newPage": "Nowa strona…",
+    "importPage": "Importuj stronę z pliku…",
+    "rename": "Zmień nazwę…",
+    "delete": "Usuń…",
+    "moveTo": "Przenieś do {notebook}"
+  },
+  "name": {
+    "missing": "Najpierw wpisz nazwę.",
+    "slash": "Nazwa nie może zawierać ukośnika."
+  },
+  "replacePage": {
+    "title": "Zastąpić tę stronę stroną „{name}”?",
+    "text": "Tekst na tej stronie zostanie zastąpiony tekstem z pliku."
+  },
+  "sample": {
+    "project": "Pierwsze kroki",
+    "notebook": "Notatki",
+    "page": "Witamy",
+    "text": "= Witaj w znote\n\nWpisz Typst po lewej stronie. Strony po prawej aktualizują się w miarę pisania.\n\n- *Pogrubienie*, _kursywa_ i `kod`\n- Matematyka: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Zwykły dokument",
+    "slides": "Slajdy"
+  },
+  "unsavedOnClose": "Nie udało się zapisać ostatnich zmian. Zamknij ponownie, aby wyjść bez nich. {reason}",
+  "file": {
+    "welcome": "Witaj w znote",
+    "title": "Twoje pliki znote",
+    "text": "Twoje notatki znajdują się w jednym pliku znote. Wszystko, co napiszesz, jest w nim zapisywane i możesz go skopiować na inny komputer.",
+    "new": "Nowy plik znote…",
+    "open": "Otwórz plik znote…",
+    "bringIn": "Zaimportuj notatki, które już mam…",
+    "recent": "Otwierane wcześniej",
+    "forget": "Usuń z tej listy",
+    "forgetFile": "Usuń {name} z tej listy",
+    "copy": "Zapisz kopię tego pliku znote",
+    "switch": "Otwórz lub utwórz inny plik znote",
+    "savedAt": "Zapisano o {time}",
+    "themesTitle": "Zainstalować motywy z tego pliku?",
+    "themesText": "Ten plik znote zawiera motywy, których nie ma jeszcze na tym komputerze. Jego strony ich potrzebują.",
+    "themesInstall": "Zainstaluj i otwórz",
+    "fontsTitle": "Niektóre czcionki są niedostępne",
+    "fontsFallback": "Gdy czcionka jest niedostępna, znote używa innej. Tekst może wtedy zająć więcej lub mniej miejsca, więc wiersze mogą łamać się w innych miejscach, a liczba stron może się zmienić.",
+    "fontsMissing": "Te czcionki są używane w tym pliku, ale nie ma ich na tym komputerze:",
+    "fontsLeftOut": "Tych czcionek nie wolno kopiować do pliku znote. Na komputerze, który ich nie ma, używana jest inna czcionka:",
+    "fontsSeen": "OK"
+  }
+}

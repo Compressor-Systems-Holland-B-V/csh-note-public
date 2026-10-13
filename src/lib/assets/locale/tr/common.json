@@ -1,0 +1,37 @@
+{
+  "cancel": "İptal",
+  "create": "Oluştur",
+  "rename": "Yeniden adlandır",
+  "delete": "Sil",
+  "keep": "Sakla",
+  "replace": "Değiştir",
+  "done": "Bitti",
+  "connect": "Bağlan",
+  "settings": "Ayarlar",
+  "name": "Ad",
+  "template": "Şablon",
+  "default": "Varsayılan",
+  "fitWidth": "Genişliğe sığdır",
+  "version": "Sürüm {version}",
+  "mode": {
+    "edit": "Düzenle",
+    "export": "Dışa aktar",
+    "themes": "Temalar"
+  },
+  "appearance": {
+    "toLight": "Açık moda geç",
+    "toDark": "Koyu moda geç"
+  },
+  "assistant": {
+    "show": "Asistanı göster",
+    "hide": "Asistanı gizle"
+  },
+  "status": {
+    "more": "{problem} (ve {count} tane daha)",
+    "assistant": "Asistan: {activity}",
+    "working": "Çalışıyor…",
+    "downloading": "{name} paketi indiriliyor…",
+    "previewFailed": "Önizleme güncellenemedi: {reason}",
+    "desktopOnly": "yalnızca masaüstü uygulamasında çalışır."
+  }
+}

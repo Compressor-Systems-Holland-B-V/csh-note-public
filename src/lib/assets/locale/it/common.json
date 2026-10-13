@@ -1,0 +1,37 @@
+{
+  "cancel": "Annulla",
+  "create": "Crea",
+  "rename": "Rinomina",
+  "delete": "Elimina",
+  "keep": "Mantieni",
+  "replace": "Sostituisci",
+  "done": "Fine",
+  "connect": "Connetti",
+  "settings": "Impostazioni",
+  "name": "Nome",
+  "template": "Modello",
+  "default": "Predefinito",
+  "fitWidth": "Adatta alla larghezza",
+  "version": "Versione {version}",
+  "mode": {
+    "edit": "Modifica",
+    "export": "Esporta",
+    "themes": "Temi"
+  },
+  "appearance": {
+    "toLight": "Passa alla modalità chiara",
+    "toDark": "Passa alla modalità scura"
+  },
+  "assistant": {
+    "show": "Mostra l'assistente",
+    "hide": "Nascondi l'assistente"
+  },
+  "status": {
+    "more": "{problem} (e altri {count})",
+    "assistant": "Assistente: {activity}",
+    "working": "In corso…",
+    "downloading": "Download del pacchetto {name} in corso…",
+    "previewFailed": "Impossibile aggiornare l'anteprima: {reason}",
+    "desktopOnly": "funziona solo nell'app desktop."
+  }
+}

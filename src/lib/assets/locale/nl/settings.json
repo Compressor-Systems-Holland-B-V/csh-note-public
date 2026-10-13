@@ -1,0 +1,20 @@
+{
+  "fontSize": "Tekstgrootte in de editor",
+  "wrap": "Lange regels afbreken",
+  "autosave": "Automatisch opslaan",
+  "autosaveHint": "Als dit uit staat, druk je op Ctrl+S om op te slaan.",
+  "zoom": "Voorbeeldgrootte bij het starten",
+  "appearance": "Weergave",
+  "light": "Licht",
+  "dark": "Donker",
+  "look": "Uiterlijk",
+  "lookHint": "Voeg meer uiterlijken toe op de pagina Thema's.",
+  "language": "Taal",
+  "languageAuto": "Zelfde als deze computer",
+  "assistant": "Assistent",
+  "uses": "Gebruikt {provider}.",
+  "notConnected": "Nog niet verbonden.",
+  "providers": "Providers…",
+  "file": "Je znote-bestand",
+  "switch": "Wisselen…"
+}

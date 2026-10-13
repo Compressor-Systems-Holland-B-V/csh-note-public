@@ -1,0 +1,18 @@
+{
+  "title": "导出",
+  "format": "格式",
+  "pdfHint": "与预览完全一致。",
+  "pptxHint": "每页一张幻灯片。文本保持可编辑，其余内容为图片。",
+  "blocked": {
+    "noPage": "请选择要导出的页面。",
+    "problems": "此页面存在问题。请返回编辑界面修复后再导出。",
+    "empty": "此页面暂无可导出的内容。"
+  },
+  "run": "导出…",
+  "running": "正在导出…",
+  "runningPage": "正在导出您的页面…",
+  "savedTo": "已保存到 {path}",
+  "missingFonts": "PowerPoint 将替换以下字体：{fonts}",
+  "openFile": "打开文件",
+  "showInFolder": "在文件夹中显示"
+}

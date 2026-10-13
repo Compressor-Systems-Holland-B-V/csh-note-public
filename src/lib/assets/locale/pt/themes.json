@@ -1,0 +1,31 @@
+{
+  "title": "Temas",
+  "look": "Aspeto",
+  "import": "Importar um ficheiro de tema…",
+  "intro": "Um tema pode alterar o aspeto do znote, adicionar modelos de página, ou ambos. Os interruptores num tema decidem se o seu aspeto e os seus modelos são disponibilizados; escolha o aspeto a utilizar na lista acima.",
+  "storeFailure": "{reason} Os temas que já instalou são apresentados abaixo.",
+  "search": "Pesquisar temas",
+  "installed": "Instalados",
+  "none": "Nenhum tema corresponde.",
+  "kind": {
+    "look": "Apenas aspeto",
+    "both": "Aspeto e modelos",
+    "templates": "Apenas modelos"
+  },
+  "contents": {
+    "look": "Altera o aspeto",
+    "both": "Altera o aspeto e adiciona modelos de página",
+    "templates": "Adiciona modelos de página"
+  },
+  "version": "Versão {version}",
+  "lookSwitch": "Aspeto",
+  "lookSwitchTitle": "Mostrar este tema na lista de aspetos",
+  "templatesSwitch": "Modelos",
+  "templatesSwitchTitle": "Mostrar os modelos deste tema quando escolher um modelo",
+  "install": "Instalar",
+  "installing": "A instalar…",
+  "update": "Atualizar",
+  "updating": "A atualizar…",
+  "remove": "Remover",
+  "removeTheme": "Remover o tema {name}"
+}

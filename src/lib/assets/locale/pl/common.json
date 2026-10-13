@@ -1,0 +1,37 @@
+{
+  "cancel": "Anuluj",
+  "create": "Utwórz",
+  "rename": "Zmień nazwę",
+  "delete": "Usuń",
+  "keep": "Zachowaj",
+  "replace": "Zastąp",
+  "done": "Gotowe",
+  "connect": "Połącz",
+  "settings": "Ustawienia",
+  "name": "Nazwa",
+  "template": "Szablon",
+  "default": "Domyślne",
+  "fitWidth": "Dopasuj do szerokości",
+  "version": "Wersja {version}",
+  "mode": {
+    "edit": "Edycja",
+    "export": "Eksportuj",
+    "themes": "Motywy"
+  },
+  "appearance": {
+    "toLight": "Przełącz na tryb jasny",
+    "toDark": "Przełącz na tryb ciemny"
+  },
+  "assistant": {
+    "show": "Pokaż asystenta",
+    "hide": "Ukryj asystenta"
+  },
+  "status": {
+    "more": "{problem} (oraz {count} więcej)",
+    "assistant": "Asystent: {activity}",
+    "working": "Pracuję…",
+    "downloading": "Pobieranie pakietu {name}…",
+    "previewFailed": "Nie można zaktualizować podglądu: {reason}",
+    "desktopOnly": "działa to tylko w aplikacji komputerowej."
+  }
+}

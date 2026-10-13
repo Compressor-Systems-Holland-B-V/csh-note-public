@@ -1,0 +1,37 @@
+{
+  "cancel": "Abbrechen",
+  "create": "Erstellen",
+  "rename": "Umbenennen",
+  "delete": "Löschen",
+  "keep": "Beibehalten",
+  "replace": "Ersetzen",
+  "done": "Fertig",
+  "connect": "Verbinden",
+  "settings": "Einstellungen",
+  "name": "Name",
+  "template": "Vorlage",
+  "default": "Standard",
+  "fitWidth": "An Breite anpassen",
+  "version": "Version {version}",
+  "mode": {
+    "edit": "Bearbeiten",
+    "export": "Exportieren",
+    "themes": "Designs"
+  },
+  "appearance": {
+    "toLight": "In den hellen Modus wechseln",
+    "toDark": "In den dunklen Modus wechseln"
+  },
+  "assistant": {
+    "show": "Assistenten anzeigen",
+    "hide": "Assistenten ausblenden"
+  },
+  "status": {
+    "more": "{problem} (und {count} weitere)",
+    "assistant": "Assistent: {activity}",
+    "working": "Arbeitet…",
+    "downloading": "Paket {name} wird heruntergeladen…",
+    "previewFailed": "Die Vorschau konnte nicht aktualisiert werden: {reason}",
+    "desktopOnly": "Dies funktioniert nur in der Desktop-App."
+  }
+}

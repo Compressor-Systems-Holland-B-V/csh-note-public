@@ -1,0 +1,37 @@
+{
+  "cancel": "Cancelar",
+  "create": "Crear",
+  "rename": "Cambiar nombre",
+  "delete": "Eliminar",
+  "keep": "Conservar",
+  "replace": "Reemplazar",
+  "done": "Hecho",
+  "connect": "Conectar",
+  "settings": "Configuración",
+  "name": "Nombre",
+  "template": "Plantilla",
+  "default": "Predeterminado",
+  "fitWidth": "Ajustar al ancho",
+  "version": "Versión {version}",
+  "mode": {
+    "edit": "Editar",
+    "export": "Exportar",
+    "themes": "Temas"
+  },
+  "appearance": {
+    "toLight": "Cambiar al modo claro",
+    "toDark": "Cambiar al modo oscuro"
+  },
+  "assistant": {
+    "show": "Mostrar el asistente",
+    "hide": "Ocultar el asistente"
+  },
+  "status": {
+    "more": "{problem} (y {count} más)",
+    "assistant": "Asistente: {activity}",
+    "working": "Trabajando…",
+    "downloading": "Descargando el paquete {name}…",
+    "previewFailed": "No se pudo actualizar la vista previa: {reason}",
+    "desktopOnly": "solo funciona en la aplicación de escritorio."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "fontSize": "Editor text size",
+  "wrap": "Wrap long lines",
+  "autosave": "Save automatically",
+  "autosaveHint": "When this is off, press Ctrl+S to save.",
+  "zoom": "Preview size at start",
+  "appearance": "Appearance",
+  "light": "Light",
+  "dark": "Dark",
+  "look": "Look",
+  "lookHint": "Add more looks on the Themes page.",
+  "language": "Language",
+  "languageAuto": "Same as this computer",
+  "assistant": "Assistant",
+  "uses": "Uses {provider}.",
+  "notConnected": "Not connected yet.",
+  "providers": "Providers…",
+  "file": "Your znote file",
+  "switch": "Switch…"
+}

@@ -3,6 +3,7 @@ import type { TemplateKind, Theme } from "$lib/ipc";
 import { messageOf } from "$lib/utils";
 import { doc } from "./document.svelte";
 import { settings } from "./settings.svelte";
+import { t } from "$lib/i18n.svelte";
 
 export type TemplateChoice = { id: string; label: string; kind: TemplateKind; snippet: string };
 
@@ -13,13 +14,17 @@ const headerBlock = /^\/\/ znote:template [^\n]*\n[\s\S]*?\/\/ znote:end[^\S\n]*
 export const builtInTemplates: TemplateChoice[] = [
   {
     id: "znote/Plain document",
-    label: "Plain document",
+    get label() {
+      return t("workspace.templates.plain");
+    },
     kind: "document",
     snippet: '#set page(paper: "a4", numbering: "1")\n#set par(justify: true)\n#set heading(numbering: "1.1")\n',
   },
   {
     id: "znote/Slides",
-    label: "Slides",
+    get label() {
+      return t("workspace.templates.slides");
+    },
     kind: "slides",
     snippet:
       '#import "@preview/touying:0.8.0": *\n#import themes.simple: *\n#show: simple-theme.with(aspect-ratio: "16-9")\n#set text(font: "Arial")\n',
@@ -31,10 +36,12 @@ export function withTemplate(text: string, template: Pick<TemplateChoice, "id" |
   return headerBlock.test(text) ? text.replace(headerBlock, () => block) : `${block}\n${text}`;
 }
 
-export function templateKind(text: string, templates: TemplateChoice[]): TemplateKind | undefined {
+export function templateOf(text: string, templates: TemplateChoice[]) {
   const id = /^\/\/ znote:template ([^\n]*)/.exec(text)?.[1].trim();
-  return templates.find((template) => template.id === id)?.kind;
+  return templates.find((template) => template.id === id);
 }
+
+export const templateKind = (text: string, templates: TemplateChoice[]) => templateOf(text, templates)?.kind;
 
 export function templatesOf(themes: Theme[]): TemplateChoice[] {
   return [
@@ -78,7 +85,7 @@ export function kindOf(theme: Theme): Kind {
 
 export function looksOf(installed: Theme[], hidden: string[]) {
   return [
-    { value: null as string | null, label: "Default" },
+    { value: null as string | null, label: t("common.default") },
     ...installed.filter((theme) => hasLook(theme) && !hidden.includes(theme.id)).map(({ id, name }) => ({ value: id, label: name })),
   ];
 }

@@ -16,7 +16,8 @@ use typst::{Library, LibraryExt, World, WorldExt};
 use typst_kit::datetime::Time;
 use typst_kit::downloader::{Downloader, SystemDownloader};
 use typst_kit::files::{FileLoader, FileStore, FsRoot};
-use typst_kit::fonts::{self, FontStore};
+use typst::layout::{Frame, FrameItem};
+use typst_kit::fonts::{self, FontPath, FontStore};
 use typst_kit::packages::SystemPackages;
 use typst_layout::PagedDocument;
 use typst_svg::SvgOptions;
@@ -32,6 +33,23 @@ pub fn font_store(themes: &Path) -> FontStore {
     store.extend(fonts::embedded());
     store.extend(fonts::scan(themes));
     store
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct UsedFont {
+    pub family: String,
+    pub file: PathBuf,
+    pub restricted: bool,
+}
+
+fn fonts_in(frame: &Frame, found: &mut Vec<Font>) {
+    for (_, item) in frame.items() {
+        match item {
+            FrameItem::Group(group) => fonts_in(&group.frame, found),
+            FrameItem::Text(text) if !found.contains(text.font.font()) => found.push(text.font.font().clone()),
+            _ => {}
+        }
+    }
 }
 
 #[derive(Debug, Serialize, PartialEq)]
@@ -116,6 +134,7 @@ pub struct PageWorld {
     fonts: Arc<FontStore>,
     time: Time,
     hashes: Vec<u128>,
+    used: Vec<UsedFont>,
 }
 
 impl World for PageWorld {
@@ -169,7 +188,7 @@ impl PageWorld {
             themes: themes.to_path_buf(),
             packages: SystemPackages::new(downloader),
         };
-        Ok(Self { main, files: FileStore::new(loader), fonts, time: Time::system(), hashes: Vec::new() })
+        Ok(Self { main, files: FileStore::new(loader), fonts, time: Time::system(), hashes: Vec::new(), used: Vec::new() })
     }
 
     pub fn forget_sent_pages(&mut self) {
@@ -200,6 +219,10 @@ impl PageWorld {
             }
         };
 
+        let mut fonts = Vec::new();
+        document.pages().iter().for_each(|page| fonts_in(&page.frame, &mut fonts));
+        self.used = fonts.iter().filter_map(|font| self.used_font(font)).collect();
+
         let hashes: Vec<u128> = document.pages().iter().map(hash128).collect();
         let pages = document
             .pages()
@@ -215,6 +238,18 @@ impl PageWorld {
             .collect();
         self.hashes = hashes;
         Compiled { page_count: Some(self.hashes.len()), pages, diagnostics }
+    }
+
+    fn used_font(&self, font: &Font) -> Option<UsedFont> {
+        let info = font.info();
+        let index = self.fonts.book().select(&info.family.to_lowercase(), info.variant)?;
+        let source: &dyn Any = self.fonts.source(index)?;
+        let file = source.downcast_ref::<FontPath>()?.path.clone();
+        Some(UsedFont { family: info.family.clone(), file, restricted: crate::export::restricted(font) })
+    }
+
+    pub fn used_fonts(&self) -> &[UsedFont] {
+        &self.used
     }
 
     fn template_font_fallback(&self, diagnostic: &SourceDiagnostic) -> bool {
@@ -278,7 +313,13 @@ fn open_world<'a>(app: &AppHandle, open: &'a mut OpenWorld, page: &str) -> Resul
             .fonts
             .lock()
             .map_err(|error| error.to_string())?
-            .get_or_insert_with(|| Arc::new(font_store(&themes)))
+            .get_or_insert_with(|| {
+                let mut store = font_store(&themes);
+                if let Some(carried) = crate::project::fonts(app) {
+                    store.extend(fonts::scan(&carried));
+                }
+                Arc::new(store)
+            })
             .clone();
         let world = PageWorld::new(&project, &main, &themes, fonts, move |package| {
             let _ = announcer.emit("downloading", package);
@@ -306,6 +347,9 @@ fn compile_page(app: &AppHandle, page: &str, seq: u64, text: String, fresh: bool
         world.forget_sent_pages();
     }
     let result = world.compile(text);
+    if result.page_count.is_some() {
+        crate::project::fonts_used(app, page, world.used_fonts());
+    }
     app.emit("compiled", CompiledEvent { page, seq, result: &result }).map_err(|error| error.to_string())
 }
 

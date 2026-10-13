@@ -1,0 +1,37 @@
+{
+  "cancel": "Annuleren",
+  "create": "Maken",
+  "rename": "Naam wijzigen",
+  "delete": "Verwijderen",
+  "keep": "Behouden",
+  "replace": "Vervangen",
+  "done": "Gereed",
+  "connect": "Verbinden",
+  "settings": "Instellingen",
+  "name": "Naam",
+  "template": "Sjabloon",
+  "default": "Standaard",
+  "fitWidth": "Paginabreedte",
+  "version": "Versie {version}",
+  "mode": {
+    "edit": "Bewerken",
+    "export": "Exporteren",
+    "themes": "Thema's"
+  },
+  "appearance": {
+    "toLight": "Overschakelen naar lichte modus",
+    "toDark": "Overschakelen naar donkere modus"
+  },
+  "assistant": {
+    "show": "De assistent weergeven",
+    "hide": "De assistent verbergen"
+  },
+  "status": {
+    "more": "{problem} (en nog {count})",
+    "assistant": "Assistent: {activity}",
+    "working": "Bezig…",
+    "downloading": "Pakket {name} downloaden…",
+    "previewFailed": "Het voorbeeld kon niet worden bijgewerkt: {reason}",
+    "desktopOnly": "het werkt alleen in de desktop-app."
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "title": "Assistent",
+  "checking": "Kontrollerar anslutningen…",
+  "timeSoFar": "Tid hittills",
+  "seconds": "{seconds} s",
+  "showMore": "Visa mer",
+  "showLess": "Visa mindre",
+  "chatSaveFailed": "Din chatt kunde inte sparas: {reason}",
+  "empty": {
+    "title": "Vad ska jag skriva?"
+  },
+  "deletion": {
+    "label": "Bekräfta borttagning",
+    "text": "Assistenten vill ta bort ”{path}”. Den flyttas till papperskorgen, tillsammans med allt innehåll."
+  },
+  "composer": {
+    "placeholder": "Fråga assistenten… Ctrl+Enter för att skicka",
+    "message": "Meddelande till assistenten",
+    "references": "Vad assistenten kommer att titta på",
+    "removeReference": "Ta bort {label}",
+    "add": "Lägg till en sida eller en fil",
+    "addTitle": "Peka assistenten till en sida, eller bifoga en fil",
+    "attach": "Bifoga filer från den här datorn…",
+    "web": "Låt assistenten använda internet i den här chatten",
+    "wholeProject": "Hela projektet",
+    "wholeNotebook": "Hela anteckningsboken",
+    "presets": "Hur assistenten ska arbeta",
+    "advanced": "Avancerade assistentinställningar",
+    "advancedTitle": "Avancerat: ändra dessa val eller gör egna",
+    "send": "Skicka",
+    "sendTitle": "Skicka (Ctrl+Enter)",
+    "stop": "Stoppa",
+    "busyElsewhere": "Assistenten är upptagen i en annan chatt"
+  },
+  "history": {
+    "title": "Tidigare chattar",
+    "newChat": "Ny chatt",
+    "which": "Vilka chattar som ska visas",
+    "chats": "Chattar",
+    "archived": "Arkiverade",
+    "none": "Inga chattar än.",
+    "noneArchived": "Inget är arkiverat.",
+    "working": "Assistenten arbetar i den här chatten",
+    "archive": "Arkivera",
+    "archiveChat": "Arkivera ”{title}”",
+    "restore": "Flytta tillbaka till chattar",
+    "restoreChat": "Flytta ”{title}” tillbaka till chattar",
+    "deleteChat": "Ta bort ”{title}”",
+    "deleteTitle": "Ta bort chatten ”{title}”?",
+    "deleteText": "Chatten tas bort permanent. Dina sidor ändras inte.",
+    "archiveAll": "Arkivera alla",
+    "deleteAll": "Ta bort alla",
+    "archiveAllTitle": "Arkivera alla chattar?",
+    "deleteAllTitle": "Ta bort alla arkiverade chattar?",
+    "deleteAllText": "Chattarna tas bort permanent. Dina sidor ändras inte."
+  },
+  "steps": {
+    "thought": "Tanke",
+    "review": "Granska",
+    "reviewTitle": "Öppna sidan och se vad som ändrades"
+  },
+  "summary": {
+    "read_one": "läste {count} sida",
+    "read_other": "läste {count} sidor",
+    "edited_one": "redigerade {count} sida",
+    "edited_other": "redigerade {count} sidor",
+    "other_one": "{count} annat steg",
+    "other_other": "{count} andra steg",
+    "thought": "tänkte på det"
+  },
+  "activity": {
+    "thinking": "Tänker…",
+    "replying": "Svarar…",
+    "reading": "Läser…",
+    "readingPage": "Läser {page}…",
+    "writing": "Skriver en sida…",
+    "writingPage": "Skriver {page}…",
+    "looking": "Går igenom dina sidor…",
+    "waiting": "Väntar på ditt svar…",
+    "checking": "Kontrollerar sidan efter problem…",
+    "renaming": "Byter namn på {path}…",
+    "creating": "Skapar {path}…",
+    "deleting": "Tar bort {path}…"
+  },
+  "note": {
+    "read": "Läs {page}",
+    "edited": "Redigerade {page}",
+    "renamed": "Bytte namn på {from} till {to}",
+    "created": "Skapade {path}",
+    "deleted": "Tog bort {path}"
+  },
+  "preset": {
+    "title": "Avancerade assistentinställningar",
+    "text": "En förinställning avgör hur snabb och noggrann assistenten är med {provider}. Välj en för att ändra den, eller gör en egen.",
+    "label": "Förinställning",
+    "new": "Ny förinställning",
+    "mine": "Min förinställning",
+    "model": "Modell",
+    "defaultModel": "Standardmodell",
+    "effort": "Hur hårt den tänker",
+    "effortHint": "Mer tänkande är långsammare och använder mer av din plan.",
+    "access": "Vad den får göra",
+    "web": "Internet",
+    "webAsk": "Välj i varje chatt",
+    "webOn": "Alltid tillåtet",
+    "webOff": "Aldrig tillåtet",
+    "fast": "Snabbläge",
+    "fastHint": "Snabbare svar från samma modell, till ett högre pris.",
+    "backToStandard": "Tillbaka till standard ”{name}”",
+    "delete": "Ta bort denna förinställning"
+  },
+  "effort": {
+    "low": "Snabb",
+    "medium": "Balanserad",
+    "high": "Noggrann",
+    "xhigh": "Mycket noggrann",
+    "max": "Maximal"
+  },
+  "access": {
+    "read": "Läs endast mina sidor",
+    "edit": "Redigera sidor, fråga innan borttagning",
+    "full": "Redigera och ta bort utan att fråga"
+  },
+  "size": {
+    "quick": "Snabb",
+    "quickHint": "Korta anteckningar och småfixar. Snabbast.",
+    "balanced": "Balanserad",
+    "balancedHint": "Vardagliga dokument. En bra standard.",
+    "thorough": "Noggrann",
+    "thoroughHint": "Långa rapporter och noggranna omskrivningar. Långsammast.",
+    "custom": "Anpassad"
+  }
+}

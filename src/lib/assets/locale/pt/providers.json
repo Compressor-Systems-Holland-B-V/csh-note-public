@@ -1,0 +1,48 @@
+{
+  "connectTitle": "Ligar o assistente",
+  "connectText": "Ele escreve e edita as suas páginas por si. Primeiro, escolha em que deve ser executado.",
+  "chooseElse": "Escolher outra coisa",
+  "nameConnected": "{name} · ligado",
+  "dialogTitle": "Fornecedores do assistente",
+  "dialogText": "Ligue um ou mais e, em seguida, escolha qual o assistente que utiliza.",
+  "connected": "Ligado",
+  "connectedTo": "Ligado a {url}",
+  "use": "Definir como predefinido",
+  "disconnect": "Desligar",
+  "checking": "A verificar…",
+  "list": {
+    "claude": "Claude Code",
+    "claudeHint": "A sua subscrição Claude ou conta API",
+    "openrouter": "OpenRouter",
+    "openrouterHint": "Uma chave API para modelos de muitas empresas",
+    "custom": "O seu próprio servidor",
+    "customHint": "Ollama, LM Studio ou qualquer servidor compatível com OpenAI"
+  },
+  "model": {
+    "type": "Escreva o nome de um modelo",
+    "missing": "Escolha um modelo antes de começar. Precisa de suportar ferramentas.",
+    "hint": "Utilizado quando uma conversa ou predefinição não escolhe outro modelo."
+  },
+  "signIn": {
+    "installing": "A transferir Claude Code…",
+    "finish": "Termine o início de sessão no seu browser…",
+    "noBrowser": "O browser não abriu? Copie esta ligação, abra-a em qualquer browser e, em seguida, cole o código que lhe é apresentado.",
+    "link": "Ligação de início de sessão",
+    "copyLink": "Copiar a ligação de início de sessão",
+    "code": "Código do browser",
+    "unfinished": "O início de sessão não terminou. Prima Ligar para tentar novamente.",
+    "note": "Executa Claude Code com a sua própria conta. Inicia sessão uma vez no seu browser.",
+    "subscription": "Subscrição Claude",
+    "subscriptionHint": "Plano Pro, Max ou Team",
+    "console": "Conta API",
+    "consoleHint": "Pagamento por utilização",
+    "sso": "Início de sessão único (SSO)",
+    "ssoHint": "Através da sua empresa"
+  },
+  "key": {
+    "server": "Endereço do servidor",
+    "label": "Chave API",
+    "labelOptional": "Chave API (se o servidor precisar de uma)",
+    "note": "A chave é mantida encriptada no arquivo de palavras-passe deste computador e nunca mais é mostrada."
+  }
+}

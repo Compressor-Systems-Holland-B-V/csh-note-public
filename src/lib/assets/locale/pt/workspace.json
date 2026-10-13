@@ -1,0 +1,78 @@
+{
+  "placeholder": "Escolha uma página, ou crie uma, para começar a escrever.",
+  "pages": "Páginas",
+  "switchProject": "Mudar de projeto",
+  "noProject": "Ainda sem projeto",
+  "noNotebooks": "Este projeto ainda não tem blocos de notas.",
+  "noProjects": "Crie um projeto para começar.",
+  "noTemplate": "Sem modelo",
+  "assistantChanged": "O assistente alterou esta página",
+  "new": {
+    "project": "Novo projeto",
+    "notebook": "Novo bloco de notas",
+    "page": "Nova página",
+    "pageIn": "Nova página em {notebook}"
+  },
+  "rename": {
+    "project": "Mudar nome do projeto",
+    "notebook": "Mudar nome do bloco de notas",
+    "page": "Mudar nome da página"
+  },
+  "remove": {
+    "project": "Eliminar o projeto “{name}”?",
+    "notebook": "Eliminar o bloco de notas “{name}”?",
+    "page": "Eliminar a página “{name}”?",
+    "text": "É movido para o Reciclagem, com tudo o que contém."
+  },
+  "menu": {
+    "newProject": "Novo projeto…",
+    "renameProject": "Mudar nome deste projeto…",
+    "deleteProject": "Eliminar este projeto…",
+    "newPage": "Nova página…",
+    "importPage": "Importar uma página de um ficheiro…",
+    "rename": "Mudar nome…",
+    "delete": "Eliminar…",
+    "moveTo": "Mover para {notebook}"
+  },
+  "name": {
+    "missing": "Escreva primeiro um nome.",
+    "slash": "Um nome não pode conter uma barra."
+  },
+  "replacePage": {
+    "title": "Substituir esta página por “{name}”?",
+    "text": "O texto nesta página é substituído pelo texto do ficheiro."
+  },
+  "sample": {
+    "project": "Introdução",
+    "notebook": "Notas",
+    "page": "Bem-vindo",
+    "text": "= Bem-vindo ao znote\n\nEscreva Typst à esquerda. As páginas à direita são atualizadas à medida que escreve.\n\n- *Negrito*, _ênfase_ e `código`\n- Matemática: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Documento simples",
+    "slides": "Slides"
+  },
+  "unsavedOnClose": "As suas últimas alterações não puderam ser guardadas. Feche novamente para sair sem elas. {reason}",
+  "file": {
+    "welcome": "Bem-vindo ao znote",
+    "title": "Os seus ficheiros znote",
+    "text": "As suas notas residem num ficheiro znote. Tudo o que escreve é guardado nele, e pode copiá-lo para outro computador.",
+    "new": "Novo ficheiro znote…",
+    "open": "Abrir um ficheiro znote…",
+    "bringIn": "Importar as notas que já tenho…",
+    "recent": "Abertos anteriormente",
+    "forget": "Remover desta lista",
+    "forgetFile": "Remover {name} desta lista",
+    "copy": "Guardar uma cópia deste ficheiro znote",
+    "switch": "Abrir ou criar outro ficheiro znote",
+    "savedAt": "Guardado às {time}",
+    "themesTitle": "Instalar os temas deste ficheiro?",
+    "themesText": "Este ficheiro znote traz temas que ainda não estão neste computador. As páginas precisam deles.",
+    "themesInstall": "Instalar e abrir",
+    "fontsTitle": "Alguns tipos de letra não estão disponíveis",
+    "fontsFallback": "Quando um tipo de letra não está disponível, o znote usa outro. O texto pode ocupar mais ou menos espaço, pelo que as linhas podem quebrar noutros sítios e o número de páginas pode mudar.",
+    "fontsMissing": "Estes tipos de letra são usados neste ficheiro, mas não estão neste computador:",
+    "fontsLeftOut": "Estes tipos de letra não podem ser copiados para um ficheiro znote. Num computador que não os tenha é usado outro tipo de letra:",
+    "fontsSeen": "OK"
+  }
+}

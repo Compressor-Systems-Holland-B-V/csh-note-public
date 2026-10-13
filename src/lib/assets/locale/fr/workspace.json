@@ -1,0 +1,78 @@
+{
+  "placeholder": "Choisissez une page, ou créez-en une, pour commencer à écrire.",
+  "pages": "Pages",
+  "switchProject": "Changer de projet",
+  "noProject": "Aucun projet pour le moment",
+  "noNotebooks": "Ce projet ne contient aucun carnet pour le moment.",
+  "noProjects": "Créez un projet pour commencer.",
+  "noTemplate": "Aucun modèle",
+  "assistantChanged": "L'assistant a modifié cette page",
+  "new": {
+    "project": "Nouveau projet",
+    "notebook": "Nouveau carnet",
+    "page": "Nouvelle page",
+    "pageIn": "Nouvelle page dans {notebook}"
+  },
+  "rename": {
+    "project": "Renommer le projet",
+    "notebook": "Renommer le carnet",
+    "page": "Renommer la page"
+  },
+  "remove": {
+    "project": "Supprimer le projet « {name} » ?",
+    "notebook": "Supprimer le carnet « {name} » ?",
+    "page": "Supprimer la page « {name} » ?",
+    "text": "Elle est déplacée vers la Corbeille, avec tout son contenu."
+  },
+  "menu": {
+    "newProject": "Nouveau projet…",
+    "renameProject": "Renommer ce projet…",
+    "deleteProject": "Supprimer ce projet…",
+    "newPage": "Nouvelle page…",
+    "importPage": "Importer une page depuis un fichier…",
+    "rename": "Renommer…",
+    "delete": "Supprimer…",
+    "moveTo": "Déplacer vers {notebook}"
+  },
+  "name": {
+    "missing": "Saisissez d'abord un nom.",
+    "slash": "Un nom ne peut pas contenir de barre oblique."
+  },
+  "replacePage": {
+    "title": "Remplacer cette page par « {name} » ?",
+    "text": "Le texte de cette page sera remplacé par le texte du fichier."
+  },
+  "sample": {
+    "project": "Démarrage",
+    "notebook": "Notes",
+    "page": "Bienvenue",
+    "text": "= Bienvenue dans znote\n\nSaisissez du Typst à gauche. Les pages à droite se mettent à jour au fur et à mesure.\n\n- *Gras*, _italique_ et `code`\n- Maths : $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Document simple",
+    "slides": "Diapositives"
+  },
+  "unsavedOnClose": "Vos dernières modifications n'ont pas pu être enregistrées. Fermez à nouveau pour quitter sans les enregistrer. {reason}",
+  "file": {
+    "welcome": "Bienvenue dans znote",
+    "title": "Vos fichiers znote",
+    "text": "Vos notes sont conservées dans un fichier znote. Tout ce que vous écrivez y est enregistré, et vous pouvez le copier sur un autre ordinateur.",
+    "new": "Nouveau fichier znote…",
+    "open": "Ouvrir un fichier znote…",
+    "bringIn": "Importer mes notes existantes…",
+    "recent": "Ouverts précédemment",
+    "forget": "Supprimer de cette liste",
+    "forgetFile": "Supprimer {name} de cette liste",
+    "copy": "Enregistrer une copie de ce fichier znote",
+    "switch": "Ouvrir ou créer un autre fichier znote",
+    "savedAt": "Enregistré à {time}",
+    "themesTitle": "Installer les thèmes de ce fichier ?",
+    "themesText": "Ce fichier znote apporte des thèmes qui ne sont pas encore sur cet ordinateur. Ses pages en ont besoin.",
+    "themesInstall": "Installer et ouvrir",
+    "fontsTitle": "Certaines polices ne sont pas disponibles",
+    "fontsFallback": "Lorsqu’une police n’est pas disponible, znote en utilise une autre. Le texte peut alors prendre plus ou moins de place : les lignes peuvent se couper ailleurs et le nombre de pages peut changer.",
+    "fontsMissing": "Ces polices sont utilisées dans ce fichier mais ne sont pas sur cet ordinateur :",
+    "fontsLeftOut": "Ces polices ne peuvent pas être copiées dans un fichier znote. Sur un ordinateur qui ne les a pas, une autre police est utilisée :",
+    "fontsSeen": "OK"
+  }
+}

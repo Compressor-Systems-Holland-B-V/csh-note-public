@@ -1,0 +1,48 @@
+{
+  "connectTitle": "Asistanı bağla",
+  "connectText": "Sizin için sayfalarınızı yazar ve düzenler. Öncelikle ne üzerinde çalışması gerektiğini seçin.",
+  "chooseElse": "Başka bir şey seçin",
+  "nameConnected": "{name} · bağlandı",
+  "dialogTitle": "Asistan sağlayıcıları",
+  "dialogText": "Bir veya daha fazlasını bağlayın, ardından asistanın hangisini kullanacağını seçin.",
+  "connected": "Bağlandı",
+  "connectedTo": "{url} adresine bağlandı",
+  "use": "Varsayılan yap",
+  "disconnect": "Bağlantıyı kes",
+  "checking": "Denetleniyor…",
+  "list": {
+    "claude": "Claude Code",
+    "claudeHint": "Claude aboneliğiniz veya API hesabınız",
+    "openrouter": "OpenRouter",
+    "openrouterHint": "Birçok şirketin modelleri için tek bir API anahtarı",
+    "custom": "Kendi sunucunuz",
+    "customHint": "Ollama, LM Studio veya OpenAI uyumlu herhangi bir sunucu"
+  },
+  "model": {
+    "type": "Bir modelin adını yazın",
+    "missing": "Başlamadan önce bir model seçin. Araçları desteklemesi gerekiyor.",
+    "hint": "Bir sohbet veya ön ayar başka bir model seçmediğinde kullanılır."
+  },
+  "signIn": {
+    "installing": "Claude Code indiriliyor…",
+    "finish": "Tarayıcınızda oturum açma işlemini tamamlayın…",
+    "noBrowser": "Tarayıcı açılmadı mı? Bu bağlantıyı kopyalayın, herhangi bir tarayıcıda açın ve ardından size gösterdiği kodu yapıştırın.",
+    "link": "Oturum açma bağlantısı",
+    "copyLink": "Oturum açma bağlantısını kopyala",
+    "code": "Tarayıcıdan gelen kod",
+    "unfinished": "Oturum açma işlemi tamamlanmadı. Tekrar denemek için Bağlan'a basın.",
+    "note": "Claude Code'u kendi hesabınızla çalıştırır. Tarayıcınızda bir kez oturum açarsınız.",
+    "subscription": "Claude aboneliği",
+    "subscriptionHint": "Pro, Max veya Team planı",
+    "console": "API hesabı",
+    "consoleHint": "Kullanım başına ödeme",
+    "sso": "Tek oturum açma (SSO)",
+    "ssoHint": "Şirketiniz aracılığıyla"
+  },
+  "key": {
+    "server": "Sunucu adresi",
+    "label": "API anahtarı",
+    "labelOptional": "API anahtarı (sunucu gerektiriyorsa)",
+    "note": "Anahtar, bu bilgisayarın parola deposunda şifreli olarak tutulur ve bir daha asla gösterilmez."
+  }
+}

@@ -4,6 +4,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
+use notify::event::ModifyKind;
 use notify::{Event, EventKind, RecommendedWatcher, RecursiveMode, Watcher};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, State};
@@ -109,6 +110,32 @@ pub fn tree(root: &Path) -> Vec<Project> {
         .collect()
 }
 
+pub fn pages(root: &Path) -> Vec<String> {
+    tree(root)
+        .into_iter()
+        .flat_map(|project| {
+            project.notebooks.into_iter().flat_map(move |notebook| {
+                let folder = format!("{}/{}", project.name, notebook.name);
+                notebook.pages.into_iter().map(move |page| format!("{folder}/{page}"))
+            })
+        })
+        .collect()
+}
+
+pub fn ensure(root: &Path, page: &str) -> Result<(), String> {
+    let names: Vec<&str> = page.split('/').collect();
+    if names.len() != 3 {
+        return Err(format!("“{page}” is not a page."));
+    }
+    for depth in 1..=names.len() {
+        let path = names[..depth].join("/");
+        if !resolve(root, &path)?.exists() {
+            create(root, &path)?;
+        }
+    }
+    Ok(())
+}
+
 pub fn create(root: &Path, path: &str) -> Result<(), String> {
     let target = resolve(root, path)?;
     if target.exists() {
@@ -159,16 +186,34 @@ fn page_of(root: &Path, file: &Path) -> Option<String> {
     (names.len() == 3).then(|| names.join("/"))
 }
 
+fn structural(event: &Event) -> bool {
+    let content = matches!(event.kind, EventKind::Access(_) | EventKind::Modify(ModifyKind::Data(_) | ModifyKind::Metadata(_)));
+    !content && !event.paths.iter().all(|path| path.extension().is_some_and(|extension| extension == "tmp"))
+}
+
 fn watch(app: AppHandle, root: PathBuf) -> notify::Result<RecommendedWatcher> {
     let folder = root.clone();
+    let shown = Mutex::new(tree(&root));
     let mut watcher = notify::recommended_watcher(move |event: notify::Result<Event>| {
         let Ok(event) = event else { return };
         if matches!(event.kind, EventKind::Access(_)) {
             return;
         }
-        let _ = app.emit("workspace-changed", ());
         for page in event.paths.iter().filter_map(|path| page_of(&folder, path)) {
             let _ = app.emit("page-changed", page);
+        }
+        if !event.paths.iter().all(|path| path.extension().is_some_and(|extension| extension == "tmp")) {
+            crate::project::changed(&app);
+        }
+        if !structural(&event) {
+            return;
+        }
+        let now = tree(&folder);
+        if let Ok(mut shown) = shown.lock()
+            && *shown != now
+        {
+            *shown = now;
+            let _ = app.emit("workspace-changed", ());
         }
     })?;
     watcher.watch(&root, RecursiveMode::Recursive)?;
@@ -193,21 +238,6 @@ impl Workspace {
         let (project, main) = page.split_once('/').ok_or_else(|| format!("“{page}” is not a page."))?;
         Ok((root.join(project), format!("{main}.typ")))
     }
-}
-
-#[tauri::command]
-pub fn default_workspace(app: AppHandle) -> Result<String, String> {
-    let documents = app.path().document_dir().map_err(|error| error.to_string())?;
-    Ok(documents.join("znote").to_string_lossy().into_owned())
-}
-
-#[tauri::command(async)]
-pub fn pick_folder(app: AppHandle) -> Result<Option<String>, String> {
-    let Some(folder) = app.dialog().file().blocking_pick_folder() else {
-        return Ok(None);
-    };
-    let folder = folder.into_path().map_err(|error| error.to_string())?;
-    Ok(Some(folder.to_string_lossy().into_owned()))
 }
 
 #[derive(Serialize)]
@@ -247,18 +277,24 @@ pub fn list_tree(workspace: State<Workspace>) -> Result<Vec<Project>, String> {
 }
 
 #[tauri::command]
-pub fn create_entry(workspace: State<Workspace>, path: String) -> Result<(), String> {
-    create(&workspace.root()?, &path)
+pub fn create_entry(app: AppHandle, workspace: State<Workspace>, path: String) -> Result<(), String> {
+    create(&workspace.root()?, &path)?;
+    crate::project::changed(&app);
+    Ok(())
 }
 
 #[tauri::command]
-pub fn move_entry(workspace: State<Workspace>, from: String, to: String) -> Result<(), String> {
-    rename(&workspace.root()?, &from, &to)
+pub fn move_entry(app: AppHandle, workspace: State<Workspace>, from: String, to: String) -> Result<(), String> {
+    rename(&workspace.root()?, &from, &to)?;
+    crate::project::changed(&app);
+    Ok(())
 }
 
 #[tauri::command(async)]
 pub fn delete_entry(app: AppHandle, path: String) -> Result<(), String> {
-    delete(&app.state::<Workspace>().root()?, &path)
+    delete(&app.state::<Workspace>().root()?, &path)?;
+    crate::project::changed(&app);
+    Ok(())
 }
 
 #[tauri::command]
@@ -267,8 +303,10 @@ pub fn read_page(workspace: State<Workspace>, path: String) -> Result<String, St
 }
 
 #[tauri::command]
-pub fn write_page(workspace: State<Workspace>, path: String, text: String) -> Result<(), String> {
-    write_text(&workspace.root()?, &path, &text)
+pub fn write_page(app: AppHandle, workspace: State<Workspace>, path: String, text: String) -> Result<(), String> {
+    write_text(&workspace.root()?, &path, &text)?;
+    crate::project::changed(&app);
+    Ok(())
 }
 
 #[cfg(test)]
@@ -390,6 +428,16 @@ mod tests {
         rename(&root, "Work/Other", "Work/Renamed").unwrap();
         rename(&root, "Work", "Office").unwrap();
         assert_eq!(read_text(&root, "Office/Renamed/Tuesday").unwrap(), "mine");
+    }
+
+    #[test]
+    fn saving_a_file_is_not_a_change_to_the_tree() {
+        let event = |kind, path: &str| Event::new(kind).add_path(PathBuf::from(path));
+        let renamed = EventKind::Modify(ModifyKind::Name(notify::event::RenameMode::Any));
+        assert!(!structural(&event(EventKind::Modify(ModifyKind::Data(notify::event::DataChange::Any)), "/w/A/B/Page.typ")));
+        assert!(!structural(&event(EventKind::Create(notify::event::CreateKind::File), "/w/A/B/Page.typ.tmp")));
+        assert!(structural(&event(renamed, "/w/A/B/Page.typ")));
+        assert!(structural(&event(EventKind::Remove(notify::event::RemoveKind::Any), "/w/A/B")));
     }
 
     #[test]

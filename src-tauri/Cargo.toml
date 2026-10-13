@@ -1,7 +1,7 @@
 [package]
 name = "znote"
 
-version = "0.2.1"
+version = "0.7.0"
 description = "A lightweight desktop editor for Typst with live preview, built with Tauri"
 license = "Apache-2.0"
 repository = "https://github.com/ZAL-Analytics/znote"
@@ -23,12 +23,16 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
+keyring = "4"
+native-tls = "0.2"
+ureq = { version = "2", default-features = false, features = ["native-tls"] }
 notify = "8"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 tauri = { version = "2", features = ["protocol-asset"] }
 tauri-plugin-dialog = "2"
 tauri-plugin-opener = "2"
+tauri-plugin-single-instance = "2"
 tauri-plugin-store = "2"
 trash = "5"
 typst = "0.15.1"
@@ -38,6 +42,8 @@ typst-pdf = "0.15.1"
 typst-render = "0.15.1"
 typst-svg = "0.15.1"
 zip = { version = "9.0.2", default-features = false, features = ["deflate"] }
+lopdf = { version = "0.45.0", default-features = false }
+roxmltree = "0.21"
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]

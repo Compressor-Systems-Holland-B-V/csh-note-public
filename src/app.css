@@ -120,3 +120,44 @@
     @apply bg-background text-foreground;
   }
 }
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+@layer components {
+  .shimmer {
+    background: linear-gradient(90deg, var(--muted-foreground) 35%, var(--foreground) 50%, var(--muted-foreground) 65%) 0 0 / 200% 100%;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 2s linear infinite;
+  }
+  .typing > :last-child::after {
+    content: "";
+    display: inline-block;
+    width: 0.45em;
+    height: 1em;
+    margin-inline-start: 2px;
+    vertical-align: text-bottom;
+    background: currentColor;
+    animation: caret 1s steps(1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer {
+      background: none;
+      color: var(--foreground);
+      animation: none;
+    }
+    .typing > :last-child::after {
+      animation: none;
+    }
+  }
+}

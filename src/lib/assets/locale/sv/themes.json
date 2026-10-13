@@ -1,0 +1,31 @@
+{
+  "title": "Teman",
+  "look": "Utseende",
+  "import": "Importera temafil…",
+  "intro": "Ett tema kan ändra hur znote ser ut, lägga till sidmallar eller båda delarna. Reglagen på ett tema avgör om dess utseende och mallar erbjuds; välj utseendet som ska användas från listan ovan.",
+  "storeFailure": "{reason} Teman du redan har installerat visas nedan.",
+  "search": "Sök teman",
+  "installed": "Installerade",
+  "none": "Inga teman matchar.",
+  "kind": {
+    "look": "Endast utseende",
+    "both": "Utseende och mallar",
+    "templates": "Endast mallar"
+  },
+  "contents": {
+    "look": "Ändrar utseendet",
+    "both": "Ändrar utseendet och lägger till sidmallar",
+    "templates": "Lägger till sidmallar"
+  },
+  "version": "Version {version}",
+  "lookSwitch": "Utseende",
+  "lookSwitchTitle": "Visa detta tema i listan över utseenden",
+  "templatesSwitch": "Mallar",
+  "templatesSwitchTitle": "Visa detta temas mallar när du väljer en mall",
+  "install": "Installera",
+  "installing": "Installerar…",
+  "update": "Uppdatera",
+  "updating": "Uppdaterar…",
+  "remove": "Ta bort",
+  "removeTheme": "Ta bort temat {name}"
+}

@@ -1,0 +1,37 @@
+{
+  "cancel": "Avbryt",
+  "create": "Opprett",
+  "rename": "Gi nytt navn",
+  "delete": "Slett",
+  "keep": "Behold",
+  "replace": "Erstatt",
+  "done": "Ferdig",
+  "connect": "Koble til",
+  "settings": "Innstillinger",
+  "name": "Navn",
+  "template": "Mal",
+  "default": "Standard",
+  "fitWidth": "Tilpass bredde",
+  "version": "Versjon {version}",
+  "mode": {
+    "edit": "Rediger",
+    "export": "Eksporter",
+    "themes": "Temaer"
+  },
+  "appearance": {
+    "toLight": "Bytt til lys modus",
+    "toDark": "Bytt til mørk modus"
+  },
+  "assistant": {
+    "show": "Vis assistenten",
+    "hide": "Skjul assistenten"
+  },
+  "status": {
+    "more": "{problem} (og {count} til)",
+    "assistant": "Assistent: {activity}",
+    "working": "Jobber…",
+    "downloading": "Laster ned pakke {name}…",
+    "previewFailed": "Forhåndsvisningen kunne ikke oppdateres: {reason}",
+    "desktopOnly": "det fungerer bare i skrivebordsappen."
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "placeholder": "Välj en sida, eller skapa en, för att börja skriva.",
+  "pages": "Sidor",
+  "switchProject": "Byt projekt",
+  "noProject": "Inget projekt än",
+  "noNotebooks": "Detta projekt har inga anteckningsböcker än.",
+  "noProjects": "Skapa ett projekt för att komma igång.",
+  "noTemplate": "Ingen mall",
+  "assistantChanged": "Assistenten ändrade den här sidan",
+  "new": {
+    "project": "Nytt projekt",
+    "notebook": "Ny anteckningsbok",
+    "page": "Ny sida",
+    "pageIn": "Ny sida i {notebook}"
+  },
+  "rename": {
+    "project": "Byt namn på projekt",
+    "notebook": "Byt namn på anteckningsbok",
+    "page": "Byt namn på sida"
+  },
+  "remove": {
+    "project": "Ta bort projektet ”{name}”?",
+    "notebook": "Ta bort anteckningsboken ”{name}”?",
+    "page": "Ta bort sidan ”{name}”?",
+    "text": "Den flyttas till Papperskorgen, tillsammans med allt innehåll."
+  },
+  "menu": {
+    "newProject": "Nytt projekt…",
+    "renameProject": "Byt namn på detta projekt…",
+    "deleteProject": "Ta bort detta projekt…",
+    "newPage": "Ny sida…",
+    "importPage": "Importera en sida från en fil…",
+    "rename": "Byt namn…",
+    "delete": "Ta bort…",
+    "moveTo": "Flytta till {notebook}"
+  },
+  "name": {
+    "missing": "Ange ett namn först.",
+    "slash": "Ett namn får inte innehålla ett snedstreck."
+  },
+  "replacePage": {
+    "title": "Ersätt denna sida med ”{name}”?",
+    "text": "Texten på denna sida ersätts av texten från filen."
+  },
+  "sample": {
+    "project": "Komma igång",
+    "notebook": "Anteckningar",
+    "page": "Välkommen",
+    "text": "= Välkommen till znote\n\nSkriv Typst till vänster. Sidorna till höger uppdateras medan du skriver.\n\n- *Fetstil*, _kursiv_ och `kod`\n- Matematik: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Enkelt dokument",
+    "slides": "Bildspel"
+  },
+  "unsavedOnClose": "Dina senaste ändringar kunde inte sparas. Stäng igen för att lämna utan dem. {reason}",
+  "file": {
+    "welcome": "Välkommen till znote",
+    "title": "Dina znote-filer",
+    "text": "Dina anteckningar finns i en znote-fil. Allt du skriver sparas i den, och du kan kopiera den till en annan dator.",
+    "new": "Ny znote-fil…",
+    "open": "Öppna en znote-fil…",
+    "bringIn": "Importera anteckningar jag redan har…",
+    "recent": "Öppnade tidigare",
+    "forget": "Ta bort från denna lista",
+    "forgetFile": "Ta bort {name} från denna lista",
+    "copy": "Spara en kopia av denna znote-fil",
+    "switch": "Öppna eller skapa en annan znote-fil",
+    "savedAt": "Sparad kl. {time}",
+    "themesTitle": "Installera temana i den här filen?",
+    "themesText": "Den här znote-filen har med sig teman som inte finns på den här datorn ännu. Sidorna behöver dem.",
+    "themesInstall": "Installera och öppna",
+    "fontsTitle": "Vissa typsnitt är inte tillgängliga",
+    "fontsFallback": "När ett typsnitt inte är tillgängligt använder znote ett annat. Texten kan då ta mer eller mindre plats, så rader kan brytas på andra ställen och antalet sidor kan ändras.",
+    "fontsMissing": "De här typsnitten används i filen men finns inte på den här datorn:",
+    "fontsLeftOut": "De här typsnitten får inte kopieras in i en znote-fil. På en dator utan dem används ett annat typsnitt:",
+    "fontsSeen": "OK"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "placeholder": "Wählen Sie eine Seite aus oder erstellen Sie eine, um mit dem Schreiben zu beginnen.",
+  "pages": "Seiten",
+  "switchProject": "Projekt wechseln",
+  "noProject": "Noch kein Projekt",
+  "noNotebooks": "Dieses Projekt enthält noch keine Notizbücher.",
+  "noProjects": "Erstellen Sie ein Projekt, um zu beginnen.",
+  "noTemplate": "Keine Vorlage",
+  "assistantChanged": "Der Assistent hat diese Seite geändert",
+  "new": {
+    "project": "Neues Projekt",
+    "notebook": "Neues Notizbuch",
+    "page": "Neue Seite",
+    "pageIn": "Neue Seite in {notebook}"
+  },
+  "rename": {
+    "project": "Projekt umbenennen",
+    "notebook": "Notizbuch umbenennen",
+    "page": "Seite umbenennen"
+  },
+  "remove": {
+    "project": "Projekt „{name}“ löschen?",
+    "notebook": "Notizbuch „{name}“ löschen?",
+    "page": "Seite „{name}“ löschen?",
+    "text": "Sie wird zusammen mit allem Inhalt in den Papierkorb verschoben."
+  },
+  "menu": {
+    "newProject": "Neues Projekt…",
+    "renameProject": "Dieses Projekt umbenennen…",
+    "deleteProject": "Dieses Projekt löschen…",
+    "newPage": "Neue Seite…",
+    "importPage": "Seite aus einer Datei importieren…",
+    "rename": "Umbenennen…",
+    "delete": "Löschen…",
+    "moveTo": "In {notebook} verschieben"
+  },
+  "name": {
+    "missing": "Geben Sie zuerst einen Namen ein.",
+    "slash": "Ein Name darf keinen Schrägstrich enthalten."
+  },
+  "replacePage": {
+    "title": "Diese Seite durch „{name}“ ersetzen?",
+    "text": "Der Text auf dieser Seite wird durch den Text der Datei ersetzt."
+  },
+  "sample": {
+    "project": "Erste Schritte",
+    "notebook": "Notizen",
+    "page": "Willkommen",
+    "text": "= Willkommen bei znote\n\nGeben Sie links Typst ein. Die Seiten rechts werden während der Eingabe aktualisiert.\n\n- *Fett*, _kursiv_ und `Code`\n- Mathe: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Einfaches Dokument",
+    "slides": "Folien"
+  },
+  "unsavedOnClose": "Ihre letzten Änderungen konnten nicht gespeichert werden. Schließen Sie erneut, um ohne diese Änderungen zu beenden. {reason}",
+  "file": {
+    "welcome": "Willkommen bei znote",
+    "title": "Ihre znote-Dateien",
+    "text": "Ihre Notizen befinden sich in einer znote-Datei. Alles, was Sie schreiben, wird darin gespeichert, und Sie können sie auf einen anderen Computer kopieren.",
+    "new": "Neue znote-Datei…",
+    "open": "znote-Datei öffnen…",
+    "bringIn": "Vorhandene Notizen importieren…",
+    "recent": "Zuletzt geöffnet",
+    "forget": "Aus dieser Liste entfernen",
+    "forgetFile": "{name} aus dieser Liste entfernen",
+    "copy": "Kopie dieser znote-Datei speichern",
+    "switch": "Andere znote-Datei öffnen oder erstellen",
+    "savedAt": "Gespeichert um {time}",
+    "themesTitle": "Die Designs aus dieser Datei installieren?",
+    "themesText": "Diese znote-Datei bringt Designs mit, die auf diesem Computer noch fehlen. Ihre Seiten brauchen sie.",
+    "themesInstall": "Installieren und öffnen",
+    "fontsTitle": "Einige Schriftarten sind nicht verfügbar",
+    "fontsFallback": "Ist eine Schriftart nicht verfügbar, verwendet znote eine andere. Der Text kann dann mehr oder weniger Platz brauchen, sodass Zeilen an anderen Stellen umbrechen und sich die Seitenzahl ändern kann.",
+    "fontsMissing": "Diese Schriftarten werden in dieser Datei verwendet, sind aber nicht auf diesem Computer:",
+    "fontsLeftOut": "Diese Schriftarten dürfen nicht in eine znote-Datei kopiert werden. Auf einem Computer ohne sie wird eine andere Schriftart verwendet:",
+    "fontsSeen": "OK"
+  }
+}

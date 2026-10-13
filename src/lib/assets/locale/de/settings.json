@@ -1,0 +1,20 @@
+{
+  "fontSize": "Textgröße im Editor",
+  "wrap": "Lange Zeilen umbrechen",
+  "autosave": "Automatisch speichern",
+  "autosaveHint": "Wenn dies deaktiviert ist, drücken Sie Strg+S zum Speichern.",
+  "zoom": "Vorschaugröße beim Start",
+  "appearance": "Erscheinungsbild",
+  "light": "Hell",
+  "dark": "Dunkel",
+  "look": "Design",
+  "lookHint": "Weitere Designs finden Sie auf der Seite „Themes“.",
+  "language": "Sprache",
+  "languageAuto": "Wie auf diesem Computer",
+  "assistant": "Assistent",
+  "uses": "Verwendet {provider}.",
+  "notConnected": "Noch nicht verbunden.",
+  "providers": "Anbieter…",
+  "file": "Ihre znote-Datei",
+  "switch": "Wechseln…"
+}

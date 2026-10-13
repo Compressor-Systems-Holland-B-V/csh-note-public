@@ -1,0 +1,20 @@
+{
+  "fontSize": "编辑器文字大小",
+  "wrap": "自动换行",
+  "autosave": "自动保存",
+  "autosaveHint": "关闭此选项后，按 Ctrl+S 保存。",
+  "zoom": "启动时的预览大小",
+  "appearance": "外观",
+  "light": "浅色",
+  "dark": "深色",
+  "look": "样式",
+  "lookHint": "在主题页面可添加更多样式。",
+  "language": "语言",
+  "languageAuto": "与本机相同",
+  "assistant": "助手",
+  "uses": "使用 {provider}。",
+  "notConnected": "尚未连接。",
+  "providers": "服务提供商…",
+  "file": "你的 znote 文件",
+  "switch": "切换…"
+}

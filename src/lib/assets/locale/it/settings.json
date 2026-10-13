@@ -1,0 +1,20 @@
+{
+  "fontSize": "Dimensione testo editor",
+  "wrap": "Vai a capo automaticamente",
+  "autosave": "Salvataggio automatico",
+  "autosaveHint": "Se disattivato, premi Ctrl+S per salvare.",
+  "zoom": "Dimensione anteprima all'avvio",
+  "appearance": "Aspetto",
+  "light": "Chiaro",
+  "dark": "Scuro",
+  "look": "Tema",
+  "lookHint": "Aggiungi altri temi nella pagina Temi.",
+  "language": "Lingua",
+  "languageAuto": "Come quella del computer",
+  "assistant": "Assistente",
+  "uses": "Utilizza {provider}.",
+  "notConnected": "Non ancora connesso.",
+  "providers": "Provider…",
+  "file": "Il tuo file znote",
+  "switch": "Cambia…"
+}

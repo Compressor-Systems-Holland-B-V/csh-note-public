@@ -1,0 +1,78 @@
+{
+  "placeholder": "Kies een pagina, of maak er een, om te beginnen met schrijven.",
+  "pages": "Pagina's",
+  "switchProject": "Van project wisselen",
+  "noProject": "Nog geen project",
+  "noNotebooks": "Dit project heeft nog geen notitieblokken.",
+  "noProjects": "Maak een project om te beginnen.",
+  "noTemplate": "Geen sjabloon",
+  "assistantChanged": "De assistent heeft deze pagina gewijzigd",
+  "new": {
+    "project": "Nieuw project",
+    "notebook": "Nieuw notitieblok",
+    "page": "Nieuwe pagina",
+    "pageIn": "Nieuwe pagina in {notebook}"
+  },
+  "rename": {
+    "project": "Naam van project wijzigen",
+    "notebook": "Naam van notitieblok wijzigen",
+    "page": "Naam van pagina wijzigen"
+  },
+  "remove": {
+    "project": "Het project “{name}” verwijderen?",
+    "notebook": "Het notitieblok “{name}” verwijderen?",
+    "page": "De pagina “{name}” verwijderen?",
+    "text": "Het wordt naar de Prullenbak verplaatst, met alles wat erin zit."
+  },
+  "menu": {
+    "newProject": "Nieuw project…",
+    "renameProject": "Naam van dit project wijzigen…",
+    "deleteProject": "Dit project verwijderen…",
+    "newPage": "Nieuwe pagina…",
+    "importPage": "Een pagina uit een bestand importeren…",
+    "rename": "Naam wijzigen…",
+    "delete": "Verwijderen…",
+    "moveTo": "Verplaatsen naar {notebook}"
+  },
+  "name": {
+    "missing": "Typ eerst een naam.",
+    "slash": "Een naam mag geen schuine streep bevatten."
+  },
+  "replacePage": {
+    "title": "Deze pagina vervangen door “{name}”?",
+    "text": "De tekst op deze pagina wordt vervangen door de tekst van het bestand."
+  },
+  "sample": {
+    "project": "Aan de slag",
+    "notebook": "Notities",
+    "page": "Welkom",
+    "text": "= Welkom bij znote\n\nTyp Typst aan de linkerkant. De pagina's aan de rechterkant worden bijgewerkt terwijl je typt.\n\n- *Vet*, _nadruk_ en `code`\n- Wiskunde: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Gewoon document",
+    "slides": "Dia's"
+  },
+  "unsavedOnClose": "Je laatste wijzigingen konden niet worden opgeslagen. Sluit opnieuw om zonder deze wijzigingen af te sluiten. {reason}",
+  "file": {
+    "welcome": "Welkom bij znote",
+    "title": "Je znote-bestanden",
+    "text": "Je notities staan in één znote-bestand. Alles wat je schrijft, wordt erin opgeslagen, en je kunt het naar een andere computer kopiëren.",
+    "new": "Nieuw znote-bestand…",
+    "open": "Een znote-bestand openen…",
+    "bringIn": "De notities die ik al heb toevoegen…",
+    "recent": "Eerder geopend",
+    "forget": "Uit deze lijst verwijderen",
+    "forgetFile": "{name} uit deze lijst verwijderen",
+    "copy": "Een kopie van dit znote-bestand opslaan",
+    "switch": "Een ander znote-bestand openen of maken",
+    "savedAt": "Opgeslagen om {time}",
+    "themesTitle": "De thema's in dit bestand installeren?",
+    "themesText": "Dit znote-bestand bevat thema's die nog niet op deze computer staan. De pagina's hebben ze nodig.",
+    "themesInstall": "Installeren en openen",
+    "fontsTitle": "Sommige lettertypen zijn niet beschikbaar",
+    "fontsFallback": "Waar een lettertype niet beschikbaar is, gebruikt znote een ander. Tekst kan dan meer of minder ruimte innemen, waardoor regels op andere plaatsen kunnen afbreken en het aantal pagina's kan veranderen.",
+    "fontsMissing": "Deze lettertypen worden in dit bestand gebruikt, maar staan niet op deze computer:",
+    "fontsLeftOut": "Deze lettertypen mogen niet naar een znote-bestand worden gekopieerd. Op een computer zonder deze lettertypen wordt een ander lettertype gebruikt:",
+    "fontsSeen": "OK"
+  }
+}

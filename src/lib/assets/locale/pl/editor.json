@@ -1,0 +1,38 @@
+{
+  "source": "Kod źródłowy Typst",
+  "save": "Zapisz",
+  "saveTitle": "Zapisz tę stronę",
+  "load": "Wczytaj",
+  "loadTitle": "Zastąp tę stronę tekstem z pliku",
+  "templateTitle": "Użyj szablonu dla tej strony",
+  "locked": "Asystent pisze tę stronę. Będziesz mógł edytować ponownie, gdy skończy.",
+  "review": {
+    "button": "Przejrzyj zmiany",
+    "show": "Zobacz, co zmienił asystent, i zachowaj lub cofnij każdą część",
+    "hide": "Ukryj zmiany asystenta",
+    "keep": "Zachowaj",
+    "keepTitle": "Zachowaj tę zmianę",
+    "undo": "Cofnij",
+    "undoTitle": "Przywróć poprzednią zawartość",
+    "keepAll": "Zachowaj wszystko",
+    "keepAllTitle": "Zachowaj wszystkie zmiany wprowadzone przez asystenta na tej stronie",
+    "undoAll": "Cofnij wszystko",
+    "undoAllTitle": "Przywróć stronę do stanu sprzed zmian asystenta"
+  },
+  "problems": {
+    "label": "Problemy",
+    "error": "Błąd: {message}",
+    "warning": "Ostrzeżenie: {message}",
+    "none": "Brak problemów na tej stronie",
+    "count": "{errors} błędów i {warnings} ostrzeżeń na tej stronie"
+  },
+  "preview": {
+    "refresh": "Odśwież podgląd",
+    "updating": "Aktualizowanie…",
+    "fit": "Dopasuj",
+    "zoomOut": "Pomniejsz",
+    "zoomIn": "Powiększ",
+    "empty": "Tutaj pojawią się Twoje strony.",
+    "page": "Strona {number}"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "title": "匯出",
+  "format": "格式",
+  "pdfHint": "外觀與預覽完全相同。",
+  "pptxHint": "每頁一張投影片。文字仍可編輯;其餘皆為圖片。",
+  "blocked": {
+    "noPage": "請選擇要匯出的頁面。",
+    "problems": "此頁面有問題。請回到編輯模式修正後再匯出。",
+    "empty": "此頁面目前沒有可匯出的內容。"
+  },
+  "run": "匯出…",
+  "running": "正在匯出…",
+  "runningPage": "正在匯出您的頁面…",
+  "savedTo": "已儲存至 {path}",
+  "missingFonts": "PowerPoint 將以下列字型替代:{fonts}",
+  "openFile": "開啟檔案",
+  "showInFolder": "顯示於資料夾"
+}

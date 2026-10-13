@@ -1,0 +1,18 @@
+{
+  "title": "Eksportuj",
+  "format": "Format",
+  "pdfHint": "Wygląda dokładnie tak jak w podglądzie.",
+  "pptxHint": "Jeden slajd na stronę. Tekst pozostaje edytowalny; reszta to obrazki.",
+  "blocked": {
+    "noPage": "Wybierz stronę do eksportu.",
+    "problems": "Ta strona zawiera błędy. Wróć do edycji i napraw je przed eksportem.",
+    "empty": "Ta strona jest jeszcze pusta."
+  },
+  "run": "Eksportuj…",
+  "running": "Eksportowanie…",
+  "runningPage": "Eksportowanie strony…",
+  "savedTo": "Zapisano w {path}",
+  "missingFonts": "Program PowerPoint zastąpi następujące czcionki: {fonts}",
+  "openFile": "Otwórz plik",
+  "showInFolder": "Pokaż w folderze"
+}

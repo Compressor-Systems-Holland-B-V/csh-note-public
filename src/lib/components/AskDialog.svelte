@@ -17,6 +17,7 @@
   import { Input } from "$lib/components/ui/input";
   import { messageOf } from "$lib/utils";
   import Picker from "./Picker.svelte";
+  import { t } from "$lib/i18n.svelte";
 
   let { ask, onclose }: { ask: Ask; onclose: () => void } = $props();
 
@@ -52,11 +53,11 @@
         {#if ask.text}<Dialog.Description>{ask.text}</Dialog.Description>{/if}
       </Dialog.Header>
       {#if ask.value !== undefined}
-        <Input bind:value aria-label="Name" aria-invalid={failure !== null} autocomplete="off" />
+        <Input bind:value aria-label={t("common.name")} aria-invalid={failure !== null} autocomplete="off" />
       {/if}
       {#if ask.options}
         <Picker
-          aria-label="Template"
+          aria-label={t("common.template")}
           class="w-full"
           value={option}
           options={ask.options.map((label, value) => ({ value, label }))}
@@ -65,7 +66,7 @@
       {/if}
       {#if failure}<p class="text-sm whitespace-pre-line text-destructive" role="alert">{failure}</p>{/if}
       <Dialog.Footer>
-        <Button type="button" variant="outline" onclick={onclose}>Cancel</Button>
+        <Button type="button" variant="outline" onclick={onclose}>{t("common.cancel")}</Button>
         <Button type="submit" variant={ask.destructive ? "destructive" : "default"} disabled={busy}>
           {ask.action}
         </Button>

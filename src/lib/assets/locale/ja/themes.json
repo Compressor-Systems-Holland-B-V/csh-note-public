@@ -1,0 +1,31 @@
+{
+  "title": "テーマ",
+  "look": "外観",
+  "import": "テーマファイルをインポート…",
+  "intro": "テーマは znote の見た目を変えたり、ページテンプレートを追加したり、その両方を行えます。テーマのスイッチで、その外観とテンプレートを提供するかどうかを決めます。使用する外観は上のリストから選んでください。",
+  "storeFailure": "{reason} すでにインストール済みのテーマは下に表示されます。",
+  "search": "テーマを検索",
+  "installed": "インストール済み",
+  "none": "一致するテーマはありません。",
+  "kind": {
+    "look": "外観のみ",
+    "both": "外観とテンプレート",
+    "templates": "テンプレートのみ"
+  },
+  "contents": {
+    "look": "外観を変更します",
+    "both": "外観を変更し、ページテンプレートを追加します",
+    "templates": "ページテンプレートを追加します"
+  },
+  "version": "バージョン {version}",
+  "lookSwitch": "外観",
+  "lookSwitchTitle": "このテーマを外観のリストに表示する",
+  "templatesSwitch": "テンプレート",
+  "templatesSwitchTitle": "テンプレートを選ぶときに、このテーマのテンプレートを表示する",
+  "install": "インストール",
+  "installing": "インストール中…",
+  "update": "更新",
+  "updating": "更新中…",
+  "remove": "削除",
+  "removeTheme": "テーマ {name} を削除"
+}

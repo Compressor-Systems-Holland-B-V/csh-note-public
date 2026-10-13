@@ -1,0 +1,31 @@
+{
+  "title": "Temas",
+  "look": "Apariencia",
+  "import": "Importar un archivo de tema…",
+  "intro": "Un tema puede cambiar el aspecto de znote, añadir plantillas de página o ambas cosas. Los interruptores de un tema determinan si se ofrecen su apariencia y sus plantillas; elija la apariencia que desea usar de la lista anterior.",
+  "storeFailure": "{reason} Los temas que ya ha instalado se muestran a continuación.",
+  "search": "Buscar temas",
+  "installed": "Instalados",
+  "none": "No hay temas que coincidan.",
+  "kind": {
+    "look": "Solo apariencia",
+    "both": "Apariencia y plantillas",
+    "templates": "Solo plantillas"
+  },
+  "contents": {
+    "look": "Cambia la apariencia",
+    "both": "Cambia la apariencia y añade plantillas de página",
+    "templates": "Añade plantillas de página"
+  },
+  "version": "Versión {version}",
+  "lookSwitch": "Apariencia",
+  "lookSwitchTitle": "Mostrar este tema en la lista de apariencias",
+  "templatesSwitch": "Plantillas",
+  "templatesSwitchTitle": "Mostrar las plantillas de este tema al elegir una plantilla",
+  "install": "Instalar",
+  "installing": "Instalando…",
+  "update": "Actualizar",
+  "updating": "Actualizando…",
+  "remove": "Eliminar",
+  "removeTheme": "Eliminar el tema {name}"
+}

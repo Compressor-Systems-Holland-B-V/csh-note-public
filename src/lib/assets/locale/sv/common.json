@@ -1,0 +1,37 @@
+{
+  "cancel": "Avbryt",
+  "create": "Skapa",
+  "rename": "Byt namn",
+  "delete": "Ta bort",
+  "keep": "Behåll",
+  "replace": "Ersätt",
+  "done": "Klar",
+  "connect": "Anslut",
+  "settings": "Inställningar",
+  "name": "Namn",
+  "template": "Mall",
+  "default": "Standard",
+  "fitWidth": "Anpassa till bredd",
+  "version": "Version {version}",
+  "mode": {
+    "edit": "Redigera",
+    "export": "Exportera",
+    "themes": "Teman"
+  },
+  "appearance": {
+    "toLight": "Växla till ljust läge",
+    "toDark": "Växla till mörkt läge"
+  },
+  "assistant": {
+    "show": "Visa assistenten",
+    "hide": "Dölj assistenten"
+  },
+  "status": {
+    "more": "{problem} (och {count} till)",
+    "assistant": "Assistent: {activity}",
+    "working": "Arbetar…",
+    "downloading": "Hämtar paketet {name}…",
+    "previewFailed": "Förhandsgranskningen kunde inte uppdateras: {reason}",
+    "desktopOnly": "det fungerar bara i skrivbordsappen."
+  }
+}

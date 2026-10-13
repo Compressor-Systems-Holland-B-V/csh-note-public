@@ -4,7 +4,9 @@
   import { connect } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { loadThemes, theme } from "$lib/state/theme.svelte";
-  import { start } from "$lib/state/workspace.svelte";
+  import { inDesktopApp, projectNote } from "$lib/ipc";
+  import { noteOf, start } from "$lib/state/project.svelte";
+  import { setLocale } from "$lib/i18n.svelte";
 
   let { children } = $props();
 
@@ -27,6 +29,12 @@
     faces.forEach((face) => document.fonts.add(face));
     return () => faces.forEach((face) => document.fonts.delete(face));
   });
+
+  $effect(() => {
+    if (inDesktopApp() && settings.loaded) projectNote(settings.values.uiTheme, noteOf(settings.values)).catch(() => {});
+  });
+
+  $effect(() => setLocale(settings.loaded ? settings.values.language : null));
 
   connect();
   start();

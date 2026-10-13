@@ -1,0 +1,31 @@
+{
+  "title": "Designs",
+  "look": "Erscheinungsbild",
+  "import": "Design-Datei importieren…",
+  "intro": "Ein Design kann das Aussehen von znote verändern, Seitenvorlagen hinzufügen oder beides. Die Schalter eines Designs bestimmen, ob dessen Aussehen und Vorlagen angeboten werden; wählen Sie das zu verwendende Aussehen aus der Liste oben aus.",
+  "storeFailure": "{reason} Bereits installierte Designs werden unten angezeigt.",
+  "search": "Designs durchsuchen",
+  "installed": "Installiert",
+  "none": "Kein passendes Design gefunden.",
+  "kind": {
+    "look": "Nur Aussehen",
+    "both": "Aussehen und Vorlagen",
+    "templates": "Nur Vorlagen"
+  },
+  "contents": {
+    "look": "Ändert das Aussehen",
+    "both": "Ändert das Aussehen und fügt Seitenvorlagen hinzu",
+    "templates": "Fügt Seitenvorlagen hinzu"
+  },
+  "version": "Version {version}",
+  "lookSwitch": "Aussehen",
+  "lookSwitchTitle": "Dieses Design in der Liste der Erscheinungsbilder anzeigen",
+  "templatesSwitch": "Vorlagen",
+  "templatesSwitchTitle": "Die Vorlagen dieses Designs anzeigen, wenn Sie eine Vorlage auswählen",
+  "install": "Installieren",
+  "installing": "Installiere…",
+  "update": "Aktualisieren",
+  "updating": "Aktualisiere…",
+  "remove": "Entfernen",
+  "removeTheme": "Design {name} entfernen"
+}

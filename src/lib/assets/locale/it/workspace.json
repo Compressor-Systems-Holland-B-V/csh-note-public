@@ -1,0 +1,78 @@
+{
+  "placeholder": "Scegli una pagina, o creane una, per iniziare a scrivere.",
+  "pages": "Pagine",
+  "switchProject": "Cambia progetto",
+  "noProject": "Nessun progetto ancora",
+  "noNotebooks": "Questo progetto non ha ancora quaderni.",
+  "noProjects": "Crea un progetto per iniziare.",
+  "noTemplate": "Nessun modello",
+  "assistantChanged": "L'assistente ha modificato questa pagina",
+  "new": {
+    "project": "Nuovo progetto",
+    "notebook": "Nuovo quaderno",
+    "page": "Nuova pagina",
+    "pageIn": "Nuova pagina in {notebook}"
+  },
+  "rename": {
+    "project": "Rinomina progetto",
+    "notebook": "Rinomina quaderno",
+    "page": "Rinomina pagina"
+  },
+  "remove": {
+    "project": "Eliminare il progetto “{name}”?",
+    "notebook": "Eliminare il quaderno “{name}”?",
+    "page": "Eliminare la pagina “{name}”?",
+    "text": "Verrà spostata nel Cestino, insieme a tutto il suo contenuto."
+  },
+  "menu": {
+    "newProject": "Nuovo progetto…",
+    "renameProject": "Rinomina questo progetto…",
+    "deleteProject": "Elimina questo progetto…",
+    "newPage": "Nuova pagina…",
+    "importPage": "Importa una pagina da un file…",
+    "rename": "Rinomina…",
+    "delete": "Elimina…",
+    "moveTo": "Sposta in {notebook}"
+  },
+  "name": {
+    "missing": "Inserisci prima un nome.",
+    "slash": "Un nome non può contenere una barra."
+  },
+  "replacePage": {
+    "title": "Sostituire questa pagina con “{name}”?",
+    "text": "Il testo in questa pagina verrà sostituito dal testo del file."
+  },
+  "sample": {
+    "project": "Per iniziare",
+    "notebook": "Note",
+    "page": "Benvenuto",
+    "text": "= Benvenuto in znote\n\nScrivi in Typst sulla sinistra. Le pagine sulla destra si aggiornano mentre scrivi.\n\n- *Grassetto*, _enfasi_ e `codice`\n- Matematica: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Documento semplice",
+    "slides": "Presentazione"
+  },
+  "unsavedOnClose": "Non è stato possibile salvare le ultime modifiche. Chiudi di nuovo per uscire senza salvarle. {reason}",
+  "file": {
+    "welcome": "Benvenuto in znote",
+    "title": "I tuoi file znote",
+    "text": "Le tue note risiedono in un unico file znote. Tutto ciò che scrivi viene salvato al suo interno e puoi copiarlo su un altro computer.",
+    "new": "Nuovo file znote…",
+    "open": "Apri un file znote…",
+    "bringIn": "Importa le note che ho già…",
+    "recent": "Aperti in precedenza",
+    "forget": "Rimuovi da questo elenco",
+    "forgetFile": "Rimuovi {name} da questo elenco",
+    "copy": "Salva una copia di questo file znote",
+    "switch": "Apri o crea un altro file znote",
+    "savedAt": "Salvato alle {time}",
+    "themesTitle": "Installare i temi di questo file?",
+    "themesText": "Questo file znote porta con sé temi che non sono ancora su questo computer. Le sue pagine ne hanno bisogno.",
+    "themesInstall": "Installa e apri",
+    "fontsTitle": "Alcuni caratteri non sono disponibili",
+    "fontsFallback": "Quando un carattere non è disponibile, znote ne usa un altro. Il testo può occupare più o meno spazio, quindi le righe possono andare a capo in altri punti e il numero di pagine può cambiare.",
+    "fontsMissing": "Questi caratteri sono usati in questo file ma non sono su questo computer:",
+    "fontsLeftOut": "Questi caratteri non possono essere copiati in un file znote. Su un computer che non li ha viene usato un altro carattere:",
+    "fontsSeen": "OK"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "title": "Asistan",
+  "checking": "Bağlantı kontrol ediliyor…",
+  "timeSoFar": "Geçen süre",
+  "seconds": "{seconds}sn",
+  "showMore": "Daha fazla göster",
+  "showLess": "Daha az göster",
+  "chatSaveFailed": "Sohbetiniz kaydedilemedi: {reason}",
+  "empty": {
+    "title": "Ne yazmalıyım?"
+  },
+  "deletion": {
+    "label": "Silmeyi onayla",
+    "text": "Asistan “{path}” öğesini silmek istiyor. İçindeki her şeyle birlikte Geri Dönüşüm Kutusu'na taşınacak."
+  },
+  "composer": {
+    "placeholder": "Asistana sor… Göndermek için Ctrl+Enter",
+    "message": "Asistana mesaj",
+    "references": "Asistanın inceleyeceği yerler",
+    "removeReference": "{label} öğesini kaldır",
+    "add": "Bir sayfa veya dosya ekle",
+    "addTitle": "Asistanı bir sayfaya yönlendirin veya bir dosya ekleyin",
+    "attach": "Bu bilgisayardan dosya ekle…",
+    "web": "Asistanın bu sohbette interneti kullanmasına izin ver",
+    "wholeProject": "Tüm proje",
+    "wholeNotebook": "Tüm not defteri",
+    "presets": "Asistan nasıl çalışmalı",
+    "advanced": "Gelişmiş asistan ayarları",
+    "advancedTitle": "Gelişmiş: bu seçenekleri değiştirin veya kendinizinkini oluşturun",
+    "send": "Gönder",
+    "sendTitle": "Gönder (Ctrl+Enter)",
+    "stop": "Durdur",
+    "busyElsewhere": "Asistan başka bir sohbette meşgul"
+  },
+  "history": {
+    "title": "Önceki sohbetler",
+    "newChat": "Yeni sohbet",
+    "which": "Hangi sohbetler gösterilsin",
+    "chats": "Sohbetler",
+    "archived": "Arşivlenmiş",
+    "none": "Henüz sohbet yok.",
+    "noneArchived": "Arşivlenmiş öğe yok.",
+    "working": "Asistan bu sohbette çalışıyor",
+    "archive": "Arşivle",
+    "archiveChat": "“{title}” öğesini arşivle",
+    "restore": "Sohbetlere geri taşı",
+    "restoreChat": "“{title}” öğesini sohbetlere geri taşı",
+    "deleteChat": "“{title}” öğesini sil",
+    "deleteTitle": "“{title}” sohbeti silinsin mi?",
+    "deleteText": "Sohbet kalıcı olarak silinir. Sayfalarınız değiştirilmez.",
+    "archiveAll": "Tümünü arşivle",
+    "deleteAll": "Tümünü sil",
+    "archiveAllTitle": "Tüm sohbetler arşivlensin mi?",
+    "deleteAllTitle": "Arşivlenen tüm sohbetler silinsin mi?",
+    "deleteAllText": "Sohbetler kalıcı olarak silinir. Sayfalarınız değiştirilmez."
+  },
+  "steps": {
+    "thought": "Düşünce",
+    "review": "Gözden geçir",
+    "reviewTitle": "Sayfayı açın ve nelerin değiştiğini görün"
+  },
+  "summary": {
+    "read_one": "{count} sayfa okundu",
+    "read_other": "{count} sayfa okundu",
+    "edited_one": "{count} sayfa düzenlendi",
+    "edited_other": "{count} sayfa düzenlendi",
+    "other_one": "{count} diğer adım",
+    "other_other": "{count} diğer adım",
+    "thought": "üzerinde düşündü"
+  },
+  "activity": {
+    "thinking": "Düşünüyor…",
+    "replying": "Yanıtlıyor…",
+    "reading": "Okuyor…",
+    "readingPage": "{page} okunuyor…",
+    "writing": "Sayfa yazılıyor…",
+    "writingPage": "{page} yazılıyor…",
+    "looking": "Sayfalarınız taranıyor…",
+    "waiting": "Yanıtınızı bekliyor…",
+    "checking": "Sayfadaki sorunlar kontrol ediliyor…",
+    "renaming": "{path} yeniden adlandırılıyor…",
+    "creating": "{path} oluşturuluyor…",
+    "deleting": "{path} siliniyor…"
+  },
+  "note": {
+    "read": "{page} okundu",
+    "edited": "{page} düzenlendi",
+    "renamed": "{from}, {to} olarak yeniden adlandırıldı",
+    "created": "{path} oluşturuldu",
+    "deleted": "{path} silindi"
+  },
+  "preset": {
+    "title": "Gelişmiş asistan ayarları",
+    "text": "Bir ön ayar, asistanın {provider} ile ne kadar hızlı ve ne kadar dikkatli olacağına karar verir. Değiştirmek için birini seçin veya kendinizinkini oluşturun.",
+    "label": "Ön ayar",
+    "new": "Yeni ön ayar",
+    "mine": "Ön ayarım",
+    "model": "Model",
+    "defaultModel": "Varsayılan model",
+    "effort": "Ne kadar yoğun düşüneceği",
+    "effortHint": "Daha fazla düşünme daha yavaştır ve planınızdan daha fazla tüketir.",
+    "access": "Neler yapabileceği",
+    "web": "İnternet",
+    "webAsk": "Her sohbette seç",
+    "webOn": "Her zaman izinli",
+    "webOff": "Hiçbir zaman izinli değil",
+    "fast": "Hızlı mod",
+    "fastHint": "Aynı modelden daha hızlı yanıtlar, daha yüksek bir maliyetle.",
+    "backToStandard": "Standart “{name}” ayarına dön",
+    "delete": "Bu ön ayarı sil"
+  },
+  "effort": {
+    "low": "Hızlı",
+    "medium": "Dengeli",
+    "high": "Kapsamlı",
+    "xhigh": "Çok kapsamlı",
+    "max": "Maksimum"
+  },
+  "access": {
+    "read": "Sadece sayfalarımı oku",
+    "edit": "Sayfaları düzenle, silmeden önce sor",
+    "full": "Sormadan düzenle ve sil"
+  },
+  "size": {
+    "quick": "Hızlı",
+    "quickHint": "Kısa notlar ve küçük düzeltmeler. En hızlısı.",
+    "balanced": "Dengeli",
+    "balancedHint": "Günlük belgeler. İyi bir varsayılan.",
+    "thorough": "Kapsamlı",
+    "thoroughHint": "Uzun raporlar ve dikkatli yeniden yazımlar. En yavaşı.",
+    "custom": "Özel"
+  }
+}

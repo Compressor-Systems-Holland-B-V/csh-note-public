@@ -1,0 +1,13 @@
+ZNOTE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)"
+
+export BWS_PROJECT_ID=da0d011e-424f-44eb-a9d1-b4b001437287
+export BWS_ACCESS_TOKEN="${BWS_ACCESS_TOKEN:-$(secret-tool lookup service bws)}"
+
+export PATH="$ZNOTE_ROOT/scripts:$PATH"
+# Functions, not aliases: aliases are off in non-interactive shells.
+for _znote_script in "$ZNOTE_ROOT"/scripts/*; do
+  eval "$(basename "$_znote_script")() { \"$_znote_script\" \"\$@\"; }"
+done
+unset _znote_script
+
+echo "znote: $(ls "$ZNOTE_ROOT/scripts" | tr '\n' ' ')"

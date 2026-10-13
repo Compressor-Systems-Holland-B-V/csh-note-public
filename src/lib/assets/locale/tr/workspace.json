@@ -1,0 +1,78 @@
+{
+  "placeholder": "Yazmaya başlamak için bir sayfa seçin veya bir sayfa oluşturun.",
+  "pages": "Sayfalar",
+  "switchProject": "Projeyi değiştir",
+  "noProject": "Henüz proje yok",
+  "noNotebooks": "Bu projede henüz not defteri yok.",
+  "noProjects": "Başlamak için bir proje oluşturun.",
+  "noTemplate": "Şablon yok",
+  "assistantChanged": "Asistan bu sayfayı değiştirdi",
+  "new": {
+    "project": "Yeni proje",
+    "notebook": "Yeni not defteri",
+    "page": "Yeni sayfa",
+    "pageIn": "{notebook} içinde yeni sayfa"
+  },
+  "rename": {
+    "project": "Projeyi yeniden adlandır",
+    "notebook": "Not defterini yeniden adlandır",
+    "page": "Sayfayı yeniden adlandır"
+  },
+  "remove": {
+    "project": "“{name}” projesini sil?",
+    "notebook": "“{name}” not defterini sil?",
+    "page": "“{name}” sayfasını sil?",
+    "text": "İçindeki her şeyle birlikte Geri Dönüşüm Kutusu'na taşınır."
+  },
+  "menu": {
+    "newProject": "Yeni proje…",
+    "renameProject": "Bu projeyi yeniden adlandır…",
+    "deleteProject": "Bu projeyi sil…",
+    "newPage": "Yeni sayfa…",
+    "importPage": "Bir dosyadan sayfa içe aktar…",
+    "rename": "Yeniden adlandır…",
+    "delete": "Sil…",
+    "moveTo": "{notebook} içine taşı"
+  },
+  "name": {
+    "missing": "Önce bir ad yazın.",
+    "slash": "Ad eğik çizgi içeremez."
+  },
+  "replacePage": {
+    "title": "Bu sayfayı “{name}” ile değiştir?",
+    "text": "Bu sayfadaki metin, dosyanın metniyle değiştirilir."
+  },
+  "sample": {
+    "project": "Başlarken",
+    "notebook": "Notlar",
+    "page": "Hoş geldiniz",
+    "text": "= znote'a hoş geldiniz\n\nSolda Typst yazın. Sağdaki sayfalar siz yazdıkça güncellenir.\n\n- *Kalın*, _vurgu_ ve `kod`\n- Matematik: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Düz belge",
+    "slides": "Slaytlar"
+  },
+  "unsavedOnClose": "Son değişiklikleriniz kaydedilemedi. Onlar olmadan çıkmak için tekrar kapatın. {reason}",
+  "file": {
+    "welcome": "znote'a hoş geldiniz",
+    "title": "znote dosyalarınız",
+    "text": "Notlarınız tek bir znote dosyasında yaşar. Yazdığınız her şey içine kaydedilir ve onu başka bir bilgisayara kopyalayabilirsiniz.",
+    "new": "Yeni znote dosyası…",
+    "open": "Bir znote dosyası aç…",
+    "bringIn": "Zaten sahip olduğum notları getir…",
+    "recent": "Daha önce açılanlar",
+    "forget": "Bu listeden kaldır",
+    "forgetFile": "{name} öğesini bu listeden kaldır",
+    "copy": "Bu znote dosyasının bir kopyasını kaydet",
+    "switch": "Başka bir znote dosyası aç veya oluştur",
+    "savedAt": "{time} saatinde kaydedildi",
+    "themesTitle": "Bu dosyadaki temalar yüklensin mi?",
+    "themesText": "Bu znote dosyası, bu bilgisayarda henüz bulunmayan temalar getiriyor. Sayfalarının bunlara ihtiyacı var.",
+    "themesInstall": "Yükle ve aç",
+    "fontsTitle": "Bazı yazı tipleri kullanılamıyor",
+    "fontsFallback": "Bir yazı tipi kullanılamadığında znote başka birini kullanır. Metin bu durumda daha fazla veya daha az yer kaplayabilir; satırlar başka yerlerde bölünebilir ve sayfa sayısı değişebilir.",
+    "fontsMissing": "Bu yazı tipleri bu dosyada kullanılıyor ancak bu bilgisayarda yok:",
+    "fontsLeftOut": "Bu yazı tiplerinin bir znote dosyasına kopyalanmasına izin verilmiyor. Bunların bulunmadığı bir bilgisayarda başka bir yazı tipi kullanılır:",
+    "fontsSeen": "Tamam"
+  }
+}

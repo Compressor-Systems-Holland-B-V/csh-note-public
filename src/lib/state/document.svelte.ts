@@ -1,5 +1,7 @@
 import { compile, inDesktopApp, onCompileFailed, onCompiled, onDownloading } from "$lib/ipc";
 import type { Compiled, Diagnostic } from "$lib/ipc";
+import { messageOf } from "$lib/utils";
+import { t, translated } from "$lib/i18n.svelte";
 
 export type PageView = { url: string; width: number; height: number };
 
@@ -66,7 +68,7 @@ export class Document {
   request() {
     this.sent += 1;
     this.loading = true;
-    this.send(this.page, this.sent, this.text, this.fresh).catch((error: unknown) => this.fail(String(error)));
+    this.send(this.page, this.sent, this.text, this.fresh).catch((error: unknown) => this.fail(messageOf(error)));
   }
 
   fail(message: string) {
@@ -103,12 +105,12 @@ export class Document {
 export const doc = new Document(compile);
 
 export function connect() {
-  if (!inDesktopApp()) return doc.fail("it only works in the desktop app.");
+  if (!inDesktopApp()) return doc.fail(t("common.status.desktopOnly"));
   Promise.all([
     onCompiled((result) => doc.receive(result)),
     onDownloading((packageName) => (doc.downloading = packageName)),
-    onCompileFailed((message) => doc.fail(message)),
-  ]).catch((error: unknown) => doc.fail(String(error)));
+    onCompileFailed((message) => doc.fail(translated(message))),
+  ]).catch((error: unknown) => doc.fail(messageOf(error)));
 }
 
 if (import.meta.vitest) {

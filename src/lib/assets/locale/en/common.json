@@ -1,0 +1,37 @@
+{
+  "cancel": "Cancel",
+  "create": "Create",
+  "rename": "Rename",
+  "delete": "Delete",
+  "keep": "Keep",
+  "replace": "Replace",
+  "done": "Done",
+  "connect": "Connect",
+  "settings": "Settings",
+  "name": "Name",
+  "template": "Template",
+  "default": "Default",
+  "fitWidth": "Fit width",
+  "version": "Version {version}",
+  "mode": {
+    "edit": "Edit",
+    "export": "Export",
+    "themes": "Themes"
+  },
+  "appearance": {
+    "toLight": "Switch to light mode",
+    "toDark": "Switch to dark mode"
+  },
+  "assistant": {
+    "show": "Show the assistant",
+    "hide": "Hide the assistant"
+  },
+  "status": {
+    "more": "{problem} (and {count} more)",
+    "assistant": "Assistant: {activity}",
+    "working": "Working…",
+    "downloading": "Downloading package {name}…",
+    "previewFailed": "The preview could not be updated: {reason}",
+    "desktopOnly": "it only works in the desktop app."
+  }
+}

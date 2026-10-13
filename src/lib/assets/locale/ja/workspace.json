@@ -1,0 +1,78 @@
+{
+  "placeholder": "ページを選択するか、新規作成して書き始めましょう。",
+  "pages": "ページ",
+  "switchProject": "プロジェクトの切り替え",
+  "noProject": "プロジェクトがありません",
+  "noNotebooks": "このプロジェクトにはノートブックがまだありません。",
+  "noProjects": "プロジェクトを作成して始めましょう。",
+  "noTemplate": "テンプレートなし",
+  "assistantChanged": "アシスタントがこのページを変更しました",
+  "new": {
+    "project": "新規プロジェクト",
+    "notebook": "新規ノートブック",
+    "page": "新規ページ",
+    "pageIn": "{notebook} に新規ページ"
+  },
+  "rename": {
+    "project": "プロジェクト名の変更",
+    "notebook": "ノートブック名の変更",
+    "page": "ページ名の変更"
+  },
+  "remove": {
+    "project": "プロジェクト「{name}」を削除しますか？",
+    "notebook": "ノートブック「{name}」を削除しますか？",
+    "page": "ページ「{name}」を削除しますか？",
+    "text": "中身もまとめてごみ箱に移動します。"
+  },
+  "menu": {
+    "newProject": "新規プロジェクト…",
+    "renameProject": "このプロジェクトの名前を変更…",
+    "deleteProject": "このプロジェクトを削除…",
+    "newPage": "新規ページ…",
+    "importPage": "ファイルからページを読み込む…",
+    "rename": "名前の変更…",
+    "delete": "削除…",
+    "moveTo": "{notebook} に移動"
+  },
+  "name": {
+    "missing": "先に名前を入力してください。",
+    "slash": "名前にスラッシュは使えません。"
+  },
+  "replacePage": {
+    "title": "このページを「{name}」で置き換えますか？",
+    "text": "このページのテキストは、ファイルのテキストで置き換えられます。"
+  },
+  "sample": {
+    "project": "はじめに",
+    "notebook": "メモ",
+    "page": "ようこそ",
+    "text": "= znote へようこそ\n\n左側に Typst を入力します。右側のページは入力に合わせて更新されます。\n\n- *太字*、_強調_、`コード`\n- 数式: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "標準ドキュメント",
+    "slides": "スライド"
+  },
+  "unsavedOnClose": "最新の変更を保存できませんでした。もう一度閉じると、変更を破棄して終了します。 {reason}",
+  "file": {
+    "welcome": "znote へようこそ",
+    "title": "あなたの znote ファイル",
+    "text": "メモは 1 つの znote ファイルに保存されます。書いた内容はすべてそこに保存され、別のパソコンにコピーすることもできます。",
+    "new": "新規 znote ファイル…",
+    "open": "znote ファイルを開く…",
+    "bringIn": "既存のメモを取り込む…",
+    "recent": "以前開いたファイル",
+    "forget": "この一覧から削除",
+    "forgetFile": "{name} をこの一覧から削除",
+    "copy": "この znote ファイルのコピーを保存",
+    "switch": "別の znote ファイルを開くか作成する",
+    "savedAt": "{time} に保存",
+    "themesTitle": "このファイルに含まれるテーマをインストールしますか？",
+    "themesText": "この znote ファイルには、このコンピューターにまだないテーマが含まれています。ページの表示に必要です。",
+    "themesInstall": "インストールして開く",
+    "fontsTitle": "一部のフォントを利用できません",
+    "fontsFallback": "フォントを利用できない場合、znote は別のフォントを使います。文字の占める幅が変わるため、改行の位置やページ数が変わることがあります。",
+    "fontsMissing": "次のフォントはこのファイルで使われていますが、このコンピューターにはありません：",
+    "fontsLeftOut": "次のフォントは znote ファイルにコピーすることが許可されていません。これらがないコンピューターでは別のフォントが使われます：",
+    "fontsSeen": "OK"
+  }
+}

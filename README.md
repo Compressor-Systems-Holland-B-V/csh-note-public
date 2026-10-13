@@ -3,7 +3,7 @@
 
 Make it yours with fully customizable themes for both the editor and the interface, so your workspace looks the way you want it to.
 
-znote also has an assistant that runs Claude Code. Connect your own Claude subscription and use the assistant panel to generate new documents from a prompt, restructure sections, fix formatting, or ask for edits in plain language. The assistant works directly on your `.typ` files, and every change shows up live in the preview.
+znote also has an assistant. Connect your own Claude subscription (it runs Claude Code), an OpenRouter key, or your own OpenAI-compatible server such as Ollama, and use the assistant panel to generate new documents from a prompt, restructure sections, fix formatting, or ask for edits in plain language. The assistant works directly on your `.typ` files, every change shows up live in the preview, and you can review each change in the editor and keep or undo it.
 
 **Features**
 - Live Typst preview that updates as you type

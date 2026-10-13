@@ -1,0 +1,78 @@
+{
+  "placeholder": "Choose a page, or create one, to start writing.",
+  "pages": "Pages",
+  "switchProject": "Switch project",
+  "noProject": "No project yet",
+  "noNotebooks": "This project has no notebooks yet.",
+  "noProjects": "Create a project to get started.",
+  "noTemplate": "No template",
+  "assistantChanged": "The assistant changed this page",
+  "new": {
+    "project": "New project",
+    "notebook": "New notebook",
+    "page": "New page",
+    "pageIn": "New page in {notebook}"
+  },
+  "rename": {
+    "project": "Rename project",
+    "notebook": "Rename notebook",
+    "page": "Rename page"
+  },
+  "remove": {
+    "project": "Delete the project “{name}”?",
+    "notebook": "Delete the notebook “{name}”?",
+    "page": "Delete the page “{name}”?",
+    "text": "It moves to the Recycle Bin, with everything inside it."
+  },
+  "menu": {
+    "newProject": "New project…",
+    "renameProject": "Rename this project…",
+    "deleteProject": "Delete this project…",
+    "newPage": "New page…",
+    "importPage": "Import a page from a file…",
+    "rename": "Rename…",
+    "delete": "Delete…",
+    "moveTo": "Move to {notebook}"
+  },
+  "name": {
+    "missing": "Type a name first.",
+    "slash": "A name cannot contain a slash."
+  },
+  "replacePage": {
+    "title": "Replace this page with “{name}”?",
+    "text": "The text on this page is replaced by the text of the file."
+  },
+  "sample": {
+    "project": "Getting started",
+    "notebook": "Notes",
+    "page": "Welcome",
+    "text": "= Welcome to znote\n\nType Typst on the left. The pages on the right update as you type.\n\n- *Bold*, _emphasis_ and `code`\n- Maths: $ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "Plain document",
+    "slides": "Slides"
+  },
+  "unsavedOnClose": "Your latest changes could not be saved. Close again to leave without them. {reason}",
+  "file": {
+    "welcome": "Welcome to znote",
+    "title": "Your znote files",
+    "text": "Your notes live in one znote file. Everything you write is saved into it, and you can copy it to another computer.",
+    "new": "New znote file…",
+    "open": "Open a znote file…",
+    "bringIn": "Bring in the notes I already have…",
+    "recent": "Opened before",
+    "forget": "Remove from this list",
+    "forgetFile": "Remove {name} from this list",
+    "copy": "Save a copy of this znote file",
+    "switch": "Open or make another znote file",
+    "savedAt": "Saved at {time}",
+    "themesTitle": "Install the themes in this file?",
+    "themesText": "This znote file brings themes that are not on this computer yet. Its pages need them.",
+    "themesInstall": "Install and open",
+    "fontsTitle": "Some fonts are not available",
+    "fontsFallback": "Where a font is not available, znote uses another one. Text can then take more or less room, so lines may break in other places and the number of pages may change.",
+    "fontsMissing": "These fonts are used in this file but are not on this computer:",
+    "fontsLeftOut": "These fonts may not be copied into a znote file. On a computer without them, another font is used:",
+    "fontsSeen": "OK"
+  }
+}

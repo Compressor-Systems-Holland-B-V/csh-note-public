@@ -1,0 +1,37 @@
+{
+  "cancel": "Annuller",
+  "create": "Opret",
+  "rename": "Omdøb",
+  "delete": "Slet",
+  "keep": "Behold",
+  "replace": "Erstat",
+  "done": "Udført",
+  "connect": "Opret forbindelse",
+  "settings": "Indstillinger",
+  "name": "Navn",
+  "template": "Skabelon",
+  "default": "Standard",
+  "fitWidth": "Tilpas bredde",
+  "version": "Version {version}",
+  "mode": {
+    "edit": "Rediger",
+    "export": "Eksporter",
+    "themes": "Temaer"
+  },
+  "appearance": {
+    "toLight": "Skift til lyst tema",
+    "toDark": "Skift til mørkt tema"
+  },
+  "assistant": {
+    "show": "Vis assistenten",
+    "hide": "Skjul assistenten"
+  },
+  "status": {
+    "more": "{problem} (og {count} mere)",
+    "assistant": "Assistent: {activity}",
+    "working": "Arbejder…",
+    "downloading": "Downloader pakke {name}…",
+    "previewFailed": "Eksempelvisningen kunne ikke opdateres: {reason}",
+    "desktopOnly": "det virker kun i desktop-appen."
+  }
+}

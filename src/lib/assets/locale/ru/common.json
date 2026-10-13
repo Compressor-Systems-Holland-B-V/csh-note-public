@@ -1,0 +1,37 @@
+{
+  "cancel": "Отмена",
+  "create": "Создать",
+  "rename": "Переименовать",
+  "delete": "Удалить",
+  "keep": "Оставить",
+  "replace": "Заменить",
+  "done": "Готово",
+  "connect": "Подключить",
+  "settings": "Настройки",
+  "name": "Имя",
+  "template": "Шаблон",
+  "default": "По умолчанию",
+  "fitWidth": "По ширине",
+  "version": "Версия {version}",
+  "mode": {
+    "edit": "Правка",
+    "export": "Экспорт",
+    "themes": "Темы"
+  },
+  "appearance": {
+    "toLight": "Включить светлую тему",
+    "toDark": "Включить темную тему"
+  },
+  "assistant": {
+    "show": "Показать помощника",
+    "hide": "Скрыть помощника"
+  },
+  "status": {
+    "more": "{problem} (и еще {count})",
+    "assistant": "Помощник: {activity}",
+    "working": "Выполнение…",
+    "downloading": "Загрузка пакета {name}…",
+    "previewFailed": "Не удалось обновить предварительный просмотр: {reason}",
+    "desktopOnly": "это работает только в настольном приложении."
+  }
+}

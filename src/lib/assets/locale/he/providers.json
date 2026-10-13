@@ -1,0 +1,48 @@
+{
+  "connectTitle": "חיבור העוזר",
+  "connectText": "הוא כותב ועורך את הדפים שלך עבורך. תחילה בחר על מה הוא אמור לפעול.",
+  "chooseElse": "בחר משהו אחר",
+  "nameConnected": "{name} · מחובר",
+  "dialogTitle": "ספקי עוזר",
+  "dialogText": "חבר אחד או יותר, ולאחר מכן בחר במי העוזר ישתמש.",
+  "connected": "מחובר",
+  "connectedTo": "מחובר אל {url}",
+  "use": "הגדרה כברירת מחדל",
+  "disconnect": "נתק",
+  "checking": "בודק…",
+  "list": {
+    "claude": "Claude Code",
+    "claudeHint": "מנוי ה-Claude שלך או חשבון ה-API",
+    "openrouter": "OpenRouter",
+    "openrouterHint": "מפתח API אחד עבור מודלים מחברות רבות",
+    "custom": "שרת משלך",
+    "customHint": "Ollama, LM Studio או כל שרת תואם OpenAI"
+  },
+  "model": {
+    "type": "הקלד את שם המודל",
+    "missing": "בחר מודל לפני שתתחיל. עליו לתמוך בכלים.",
+    "hint": "בשימוש כאשר צ'אט או הגדרה קבועה מראש אינם בוחרים מודל אחר."
+  },
+  "signIn": {
+    "installing": "מוריד את Claude Code…",
+    "finish": "סיים את ההתחברות בדפדפן שלך…",
+    "noBrowser": "הדפדפן לא נפתח? העתק קישור זה, פתח אותו בכל דפדפן, ולאחר מכן הדבק את הקוד שמוצג לך.",
+    "link": "קישור להתחברות",
+    "copyLink": "העתק את קישור ההתחברות",
+    "code": "קוד מהדפדפן",
+    "unfinished": "ההתחברות לא הסתיימה. לחץ על 'חבר' כדי לנסות שוב.",
+    "note": "מריץ את Claude Code עם החשבון שלך. אתה מתחבר פעם אחת בדפדפן.",
+    "subscription": "מנוי Claude",
+    "subscriptionHint": "תוכנית Pro, Max או Team",
+    "console": "חשבון API",
+    "consoleHint": "תשלום לפי שימוש",
+    "sso": "כניסה יחידה (SSO)",
+    "ssoHint": "דרך החברה שלך"
+  },
+  "key": {
+    "server": "כתובת שרת",
+    "label": "מפתח API",
+    "labelOptional": "מפתח API (אם השרת זקוק לאחד)",
+    "note": "המפתח נשמר מוצפן במאגר הסיסמאות של מחשב זה ולעולם לא יוצג שוב."
+  }
+}

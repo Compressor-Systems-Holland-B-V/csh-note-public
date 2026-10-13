@@ -1,3 +1,4 @@
+import { translated } from "$lib/i18n.svelte";
 export { cn } from "cn";
 
 export type WithoutChild<T> = T extends { child?: any } ? Omit<T, "child"> : T;
@@ -5,4 +6,4 @@ export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, "childre
 export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
 export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null };
 
-export const messageOf = (error: unknown) => (error instanceof Error ? error.message : String(error));
+export const messageOf = (error: unknown) => translated(error instanceof Error ? error.message : String(error));

@@ -402,6 +402,62 @@ fn unpacked(themes: &Path, archive: impl Read + Seek, wanted: Option<&str>) -> R
     view(&folder, manifest)
 }
 
+fn copy(from: &Path, to: &Path, left: &mut u64, count: &mut usize) -> Result<(), String> {
+    fs::create_dir_all(to).map_err(|error| failed("save", error))?;
+    for entry in fs::read_dir(from).map_err(broken)?.flatten() {
+        let kind = entry.file_type().map_err(broken)?;
+        let target = to.join(entry.file_name());
+        *count += 1;
+        if kind.is_dir() {
+            copy(&entry.path(), &target, left, count)?;
+        } else if kind.is_file() {
+            let size = fs::copy(entry.path(), target).map_err(|error| failed("save", error))?;
+            *left = left.checked_sub(size).ok_or("This theme is too large once unpacked, so it was not imported.")?;
+        }
+        if *count > MAX_ENTRIES {
+            return Err("This theme has too many files, so it was not imported.".into());
+        }
+    }
+    Ok(())
+}
+
+pub fn named(folder: &Path) -> Option<String> {
+    open(folder).ok().map(|theme| format!("{} {}", theme.name, theme.version))
+}
+
+pub fn adopt(themes: &Path, folder: &Path) -> Result<(), String> {
+    let theme = open(folder)?;
+    if !folder.ends_with(Path::new(&theme.id).join(&theme.version)) {
+        return Err(format!("The theme “{}” is not stored where it says it is, so it was not installed.", theme.name));
+    }
+    let target = themes.join(&theme.id).join(&theme.version);
+    if target.is_dir() {
+        return Ok(());
+    }
+    let staging = themes.join(format!(".incoming-{}", theme.id));
+    let _ = fs::remove_dir_all(&staging);
+    let moved = copy(folder, &staging, &mut MAX_UNPACKED_BYTES.clone(), &mut 0)
+        .and_then(|()| open(&staging).map(drop))
+        .and_then(|()| fs::create_dir_all(themes.join(&theme.id)).and_then(|()| fs::rename(&staging, &target)).map_err(|error| failed("save", error)));
+    if moved.is_err() {
+        let _ = fs::remove_dir_all(&staging);
+    }
+    moved
+}
+
+fn latest(found: Vec<Theme>) -> Vec<Theme> {
+    let version = |theme: &Theme| theme.version.parse::<PackageVersion>().ok();
+    let mut kept: Vec<Theme> = Vec::new();
+    for theme in found {
+        match kept.iter_mut().find(|other| other.id == theme.id) {
+            Some(other) if version(other) < version(&theme) => *other = theme,
+            Some(_) => {}
+            None => kept.push(theme),
+        }
+    }
+    kept
+}
+
 fn folders(folder: &Path) -> Vec<PathBuf> {
     fs::read_dir(folder).into_iter().flatten().flatten().map(|entry| entry.path()).filter(|path| path.is_dir()).collect()
 }
@@ -463,7 +519,7 @@ pub fn folder(app: &AppHandle) -> Result<PathBuf, String> {
 
 #[tauri::command]
 pub fn list_themes(app: AppHandle) -> Result<Vec<Theme>, String> {
-    Ok(list(&folder(&app)?))
+    Ok(latest(list(&folder(&app)?)))
 }
 
 #[tauri::command(async)]

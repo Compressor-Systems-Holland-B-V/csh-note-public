@@ -3,11 +3,7 @@
   import Moon from "@lucide/svelte/icons/moon";
   import Palette from "@lucide/svelte/icons/palette";
   import Pencil from "@lucide/svelte/icons/pencil";
-  import FolderOpen from "@lucide/svelte/icons/folder-open";
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
-  import Lock from "@lucide/svelte/icons/lock";
-  import LockOpen from "@lucide/svelte/icons/lock-open";
-  import Save from "@lucide/svelte/icons/save";
   import Settings from "@lucide/svelte/icons/settings";
   import Sparkles from "@lucide/svelte/icons/sparkles";
   import Sun from "@lucide/svelte/icons/sun";
@@ -15,24 +11,26 @@
   import ExportPanel from "$lib/components/ExportPanel.svelte";
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
   import Editor from "$lib/components/Editor.svelte";
+  import EditorBar from "$lib/components/EditorBar.svelte";
   import Preview from "$lib/components/Preview.svelte";
+  import ProjectNotices from "$lib/components/ProjectNotices.svelte";
+  import ProjectStart from "$lib/components/ProjectStart.svelte";
   import Problems from "$lib/components/Problems.svelte";
-  import ProblemsBadge from "$lib/components/ProblemsBadge.svelte";
   import SettingsDialog from "$lib/components/SettingsDialog.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SnapshotButtons from "$lib/components/SnapshotButtons.svelte";
   import ThemeGallery from "$lib/components/ThemeGallery.svelte";
-  import TemplatePicker from "$lib/components/TemplatePicker.svelte";
-  import WorkspaceSetup from "$lib/components/WorkspaceSetup.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Resizable from "$lib/components/ui/resizable";
   import { appVersion, pickTypstFile } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { chats } from "$lib/state/chats.svelte";
   import { doc } from "$lib/state/document.svelte";
+  import { projects } from "$lib/state/project.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
+  import { i18n, t } from "$lib/i18n.svelte";
 
   let settingsOpen = $state(false);
   let assistantOpen = $state(false);
@@ -40,15 +38,15 @@
   let mode = $state<"edit" | "export" | "themes">("edit");
 
   const modes = [
-    { id: "edit", label: "Edit", icon: Pencil },
-    { id: "export", label: "Export", icon: FileOutput },
-    { id: "themes", label: "Themes", icon: Palette },
+    { id: "edit", icon: Pencil },
+    { id: "export", icon: FileOutput },
+    { id: "themes", icon: Palette },
   ] as const;
 
   const dark = $derived(settings.values.theme === "dark");
-  const themeLabel = $derived(dark ? "Switch to light mode" : "Switch to dark mode");
-  const assistantLabel = $derived(assistantOpen ? "Hide the assistant" : "Show the assistant");
-  const problem = $derived(workspace.failure ?? settings.failure ?? theme.failure ?? chats.failure);
+  const themeLabel = $derived(t(dark ? "common.appearance.toLight" : "common.appearance.toDark"));
+  const assistantLabel = $derived(t(assistantOpen ? "common.assistant.hide" : "common.assistant.show"));
+  const problems = $derived([workspace.failure, projects.choosing ? null : projects.failure, settings.failure, theme.failure, chats.failure].filter((failure) => failure !== null));
 
   function load() {
     return workspace.attempt(async () => {
@@ -57,9 +55,9 @@
       const replace = async () => workspace.rewrite(() => file.text);
       if (doc.text.trim() === "") return replace();
       ask = {
-        title: `Replace this page with “${file.name}”?`,
-        text: "The text on this page is replaced by the text of the file.",
-        action: "Replace",
+        title: t("workspace.replacePage.title", { name: file.name }),
+        text: t("workspace.replacePage.text"),
+        action: t("common.replace"),
         run: replace,
       };
     });
@@ -86,17 +84,24 @@
 
 <div class="flex h-screen flex-col">
   <header class="flex h-10 shrink-0 items-center justify-between border-b px-3 text-sm font-medium">
-    {#if theme.logo}<img src={theme.logo} alt={theme.active?.name} class="h-5" />{:else}znote{/if}
+    <div class="flex min-w-0 items-center gap-2">
+      {#if theme.logo}<img src={theme.logo} alt={theme.active?.name} class="h-5" />{:else}znote{/if}
+      {#if projects.title}
+        <span class="truncate font-normal text-muted-foreground" title={projects.savedAt === null ? projects.file : `${projects.file}\n${t("workspace.file.savedAt", { time: new Date(projects.savedAt).toLocaleTimeString(i18n.locale) })}`}>
+          {projects.title}
+        </span>
+      {/if}
+    </div>
     <div class="flex items-center gap-1">
-      {#each modes as { id, label, icon: Icon } (id)}
+      {#each modes as { id, icon: Icon } (id)}
         <Button variant={mode === id ? "secondary" : "ghost"} size="sm" aria-pressed={mode === id} onclick={() => (mode = id)}>
-          <Icon /> {label}
+          <Icon /> {t(`common.mode.${id}`)}
         </Button>
       {/each}
     </div>
     <div class="flex items-center gap-1">
       <SnapshotButtons />
-      <Button variant="ghost" size="icon-sm" aria-label="Settings" title="Settings" onclick={() => (settingsOpen = true)}>
+      <Button variant="ghost" size="icon-sm" aria-label={t("common.settings")} title={t("common.settings")} onclick={() => (settingsOpen = true)}>
         <Settings />
       </Button>
     </div>
@@ -120,30 +125,12 @@
     <Resizable.Handle />
     <Resizable.Pane defaultSize={32} minSize={15}>
       <div class="flex h-full flex-col">
-        {#if workspace.page !== null}
-          <fieldset class="flex h-9 min-w-0 shrink-0 items-center gap-1 border-b px-2" disabled={agent.locked}>
-            <TemplatePicker />
-            <Button variant="ghost" size="sm" disabled={!workspace.unsaved} title="Save this page" onclick={() => workspace.save()}>
-              <Save /> Save
-            </Button>
-            <Button variant="ghost" size="sm" title="Replace this page with the text of a file" onclick={load}>
-              <FolderOpen /> Load
-            </Button>
-            <span class="flex-1"></span>
-            {#if agent.locked}
-              <span class="text-destructive" role="status" aria-label="The assistant is writing this page. You can edit again when it is done." title="The assistant is writing this page. You can edit again when it is done.">
-                <Lock class="size-3.5" />
-              </span>
-            {:else if assistantOpen}
-              <span class="text-muted-foreground" aria-label="You can edit this page" title="You can edit this page"><LockOpen class="size-3.5" /></span>
-            {/if}
-            <ProblemsBadge diagnostics={doc.diagnostics} />
-          </fieldset>
-        {/if}
+        {#if workspace.page !== null}<EditorBar page={workspace.page} onload={load} />{/if}
         <div class="min-h-0 flex-1 {agent.locked ? 'ring-2 ring-chart-2 ring-inset' : ''}">
           {#if workspace.page === null}
-            {@render placeholder("Choose a page, or create one, to start writing.")}
+            {@render placeholder(t("workspace.placeholder"))}
           {:else}
+            {@const page = workspace.page}
             {#key doc.opened}
               <Editor
                 text={doc.text}
@@ -152,7 +139,12 @@
                 wordWrap={settings.values.wordWrap}
                 locked={agent.locked}
                 highlight={agent.highlight}
-                onchange={(text) => workspace.edit(text)}
+                original={agent.reviewing ? agent.original : null}
+                onchange={(text) => {
+                  workspace.edit(text);
+                  agent.settle(page);
+                }}
+                onoriginal={(original) => agent.settle(page, original)}
               />
             {/key}
           {/if}
@@ -166,7 +158,7 @@
     </Resizable.Pane>
     {#if assistantOpen}
       <Resizable.Handle />
-      <Resizable.Pane defaultSize={20} minSize={10} class="bg-sidebar">
+      <Resizable.Pane defaultSize={26} minSize={15} class="bg-sidebar">
         <AgentPanel />
       </Resizable.Pane>
     {/if}
@@ -174,16 +166,16 @@
   {/if}
 
   <footer class="flex h-8 shrink-0 items-center justify-between border-t px-3 text-xs text-muted-foreground">
-    <span>{#await appVersion() then version}Version {version}{:catch}{/await}</span>
+    <span>{#await appVersion() then version}{t("common.version", { version })}{:catch}{/await}</span>
     <span class="min-w-0 flex-1 truncate px-3" role="status">
-      {#if problem}
-        {problem}
+      {#if problems.length > 0}
+        <span title={problems.join("\n")}>{problems.length > 1 ? t("common.status.more", { problem: problems[0], count: problems.length - 1 }) : problems[0]}</span>
       {:else if agent.running}
-        <LoaderCircle class="inline size-3 animate-spin" /> Assistant: {agent.activity ?? "Working…"}
+        <LoaderCircle class="inline size-3 animate-spin" /> {t("common.status.assistant", { activity: agent.activity ?? t("common.status.working") })}
       {:else if doc.downloading}
-        Downloading package {doc.downloading}…
+        {t("common.status.downloading", { name: doc.downloading })}
       {:else if doc.failure}
-        The preview could not be updated: {doc.failure}
+        {t("common.status.previewFailed", { reason: doc.failure })}
       {/if}
     </span>
     {#if mode === "edit"}
@@ -208,4 +200,6 @@
 
 {#if ask}<AskDialog {ask} onclose={() => (ask = null)} />{/if}
 
-{#if workspace.needsFolder}<WorkspaceSetup />{/if}
+{#if projects.choosing}<ProjectStart />{/if}
+
+<ProjectNotices />

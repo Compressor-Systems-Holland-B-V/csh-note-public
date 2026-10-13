@@ -40,10 +40,6 @@ export type Notebook = { name: string; pages: string[] };
 
 export type Project = { name: string; notebooks: Notebook[] };
 
-export const defaultWorkspace = () => invoke<string>("default_workspace");
-
-export const pickFolder = () => invoke<string | null>("pick_folder");
-
 export type PickedFile = { name: string; text: string };
 
 export const pickTypstFile = () => invoke<PickedFile | null>("pick_typst_file");
@@ -104,11 +100,29 @@ export const removeTheme = (id: string) => invoke<void>("remove_theme", { id });
 
 export const themeFileUrl = (path: string) => convertFileSrc(path);
 
-export type OpenedSnapshot = { look: string | null };
+export const saveSnapshot = () => invoke<string | null>("save_snapshot");
 
-export const saveSnapshot = (look: string | null) => invoke<string | null>("save_snapshot", { look });
+export type OpenedProject =
+  | { kind: "opened"; file: string; folder: string; look: string | null; settings: unknown; missingFonts: string[] }
+  | { kind: "asks"; file: string; themes: string[] };
 
-export const openSnapshot = () => invoke<OpenedSnapshot | null>("open_snapshot");
+export const projectOpen = (file: string | null, accept: boolean) => invoke<OpenedProject | null>("project_open", { file, accept });
+
+export const projectAsked = () => invoke<string | null>("project_asked");
+
+export const onProjectAsked = (handler: (file: string) => void) => listen<string>("project-asked", (event) => handler(event.payload));
+
+export const projectNew = (from: string | null) => invoke<OpenedProject | null>("project_new", { from });
+
+export const projectNote = (look: string | null, settings: Record<string, unknown>) => invoke<void>("project_note", { look, settings });
+
+export const onProjectFontsLeftOut = (handler: (families: string[]) => void) =>
+  listen<string[]>("project-fonts-left-out", (event) => handler(event.payload));
+
+export const onProjectSaveFailed = (handler: (message: string) => void) =>
+  listen<string>("project-save-failed", (event) => handler(event.payload));
+
+export const onProjectSaved = (handler: () => void) => listen("project-saved", handler);
 
 export type ExportFormat = "pdf" | "pptx";
 
@@ -121,12 +135,13 @@ export const openExport = () => invoke<void>("open_export");
 
 export const showExport = () => invoke<void>("show_export");
 
-export type AgentStatus = { installed: boolean; connected: boolean };
+export type AgentStatus = { installed: boolean; connected: boolean; url: string | null };
 
 export type AgentEvent =
   | { kind: "text"; text: string }
+  | { kind: "thought"; text: string }
   | { kind: "step"; tool: string; page: string }
-  | { kind: "edited"; page: string }
+  | { kind: "edited"; page: string; before: string | null }
   | { kind: "read"; page: string }
   | { kind: "done"; session: string; failure: string | null };
 
@@ -135,13 +150,17 @@ export type AgentTurn = {
   prompt: string;
   system: string;
   session: string | null;
+  provider: string;
   model: string | null;
   effort: string | null;
+  readOnly: boolean;
+  fast: boolean;
+  web: boolean;
 };
 
 export type Attachment = { name: string; path: string };
 
-export const agentStatus = () => invoke<AgentStatus>("agent_status");
+export const agentStatus = (provider: string) => invoke<AgentStatus>("agent_status", { provider });
 
 export const agentInstall = () => invoke<void>("agent_install");
 
@@ -153,9 +172,14 @@ export function agentConnect(method: string | null, onLink: (link: string) => vo
 
 export const agentCode = (code: string) => invoke<void>("agent_code", { code });
 
-export const agentDisconnect = () => invoke<AgentStatus>("agent_disconnect");
+export const agentDisconnect = (provider: string) => invoke<AgentStatus>("agent_disconnect", { provider });
 
-export const agentCancel = () => invoke<void>("agent_cancel");
+export const agentCancel = (key: string | null) => invoke<void>("agent_cancel", { key });
+
+export const providerConnect = (provider: string, url: string | null, key: string) =>
+  invoke<string[]>("provider_connect", { provider, url, key });
+
+export const providerModels = (provider: string) => invoke<string[]>("provider_models", { provider });
 
 export function agentRun(turn: AgentTurn, handler: (event: AgentEvent) => void) {
   const events = new Channel<AgentEvent>();
@@ -167,20 +191,29 @@ export const agentAttach = (chat: string) => invoke<Attachment[]>("agent_attach"
 
 export const agentForget = (chat: string) => invoke<void>("agent_forget", { chat });
 
+export type ChatPart = { kind: "text" | "note" | "thought"; text: string; page?: string };
+
+export type ChatMessage = { from: "you" | "assistant"; parts: ChatPart[] };
+
 export type StoredChat = {
   id: string;
   title: string;
   session: string | null;
-  messages: { from: "you" | "assistant"; parts: { kind: "text" | "note"; text: string }[] }[];
+  provider: string | null;
+  messages: ChatMessage[];
   archived: boolean;
   updated: number;
 };
 
-const chatStore = new LazyStore("chats.json");
+const oldChatStore = new LazyStore("chats.json");
 
-export const readChats = () => chatStore.get<unknown>("chats");
+export const readChats = () => invoke<unknown[]>("chats_list");
 
-export const writeChats = (chats: StoredChat[]) => chatStore.set("chats", chats);
+export const readOldChats = () => oldChatStore.get<unknown>("chats");
+
+export const forgetOldChats = () => oldChatStore.delete("chats");
+
+export const writeChat = (chat: StoredChat) => invoke<void>("chat_save", { chat });
 
 const settingsStore = new LazyStore("settings.json");
 

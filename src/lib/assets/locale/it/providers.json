@@ -1,0 +1,48 @@
+{
+  "connectTitle": "Connetti l'assistente",
+  "connectText": "Scrive e modifica le tue pagine al posto tuo. Per prima cosa scegli su cosa deve essere eseguito.",
+  "chooseElse": "Scegli qualcos'altro",
+  "nameConnected": "{name} · connesso",
+  "dialogTitle": "Provider dell'assistente",
+  "dialogText": "Connettine uno o più, quindi scegli quale utilizzare per l'assistente.",
+  "connected": "Connesso",
+  "connectedTo": "Connesso a {url}",
+  "use": "Imposta come predefinito",
+  "disconnect": "Disconnetti",
+  "checking": "Verifica in corso…",
+  "list": {
+    "claude": "Claude Code",
+    "claudeHint": "Il tuo abbonamento Claude o account API",
+    "openrouter": "OpenRouter",
+    "openrouterHint": "Una chiave API per modelli di molte aziende",
+    "custom": "Il tuo server personale",
+    "customHint": "Ollama, LM Studio o qualsiasi server compatibile con OpenAI"
+  },
+  "model": {
+    "type": "Digita il nome di un modello",
+    "missing": "Scegli un modello prima di iniziare. Deve supportare gli strumenti.",
+    "hint": "Utilizzato quando una chat o un preset non sceglie un altro modello."
+  },
+  "signIn": {
+    "installing": "Download di Claude Code in corso…",
+    "finish": "Completa l'accesso nel browser…",
+    "noBrowser": "Il browser non si è aperto? Copia questo link, aprilo in un browser qualsiasi, quindi incolla il codice che ti viene mostrato.",
+    "link": "Link di accesso",
+    "copyLink": "Copia il link di accesso",
+    "code": "Codice dal browser",
+    "unfinished": "L'accesso non è stato completato. Premi Connetti per riprovare.",
+    "note": "Esegue Claude Code con il tuo account. Accedi una sola volta nel browser.",
+    "subscription": "Abbonamento Claude",
+    "subscriptionHint": "Piano Pro, Max o Team",
+    "console": "Account API",
+    "consoleHint": "Pagamento a consumo",
+    "sso": "Single sign-on",
+    "ssoHint": "Tramite la tua azienda"
+  },
+  "key": {
+    "server": "Indirizzo del server",
+    "label": "Chiave API",
+    "labelOptional": "Chiave API (se il server ne richiede una)",
+    "note": "La chiave viene conservata crittografata nel gestore password di questo computer e non verrà mai più mostrata."
+  }
+}

@@ -1,28 +1,70 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Display;
 use std::fs::{self, File};
-use std::io::{self, Cursor, Read, Write};
+use std::io::{self, Read};
 use std::path::{Path, PathBuf};
+use std::time::UNIX_EPOCH;
 
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, State};
-use tauri_plugin_dialog::DialogExt;
+use serde_json::Value;
 use typst::syntax::package::PackageVersion;
 use zip::write::SimpleFileOptions;
-use zip::{ZipArchive, ZipWriter};
+use zip::{CompressionMethod, ZipArchive, ZipWriter};
 
 use crate::theme;
-use crate::workspace::{Workspace, check_name};
+use crate::workspace::check_name;
 
 const MAX_UNPACKED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 const MAX_MANIFEST_BYTES: u64 = 1024 * 1024;
 const MAX_ENTRIES: usize = 50_000;
+const ALREADY_SMALL: [&str; 10] = ["png", "jpg", "jpeg", "gif", "webp", "pdf", "zip", "mp4", "mp3", "woff2"];
+const RESERVED: [&str; 5] = ["znote.json", "fonts.json", "pages", "themes", "fonts"];
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Manifest {
-    format: u32,
-    look: Option<String>,
-    themes: Vec<String>,
+pub type Packed = BTreeMap<String, (u64, u64)>;
+
+type Sources = Vec<(String, PathBuf)>;
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
+pub struct Manifest {
+    pub format: u32,
+    pub look: Option<String>,
+    pub themes: Vec<String>,
+    #[serde(default)]
+    pub settings: Value,
+    #[serde(flatten)]
+    pub other: serde_json::Map<String, Value>,
+}
+
+pub struct Home<'a>(pub &'a Path);
+
+impl Home<'_> {
+    pub fn pages(&self) -> PathBuf {
+        self.0.join("files")
+    }
+
+    pub fn themes(&self) -> PathBuf {
+        self.0.join("themes")
+    }
+
+    pub fn fonts(&self) -> PathBuf {
+        self.0.join("fonts")
+    }
+
+    pub fn font_use(&self) -> PathBuf {
+        self.0.join("fonts.json")
+    }
+
+    fn extra(&self) -> PathBuf {
+        self.0.join("extra")
+    }
+
+    fn manifest(&self) -> PathBuf {
+        self.0.join("znote.json")
+    }
+
+    fn packed(&self) -> PathBuf {
+        self.0.join("packed.json")
+    }
 }
 
 fn unsaved(error: impl Display) -> String {
@@ -51,56 +93,190 @@ fn files(folder: &Path, found: &mut Vec<PathBuf>) -> io::Result<()> {
         }
         if kind.is_dir() {
             files(&path, found)?;
-        } else if kind.is_file() && path.extension().is_none_or(|extension| extension != "znote") {
+        } else if kind.is_file() && path.extension().is_none_or(|extension| extension != "znote" && extension != "tmp") {
             found.push(path);
         }
     }
     Ok(())
 }
 
-pub fn pack(root: &Path, look: Option<String>) -> Result<Vec<u8>, String> {
+fn inside(folder: &Path, prefix: &str) -> Result<Sources, String> {
     let mut found = Vec::new();
-    files(root, &mut found).map_err(unsaved)?;
+    if folder.is_dir() {
+        files(folder, &mut found).map_err(unsaved)?;
+    }
     found.sort();
-    let mut writer = ZipWriter::new(Cursor::new(Vec::new()));
+    found
+        .into_iter()
+        .map(|file| {
+            let names: Option<Vec<&str>> = file.strip_prefix(folder).map_err(unsaved)?.iter().map(|name| name.to_str()).collect();
+            let names = names.ok_or_else(|| unsaved(format!("“{}” has a name that cannot be stored", file.display())))?;
+            Ok((format!("{prefix}{}", names.join("/")), file.clone()))
+        })
+        .collect()
+}
+
+pub fn stamp(file: &Path) -> (u64, u64) {
+    let modified = |data: &fs::Metadata| Some(data.modified().ok()?.duration_since(UNIX_EPOCH).ok()?.as_millis() as u64);
+    fs::metadata(file).map(|data| (data.len(), modified(&data).unwrap_or_default())).unwrap_or_default()
+}
+
+fn versions(folder: &Path) -> Vec<String> {
+    let mut found: Vec<String> = fs::read_dir(folder)
+        .into_iter()
+        .flatten()
+        .flatten()
+        .filter_map(|entry| entry.file_name().into_string().ok())
+        .filter(|name| name.parse::<PackageVersion>().is_ok() && folder.join(name).join("theme.json").is_file())
+        .collect();
+    found.sort();
+    found
+}
+
+fn theme_folder(home: &Home, installed: Option<&Path>, spec: &str) -> Option<(String, PathBuf)> {
+    let (id, wanted) = spec.split_once(':').map_or((spec, None), |(id, version)| (id, Some(version)));
+    if !theme::valid_id(id) {
+        return None;
+    }
+    [Some(home.themes()), installed.map(Path::to_path_buf)].into_iter().flatten().find_map(|themes| {
+        let folder = themes.join(id);
+        let version = match wanted {
+            Some(version) => folder.join(version).join("theme.json").is_file().then(|| version.to_string()),
+            None => versions(&folder).pop(),
+        }?;
+        Some((format!("themes/{id}/{version}/"), folder.join(version)))
+    })
+}
+
+fn needed(pages: &[(String, PathBuf)]) -> Vec<String> {
     let mut themes = BTreeSet::new();
-    for file in found {
-        let names: Option<Vec<&str>> =
-            file.strip_prefix(root).map_err(unsaved)?.iter().map(|name| name.to_str()).collect();
-        let names = names.ok_or_else(|| unsaved(format!("“{}” has a name that cannot be stored", file.display())))?;
-        if names.len() < 2 {
+    for (_, file) in pages.iter().filter(|(_, file)| file.extension().is_some_and(|extension| extension == "typ")) {
+        themes.extend(imports(&String::from_utf8_lossy(&fs::read(file).unwrap_or_default())));
+    }
+    themes.into_iter().collect()
+}
+
+fn entries(home: &Home, installed: Option<&Path>, look: &Option<String>) -> Result<(Sources, Vec<String>), String> {
+    let pages: Vec<(String, PathBuf)> =
+        inside(&home.pages(), "pages/")?.into_iter().filter(|(name, _)| name.matches('/').count() >= 2).collect();
+    let themes = needed(&pages);
+    let mut found = pages;
+    let mut carried = BTreeSet::new();
+    for spec in themes.iter().chain(look) {
+        if let Some((prefix, folder)) = theme_folder(home, installed, spec)
+            && carried.insert(prefix.clone())
+        {
+            found.extend(inside(&folder, &prefix)?);
+        }
+    }
+    found.extend(inside(&home.fonts(), "fonts/")?);
+    if home.font_use().is_file() {
+        found.push(("fonts.json".into(), home.font_use()));
+    }
+    let extra = inside(&home.extra(), "")?;
+    found.extend(extra.into_iter().filter(|(name, _)| !RESERVED.contains(&name.split('/').next().unwrap_or_default())));
+    Ok((found, themes))
+}
+
+fn already_small(name: &str) -> bool {
+    name.rsplit_once('.').is_some_and(|(_, extension)| ALREADY_SMALL.contains(&extension.to_ascii_lowercase().as_str()))
+}
+
+fn options(name: &str, size: u64) -> SimpleFileOptions {
+    let method = if already_small(name) { CompressionMethod::Stored } else { CompressionMethod::Deflated };
+    SimpleFileOptions::default().compression_method(method).large_file(size >= u32::MAX as u64)
+}
+
+fn checked(target: &Path, expected: usize, fresh: &[String]) -> Result<(), String> {
+    let broken = |error: &dyn Display| unsaved(format!("the new file did not read back correctly ({error})"));
+    let mut archive = ZipArchive::new(File::open(target).map_err(|error| broken(&error))?).map_err(|error| broken(&error))?;
+    if archive.len() != expected {
+        return Err(broken(&"an entry is missing"));
+    }
+    for name in fresh.iter().map(String::as_str).chain(["znote.json"]) {
+        let mut entry = archive.by_name(name).map_err(|error| broken(&error))?;
+        io::copy(&mut entry, &mut io::sink()).map_err(|error| broken(&error))?;
+    }
+    Ok(())
+}
+
+pub fn pack(
+    home: &Path,
+    installed: &Path,
+    target: &Path,
+    previous: Option<&Path>,
+    look: Option<String>,
+    settings: Value,
+) -> Result<Packed, String> {
+    let home = Home(home);
+    let before: Packed = fs::read(home.packed()).ok().and_then(|bytes| serde_json::from_slice(&bytes).ok()).unwrap_or_default();
+    let mut old = previous.and_then(|file| ZipArchive::new(File::open(file).ok()?).ok());
+    let (found, themes) = entries(&home, Some(installed), &look)?;
+    let mut writer = ZipWriter::new(File::create(target).map_err(unsaved)?);
+    let mut packed = Packed::new();
+    let mut fresh = Vec::new();
+    for (name, source) in &found {
+        let stamp = stamp(source);
+        let same = before.get(name) == Some(&stamp);
+        let kept = old.as_mut().filter(|_| same).and_then(|old| Some((old.index_for_name(name)?, old)));
+        match kept.and_then(|(index, old)| old.by_index_raw(index).ok()) {
+            Some(entry) => writer.raw_copy_file(entry).map_err(unsaved)?,
+            None => {
+                writer.start_file(name.as_str(), options(name, stamp.0)).map_err(unsaved)?;
+                io::copy(&mut File::open(source).map_err(unsaved)?, &mut writer).map_err(unsaved)?;
+                fresh.push(name.clone());
+            }
+        }
+        packed.insert(name.clone(), stamp);
+    }
+    let other = read_manifest(&home).map(|manifest| manifest.other).unwrap_or_default();
+    let manifest = Manifest { format: 1, look, themes, settings, other };
+    let json = serde_json::to_vec_pretty(&manifest).map_err(unsaved)?;
+    writer.start_file("znote.json", SimpleFileOptions::default()).map_err(unsaved)?;
+    io::Write::write_all(&mut writer, &json).map_err(unsaved)?;
+    writer.finish().and_then(|file| Ok(file.sync_all()?)).map_err(unsaved)?;
+    checked(target, found.len() + 1, &fresh)?;
+    fs::write(home.manifest(), json).map_err(unsaved)?;
+    Ok(packed)
+}
+
+pub fn remember(home: &Path, packed: &Packed) {
+    if let Ok(bytes) = serde_json::to_vec(packed) {
+        let _ = fs::write(Home(home).packed(), bytes);
+    }
+}
+
+pub fn read_manifest(home: &Home) -> Option<Manifest> {
+    serde_json::from_slice(&fs::read(home.manifest()).ok()?).ok()
+}
+
+pub fn missing(home: &Path, manifest: &Manifest, installed: &[(String, String)]) -> (Vec<PathBuf>, Vec<String>) {
+    let home = Home(home);
+    let mut offered = Vec::new();
+    let mut absent = Vec::new();
+    let has = |id: &str, version: Option<&str>| installed.iter().any(|(have, at)| have == id && version.is_none_or(|version| version == at));
+    let looked = manifest.look.iter().filter(|look| !manifest.themes.iter().any(|spec| spec.split(':').next() == Some(look)));
+    for spec in manifest.themes.iter().chain(looked) {
+        let (id, version) = spec.split_once(':').map_or((spec.as_str(), None), |(id, version)| (id, Some(version)));
+        if has(id, version) {
             continue;
         }
-        let data = fs::read(&file).map_err(unsaved)?;
-        if file.extension().is_some_and(|extension| extension == "typ") {
-            themes.extend(imports(&String::from_utf8_lossy(&data)));
-        }
-        writer.start_file(format!("pages/{}", names.join("/")), SimpleFileOptions::default()).map_err(unsaved)?;
-        writer.write_all(&data).map_err(unsaved)?;
-    }
-    let manifest = Manifest { format: 1, look, themes: themes.into_iter().collect() };
-    writer.start_file("znote.json", SimpleFileOptions::default()).map_err(unsaved)?;
-    writer.write_all(&serde_json::to_vec_pretty(&manifest).map_err(unsaved)?).map_err(unsaved)?;
-    Ok(writer.finish().map_err(unsaved)?.into_inner())
-}
-
-fn missing(manifest: &Manifest, installed: &[(String, String)]) -> Vec<String> {
-    let mut needed: Vec<String> = manifest
-        .themes
-        .iter()
-        .filter(|spec| !installed.iter().any(|(id, version)| **spec == format!("{id}:{version}")))
-        .map(|spec| spec.replace(':', " "))
-        .collect();
-    if let Some(look) = &manifest.look {
-        let listed = needed.iter().any(|theme| theme.split(' ').next() == Some(look));
-        if !listed && !installed.iter().any(|(id, _)| id == look) {
-            needed.push(look.clone());
+        match theme_folder(&home, None, spec) {
+            Some((_, folder)) => offered.push(folder),
+            None => absent.push(spec.replace(':', " ")),
         }
     }
-    needed
+    (offered, absent)
 }
 
-fn projects(folder: &Path) -> io::Result<Vec<(String, PathBuf)>> {
+pub fn absent(themes: &[String]) -> String {
+    format!(
+        "This file cannot be opened because it needs themes that are not installed:\n• {}\nInstall them on the Themes page, then open the file again.",
+        themes.join("\n• ")
+    )
+}
+
+fn folders(folder: &Path) -> io::Result<Vec<(String, PathBuf)>> {
     let mut found = Vec::new();
     for entry in fs::read_dir(folder)? {
         let entry = entry?;
@@ -112,12 +288,7 @@ fn projects(folder: &Path) -> io::Result<Vec<(String, PathBuf)>> {
     Ok(found)
 }
 
-pub fn open(
-    file: &Path,
-    themes: &Path,
-    root: &Path,
-    discard: impl Fn(&Path) -> Result<(), String>,
-) -> Result<Option<String>, String> {
+fn contents(file: &Path) -> Result<(ZipArchive<File>, Manifest), String> {
     let mut archive = ZipArchive::new(File::open(file).map_err(unreadable)?)
         .map_err(|_| "This file is not a znote file.".to_string())?;
     if archive.len() > MAX_ENTRIES {
@@ -134,72 +305,42 @@ pub fn open(
     if manifest.format != 1 {
         return Err("This file was made by a newer version of znote.".into());
     }
-    let needed = missing(&manifest, &theme::installed(themes));
-    if !needed.is_empty() {
-        return Err(format!(
-            "This file cannot be opened because it needs themes that are not installed:\n• {}\nInstall them on the Themes page, then open the file again.",
-            needed.join("\n• ")
-        ));
+    Ok((archive, manifest))
+}
+
+fn moved(from: PathBuf, to: PathBuf) -> Result<(), String> {
+    if from.exists() {
+        fs::rename(from, to).map_err(unreadable)?;
     }
-
-    let staging = root.join(format!(".incoming-{}", std::process::id()));
-    let _ = fs::remove_dir_all(&staging);
-    let replaced = theme::unpack(&mut archive, &staging, MAX_UNPACKED_BYTES, "znote file").and_then(|()| {
-        let pages = staging.join("pages");
-        fs::create_dir_all(&pages).map_err(unreadable)?;
-        let incoming = projects(&pages).map_err(unreadable)?;
-        for (_, old) in projects(root).map_err(unreadable)? {
-            discard(&old)?;
-        }
-        for (name, project) in incoming {
-            fs::rename(project, root.join(name)).map_err(unreadable)?;
-        }
-        Ok(())
-    });
-    let _ = fs::remove_dir_all(&staging);
-    replaced?;
-    Ok(manifest.look)
+    Ok(())
 }
 
-#[tauri::command(async)]
-pub fn save_snapshot(app: AppHandle, workspace: State<Workspace>, look: Option<String>) -> Result<Option<String>, String> {
-    let root = workspace.root()?;
-    let name = root.file_name().unwrap_or_default().to_string_lossy();
-    let dialog = app.dialog().file().set_file_name(format!("{name}.znote")).add_filter("znote file", &["znote"]);
-    let Some(target) = dialog.blocking_save_file() else {
-        return Ok(None);
-    };
-    let mut path = target.into_path().map_err(|error| error.to_string())?;
-    if path.extension().is_none_or(|given| !given.eq_ignore_ascii_case("znote")) {
-        path.as_mut_os_string().push(".znote");
+pub fn unpack(file: &Path, home: &Path) -> Result<Manifest, String> {
+    let (mut archive, manifest) = contents(file)?;
+    let _ = fs::remove_dir_all(home);
+    let staging = home.join(".incoming");
+    theme::unpack(&mut archive, &staging, MAX_UNPACKED_BYTES, "znote file")?;
+    let home = Home(home);
+    fs::create_dir_all(home.pages()).and_then(|()| fs::create_dir_all(staging.join("pages"))).map_err(unreadable)?;
+    for (name, project) in folders(&staging.join("pages")).map_err(unreadable)? {
+        fs::rename(project, home.pages().join(name)).map_err(unreadable)?;
     }
-    let bytes = pack(&root, look)?;
-    let mut temp = path.clone();
-    temp.as_mut_os_string().push(".tmp");
-    fs::write(&temp, bytes).and_then(|()| fs::rename(&temp, &path)).map_err(unsaved)?;
-    Ok(Some(path.to_string_lossy().into_owned()))
-}
-
-#[derive(Serialize)]
-pub struct Opened {
-    look: Option<String>,
-}
-
-#[tauri::command(async)]
-pub fn open_snapshot(app: AppHandle, workspace: State<Workspace>) -> Result<Option<Opened>, String> {
-    let Some(file) = app.dialog().file().add_filter("znote file", &["znote"]).blocking_pick_file() else {
-        return Ok(None);
-    };
-    let file = file.into_path().map_err(|error| error.to_string())?;
-    let recycle = |old: &Path| {
-        trash::delete(old).map_err(|error| format!("Your current notes could not be moved to the Recycle Bin: {error}"))
-    };
-    let look = open(&file, &theme::folder(&app)?, &workspace.root()?, recycle)?;
-    Ok(Some(Opened { look }))
+    let _ = fs::remove_dir_all(staging.join("pages"));
+    let _ = fs::remove_file(staging.join("znote.json"));
+    moved(staging.join("themes"), home.themes())?;
+    moved(staging.join("fonts"), home.fonts())?;
+    moved(staging.join("fonts.json"), home.font_use())?;
+    moved(staging, home.extra())?;
+    fs::write(home.manifest(), serde_json::to_vec_pretty(&manifest).map_err(unreadable)?).map_err(unreadable)?;
+    let (found, _) = entries(&home, None, &manifest.look)?;
+    remember(home.0, &found.iter().map(|(name, source)| (name.clone(), stamp(source))).collect());
+    Ok(manifest)
 }
 
 #[cfg(test)]
 mod tests {
+    use std::io::Write;
+
     use super::*;
 
     fn scratch(name: &str) -> PathBuf {
@@ -217,6 +358,7 @@ mod tests {
     fn install(themes: &Path, id: &str, version: &str) {
         let json = format!(r#"{{ "format": 1, "id": "{id}", "name": "Theme", "version": "{version}" }}"#);
         put(themes.join(id).join(version).join("theme.json"), &json);
+        put(themes.join(id).join(version).join("typst/lib.typ"), "#let brand = [Acme]");
     }
 
     fn archive(file: &Path, entries: &[(&str, &str)]) {
@@ -228,75 +370,138 @@ mod tests {
         writer.finish().unwrap();
     }
 
-    fn erase(old: &Path) -> Result<(), String> {
-        fs::remove_dir_all(old).map_err(|error| error.to_string())
+    fn names(file: &Path) -> Vec<String> {
+        let archive = ZipArchive::new(File::open(file).unwrap()).unwrap();
+        let mut names: Vec<String> = archive.file_names().map(|name| name.unwrap().into_owned()).collect();
+        names.sort();
+        names
+    }
+
+    fn text(file: &Path, name: &str) -> String {
+        let mut archive = ZipArchive::new(File::open(file).unwrap()).unwrap();
+        let mut text = String::new();
+        archive.by_name(name).unwrap().read_to_string(&mut text).unwrap();
+        text
     }
 
     #[test]
-    fn opening_replaces_the_notes_only_once_every_theme_they_use_is_installed() {
+    fn a_packed_file_carries_pages_themes_fonts_settings_and_what_a_newer_znote_added() {
         let folder = scratch("round");
-        let root = folder.join("notes");
-        put(root.join("Work/Notes/Monday.typ"), "// @themes/nothing here\n#import \"@themes/acme:0.1.0\": *\n= Hi");
-        put(root.join("Work/Notes/Plain.typ"), "#import \"@preview/cetz:0.3.0\": *");
-        put(root.join("Work/images/logo.svg"), "<svg/>");
-        put(root.join("Work/earlier.znote"), "old");
-        put(root.join("loose.txt"), "loose");
-        put(root.join(".git/config"), "hidden");
-        let file = folder.join("notes.znote");
-        fs::write(&file, pack(&root, Some("paper".into())).unwrap()).unwrap();
-
-        let (themes, target) = (folder.join("themes"), folder.join("other"));
-        put(target.join("Home/Diary/Today.typ"), "mine");
-        put(target.join("Work/Notes/Monday.typ"), "older");
-        put(target.join("kept.txt"), "kept");
-        put(target.join(".git/config"), "kept");
-
-        let error = open(&file, &themes, &target, erase).unwrap_err();
-        assert!(error.contains("not installed:\n• acme 0.1.0\n• paper\nInstall"), "{error}");
-        install(&themes, "paper", "2.0.0");
-        install(&themes, "acme", "0.2.0");
-        assert!(open(&file, &themes, &target, erase).unwrap_err().contains("not installed:\n• acme 0.1.0\nInstall"));
-        assert_eq!(fs::read_to_string(target.join("Home/Diary/Today.typ")).unwrap(), "mine");
-        assert_eq!(fs::read_to_string(target.join("Work/Notes/Monday.typ")).unwrap(), "older");
-
-        fs::remove_dir_all(themes.join("acme")).unwrap();
+        let (home, themes, file) = (folder.join("home"), folder.join("themes"), folder.join("notes.znote"));
+        let pages = Home(&home).pages();
+        put(pages.join("Work/Notes/Monday.typ"), "// @themes/nothing here\n#import \"@themes/acme:0.1.0\": *\n= Hi");
+        put(pages.join("Work/Notes/Plain.typ"), "#import \"@preview/cetz:0.3.0\": *");
+        put(pages.join("Work/images/logo.svg"), "<svg/>");
+        put(pages.join("Work/earlier.znote"), "old");
+        put(pages.join("Work/Notes/Monday.typ.tmp"), "half written");
+        put(pages.join("loose.txt"), "loose");
+        put(pages.join(".git/config"), "hidden");
+        put(home.join("fonts/Inter.ttf"), "font bytes");
+        put(home.join("fonts.json"), r#"{"Work/Notes/Monday":[{"family":"Inter","file":"Inter.ttf"}]}"#);
+        put(home.join("extra/history/1.json"), "from a newer znote");
+        put(home.join("extra/pages/Sneaky/Notes/A.typ"), "must not shadow a page");
+        put(home.join("znote.json"), r#"{ "format": 1, "look": null, "themes": [], "revision": 7 }"#);
         install(&themes, "acme", "0.1.0");
-        assert_eq!(open(&file, &themes, &target, erase).unwrap().as_deref(), Some("paper"));
-        assert!(fs::read_to_string(target.join("Work/Notes/Monday.typ")).unwrap().ends_with("= Hi"));
-        assert!(target.join("Work/images/logo.svg").is_file());
-        assert!(!target.join("Home").exists());
-        assert!(!target.join("Work/earlier.znote").exists());
-        assert!(!target.join("loose.txt").exists());
-        assert_eq!(fs::read_to_string(target.join("kept.txt")).unwrap(), "kept");
-        assert_eq!(fs::read_to_string(target.join(".git/config")).unwrap(), "kept");
-        assert_eq!(fs::read_dir(&target).unwrap().count(), 3);
+        install(&themes, "paper", "2.0.0");
+        install(&themes, "unused", "1.0.0");
+
+        let settings = serde_json::json!({ "theme": "dark" });
+        pack(&home, &themes, &file, None, Some("paper".into()), settings.clone()).unwrap();
+        let expected = [
+            "fonts.json",
+            "fonts/Inter.ttf",
+            "history/1.json",
+            "pages/Work/Notes/Monday.typ",
+            "pages/Work/Notes/Plain.typ",
+            "pages/Work/images/logo.svg",
+            "themes/acme/0.1.0/theme.json",
+            "themes/acme/0.1.0/typst/lib.typ",
+            "themes/paper/2.0.0/theme.json",
+            "themes/paper/2.0.0/typst/lib.typ",
+            "znote.json",
+        ];
+        assert_eq!(names(&file), expected);
+
+        let other = folder.join("another computer");
+        let manifest = unpack(&file, &other).unwrap();
+        assert_eq!(manifest.look.as_deref(), Some("paper"));
+        assert_eq!(manifest.themes, ["acme:0.1.0"]);
+        assert_eq!(manifest.settings, settings);
+        assert_eq!(manifest.other["revision"], 7);
+        let there = Home(&other);
+        assert!(fs::read_to_string(there.pages().join("Work/Notes/Monday.typ")).unwrap().ends_with("= Hi"));
+        assert_eq!(fs::read_to_string(there.fonts().join("Inter.ttf")).unwrap(), "font bytes");
+        assert!(there.font_use().is_file());
+        assert_eq!(fs::read_to_string(other.join("extra/history/1.json")).unwrap(), "from a newer znote");
+        assert!(there.themes().join("paper/2.0.0/typst/lib.typ").is_file());
+
+        let (offered, absent) = missing(&other, &manifest, &[]);
+        assert_eq!(offered, [there.themes().join("acme/0.1.0"), there.themes().join("paper/2.0.0")]);
+        assert!(absent.is_empty());
+        let installed = [("acme".to_string(), "0.2.0".to_string()), ("paper".to_string(), "1.0.0".to_string())];
+        assert_eq!(missing(&other, &manifest, &installed).0, [there.themes().join("acme/0.1.0")]);
+        fs::remove_dir_all(there.themes()).unwrap();
+        assert_eq!(missing(&other, &manifest, &[]).1, ["acme 0.1.0", "paper"]);
+        assert!(super::absent(&["acme 0.1.0".into()]).contains("not installed:\n• acme 0.1.0\nInstall"));
+
+        let again = folder.join("sent on.znote");
+        pack(&other, &folder.join("no themes here"), &again, None, manifest.look.clone(), manifest.settings.clone()).unwrap();
+        assert_eq!(names(&again), expected.iter().filter(|name| !name.starts_with("themes/")).copied().collect::<Vec<_>>());
+        assert_eq!(text(&again, "znote.json").matches("\"revision\": 7").count(), 1);
+    }
+
+    #[test]
+    fn saving_again_copies_what_did_not_change_and_rewrites_only_what_did() {
+        let folder = scratch("again");
+        let (home, themes, file, next) = (folder.join("home"), folder.join("themes"), folder.join("a.znote"), folder.join("b.znote"));
+        let pages = Home(&home).pages();
+        let (same, changed) = (pages.join("Work/Notes/Same.typ"), pages.join("Work/Notes/Changed.typ"));
+        put(same.clone(), "first");
+        put(changed.clone(), "first");
+        remember(&home, &pack(&home, &themes, &file, None, None, Value::Null).unwrap());
+
+        let written = fs::metadata(&same).unwrap().modified().unwrap();
+        fs::write(&same, "FIRST").unwrap();
+        File::options().write(true).open(&same).unwrap().set_modified(written).unwrap();
+        fs::write(&changed, "second, and longer").unwrap();
+        put(pages.join("Work/Notes/New.typ"), "new");
+        pack(&home, &themes, &next, Some(&file), None, Value::Null).unwrap();
+        assert_eq!(text(&next, "pages/Work/Notes/Same.typ"), "first");
+        assert_eq!(text(&next, "pages/Work/Notes/Changed.typ"), "second, and longer");
+        assert_eq!(text(&next, "pages/Work/Notes/New.typ"), "new");
+
+        pack(&home, &themes, &next, None, None, Value::Null).unwrap();
+        assert_eq!(text(&next, "pages/Work/Notes/Same.typ"), "FIRST");
+        assert!(checked(&next, 99, &[]).unwrap_err().contains("did not read back"));
+        assert!(already_small("pages/Work/photo.PNG") && !already_small("pages/Work/Notes/page.typ") && !already_small("png"));
     }
 
     #[test]
     fn a_file_that_is_not_ours_or_reaches_outside_its_folder_changes_nothing() {
         let folder = scratch("refused");
-        let (file, themes, target) = (folder.join("bad.znote"), folder.join("themes"), folder.join("inner/notes"));
+        let (file, home) = (folder.join("bad.znote"), folder.join("inner/home"));
         let manifest = r#"{ "format": 1, "look": null, "themes": [] }"#;
-        put(target.join("Home/Diary/Today.typ"), "mine");
 
         for name in ["../escaped.txt", "pages/../../../escaped.txt", "/escaped.txt", "pages\\..\\..\\escaped.txt"] {
             archive(&file, &[("znote.json", manifest), ("pages/Work/Notes/A.typ", ""), (name, "gotcha")]);
-            let error = open(&file, &themes, &target, erase).unwrap_err();
+            let error = unpack(&file, &home).unwrap_err();
             assert!(error.contains("outside its own folder"), "{name}: {error}");
             assert!(!folder.join("escaped.txt").exists() && !folder.join("inner/escaped.txt").exists());
         }
 
         archive(&file, &[("pages/Work/Notes/A.typ", "")]);
-        assert!(open(&file, &themes, &target, erase).unwrap_err().contains("no znote.json"));
+        assert!(unpack(&file, &home).unwrap_err().contains("no znote.json"));
         archive(&file, &[("znote.json", r#"{ "format": 2, "look": null, "themes": [] }"#)]);
-        assert!(open(&file, &themes, &target, erase).unwrap_err().contains("newer version"));
+        assert!(unpack(&file, &home).unwrap_err().contains("newer version"));
         fs::write(&file, "plain text").unwrap();
-        assert!(open(&file, &themes, &target, erase).unwrap_err().contains("not a znote file"));
-        assert_eq!(fs::read_to_string(target.join("Home/Diary/Today.typ")).unwrap(), "mine");
-        assert_eq!(fs::read_dir(&target).unwrap().count(), 1);
+        assert!(unpack(&file, &home).unwrap_err().contains("not a znote file"));
 
-        archive(&file, &[("znote.json", manifest), ("pages/CON/Notes/A.typ", ""), ("pages/.hidden/x", "")]);
-        assert_eq!(open(&file, &themes, &target, erase).unwrap(), None);
-        assert_eq!(fs::read_dir(&target).unwrap().count(), 0);
+        archive(&file, &[("znote.json", manifest), ("pages/CON/Notes/A.typ", ""), ("pages/.hidden/x", ""), ("themes/../x/1.0.0/theme.json", "{}")]);
+        assert!(unpack(&file, &home).is_err());
+        archive(&file, &[("znote.json", manifest), ("pages/CON/Notes/A.typ", ""), ("pages/.hidden/x", ""), ("themes/Bad Id/1.0.0/theme.json", "{}")]);
+        let read = unpack(&file, &home).unwrap();
+        assert_eq!(fs::read_dir(Home(&home).pages()).unwrap().count(), 0);
+        let wants = Manifest { themes: vec!["Bad Id:1.0.0".into()], ..read };
+        assert_eq!(missing(&home, &wants, &[]), (Vec::new(), vec!["Bad Id 1.0.0".to_string()]));
     }
 }

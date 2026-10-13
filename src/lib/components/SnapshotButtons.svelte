@@ -1,50 +1,27 @@
 <script lang="ts">
+  import Copy from "@lucide/svelte/icons/copy";
   import FolderOpen from "@lucide/svelte/icons/folder-open";
-  import Save from "@lucide/svelte/icons/save";
-  import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { openSnapshot, saveSnapshot } from "$lib/ipc";
+  import { saveSnapshot } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
-  import { settings } from "$lib/state/settings.svelte";
+  import { projects } from "$lib/state/project.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
+  import { t } from "$lib/i18n.svelte";
 
-  const saveLabel = "Save everything as a znote file";
-  const openLabel = "Open a znote file";
+  const copyLabel = $derived(t("workspace.file.copy"));
+  const openLabel = $derived(t("workspace.file.switch"));
 
-  let ask = $state<Ask | null>(null);
-
-  function save() {
+  function copy() {
     return workspace.attempt(async () => {
       await workspace.flush();
-      await saveSnapshot(settings.values.uiTheme);
+      await saveSnapshot();
     });
-  }
-
-  async function replace() {
-    const folder = settings.values.workspace;
-    if (folder === null) return;
-    await workspace.flush();
-    const opened = await openSnapshot();
-    if (opened === null) return;
-    await workspace.useFolder(folder, false);
-    settings.set("uiTheme", opened.look);
-  }
-
-  function open() {
-    ask = {
-      title: "Replace all your notes?",
-      text: "Opening a znote file replaces every project, notebook and page you have now. Anything you have not saved as a znote file is lost from znote; it is moved to the Recycle Bin.",
-      action: "Choose a file…",
-      run: replace,
-    };
   }
 </script>
 
-<Button variant="ghost" size="icon-sm" aria-label={saveLabel} title={saveLabel} onclick={save}>
-  <Save />
+<Button variant="ghost" size="icon-sm" aria-label={copyLabel} title={copyLabel} onclick={copy}>
+  <Copy />
 </Button>
-<Button variant="ghost" size="icon-sm" aria-label={openLabel} title={openLabel} disabled={agent.locked} onclick={open}>
+<Button variant="ghost" size="icon-sm" aria-label={openLabel} title={openLabel} disabled={agent.running} onclick={() => (projects.choosing = true)}>
   <FolderOpen />
 </Button>
-
-{#if ask}<AskDialog {ask} onclose={() => (ask = null)} />{/if}

@@ -1,0 +1,20 @@
+{
+  "fontSize": "エディターの文字サイズ",
+  "wrap": "長い行を折り返す",
+  "autosave": "自動的に保存する",
+  "autosaveHint": "オフの場合は Ctrl+S で保存してください。",
+  "zoom": "起動時のプレビューのサイズ",
+  "appearance": "外観",
+  "light": "ライト",
+  "dark": "ダーク",
+  "look": "デザイン",
+  "lookHint": "デザインはテーマのページで追加できます。",
+  "language": "言語",
+  "languageAuto": "このコンピューターに合わせる",
+  "assistant": "アシスタント",
+  "uses": "{provider} を使用します。",
+  "notConnected": "まだ接続されていません。",
+  "providers": "プロバイダー…",
+  "file": "あなたの znote ファイル",
+  "switch": "切り替え…"
+}

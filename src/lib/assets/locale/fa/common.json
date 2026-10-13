@@ -1,0 +1,37 @@
+{
+  "cancel": "انصراف",
+  "create": "ایجاد",
+  "rename": "تغییر نام",
+  "delete": "حذف",
+  "keep": "نگهداری",
+  "replace": "جایگزینی",
+  "done": "انجام شد",
+  "connect": "اتصال",
+  "settings": "تنظیمات",
+  "name": "نام",
+  "template": "قالب",
+  "default": "پیش‌فرض",
+  "fitWidth": "متناسب با عرض",
+  "version": "نسخه {version}",
+  "mode": {
+    "edit": "ویرایش",
+    "export": "خروجی گرفتن",
+    "themes": "تم‌ها"
+  },
+  "appearance": {
+    "toLight": "تغییر به حالت روشن",
+    "toDark": "تغییر به حالت تیره"
+  },
+  "assistant": {
+    "show": "نمایش دستیار",
+    "hide": "مخفی کردن دستیار"
+  },
+  "status": {
+    "more": "{problem} (و {count} مورد دیگر)",
+    "assistant": "دستیار: {activity}",
+    "working": "در حال انجام…",
+    "downloading": "در حال دانلود بسته {name}…",
+    "previewFailed": "پیش‌نمایش به‌روزرسانی نشد: {reason}",
+    "desktopOnly": "فقط در نسخه دسکتاپ برنامه کار می‌کند."
+  }
+}

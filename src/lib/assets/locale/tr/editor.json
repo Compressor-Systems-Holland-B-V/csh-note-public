@@ -1,0 +1,38 @@
+{
+  "source": "Typst kaynağı",
+  "save": "Kaydet",
+  "saveTitle": "Bu sayfayı kaydet",
+  "load": "Yükle",
+  "loadTitle": "Bu sayfayı bir dosyanın metniyle değiştir",
+  "templateTitle": "Bu sayfa için bir şablon kullan",
+  "locked": "Asistan bu sayfayı yazıyor. İşlem bittiğinde tekrar düzenleyebilirsiniz.",
+  "review": {
+    "button": "Değişiklikleri gözden geçir",
+    "show": "Asistanın neleri değiştirdiğini görün ve her bir kısmı tutun veya geri alın",
+    "hide": "Asistanın değiştirdiklerini gizle",
+    "keep": "Tut",
+    "keepTitle": "Bu değişikliği tut",
+    "undo": "Geri al",
+    "undoTitle": "Burada daha önce olanı geri getir",
+    "keepAll": "Hepsini tut",
+    "keepAllTitle": "Asistanın bu sayfada değiştirdiği her şeyi tut",
+    "undoAll": "Hepsini geri al",
+    "undoAllTitle": "Bu sayfayı asistan değiştirmeden önceki haline döndür"
+  },
+  "problems": {
+    "label": "Sorunlar",
+    "error": "Hata: {message}",
+    "warning": "Uyarı: {message}",
+    "none": "Bu sayfada sorun yok",
+    "count": "Bu sayfada {errors} hata ve {warnings} uyarı var"
+  },
+  "preview": {
+    "refresh": "Önizlemeyi yenile",
+    "updating": "Güncelleniyor…",
+    "fit": "Sığdır",
+    "zoomOut": "Uzaklaştır",
+    "zoomIn": "Yakınlaştır",
+    "empty": "Sayfalarınız burada görünecek.",
+    "page": "Sayfa {number}"
+  }
+}

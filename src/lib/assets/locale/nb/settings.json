@@ -1,0 +1,20 @@
+{
+  "fontSize": "Tekststørrelse i redigeringsfeltet",
+  "wrap": "Bryt lange linjer",
+  "autosave": "Lagre automatisk",
+  "autosaveHint": "Når dette er av, trykk Ctrl+S for å lagre.",
+  "zoom": "Forhåndsvisningsstørrelse ved oppstart",
+  "appearance": "Utseende",
+  "light": "Lys",
+  "dark": "Mørk",
+  "look": "Stil",
+  "lookHint": "Legg til flere stiler på siden for temaer.",
+  "language": "Språk",
+  "languageAuto": "Samme som denne datamaskinen",
+  "assistant": "Assistent",
+  "uses": "Bruker {provider}.",
+  "notConnected": "Ikke tilkoblet ennå.",
+  "providers": "Tilbydere…",
+  "file": "Din znote-fil",
+  "switch": "Bytt…"
+}

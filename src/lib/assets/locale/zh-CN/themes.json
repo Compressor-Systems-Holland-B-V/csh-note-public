@@ -1,0 +1,31 @@
+{
+  "title": "主题",
+  "look": "外观",
+  "import": "导入主题文件…",
+  "intro": "主题可以改变 znote 的外观、添加页面模板，或两者兼有。主题上的开关决定是否提供其外观和模板；请从上方列表中选择要使用的外观。",
+  "storeFailure": "{reason} 您已安装的主题显示在下方。",
+  "search": "搜索主题",
+  "installed": "已安装",
+  "none": "没有匹配的主题。",
+  "kind": {
+    "look": "仅外观",
+    "both": "外观和模板",
+    "templates": "仅模板"
+  },
+  "contents": {
+    "look": "更改外观",
+    "both": "更改外观并添加页面模板",
+    "templates": "添加页面模板"
+  },
+  "version": "版本 {version}",
+  "lookSwitch": "外观",
+  "lookSwitchTitle": "在外观列表中显示此主题",
+  "templatesSwitch": "模板",
+  "templatesSwitchTitle": "选择模板时显示此主题的模板",
+  "install": "安装",
+  "installing": "正在安装…",
+  "update": "更新",
+  "updating": "正在更新…",
+  "remove": "移除",
+  "removeTheme": "移除主题 {name}"
+}

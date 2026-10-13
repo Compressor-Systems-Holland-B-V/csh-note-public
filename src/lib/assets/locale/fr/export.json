@@ -1,0 +1,18 @@
+{
+  "title": "Exporter",
+  "format": "Format",
+  "pdfHint": "Ressemble exactement à l'aperçu.",
+  "pptxHint": "Une diapositive par page. Le texte reste modifiable ; tout le reste est une image.",
+  "blocked": {
+    "noPage": "Choisissez une page à exporter.",
+    "problems": "Cette page contient des erreurs. Revenez à l'édition pour les corriger avant d'exporter.",
+    "empty": "Cette page ne contient rien à exporter pour le moment."
+  },
+  "run": "Exporter…",
+  "running": "Exportation en cours…",
+  "runningPage": "Exportation de votre page en cours…",
+  "savedTo": "Enregistré dans {path}",
+  "missingFonts": "PowerPoint remplacera ces polices : {fonts}",
+  "openFile": "Ouvrir le fichier",
+  "showInFolder": "Afficher dans le dossier"
+}

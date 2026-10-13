@@ -1,0 +1,18 @@
+{
+  "title": "Exportar",
+  "format": "Formato",
+  "pdfHint": "Parece-se exatamente com a pré-visualização.",
+  "pptxHint": "Um diapositivo por página. O texto permanece editável; tudo o resto é uma imagem.",
+  "blocked": {
+    "noPage": "Escolha uma página para exportar.",
+    "problems": "Esta página tem problemas. Volte a Editar e corrija-os antes de exportar.",
+    "empty": "Esta página ainda não tem nada para exportar."
+  },
+  "run": "Exportar…",
+  "running": "A exportar…",
+  "runningPage": "A exportar a sua página…",
+  "savedTo": "Guardado em {path}",
+  "missingFonts": "O PowerPoint substituirá estes tipos de letra: {fonts}",
+  "openFile": "Abrir ficheiro",
+  "showInFolder": "Mostrar na pasta"
+}

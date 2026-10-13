@@ -1,0 +1,18 @@
+{
+  "title": "Export",
+  "format": "Format",
+  "pdfHint": "Looks exactly like the preview.",
+  "pptxHint": "One slide per page. Text stays editable; everything else is a picture.",
+  "blocked": {
+    "noPage": "Choose a page to export.",
+    "problems": "This page has problems. Go back to Edit and fix them before you export.",
+    "empty": "This page has nothing to export yet."
+  },
+  "run": "Export…",
+  "running": "Exporting…",
+  "runningPage": "Exporting your page…",
+  "savedTo": "Saved to {path}",
+  "missingFonts": "PowerPoint will substitute these fonts: {fonts}",
+  "openFile": "Open file",
+  "showInFolder": "Show in folder"
+}

@@ -1,0 +1,18 @@
+{
+  "title": "Exportera",
+  "format": "Format",
+  "pdfHint": "Ser exakt ut som förhandsgranskningen.",
+  "pptxHint": "En bild per sida. Texten förblir redigerbar; allt annat är en bild.",
+  "blocked": {
+    "noPage": "Välj en sida att exportera.",
+    "problems": "Den här sidan har problem. Gå tillbaka till Redigera och åtgärda dem innan du exporterar.",
+    "empty": "Den här sidan har inget att exportera än."
+  },
+  "run": "Exportera…",
+  "running": "Exporterar…",
+  "runningPage": "Exporterar din sida…",
+  "savedTo": "Sparad i {path}",
+  "missingFonts": "PowerPoint kommer att ersätta dessa typsnitt: {fonts}",
+  "openFile": "Öppna fil",
+  "showInFolder": "Visa i mapp"
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Thema's",
+  "look": "Uiterlijk",
+  "import": "Een themabestand importeren…",
+  "intro": "Een thema kan het uiterlijk van znote wijzigen, paginasjablonen toevoegen, of beide. De schakelaars op een thema bepalen of het uiterlijk en de sjablonen worden aangeboden; kies het uiterlijk dat je wilt gebruiken in de lijst hierboven.",
+  "storeFailure": "{reason} Thema's die je al hebt geïnstalleerd, staan hieronder.",
+  "search": "Thema's zoeken",
+  "installed": "Geïnstalleerd",
+  "none": "Geen thema gevonden.",
+  "kind": {
+    "look": "Alleen uiterlijk",
+    "both": "Uiterlijk en sjablonen",
+    "templates": "Alleen sjablonen"
+  },
+  "contents": {
+    "look": "Wijzigt het uiterlijk",
+    "both": "Wijzigt het uiterlijk en voegt paginasjablonen toe",
+    "templates": "Voegt paginasjablonen toe"
+  },
+  "version": "Versie {version}",
+  "lookSwitch": "Uiterlijk",
+  "lookSwitchTitle": "Dit thema weergeven in de lijst met uiterlijken",
+  "templatesSwitch": "Sjablonen",
+  "templatesSwitchTitle": "De sjablonen van dit thema weergeven wanneer je een sjabloon kiest",
+  "install": "Installeren",
+  "installing": "Installeren…",
+  "update": "Bijwerken",
+  "updating": "Bijwerken…",
+  "remove": "Verwijderen",
+  "removeTheme": "Het thema {name} verwijderen"
+}

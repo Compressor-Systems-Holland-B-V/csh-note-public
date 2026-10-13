@@ -1,0 +1,31 @@
+{
+  "title": "Temalar",
+  "look": "Görünüm",
+  "import": "Bir tema dosyası içe aktar…",
+  "intro": "Bir tema, znote'un görünümünü değiştirebilir, sayfa şablonları ekleyebilir veya her ikisini birden yapabilir. Temadaki anahtarlar, görünümünün ve şablonlarının sunulup sunulmayacağını belirler; yukarıdaki listeden kullanılacak görünümü seçin.",
+  "storeFailure": "{reason} Daha önce yüklediğiniz temalar aşağıda gösterilmiştir.",
+  "search": "Tema ara",
+  "installed": "Yüklü",
+  "none": "Eşleşen tema yok.",
+  "kind": {
+    "look": "Sadece görünüm",
+    "both": "Görünüm ve şablonlar",
+    "templates": "Sadece şablonlar"
+  },
+  "contents": {
+    "look": "Görünümü değiştirir",
+    "both": "Görünümü değiştirir ve sayfa şablonları ekler",
+    "templates": "Sayfa şablonları ekler"
+  },
+  "version": "Sürüm {version}",
+  "lookSwitch": "Görünüm",
+  "lookSwitchTitle": "Bu temayı görünüm listesinde göster",
+  "templatesSwitch": "Şablonlar",
+  "templatesSwitchTitle": "Bir şablon seçtiğinizde bu temanın şablonlarını göster",
+  "install": "Yükle",
+  "installing": "Yükleniyor…",
+  "update": "Güncelle",
+  "updating": "Güncelleniyor…",
+  "remove": "Kaldır",
+  "removeTheme": "{name} temasını kaldır"
+}

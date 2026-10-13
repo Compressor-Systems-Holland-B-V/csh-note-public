@@ -1,0 +1,18 @@
+{
+  "title": "Dışa Aktar",
+  "format": "Biçim",
+  "pdfHint": "Önizlemeyle birebir aynı görünür.",
+  "pptxHint": "Sayfa başına bir slayt. Metin düzenlenebilir kalır; diğer her şey resimdir.",
+  "blocked": {
+    "noPage": "Dışa aktarmak için bir sayfa seçin.",
+    "problems": "Bu sayfada sorunlar var. Dışa aktarmadan önce Düzenle kısmına dönüp bunları düzeltin.",
+    "empty": "Bu sayfada henüz dışa aktarılacak bir şey yok."
+  },
+  "run": "Dışa Aktar…",
+  "running": "Dışa aktarılıyor…",
+  "runningPage": "Sayfanız dışa aktarılıyor…",
+  "savedTo": "{path} konumuna kaydedildi",
+  "missingFonts": "PowerPoint şu yazı tiplerini değiştirecek: {fonts}",
+  "openFile": "Dosyayı aç",
+  "showInFolder": "Klasörde göster"
+}

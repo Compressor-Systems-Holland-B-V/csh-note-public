@@ -1,0 +1,37 @@
+{
+  "cancel": "Cancelar",
+  "create": "Criar",
+  "rename": "Mudar o nome",
+  "delete": "Eliminar",
+  "keep": "Manter",
+  "replace": "Substituir",
+  "done": "Concluído",
+  "connect": "Ligar",
+  "settings": "Definições",
+  "name": "Nome",
+  "template": "Modelo",
+  "default": "Predefinido",
+  "fitWidth": "Ajustar à largura",
+  "version": "Versão {version}",
+  "mode": {
+    "edit": "Editar",
+    "export": "Exportar",
+    "themes": "Temas"
+  },
+  "appearance": {
+    "toLight": "Mudar para o modo claro",
+    "toDark": "Mudar para o modo escuro"
+  },
+  "assistant": {
+    "show": "Mostrar o assistente",
+    "hide": "Ocultar o assistente"
+  },
+  "status": {
+    "more": "{problem} (e mais {count})",
+    "assistant": "Assistente: {activity}",
+    "working": "A processar…",
+    "downloading": "A transferir o pacote {name}…",
+    "previewFailed": "Não foi possível atualizar a pré-visualização: {reason}",
+    "desktopOnly": "só funciona na aplicação de ambiente de trabalho."
+  }
+}

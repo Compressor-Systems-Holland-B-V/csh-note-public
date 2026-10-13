@@ -1,0 +1,133 @@
+{
+  "title": "Assistant",
+  "checking": "Checking the connection…",
+  "timeSoFar": "Time so far",
+  "seconds": "{seconds}s",
+  "showMore": "Show more",
+  "showLess": "Show less",
+  "chatSaveFailed": "Your chat could not be saved: {reason}",
+  "empty": {
+    "title": "What should I write?"
+  },
+  "deletion": {
+    "label": "Confirm deletion",
+    "text": "The assistant wants to delete “{path}”. It moves to the Recycle Bin, with everything inside it."
+  },
+  "composer": {
+    "placeholder": "Ask the assistant… Ctrl+Enter to send",
+    "message": "Message to the assistant",
+    "references": "What the assistant will look at",
+    "removeReference": "Remove {label}",
+    "add": "Add a page or a file",
+    "addTitle": "Point the assistant to a page, or attach a file",
+    "attach": "Attach files from this computer…",
+    "web": "Let the assistant use the internet in this chat",
+    "wholeProject": "The whole project",
+    "wholeNotebook": "The whole notebook",
+    "presets": "How the assistant should work",
+    "advanced": "Advanced assistant settings",
+    "advancedTitle": "Advanced: change these choices or make your own",
+    "send": "Send",
+    "sendTitle": "Send (Ctrl+Enter)",
+    "stop": "Stop",
+    "busyElsewhere": "The assistant is busy in another chat"
+  },
+  "history": {
+    "title": "Earlier chats",
+    "newChat": "New chat",
+    "which": "Which chats to show",
+    "chats": "Chats",
+    "archived": "Archived",
+    "none": "No chats yet.",
+    "noneArchived": "Nothing is archived.",
+    "working": "The assistant is working in this chat",
+    "archive": "Archive",
+    "archiveChat": "Archive “{title}”",
+    "restore": "Move back to chats",
+    "restoreChat": "Move “{title}” back to chats",
+    "deleteChat": "Delete “{title}”",
+    "deleteTitle": "Delete the chat “{title}”?",
+    "deleteText": "The chat is removed for good. Your pages are not changed.",
+    "archiveAll": "Archive all",
+    "deleteAll": "Delete all",
+    "archiveAllTitle": "Archive all chats?",
+    "deleteAllTitle": "Delete all archived chats?",
+    "deleteAllText": "The chats are removed for good. Your pages are not changed."
+  },
+  "steps": {
+    "thought": "Thought",
+    "review": "Review",
+    "reviewTitle": "Open the page and see what changed"
+  },
+  "summary": {
+    "read_one": "read {count} page",
+    "read_other": "read {count} pages",
+    "edited_one": "edited {count} page",
+    "edited_other": "edited {count} pages",
+    "other_one": "{count} other step",
+    "other_other": "{count} other steps",
+    "thought": "thought about it"
+  },
+  "activity": {
+    "thinking": "Thinking…",
+    "replying": "Replying…",
+    "reading": "Reading…",
+    "readingPage": "Reading {page}…",
+    "writing": "Writing a page…",
+    "writingPage": "Writing {page}…",
+    "looking": "Looking through your pages…",
+    "waiting": "Waiting for your answer…",
+    "checking": "Checking the page for problems…",
+    "renaming": "Renaming {path}…",
+    "creating": "Creating {path}…",
+    "deleting": "Deleting {path}…"
+  },
+  "note": {
+    "read": "Read {page}",
+    "edited": "Edited {page}",
+    "renamed": "Renamed {from} to {to}",
+    "created": "Created {path}",
+    "deleted": "Deleted {path}"
+  },
+  "preset": {
+    "title": "Advanced assistant settings",
+    "text": "A preset decides how fast and how careful the assistant is with {provider}. Pick one to change it, or make your own.",
+    "label": "Preset",
+    "new": "New preset",
+    "mine": "My preset",
+    "model": "Model",
+    "defaultModel": "Default model",
+    "effort": "How hard it thinks",
+    "effortHint": "More thinking is slower and uses more of your plan.",
+    "access": "What it may do",
+    "web": "Internet",
+    "webAsk": "Choose in each chat",
+    "webOn": "Always allowed",
+    "webOff": "Never allowed",
+    "fast": "Fast mode",
+    "fastHint": "Quicker answers from the same model, at a higher price.",
+    "backToStandard": "Back to the standard “{name}”",
+    "delete": "Delete this preset"
+  },
+  "effort": {
+    "low": "Quick",
+    "medium": "Balanced",
+    "high": "Thorough",
+    "xhigh": "Very thorough",
+    "max": "Maximum"
+  },
+  "access": {
+    "read": "Only read my pages",
+    "edit": "Edit pages, ask before deleting",
+    "full": "Edit and delete without asking"
+  },
+  "size": {
+    "quick": "Quick",
+    "quickHint": "Short notes and small fixes. Fastest.",
+    "balanced": "Balanced",
+    "balancedHint": "Everyday documents. A good default.",
+    "thorough": "Thorough",
+    "thoroughHint": "Long reports and careful rewrites. Slowest.",
+    "custom": "Custom"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "title": "助手",
+  "checking": "正在检查连接…",
+  "timeSoFar": "已用时间",
+  "seconds": "{seconds} 秒",
+  "showMore": "显示更多",
+  "showLess": "显示更少",
+  "chatSaveFailed": "无法保存您的聊天:{reason}",
+  "empty": {
+    "title": "要我写什么?"
+  },
+  "deletion": {
+    "label": "确认删除",
+    "text": "助手想要删除“{path}”。它将连同其中的所有内容一起移到回收站。"
+  },
+  "composer": {
+    "placeholder": "向助手提问… 按 Ctrl+Enter 发送",
+    "message": "发给助手的消息",
+    "references": "助手将查看的内容",
+    "removeReference": "移除 {label}",
+    "add": "添加页面或文件",
+    "addTitle": "让助手查看某个页面,或附加一个文件",
+    "attach": "从这台电脑附加文件…",
+    "web": "允许助手在此对话中使用互联网",
+    "wholeProject": "整个项目",
+    "wholeNotebook": "整个笔记本",
+    "presets": "助手的工作方式",
+    "advanced": "助手高级设置",
+    "advancedTitle": "高级:修改这些选项,或创建自己的设置",
+    "send": "发送",
+    "sendTitle": "发送(Ctrl+Enter)",
+    "stop": "停止",
+    "busyElsewhere": "助手正在另一个聊天中忙碌"
+  },
+  "history": {
+    "title": "以前的聊天",
+    "newChat": "新建聊天",
+    "which": "显示哪些聊天",
+    "chats": "聊天",
+    "archived": "已归档",
+    "none": "还没有聊天。",
+    "noneArchived": "没有归档的内容。",
+    "working": "助手正在此聊天中工作",
+    "archive": "归档",
+    "archiveChat": "归档“{title}”",
+    "restore": "移回聊天",
+    "restoreChat": "将“{title}”移回聊天",
+    "deleteChat": "删除“{title}”",
+    "deleteTitle": "删除聊天“{title}”?",
+    "deleteText": "聊天将被永久删除。您的页面不会更改。",
+    "archiveAll": "全部归档",
+    "deleteAll": "全部删除",
+    "archiveAllTitle": "归档所有聊天?",
+    "deleteAllTitle": "删除所有已归档的聊天?",
+    "deleteAllText": "聊天将被永久删除。您的页面不会更改。"
+  },
+  "steps": {
+    "thought": "思考",
+    "review": "查看",
+    "reviewTitle": "打开页面,查看更改内容"
+  },
+  "summary": {
+    "read_one": "读取了 {count} 个页面",
+    "read_other": "读取了 {count} 个页面",
+    "edited_one": "编辑了 {count} 个页面",
+    "edited_other": "编辑了 {count} 个页面",
+    "other_one": "{count} 个其他步骤",
+    "other_other": "{count} 个其他步骤",
+    "thought": "进行了思考"
+  },
+  "activity": {
+    "thinking": "正在思考…",
+    "replying": "正在回复…",
+    "reading": "正在读取…",
+    "readingPage": "正在读取 {page}…",
+    "writing": "正在编写页面…",
+    "writingPage": "正在编写 {page}…",
+    "looking": "正在浏览您的页面…",
+    "waiting": "正在等待您的回答…",
+    "checking": "正在检查页面是否有问题…",
+    "renaming": "正在重命名 {path}…",
+    "creating": "正在创建 {path}…",
+    "deleting": "正在删除 {path}…"
+  },
+  "note": {
+    "read": "读取了 {page}",
+    "edited": "编辑了 {page}",
+    "renamed": "已将 {from} 重命名为 {to}",
+    "created": "已创建 {path}",
+    "deleted": "已删除 {path}"
+  },
+  "preset": {
+    "title": "助手高级设置",
+    "text": "预设决定助手使用 {provider} 时的速度和谨慎程度。选择一个预设进行修改,或创建自己的预设。",
+    "label": "预设",
+    "new": "新建预设",
+    "mine": "我的预设",
+    "model": "模型",
+    "defaultModel": "默认模型",
+    "effort": "思考强度",
+    "effortHint": "思考越多,速度越慢,消耗的套餐额度也越多。",
+    "access": "允许的操作",
+    "web": "互联网",
+    "webAsk": "在每个聊天中选择",
+    "webOn": "始终允许",
+    "webOff": "始终禁止",
+    "fast": "快速模式",
+    "fastHint": "同一模型更快地给出回答,但价格更高。",
+    "backToStandard": "恢复为标准“{name}”",
+    "delete": "删除此预设"
+  },
+  "effort": {
+    "low": "快速",
+    "medium": "均衡",
+    "high": "深入",
+    "xhigh": "非常深入",
+    "max": "最大"
+  },
+  "access": {
+    "read": "仅读取我的页面",
+    "edit": "编辑页面,删除前先询问",
+    "full": "不经询问直接编辑和删除"
+  },
+  "size": {
+    "quick": "快速",
+    "quickHint": "简短笔记和小修改。速度最快。",
+    "balanced": "均衡",
+    "balancedHint": "日常文档。推荐的默认选择。",
+    "thorough": "深入",
+    "thoroughHint": "长篇报告和细致的重写。速度最慢。",
+    "custom": "自定义"
+  }
+}

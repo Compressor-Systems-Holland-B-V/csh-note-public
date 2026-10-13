@@ -1,0 +1,31 @@
+{
+  "title": "Temaer",
+  "look": "Utseende",
+  "import": "Importer en temafil…",
+  "intro": "Et tema kan endre hvordan znote ser ut, legge til sidetemplater, eller begge deler. Bryterne på et tema avgjør om utseendet og templater tilbys; velg utseendet som skal brukes fra listen ovenfor.",
+  "storeFailure": "{reason} Temaer du allerede har installert, vises nedenfor.",
+  "search": "Søk etter temaer",
+  "installed": "Installert",
+  "none": "Ingen temaer samsvarer.",
+  "kind": {
+    "look": "Kun utseende",
+    "both": "Utseende og templater",
+    "templates": "Kun templater"
+  },
+  "contents": {
+    "look": "Endrer utseendet",
+    "both": "Endrer utseendet og legger til sidetemplater",
+    "templates": "Legger til sidetemplater"
+  },
+  "version": "Versjon {version}",
+  "lookSwitch": "Utseende",
+  "lookSwitchTitle": "Vis dette temaet i listen over utseender",
+  "templatesSwitch": "Templater",
+  "templatesSwitchTitle": "Vis dette temaets templater når du velger en template",
+  "install": "Installer",
+  "installing": "Installerer…",
+  "update": "Oppdater",
+  "updating": "Oppdaterer…",
+  "remove": "Fjern",
+  "removeTheme": "Fjern temaet {name}"
+}

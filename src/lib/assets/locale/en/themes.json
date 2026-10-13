@@ -1,0 +1,31 @@
+{
+  "title": "Themes",
+  "look": "Look",
+  "import": "Import a theme file…",
+  "intro": "A theme can change how znote looks, add page templates, or both. The switches on a theme decide whether its look and its templates are offered; pick the look to use from the list above.",
+  "storeFailure": "{reason} Themes you already installed are shown below.",
+  "search": "Search themes",
+  "installed": "Installed",
+  "none": "No theme matches.",
+  "kind": {
+    "look": "Look only",
+    "both": "Look and templates",
+    "templates": "Templates only"
+  },
+  "contents": {
+    "look": "Changes the look",
+    "both": "Changes the look and adds page templates",
+    "templates": "Adds page templates"
+  },
+  "version": "Version {version}",
+  "lookSwitch": "Look",
+  "lookSwitchTitle": "Show this theme in the list of looks",
+  "templatesSwitch": "Templates",
+  "templatesSwitchTitle": "Show this theme's templates when you pick a template",
+  "install": "Install",
+  "installing": "Installing…",
+  "update": "Update",
+  "updating": "Updating…",
+  "remove": "Remove",
+  "removeTheme": "Remove the theme {name}"
+}

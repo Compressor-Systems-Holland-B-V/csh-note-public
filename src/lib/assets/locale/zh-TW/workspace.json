@@ -1,0 +1,78 @@
+{
+  "placeholder": "選擇一個頁面，或建立一個，開始撰寫。",
+  "pages": "頁面",
+  "switchProject": "切換專案",
+  "noProject": "尚無專案",
+  "noNotebooks": "此專案還沒有筆記本。",
+  "noProjects": "建立一個專案以開始使用。",
+  "noTemplate": "無範本",
+  "assistantChanged": "助理已變更此頁面",
+  "new": {
+    "project": "新專案",
+    "notebook": "新筆記本",
+    "page": "新頁面",
+    "pageIn": "在 {notebook} 中新增頁面"
+  },
+  "rename": {
+    "project": "重新命名專案",
+    "notebook": "重新命名筆記本",
+    "page": "重新命名頁面"
+  },
+  "remove": {
+    "project": "要刪除專案「{name}」嗎？",
+    "notebook": "要刪除筆記本「{name}」嗎？",
+    "page": "要刪除頁面「{name}」嗎？",
+    "text": "它會連同裡面的所有內容移至資源回收筒。"
+  },
+  "menu": {
+    "newProject": "新專案…",
+    "renameProject": "重新命名此專案…",
+    "deleteProject": "刪除此專案…",
+    "newPage": "新頁面…",
+    "importPage": "從檔案匯入頁面…",
+    "rename": "重新命名…",
+    "delete": "刪除…",
+    "moveTo": "移至 {notebook}"
+  },
+  "name": {
+    "missing": "請先輸入名稱。",
+    "slash": "名稱不能包含斜線。"
+  },
+  "replacePage": {
+    "title": "要以「{name}」取代此頁面嗎？",
+    "text": "此頁面上的文字會被檔案中的文字取代。"
+  },
+  "sample": {
+    "project": "開始使用",
+    "notebook": "筆記",
+    "page": "歡迎",
+    "text": "= 歡迎使用 znote\n\n在左邊輸入 Typst。右邊的頁面會隨著您輸入即時更新。\n\n- *粗體*、_強調_ 和 `程式碼`\n- 數學式：$ sum_(k=1)^n k = (n(n+1)) / 2 $\n"
+  },
+  "templates": {
+    "plain": "純文件",
+    "slides": "投影片"
+  },
+  "unsavedOnClose": "無法儲存您最新的變更。再關閉一次即不保留這些變更。{reason}",
+  "file": {
+    "welcome": "歡迎使用 znote",
+    "title": "您的 znote 檔案",
+    "text": "您的筆記存放在一個 znote 檔案中。您寫的所有內容都會儲存到其中，也可以複製到另一台電腦。",
+    "new": "新增 znote 檔案…",
+    "open": "開啟 znote 檔案…",
+    "bringIn": "匯入我已有的筆記…",
+    "recent": "先前開啟過",
+    "forget": "從此清單移除",
+    "forgetFile": "從此清單移除 {name}",
+    "copy": "儲存此 znote 檔案的複本",
+    "switch": "開啟或建立另一個 znote 檔案",
+    "savedAt": "儲存於 {time}",
+    "themesTitle": "要安裝此檔案中的主題嗎？",
+    "themesText": "此 znote 檔案帶有這台電腦上還沒有的主題。檔案中的頁面需要這些主題。",
+    "themesInstall": "安裝並開啟",
+    "fontsTitle": "部分字型無法使用",
+    "fontsFallback": "當某個字型無法使用時，znote 會改用其他字型。文字佔用的空間可能變多或變少，因此換行位置和頁數都可能改變。",
+    "fontsMissing": "此檔案使用了下列字型，但這台電腦上沒有：",
+    "fontsLeftOut": "下列字型不允許複製到 znote 檔案中。在沒有這些字型的電腦上會改用其他字型：",
+    "fontsSeen": "確定"
+  }
+}

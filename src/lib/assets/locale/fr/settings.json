@@ -1,0 +1,20 @@
+{
+  "fontSize": "Taille du texte de l'éditeur",
+  "wrap": "Retour à la ligne automatique",
+  "autosave": "Enregistrer automatiquement",
+  "autosaveHint": "Si désactivé, appuyez sur Ctrl+S pour enregistrer.",
+  "zoom": "Taille de l'aperçu au démarrage",
+  "appearance": "Apparence",
+  "light": "Clair",
+  "dark": "Sombre",
+  "look": "Thème",
+  "lookHint": "Ajoutez d'autres thèmes sur la page Thèmes.",
+  "language": "Langue",
+  "languageAuto": "Identique à cet ordinateur",
+  "assistant": "Assistant",
+  "uses": "Utilise {provider}.",
+  "notConnected": "Pas encore connecté.",
+  "providers": "Fournisseurs…",
+  "file": "Votre fichier znote",
+  "switch": "Changer…"
+}

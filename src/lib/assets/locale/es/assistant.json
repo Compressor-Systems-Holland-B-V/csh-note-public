@@ -1,0 +1,133 @@
+{
+  "title": "Asistente",
+  "checking": "Comprobando la conexión…",
+  "timeSoFar": "Tiempo transcurrido",
+  "seconds": "{seconds}s",
+  "showMore": "Mostrar más",
+  "showLess": "Mostrar menos",
+  "chatSaveFailed": "No se pudo guardar el chat: {reason}",
+  "empty": {
+    "title": "¿Qué debería escribir?"
+  },
+  "deletion": {
+    "label": "Confirmar eliminación",
+    "text": "El asistente quiere eliminar “{path}”. Se moverá a la Papelera de reciclaje, junto con todo su contenido."
+  },
+  "composer": {
+    "placeholder": "Preguntar al asistente… Ctrl+Enter para enviar",
+    "message": "Mensaje para el asistente",
+    "references": "Lo que el asistente tendrá en cuenta",
+    "removeReference": "Eliminar {label}",
+    "add": "Añadir una página o un archivo",
+    "addTitle": "Indica al asistente una página o adjunta un archivo",
+    "attach": "Adjuntar archivos desde este equipo…",
+    "web": "Permitir que el asistente use internet en este chat",
+    "wholeProject": "Todo el proyecto",
+    "wholeNotebook": "Todo el cuaderno",
+    "presets": "Cómo debe trabajar el asistente",
+    "advanced": "Configuración avanzada del asistente",
+    "advancedTitle": "Avanzado: cambia estas opciones o crea las tuyas propias",
+    "send": "Enviar",
+    "sendTitle": "Enviar (Ctrl+Enter)",
+    "stop": "Detener",
+    "busyElsewhere": "El asistente está ocupado en otro chat"
+  },
+  "history": {
+    "title": "Chats anteriores",
+    "newChat": "Nuevo chat",
+    "which": "Qué chats mostrar",
+    "chats": "Chats",
+    "archived": "Archivados",
+    "none": "Aún no hay chats.",
+    "noneArchived": "No hay nada archivado.",
+    "working": "El asistente está trabajando en este chat",
+    "archive": "Archivar",
+    "archiveChat": "Archivar “{title}”",
+    "restore": "Volver a los chats",
+    "restoreChat": "Mover “{title}” de vuelta a los chats",
+    "deleteChat": "Eliminar “{title}”",
+    "deleteTitle": "¿Eliminar el chat “{title}”?",
+    "deleteText": "El chat se eliminará definitivamente. Tus páginas no se verán afectadas.",
+    "archiveAll": "Archivar todo",
+    "deleteAll": "Eliminar todo",
+    "archiveAllTitle": "¿Archivar todos los chats?",
+    "deleteAllTitle": "¿Eliminar todos los chats archivados?",
+    "deleteAllText": "Los chats se eliminarán definitivamente. Tus páginas no se verán afectadas."
+  },
+  "steps": {
+    "thought": "Pensamiento",
+    "review": "Revisión",
+    "reviewTitle": "Abrir la página y ver qué ha cambiado"
+  },
+  "summary": {
+    "read_one": "leída {count} página",
+    "read_other": "leídas {count} páginas",
+    "edited_one": "editada {count} página",
+    "edited_other": "editadas {count} páginas",
+    "other_one": "{count} otro paso",
+    "other_other": "{count} otros pasos",
+    "thought": "lo ha pensado"
+  },
+  "activity": {
+    "thinking": "Pensando…",
+    "replying": "Respondiendo…",
+    "reading": "Leyendo…",
+    "readingPage": "Leyendo {page}…",
+    "writing": "Escribiendo una página…",
+    "writingPage": "Escribiendo {page}…",
+    "looking": "Revisando tus páginas…",
+    "waiting": "Esperando tu respuesta…",
+    "checking": "Comprobando si hay problemas en la página…",
+    "renaming": "Cambiando el nombre de {path}…",
+    "creating": "Creando {path}…",
+    "deleting": "Eliminando {path}…"
+  },
+  "note": {
+    "read": "Leída {page}",
+    "edited": "Editada {page}",
+    "renamed": "Se cambió el nombre de {from} a {to}",
+    "created": "Creado {path}",
+    "deleted": "Eliminado {path}"
+  },
+  "preset": {
+    "title": "Configuración avanzada del asistente",
+    "text": "Un ajuste preestablecido decide qué tan rápido y cuidadoso es el asistente con {provider}. Elige uno para cambiarlo o crea el tuyo propio.",
+    "label": "Ajuste preestablecido",
+    "new": "Nuevo ajuste preestablecido",
+    "mine": "Mi ajuste preestablecido",
+    "model": "Modelo",
+    "defaultModel": "Modelo predeterminado",
+    "effort": "Nivel de razonamiento",
+    "effortHint": "Más razonamiento es más lento y consume más de tu plan.",
+    "access": "Qué puede hacer",
+    "web": "Internet",
+    "webAsk": "Elegir en cada chat",
+    "webOn": "Siempre permitido",
+    "webOff": "Nunca permitido",
+    "fast": "Modo rápido",
+    "fastHint": "Respuestas más rápidas del mismo modelo, a un precio mayor.",
+    "backToStandard": "Volver al “{name}” estándar",
+    "delete": "Eliminar este ajuste preestablecido"
+  },
+  "effort": {
+    "low": "Rápido",
+    "medium": "Equilibrado",
+    "high": "Minucioso",
+    "xhigh": "Muy minucioso",
+    "max": "Máximo"
+  },
+  "access": {
+    "read": "Solo leer mis páginas",
+    "edit": "Editar páginas, preguntar antes de eliminar",
+    "full": "Editar y eliminar sin preguntar"
+  },
+  "size": {
+    "quick": "Rápido",
+    "quickHint": "Notas breves y pequeñas correcciones. El más rápido.",
+    "balanced": "Equilibrado",
+    "balancedHint": "Documentos cotidianos. Un buen valor predeterminado.",
+    "thorough": "Minucioso",
+    "thoroughHint": "Informes largos y reescrituras cuidadosas. El más lento.",
+    "custom": "Personalizado"
+  }
+}

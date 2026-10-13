@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "$0")/.." && pwd)"
+project="${BWS_PROJECT_ID:-da0d011e-424f-44eb-a9d1-b4b001437287}"
+
+stop() {
+  echo "translate_locale: $1" >&2
+  exit 1
+}
+
+command -v uv >/dev/null 2>&1 || stop "the 'uv' CLI is not installed."
+
+run=(uv run --script "$root/tools/locale/translate.py" "$@")
+
+# Already have the key in the environment, or not calling the API at all?
+# Skip the vault round-trip.
+if [[ -n "${OPENROUTER_API_KEY:-}" || " $* " =~ \ (--dry-run|--check|--test|-h|--help)\  ]]; then
+  exec "${run[@]}"
+fi
+
+command -v bws >/dev/null 2>&1 || stop "the 'bws' CLI is not installed."
+
+exec bws run --project-id "$project" -- "${run[@]}"

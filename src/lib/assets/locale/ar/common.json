@@ -1,0 +1,37 @@
+{
+  "cancel": "إلغاء",
+  "create": "إنشاء",
+  "rename": "إعادة تسمية",
+  "delete": "حذف",
+  "keep": "احتفاظ",
+  "replace": "استبدال",
+  "done": "تم",
+  "connect": "اتصال",
+  "settings": "الإعدادات",
+  "name": "الاسم",
+  "template": "قالب",
+  "default": "افتراضي",
+  "fitWidth": "ملاءمة العرض",
+  "version": "الإصدار {version}",
+  "mode": {
+    "edit": "تحرير",
+    "export": "تصدير",
+    "themes": "السمات"
+  },
+  "appearance": {
+    "toLight": "التبديل إلى الوضع الفاتح",
+    "toDark": "التبديل إلى الوضع الداكن"
+  },
+  "assistant": {
+    "show": "إظهار المساعد",
+    "hide": "إخفاء المساعد"
+  },
+  "status": {
+    "more": "{problem} (و {count} أخرى)",
+    "assistant": "المساعد: {activity}",
+    "working": "جاري العمل…",
+    "downloading": "جاري تنزيل الحزمة {name}…",
+    "previewFailed": "تعذر تحديث المعاينة: {reason}",
+    "desktopOnly": "يعمل فقط في تطبيق سطح المكتب."
+  }
+}
