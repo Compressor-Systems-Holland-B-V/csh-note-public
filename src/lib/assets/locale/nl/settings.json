@@ -1,4 +1,6 @@
 {
+  "general": "Algemeen",
+  "editor": "Editor",
   "fontSize": "Tekstgrootte in de editor",
   "wrap": "Lange regels afbreken",
   "autosave": "Automatisch opslaan",
@@ -12,9 +14,6 @@
   "language": "Taal",
   "languageAuto": "Zelfde als deze computer",
   "assistant": "Assistent",
-  "uses": "Gebruikt {provider}.",
-  "notConnected": "Nog niet verbonden.",
-  "providers": "Providers…",
   "file": "Je znote-bestand",
   "switch": "Wisselen…"
 }

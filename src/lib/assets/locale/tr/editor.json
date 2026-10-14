@@ -5,16 +5,16 @@
   "templateTitle": "Bu sayfa için bir şablon kullan",
   "fontSmaller": "Daha küçük metin",
   "fontBigger": "Daha büyük metin",
-  "locked": "Asistan bu sayfayı yazıyor. İşlem bittiğinde tekrar düzenleyebilirsiniz.",
+  "locked": "Asistan bu sayfayı düzenliyor.",
   "review": {
-    "show": "Asistanın neleri değiştirdiğini görün ve her bir kısmı tutun veya geri alın",
+    "show": "Asistanın değişikliklerini incele",
     "hide": "Asistanın değiştirdiklerini gizle",
     "keep": "Tut",
     "keepTitle": "Bu değişikliği tut",
     "undo": "Geri al",
     "undoTitle": "Burada daha önce olanı geri getir",
-    "keepAllTitle": "Asistanın bu sayfada değiştirdiği her şeyi tut",
-    "undoAllTitle": "Bu sayfayı asistan değiştirmeden önceki haline döndür"
+    "keepAllTitle": "Bu sayfadaki tüm değişiklikleri tut",
+    "undoAllTitle": "Bu sayfadaki tüm değişiklikleri geri al"
   },
   "problems": {
     "label": "Sorunlar",

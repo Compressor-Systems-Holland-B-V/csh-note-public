@@ -1,10 +1,9 @@
 {
   "connectTitle": "Conectar el asistente",
-  "connectText": "Escribe y edita tus páginas por ti. Primero elige en qué debe ejecutarse.",
+  "connectText": "Elige en qué se ejecuta el asistente.",
   "chooseElse": "Elegir otra opción",
   "nameConnected": "{name} · conectado",
-  "dialogTitle": "Proveedores del asistente",
-  "dialogText": "Conecta uno o más y, a continuación, elige cuál utilizará el asistente.",
+  "dialogText": "Conecta uno o más y elige uno predeterminado.",
   "connected": "Conectado",
   "connectedTo": "Conectado a {url}",
   "use": "Establecer como predeterminado",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Escribe el nombre de un modelo",
-    "missing": "Elige un modelo antes de empezar. Debe ser compatible con herramientas.",
+    "missing": "Elige un modelo compatible con herramientas.",
     "hint": "Se utiliza cuando un chat o un ajuste preestablecido no elige otro modelo."
   },
   "signIn": {
     "installing": "Descargando Claude Code…",
     "finish": "Termina de iniciar sesión en tu navegador…",
-    "noBrowser": "¿No se abrió el navegador? Copia este enlace, ábrelo en cualquier navegador y pega el código que te muestra.",
+    "noBrowser": "¿No se abrió el navegador? Abre este enlace y pega el código que muestra.",
     "link": "Enlace de inicio de sesión",
     "copyLink": "Copiar el enlace de inicio de sesión",
     "code": "Código del navegador",
     "unfinished": "El inicio de sesión no finalizó. Pulsa Conectar para intentarlo de nuevo.",
-    "note": "Ejecuta Claude Code con tu propia cuenta. Inicias sesión una vez en tu navegador.",
+    "note": "Inicia sesión una vez en tu navegador con tu propia cuenta.",
     "subscription": "Suscripción a Claude",
     "subscriptionHint": "Plan Pro, Max o Team",
     "console": "Cuenta de API",
@@ -43,6 +42,6 @@
     "server": "Dirección del servidor",
     "label": "Clave de API",
     "labelOptional": "Clave de API (si el servidor necesita una)",
-    "note": "La clave se mantiene cifrada en el almacén de contraseñas de este equipo y no se vuelve a mostrar."
+    "note": "Se guarda cifrada en este equipo y no se vuelve a mostrar."
   }
 }

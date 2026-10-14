@@ -2,10 +2,10 @@
   "title": "Eksportuj",
   "format": "Format",
   "pdfHint": "Wygląda dokładnie tak jak w podglądzie.",
-  "pptxHint": "Jeden slajd na stronę. Tekst pozostaje edytowalny; reszta to obrazki.",
+  "pptxHint": "Jeden slajd na stronę. Edytowalny pozostaje tylko tekst.",
   "blocked": {
     "noPage": "Wybierz stronę do eksportu.",
-    "problems": "Ta strona zawiera błędy. Wróć do edycji i napraw je przed eksportem.",
+    "problems": "Najpierw napraw błędy na tej stronie.",
     "empty": "Ta strona jest jeszcze pusta."
   },
   "run": "Eksportuj…",

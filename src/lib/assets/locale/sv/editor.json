@@ -5,16 +5,16 @@
   "templateTitle": "Använd en mall för den här sidan",
   "fontSmaller": "Mindre text",
   "fontBigger": "Större text",
-  "locked": "Assistenten skriver på den här sidan. Du kan redigera igen när den är klar.",
+  "locked": "Assistenten redigerar den här sidan.",
   "review": {
-    "show": "Se vad assistenten ändrade, och behåll eller ångra varje del",
+    "show": "Granska assistentens ändringar",
     "hide": "Dölj vad assistenten ändrade",
     "keep": "Behåll",
     "keepTitle": "Behåll den här ändringen",
     "undo": "Ångra",
     "undoTitle": "Återställ det som fanns här tidigare",
-    "keepAllTitle": "Behåll allt som assistenten ändrade på den här sidan",
-    "undoAllTitle": "Återställ den här sidan till hur den var innan assistenten ändrade den"
+    "keepAllTitle": "Behåll alla ändringar på den här sidan",
+    "undoAllTitle": "Ångra alla ändringar på den här sidan"
   },
   "problems": {
     "label": "Problem",

@@ -2,7 +2,7 @@
   "title": "Thèmes",
   "look": "Apparence",
   "import": "Importer un fichier de thème…",
-  "intro": "Un thème peut modifier l'apparence de znote, ajouter des modèles de page, ou les deux. Les commutateurs d'un thème déterminent si son apparence et ses modèles sont proposés ; choisissez l'apparence à utiliser dans la liste ci-dessus.",
+  "intro": "Un thème modifie l'apparence, ajoute des modèles de page, ou les deux.",
   "storeFailure": "{reason} Les thèmes que vous avez déjà installés sont affichés ci-dessous.",
   "search": "Rechercher des thèmes",
   "installed": "Installés",

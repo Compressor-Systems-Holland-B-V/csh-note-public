@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "確認刪除",
-    "text": "助理想要刪除「{path}」。它會連同裡面所有內容移到資源回收筒。"
+    "text": "助理想要刪除「{path}」。它會移到資源回收筒。"
   },
   "composer": {
     "placeholder": "詢問助理… 按 Ctrl+Enter 傳送",
@@ -88,11 +88,12 @@
     "edited": "編輯了 {page}",
     "renamed": "將 {from} 重新命名為 {to}",
     "created": "已建立 {path}",
-    "deleted": "已刪除 {path}"
+    "deleted": "已刪除 {path}",
+    "notSaved": "未儲存 {page}"
   },
   "preset": {
     "title": "助理進階設定",
-    "text": "預設集決定助理使用 {provider} 時的速度與謹慎程度。選一個來變更,或建立自己的預設集。",
+    "text": "選擇助理使用 {provider} 時的速度與謹慎程度。",
     "label": "預設集",
     "new": "新預設集",
     "mine": "我的預設集",

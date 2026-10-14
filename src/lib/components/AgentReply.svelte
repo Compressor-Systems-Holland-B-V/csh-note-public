@@ -1,10 +1,14 @@
 <script lang="ts">
   import { untrack } from "svelte";
   import { Button } from "$lib/components/ui/button";
-  import { longReply, render } from "$lib/markdown";
+  import type { Restored } from "$lib/ipc";
+  import { longReply, render, withMarks } from "$lib/markdown";
+  import { kinds } from "$lib/state/privacy.svelte";
   import { t } from "$lib/i18n.svelte";
 
-  let { text, live }: { text: string; live: boolean } = $props();
+  let { text, live, restored = [] }: { text: string; live: boolean; restored?: Restored[] } = $props();
+
+  const marks = $derived(restored.map(({ text, kind }) => ({ text, title: t("privacy.restored", { kind: kinds.includes(kind) ? t(`privacy.kinds.${kind}`) : kind }) })));
 
   const renderEveryMs = 100;
 
@@ -36,7 +40,7 @@
     ? 'typing'
     : ''} {long && !expanded ? 'max-h-40 overflow-hidden mask-b-from-60%' : ''}"
 >
-  {@html render(shown)}
+  {@html withMarks(render(shown), marks, t("privacy.unknownToken"))}
 </div>
 {#if long}
   <Button variant="link" size="xs" class="justify-self-start px-0" aria-expanded={expanded} onclick={() => (expanded = !expanded)}>

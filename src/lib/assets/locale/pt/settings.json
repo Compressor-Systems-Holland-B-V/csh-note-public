@@ -1,4 +1,6 @@
 {
+  "general": "Geral",
+  "editor": "Editor",
   "fontSize": "Tamanho do texto do editor",
   "wrap": "Quebrar linhas longas",
   "autosave": "Guardar automaticamente",
@@ -12,9 +14,6 @@
   "language": "Idioma",
   "languageAuto": "O mesmo que este computador",
   "assistant": "Assistente",
-  "uses": "Utiliza {provider}.",
-  "notConnected": "Ainda não ligado.",
-  "providers": "Fornecedores…",
   "file": "O seu ficheiro znote",
   "switch": "Mudar…"
 }

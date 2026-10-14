@@ -5,16 +5,16 @@
   "templateTitle": "Eine Vorlage für diese Seite verwenden",
   "fontSmaller": "Kleinere Schrift",
   "fontBigger": "Größere Schrift",
-  "locked": "Der Assistent schreibt gerade an dieser Seite. Sie können sie wieder bearbeiten, sobald er fertig ist.",
+  "locked": "Der Assistent bearbeitet diese Seite.",
   "review": {
-    "show": "Sehen Sie, was der Assistent geändert hat, und behalten oder verwerfen Sie die einzelnen Teile",
+    "show": "Änderungen des Assistenten prüfen",
     "hide": "Änderungen des Assistenten ausblenden",
     "keep": "Behalten",
     "keepTitle": "Diese Änderung behalten",
     "undo": "Rückgängig",
     "undoTitle": "Den vorherigen Zustand wiederherstellen",
-    "keepAllTitle": "Alles behalten, was der Assistent auf dieser Seite geändert hat",
-    "undoAllTitle": "Diese Seite auf den Zustand vor den Änderungen des Assistenten zurücksetzen"
+    "keepAllTitle": "Alle Änderungen auf dieser Seite behalten",
+    "undoAllTitle": "Alle Änderungen auf dieser Seite rückgängig machen"
   },
   "problems": {
     "label": "Probleme",

@@ -5,16 +5,16 @@
   "templateTitle": "为此页使用模板",
   "fontSmaller": "缩小文字",
   "fontBigger": "放大文字",
-  "locked": "助手正在编写此页。完成后您可以再次编辑。",
+  "locked": "助手正在编辑此页。",
   "review": {
-    "show": "查看助手做了哪些更改，并保留或撤销每一处",
+    "show": "查看助手的更改",
     "hide": "隐藏助手所做的更改",
     "keep": "保留",
     "keepTitle": "保留此更改",
     "undo": "撤销",
     "undoTitle": "恢复之前的内容",
-    "keepAllTitle": "保留助手在此页上所做的全部更改",
-    "undoAllTitle": "将此页恢复到助手更改之前的样子"
+    "keepAllTitle": "保留此页上的全部更改",
+    "undoAllTitle": "撤销此页上的全部更改"
   },
   "problems": {
     "label": "问题",

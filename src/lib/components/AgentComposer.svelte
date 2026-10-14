@@ -3,6 +3,8 @@
   import { Prec } from "@codemirror/state";
   import { EditorView, keymap, placeholder } from "@codemirror/view";
   import Book from "@lucide/svelte/icons/book";
+  import BookPlus from "@lucide/svelte/icons/book-plus";
+  import Eye from "@lucide/svelte/icons/eye";
   import FileText from "@lucide/svelte/icons/file-text";
   import Folder from "@lucide/svelte/icons/folder";
   import Globe from "@lucide/svelte/icons/globe";
@@ -12,25 +14,39 @@
   import PencilRuler from "@lucide/svelte/icons/pencil-ruler";
   import Scale from "@lucide/svelte/icons/scale";
   import Send from "@lucide/svelte/icons/send";
+  import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
   import Square from "@lucide/svelte/icons/square";
   import X from "@lucide/svelte/icons/x";
   import Zap from "@lucide/svelte/icons/zap";
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import { presetHint, presetName, presetsFor, standard } from "$lib/assistant";
+  import { presetHint, presetName, presetsFor, referenceKind, standard } from "$lib/assistant";
+  import type { Reference } from "$lib/assistant";
+  import type { Seen } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { settings } from "$lib/state/settings.svelte";
-  import { workspace } from "$lib/state/workspace.svelte";
+  import { pagesOf, workspace } from "$lib/state/workspace.svelte";
   import ModelPicker from "./ModelPicker.svelte";
   import ReferenceIcon from "./ReferenceIcon.svelte";
   import PresetDialog from "./PresetDialog.svelte";
+  import VeiledView from "./VeiledView.svelte";
   import { t } from "$lib/i18n.svelte";
 
   const sizeIcons: Record<string, typeof Scale> = { quick: Zap, balanced: Scale, thorough: Microscope };
 
   let host: HTMLDivElement;
   let advanced = $state(false);
+  let viewing = $state<Reference | null>(null);
+
+  const viewable = ({ path, text }: Reference) => text != null || path === undefined;
+
+  function textOf({ label, text }: Reference): Promise<Seen[]> {
+    if (text != null) return Promise.resolve([{ label, text }]);
+    const pages = referenceKind(label) === "page" ? [label] : pagesOf(workspace.tree).filter((page) => page.startsWith(`${label}/`));
+    return Promise.all(pages.map(async (page) => ({ label: page, text: await workspace.read(page) })));
+  }
 
   const provider = $derived(agent.providerOrDefault);
   const presets = $derived(presetsFor(provider, settings.values.assistantPresets[provider] ?? []));
@@ -95,10 +111,25 @@
 >
   {#if agent.references.length > 0}
     <ul class="flex flex-wrap gap-1" aria-label={t("assistant.composer.references")}>
-      {#each agent.references as { label }, index (label)}
+      {#each agent.references as reference, index (reference.label)}
+        {@const { label, path } = reference}
         <li class="flex items-center gap-1 rounded-md bg-accent py-0.5 pe-0.5 ps-1.5 text-xs">
           <ReferenceIcon {label} />
           <span class="max-w-40 truncate" title={label}>{label}</span>
+          {#if privacy.hiding}
+            <ShieldCheck class="size-3 shrink-0 text-chart-2" role="img" aria-label={t("privacy.panel.hidden")} />
+            {#if viewable(reference)}
+              <Button variant="ghost" size="icon-xs" aria-label={t("privacy.preview")} title={t("privacy.preview")} onclick={() => (viewing = reference)}>
+                <Eye />
+              </Button>
+            {/if}
+          {/if}
+          {#if path !== undefined && privacy.options.knowledge && agent.chatId !== null}
+            {@const chat = agent.chatId}
+            <Button variant="ghost" size="icon-xs" aria-label={t("privacy.addToKnowledge")} title={t("privacy.addToKnowledge")} onclick={() => privacy.attach(chat, path)}>
+              <BookPlus />
+            </Button>
+          {/if}
           <Button variant="ghost" size="icon-xs" aria-label={t("assistant.composer.removeReference", { label })} onclick={() => agent.references.splice(index, 1)}>
             <X />
           </Button>
@@ -194,3 +225,13 @@
 </form>
 
 <PresetDialog bind:open={advanced} />
+{#if viewing}
+  {@const reference = viewing}
+  <VeiledView
+    load={() => textOf(reference)}
+    editable
+    level={reference.path === undefined ? undefined : (reference.level ?? 1)}
+    onlevel={reference.path === undefined ? undefined : (level) => agent.setLevel(reference, level)}
+    onclose={() => (viewing = null)}
+  />
+{/if}

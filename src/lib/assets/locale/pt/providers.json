@@ -1,10 +1,9 @@
 {
   "connectTitle": "Ligar o assistente",
-  "connectText": "Ele escreve e edita as suas páginas por si. Primeiro, escolha em que deve ser executado.",
+  "connectText": "Escolha em que o assistente é executado.",
   "chooseElse": "Escolher outra coisa",
   "nameConnected": "{name} · ligado",
-  "dialogTitle": "Fornecedores do assistente",
-  "dialogText": "Ligue um ou mais e, em seguida, escolha qual o assistente que utiliza.",
+  "dialogText": "Ligue um ou mais e escolha um predefinido.",
   "connected": "Ligado",
   "connectedTo": "Ligado a {url}",
   "use": "Definir como predefinido",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Escreva o nome de um modelo",
-    "missing": "Escolha um modelo antes de começar. Precisa de suportar ferramentas.",
+    "missing": "Escolha um modelo que suporte ferramentas.",
     "hint": "Utilizado quando uma conversa ou predefinição não escolhe outro modelo."
   },
   "signIn": {
     "installing": "A transferir Claude Code…",
     "finish": "Termine o início de sessão no seu browser…",
-    "noBrowser": "O browser não abriu? Copie esta ligação, abra-a em qualquer browser e, em seguida, cole o código que lhe é apresentado.",
+    "noBrowser": "O browser não abriu? Abra esta ligação e cole o código apresentado.",
     "link": "Ligação de início de sessão",
     "copyLink": "Copiar a ligação de início de sessão",
     "code": "Código do browser",
     "unfinished": "O início de sessão não terminou. Prima Ligar para tentar novamente.",
-    "note": "Executa Claude Code com a sua própria conta. Inicia sessão uma vez no seu browser.",
+    "note": "Inicie sessão uma vez no browser com a sua própria conta.",
     "subscription": "Subscrição Claude",
     "subscriptionHint": "Plano Pro, Max ou Team",
     "console": "Conta API",
@@ -43,6 +42,6 @@
     "server": "Endereço do servidor",
     "label": "Chave API",
     "labelOptional": "Chave API (se o servidor precisar de uma)",
-    "note": "A chave é mantida encriptada no arquivo de palavras-passe deste computador e nunca mais é mostrada."
+    "note": "Guardada encriptada neste computador e nunca mais mostrada."
   }
 }

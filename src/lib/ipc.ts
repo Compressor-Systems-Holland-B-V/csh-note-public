@@ -143,6 +143,10 @@ export type AgentEvent =
   | { kind: "step"; tool: string; page: string }
   | { kind: "edited"; page: string; before: string | null }
   | { kind: "read"; page: string }
+  | { kind: "veiled"; kinds: Record<string, number> }
+  | { kind: "restored"; texts: Restored[] }
+  | { kind: "saw"; label: string; text: string }
+  | { kind: "conflict"; page: string; theirs: string }
   | { kind: "done"; session: string; failure: string | null };
 
 export type AgentTurn = {
@@ -158,7 +162,7 @@ export type AgentTurn = {
   web: boolean;
 };
 
-export type Attachment = { name: string; path: string };
+export type Attachment = { name: string; path: string; text: string | null; level: number };
 
 export const agentStatus = (provider: string) => invoke<AgentStatus>("agent_status", { provider });
 
@@ -188,12 +192,17 @@ export function agentRun(turn: AgentTurn, handler: (event: AgentEvent) => void) 
 }
 
 export const agentAttach = (chat: string) => invoke<Attachment[]>("agent_attach", { chat });
+export const agentLevel = (chat: string, path: string, level: number) => invoke<void>("agent_level", { chat, path, level });
 
 export const agentForget = (chat: string) => invoke<void>("agent_forget", { chat });
 
 export type ChatPart = { kind: "text" | "note" | "thought"; text: string; page?: string };
 
-export type ChatMessage = { from: "you" | "assistant"; parts: ChatPart[] };
+export type Restored = { text: string; kind: string };
+
+export type Seen = { label: string; text: string };
+
+export type ChatMessage = { from: "you" | "assistant"; parts: ChatPart[]; hidden?: number; restored?: Restored[]; saw?: Seen[] };
 
 export type StoredChat = {
   id: string;
@@ -203,6 +212,7 @@ export type StoredChat = {
   messages: ChatMessage[];
   archived: boolean;
   updated: number;
+  knowledge?: string | null;
 };
 
 const oldChatStore = new LazyStore("chats.json");
@@ -220,3 +230,75 @@ const settingsStore = new LazyStore("settings.json");
 export const readSettings = async () => Object.fromEntries(await settingsStore.entries<unknown>());
 
 export const writeSetting = (key: string, value: unknown) => settingsStore.set(key, value);
+
+export type PrivacyOptions = { veil: boolean; amounts: boolean; names: boolean; knowledge: boolean; autoAdd: boolean };
+
+export type KnowledgeFile = { id: string; name: string };
+
+export type IndexedProject = { project: string; sources: number; chunks: number };
+
+export type KnowledgeStatus = {
+  files: KnowledgeFile[];
+  active: string | null;
+  open: boolean;
+  remembered: boolean;
+  concepts: number;
+  glossary: boolean;
+  hidden: number;
+  names: boolean;
+  search: boolean;
+  projects: IndexedProject[];
+};
+
+export type Piece = { text: string; token: string | null; kind: string | null };
+
+export type ModelId = "names" | "search";
+
+export type Progress = { done: number; total: number };
+
+export const privacyOptions = (options: PrivacyOptions) => invoke<void>("privacy_options", { options });
+
+export const privacyView = (text: string, level?: number) => invoke<Piece[]>("privacy_view", { text, level });
+
+export const privacyOverride = (text: string, kind: string | null) => invoke<void>("privacy_override", { text, kind });
+
+export const knowledgeStatus = () => invoke<KnowledgeStatus>("knowledge_status");
+
+export const knowledgeCreate = (name: string, password: string, rememberIt: boolean) =>
+  invoke<KnowledgeStatus>("knowledge_create", { name, password, rememberIt });
+
+export const knowledgePick = () => invoke<string | null>("knowledge_pick");
+
+export const knowledgeImport = (password: string, rememberIt: boolean) => invoke<KnowledgeStatus>("knowledge_import", { password, rememberIt });
+
+export const knowledgeUnlock = (id: string, password: string, rememberIt: boolean) =>
+  invoke<KnowledgeStatus>("knowledge_unlock", { id, password, rememberIt });
+
+export const knowledgeActivate = (id: string | null) => invoke<KnowledgeStatus>("knowledge_activate", { id });
+
+export const knowledgeExport = (password: string) => invoke<boolean>("knowledge_export", { password });
+
+export const knowledgePassword = (current: string, password: string, rememberIt: boolean) =>
+  invoke<KnowledgeStatus>("knowledge_password", { current, password, rememberIt });
+
+export const knowledgeRemove = (id: string) => invoke<KnowledgeStatus>("knowledge_remove", { id });
+
+export const knowledgeSync = () => invoke<void>("knowledge_sync");
+
+export const knowledgeAdd = (path: string) => invoke<KnowledgeStatus>("knowledge_add", { path });
+
+export const knowledgeAttach = (chat: string, path: string) => invoke<void>("knowledge_attach", { chat, path });
+
+export const knowledgeForget = (project: string) => invoke<KnowledgeStatus>("knowledge_forget", { project });
+
+export const knowledgeRebuild = () => invoke<KnowledgeStatus>("knowledge_rebuild");
+
+export const glossaryImport = () => invoke<KnowledgeStatus | null>("glossary_import");
+
+export function modelsDownload(model: ModelId, onProgress: (progress: Progress) => void) {
+  const progress = new Channel<Progress>();
+  progress.onmessage = onProgress;
+  return invoke<void>("models_download", { model, progress });
+}
+
+export const modelsCancel = (model: ModelId) => invoke<void>("models_cancel", { model });

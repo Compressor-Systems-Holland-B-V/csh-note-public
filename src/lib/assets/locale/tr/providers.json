@@ -1,10 +1,9 @@
 {
   "connectTitle": "Asistanı bağla",
-  "connectText": "Sizin için sayfalarınızı yazar ve düzenler. Öncelikle ne üzerinde çalışması gerektiğini seçin.",
+  "connectText": "Asistanın ne üzerinde çalışacağını seçin.",
   "chooseElse": "Başka bir şey seçin",
   "nameConnected": "{name} · bağlandı",
-  "dialogTitle": "Asistan sağlayıcıları",
-  "dialogText": "Bir veya daha fazlasını bağlayın, ardından asistanın hangisini kullanacağını seçin.",
+  "dialogText": "Bir veya daha fazlasını bağlayın ve bir varsayılan seçin.",
   "connected": "Bağlandı",
   "connectedTo": "{url} adresine bağlandı",
   "use": "Varsayılan yap",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Bir modelin adını yazın",
-    "missing": "Başlamadan önce bir model seçin. Araçları desteklemesi gerekiyor.",
+    "missing": "Araçları destekleyen bir model seçin.",
     "hint": "Bir sohbet veya ön ayar başka bir model seçmediğinde kullanılır."
   },
   "signIn": {
     "installing": "Claude Code indiriliyor…",
     "finish": "Tarayıcınızda oturum açma işlemini tamamlayın…",
-    "noBrowser": "Tarayıcı açılmadı mı? Bu bağlantıyı kopyalayın, herhangi bir tarayıcıda açın ve ardından size gösterdiği kodu yapıştırın.",
+    "noBrowser": "Tarayıcı açılmadı mı? Bu bağlantıyı açın, ardından gösterdiği kodu yapıştırın.",
     "link": "Oturum açma bağlantısı",
     "copyLink": "Oturum açma bağlantısını kopyala",
     "code": "Tarayıcıdan gelen kod",
     "unfinished": "Oturum açma işlemi tamamlanmadı. Tekrar denemek için Bağlan'a basın.",
-    "note": "Claude Code'u kendi hesabınızla çalıştırır. Tarayıcınızda bir kez oturum açarsınız.",
+    "note": "Tarayıcınızda kendi hesabınızla bir kez oturum açın.",
     "subscription": "Claude aboneliği",
     "subscriptionHint": "Pro, Max veya Team planı",
     "console": "API hesabı",
@@ -43,6 +42,6 @@
     "server": "Sunucu adresi",
     "label": "API anahtarı",
     "labelOptional": "API anahtarı (sunucu gerektiriyorsa)",
-    "note": "Anahtar, bu bilgisayarın parola deposunda şifreli olarak tutulur ve bir daha asla gösterilmez."
+    "note": "Bu bilgisayarda şifreli olarak saklanır ve bir daha gösterilmez."
   }
 }

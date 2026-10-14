@@ -1,0 +1,144 @@
+{
+  "preview": "Was an den Assistenten gesendet wird",
+  "addToKnowledge": "Zur Wissensdatenbank hinzufügen",
+  "restored": "Vor dem Assistenten verborgen als: {kind}",
+  "unknownToken": "Der Assistent hat ein Kürzel geschrieben, das znote nicht kennt. Es konnte daher nicht zurückübersetzt werden",
+  "otherKnowledge": "In diesem Chat wurden Namen mit einer anderen Wissensdatei verborgen. Verborgene Namen können als Kürzel angezeigt werden.",
+  "panel": {
+    "hidden": "Vor dem Assistenten verborgen",
+    "hiddenTitle": "Namen, Beträge und Kontaktdaten werden als Kürzel gesendet",
+    "notHidden": "Nicht verborgen",
+    "notHiddenTitle": "Der Assistent sieht Ihre Seiten und Dateien genau so, wie sie sind",
+    "locked": "Gesperrt",
+    "lockedTitle": "Öffnen Sie zuerst Ihre Wissensdatei in den Einstellungen."
+  },
+  "saw": {
+    "prompt": "Ihre Nachricht"
+  },
+  "start": {
+    "title": "Firmennamen vor dem Assistenten verbergen?",
+    "text": "Namen, Beträge und Kontaktdaten werden zu Kürzeln wie ⟦CUSTOMER_3⟧, bevor etwas gesendet wird.",
+    "create": "Wissensdatei erstellen",
+    "import": "Wissensdatei importieren",
+    "notNow": "Jetzt nicht",
+    "later": "Sie können das später in den Einstellungen ändern.",
+    "downloadsTitle": "Optionale Downloads",
+    "downloadsText": "Beide laufen nur auf diesem Computer.",
+    "how": "So funktioniert es"
+  },
+  "unlock": {
+    "title": "Ihre Wissensdatei öffnen",
+    "text": "Geben Sie das Passwort für „{name}“ ein."
+  },
+  "form": {
+    "defaultName": "Mein Wissen",
+    "name": "Name",
+    "choose": "Datei auswählen…",
+    "nothingChosen": "Keine Datei ausgewählt",
+    "current": "Aktuelles Passwort",
+    "password": "Passwort",
+    "newPassword": "Neues Passwort",
+    "again": "Passwort erneut eingeben",
+    "tooShort": "Verwenden Sie mindestens {count} Zeichen.",
+    "mismatch": "Die Passwörter stimmen nicht überein.",
+    "exportHint": "Wer die Kopie und dieses Passwort hat, kann sehen, was verborgen ist.",
+    "remember": "Auf diesem Computer merken",
+    "rememberHint": "Wird im Passwortspeicher dieses Computers gespeichert.",
+    "submit": {
+      "create": "Erstellen",
+      "import": "Importieren",
+      "unlock": "Öffnen",
+      "export": "Exportieren…",
+      "password": "Passwort ändern"
+    },
+    "title": {
+      "create": "Neue Wissensdatei",
+      "import": "Wissensdatei importieren",
+      "unlock": "Wissensdatei öffnen",
+      "export": "Kopie exportieren",
+      "password": "Passwort ändern"
+    }
+  },
+  "files": {
+    "title": "Wissensdateien",
+    "none": "Noch keine Wissensdatei.",
+    "active": "In Verwendung",
+    "open": "Geöffnet",
+    "locked": "Gesperrt",
+    "use": "Verwenden",
+    "new": "Neu…",
+    "import": "Importieren…",
+    "unlock": "Öffnen…",
+    "export": "Exportieren…",
+    "password": "Passwort ändern…",
+    "exported": "Die Kopie wurde gespeichert.",
+    "removeTitle": "Wissensdatei „{name}“ löschen?",
+    "removeText": "Ihre Wissensdatenbank wird gelöscht, und Chats, die sie verwendet haben, können nicht fortgesetzt werden. Exportieren Sie bei Bedarf vorher eine Kopie."
+  },
+  "settings": {
+    "title": "Datenschutz",
+    "text": "Was der Assistent sehen und nachschlagen darf.",
+    "needsFile": "Erstellen oder importieren Sie zuerst eine Wissensdatei.",
+    "privacyVeil": "Namen vor dem Assistenten verbergen",
+    "privacyVeilHint": "Kunden, Personen, Projekte und Kontaktdaten werden zu Kürzeln.",
+    "privacyAmounts": "Geldbeträge verbergen",
+    "privacyAmountsHint": "Mit verborgenen Beträgen kann der Assistent nicht rechnen.",
+    "privacyNames": "Namenserkennung verwenden",
+    "privacyNamesHint": "Verbirgt auch Namen, die nicht in Ihrem Glossar stehen. Einige werden dabei übersehen.",
+    "knowledgeOn": "Wissensdatenbank",
+    "knowledgeOnHint": "Der Assistent erhält passende Notizen aus Ihren Seiten und Dateien.",
+    "knowledgeAutoAdd": "Meine Seiten automatisch hinzufügen",
+    "knowledgeAutoAddHint": "Seiten werden beim Speichern hinzugefügt."
+  },
+  "models": {
+    "names": "Namenserkennung (etwa 50 MB)",
+    "namesHint": "Findet Namen von Personen, Firmen und Orten, die nicht in Ihrem Glossar stehen.",
+    "search": "Intelligente Suche (etwa 30 MB)",
+    "searchHint": "Findet Notizen nach ihrer Bedeutung, nicht nur nach den Wörtern darin.",
+    "download": "Herunterladen",
+    "downloading": "Wird heruntergeladen… {done} von {total} MB",
+    "ready": "Heruntergeladen"
+  },
+  "glossary": {
+    "title": "Glossar",
+    "loaded_one": "{count} Begriff geladen",
+    "loaded_other": "{count} Begriffe geladen",
+    "none": "Nur die Standardkategorien. Importieren Sie Ihr eigenes Glossar (SKOS).",
+    "import": "Importieren…"
+  },
+  "index": {
+    "title": "Wissensdatenbank",
+    "rebuild": "Neu aufbauen",
+    "counts": "{sources} Quellen, {chunks} Abschnitte",
+    "forget": "Vergessen",
+    "empty": "Noch nichts in der Wissensdatenbank.",
+    "attachments": "Angehängte Dateien"
+  },
+  "view": {
+    "title": "Was der Assistent sieht",
+    "open": "Zeigen, was der Assistent sieht",
+    "close": "Zurück zur Seite",
+    "hint": "Klicken Sie mit der rechten Maustaste auf ein Kürzel, um es anzuzeigen, oder markieren Sie Text und klicken Sie mit der rechten Maustaste, um ihn zu verbergen.",
+    "isHidden": "„{text}“ ist verborgen als: {kind}",
+    "dontHide": "Nicht verbergen",
+    "alwaysHide": "Immer verbergen",
+    "hideAs": "„{text}“ verbergen als",
+    "kind": "Art"
+  },
+  "kinds": {
+    "CUSTOMER": "Kunde",
+    "PERSON": "Person",
+    "ORGANISATION": "Organisation",
+    "SUPPLIER": "Lieferant",
+    "PROJECT": "Projekt",
+    "PRODUCT": "Produkt",
+    "LOCATION": "Ort"
+  },
+  "level": {
+    "label": "Wie viel verborgen wird",
+    "own": "Nur deine Liste und Kontaktdaten",
+    "light": "Leicht: auch Namen von Personen",
+    "medium": "Mittel: auch Organisationen und Orte",
+    "strict": "Streng: auch Produkte, Projekte, Kunden und Lieferanten"
+  }
+}

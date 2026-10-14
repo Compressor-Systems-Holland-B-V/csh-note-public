@@ -375,6 +375,10 @@ fn current(app: &AppHandle) -> Option<Arc<Open>> {
     app.state::<Project>().open.lock().ok()?.clone()
 }
 
+pub fn file(app: &AppHandle) -> Option<String> {
+    current(app).map(|open| open.file.to_string_lossy().into_owned())
+}
+
 pub fn fonts(app: &AppHandle) -> Option<PathBuf> {
     current(app).map(|open| open.home.fonts())
 }

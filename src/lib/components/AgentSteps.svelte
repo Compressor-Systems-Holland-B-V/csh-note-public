@@ -39,7 +39,7 @@
           {@const said = translated(text, "assistant.note")}
           <Check class="mt-0.5 size-3 shrink-0 text-chart-2" aria-hidden="true" />
           <span class="min-w-0 flex-1 truncate" title={said}>{said}</span>
-          {#if page !== undefined && page in agent.pending}
+          {#if page !== undefined && (page in agent.pending || page in agent.conflicts)}
             <button
               type="button"
               class="flex shrink-0 items-center gap-1 rounded-sm px-1 text-foreground underline-offset-2 outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"

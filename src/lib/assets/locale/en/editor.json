@@ -5,16 +5,16 @@
   "templateTitle": "Use a template for this page",
   "fontSmaller": "Smaller text",
   "fontBigger": "Bigger text",
-  "locked": "The assistant is writing this page. You can edit again when it is done.",
+  "locked": "The assistant is editing this page.",
   "review": {
-    "show": "See what the assistant changed, and keep or undo each part",
+    "show": "Review the assistant's changes",
     "hide": "Hide what the assistant changed",
     "keep": "Keep",
     "keepTitle": "Keep this change",
     "undo": "Undo",
     "undoTitle": "Put back what was here before",
-    "keepAllTitle": "Keep everything the assistant changed on this page",
-    "undoAllTitle": "Put this page back to how it was before the assistant changed it"
+    "keepAllTitle": "Keep all changes on this page",
+    "undoAllTitle": "Undo all changes on this page"
   },
   "problems": {
     "label": "Problems",

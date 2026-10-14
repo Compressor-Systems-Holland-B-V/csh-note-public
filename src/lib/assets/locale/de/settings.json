@@ -1,4 +1,6 @@
 {
+  "general": "Allgemein",
+  "editor": "Editor",
   "fontSize": "Textgröße im Editor",
   "wrap": "Lange Zeilen umbrechen",
   "autosave": "Automatisch speichern",
@@ -12,9 +14,6 @@
   "language": "Sprache",
   "languageAuto": "Wie auf diesem Computer",
   "assistant": "Assistent",
-  "uses": "Verwendet {provider}.",
-  "notConnected": "Noch nicht verbunden.",
-  "providers": "Anbieter…",
   "file": "Ihre znote-Datei",
   "switch": "Wechseln…"
 }

@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Benvenuto in znote",
     "title": "I tuoi file znote",
-    "text": "Le tue note risiedono in un unico file znote. Tutto ciò che scrivi viene salvato al suo interno e puoi copiarlo su un altro computer.",
+    "text": "Tutte le tue note sono salvate in un unico file che puoi copiare su un altro computer.",
     "new": "Nuovo file znote…",
     "open": "Apri un file znote…",
     "bringIn": "Importa le note che ho già…",
@@ -67,12 +67,17 @@
     "switch": "Apri o crea un altro file znote",
     "savedAt": "Salvato alle {time}",
     "themesTitle": "Installare i temi di questo file?",
-    "themesText": "Questo file znote porta con sé temi che non sono ancora su questo computer. Le sue pagine ne hanno bisogno.",
+    "themesText": "Questo file richiede temi non ancora installati.",
     "themesInstall": "Installa e apri",
     "fontsTitle": "Alcuni caratteri non sono disponibili",
-    "fontsFallback": "Quando un carattere non è disponibile, znote ne usa un altro. Il testo può occupare più o meno spazio, quindi le righe possono andare a capo in altri punti e il numero di pagine può cambiare.",
-    "fontsMissing": "Questi caratteri sono usati in questo file ma non sono su questo computer:",
-    "fontsLeftOut": "Questi caratteri non possono essere copiati in un file znote. Su un computer che non li ha viene usato un altro carattere:",
+    "fontsFallback": "Vengono usati altri caratteri, quindi righe e pagine possono andare a capo diversamente.",
+    "fontsMissing": "Non presenti su questo computer:",
+    "fontsLeftOut": "Questi caratteri non possono essere salvati nel file:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Inizia",
+    "empty": "I file che apri compariranno qui.",
+    "back": "Torna a {name}"
   }
 }

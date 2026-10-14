@@ -3,7 +3,7 @@ import { t } from "$lib/i18n.svelte";
 
 export type Action = { do: "create" | "delete"; path: string } | { do: "rename"; from: string; to: string };
 
-export type Reference = { label: string; line: string };
+export type Reference = { label: string; line: string; path?: string; text?: string | null; level?: number };
 
 export type Access = "read" | "edit" | "full";
 

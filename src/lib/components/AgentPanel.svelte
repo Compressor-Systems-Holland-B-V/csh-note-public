@@ -1,23 +1,30 @@
 <script lang="ts">
   import Bot from "@lucide/svelte/icons/bot";
+  import Eye from "@lucide/svelte/icons/eye";
   import History from "@lucide/svelte/icons/history";
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
   import MessageSquarePlus from "@lucide/svelte/icons/message-square-plus";
+  import Shield from "@lucide/svelte/icons/shield";
+  import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import AgentComposer from "$lib/components/AgentComposer.svelte";
   import AgentConnect from "$lib/components/AgentConnect.svelte";
   import AgentHistory from "$lib/components/AgentHistory.svelte";
   import AgentReply from "$lib/components/AgentReply.svelte";
   import AgentSteps from "$lib/components/AgentSteps.svelte";
   import ReferenceIcon from "$lib/components/ReferenceIcon.svelte";
+  import VeiledView from "$lib/components/VeiledView.svelte";
   import { Button } from "$lib/components/ui/button";
   import { tick } from "svelte";
+  import type { Seen } from "$lib/ipc";
   import { grouped } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { connections } from "$lib/state/providers.svelte";
   import { t } from "$lib/i18n.svelte";
 
   let list = $state<HTMLDivElement>();
   let history = $state(false);
+  let viewing = $state<Seen[] | null>(null);
   let now = $state(Date.now());
 
   const seconds = $derived(agent.started === null ? 0 : Math.max(0, Math.round((now - agent.started) / 1000)));
@@ -42,7 +49,12 @@
 
 <aside class="flex h-full min-h-0 flex-col overflow-hidden text-sm" aria-label={t("assistant.title")}>
   <div class="relative flex h-9 shrink-0 items-center gap-1 border-b px-2">
-    <span class="flex-1 font-medium">{t("assistant.title")}</span>
+    <span class="font-medium">{t("assistant.title")}</span>
+    <span class="flex items-center p-1 text-xs {privacy.hiding ? 'text-chart-2' : 'text-muted-foreground'}" role="status" title={`${t(privacy.hiding ? (privacy.locked ? "privacy.panel.locked" : "privacy.panel.hidden") : "privacy.panel.notHidden")}\n${t(privacy.hiding ? (privacy.locked ? "privacy.panel.lockedTitle" : "privacy.panel.hiddenTitle") : "privacy.panel.notHiddenTitle")}`}>
+      {#if privacy.hiding}<ShieldCheck class="size-3.5 shrink-0" />{:else}<Shield class="size-3.5 shrink-0" />{/if}
+      <span class="sr-only">{t(privacy.hiding ? (privacy.locked ? "privacy.panel.locked" : "privacy.panel.hidden") : "privacy.panel.notHidden")}</span>
+    </span>
+    <span class="flex-1"></span>
     {#if connections.ready}
       <Button
         variant={history ? "secondary" : "ghost"}
@@ -91,6 +103,17 @@
                 <p class="min-w-0 wrap-anywhere whitespace-pre-wrap">{part.text}</p>
               {/if}
             {/each}
+            {#if message.hidden !== undefined}
+              {@const saw = agent.messages[index + 1]?.saw ?? []}
+              <p class="flex items-center gap-1 text-xs text-chart-2">
+                <ShieldCheck class="size-3" role="img" aria-label={t("privacy.panel.hidden")} />
+                {#if saw.length > 0}
+                  <Button variant="ghost" size="icon-xs" aria-label={t("privacy.preview")} title={t("privacy.preview")} onclick={() => (viewing = saw)}>
+                    <Eye />
+                  </Button>
+                {/if}
+              </p>
+            {/if}
           </div>
         {:else}
           {@const groups = grouped(message.parts)}
@@ -99,7 +122,7 @@
               {#if group.kind === "steps"}
                 <AgentSteps steps={group.steps} {live} />
               {:else}
-                <AgentReply text={group.text} live={live && position === groups.length - 1} />
+                <AgentReply text={group.text} live={live && position === groups.length - 1} restored={message.restored} />
               {/if}
             {/each}
           </div>
@@ -128,8 +151,10 @@
           <span class="shrink-0 text-xs text-muted-foreground tabular-nums" aria-label={t("assistant.timeSoFar")}>{t("assistant.seconds", { seconds })}</span>
         </p>
       {/if}
+      {#if agent.otherKnowledge}<p class="shrink-0 rounded-md bg-muted p-2 text-xs" role="note">{t("privacy.otherKnowledge")}</p>{/if}
       {#if agent.failure}<p class="shrink-0 wrap-anywhere text-destructive" role="alert">{agent.failure}</p>{/if}
     </div>
     <AgentComposer />
   {/if}
 </aside>
+{#if viewing}{@const saw = viewing}<VeiledView load={async () => saw} onclose={() => (viewing = null)} />{/if}

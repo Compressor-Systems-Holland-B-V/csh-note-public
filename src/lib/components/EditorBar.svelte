@@ -6,10 +6,12 @@
   import GitCompare from "@lucide/svelte/icons/git-compare";
   import Lock from "@lucide/svelte/icons/lock";
   import Save from "@lucide/svelte/icons/save";
+  import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import Undo2 from "@lucide/svelte/icons/undo-2";
   import TemplatePicker from "$lib/components/TemplatePicker.svelte";
   import { Button } from "$lib/components/ui/button";
   import { agent } from "$lib/state/agent.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import { t } from "$lib/i18n.svelte";
@@ -19,6 +21,7 @@
   const lockedLabel = $derived(t("editor.locked"));
   const reviewLabel = $derived(t(agent.reviewing ? "editor.review.hide" : "editor.review.show"));
   const size = $derived(settings.values.fontSize);
+  const viewLabel = $derived(t(privacy.viewing ? "privacy.view.close" : "privacy.view.open"));
 </script>
 
 {#snippet action(label: string, onclick: () => void, Icon: typeof Save, disabled = false)}
@@ -32,6 +35,18 @@
   {@render action(t("editor.fontSmaller"), () => settings.set("fontSize", size - 1), AArrowDown, size <= fontSizes.min)}
   {@render action(t("editor.fontBigger"), () => settings.set("fontSize", size + 1), AArrowUp, size >= fontSizes.max)}
   <span class="flex-1"></span>
+  {#if privacy.hiding && privacy.open}
+    <Button
+      variant={privacy.viewing ? "secondary" : "ghost"}
+      size="icon-sm"
+      aria-pressed={privacy.viewing}
+      aria-label={viewLabel}
+      title={viewLabel}
+      onclick={() => (privacy.viewing = !privacy.viewing)}
+    >
+      <ShieldCheck />
+    </Button>
+  {/if}
   {#if agent.locked}
     <span class="text-destructive" role="status" aria-label={lockedLabel} title={lockedLabel}><Lock class="size-3.5" /></span>
   {:else if agent.original !== null}

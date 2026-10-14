@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Bekräfta borttagning",
-    "text": "Assistenten vill ta bort ”{path}”. Den flyttas till papperskorgen, tillsammans med allt innehåll."
+    "text": "Assistenten vill ta bort ”{path}”. Den flyttas till papperskorgen."
   },
   "composer": {
     "placeholder": "Fråga assistenten… Ctrl+Enter för att skicka",
@@ -88,11 +88,12 @@
     "edited": "Redigerade {page}",
     "renamed": "Bytte namn på {from} till {to}",
     "created": "Skapade {path}",
-    "deleted": "Tog bort {path}"
+    "deleted": "Tog bort {path}",
+    "notSaved": "Sparade inte {page}"
   },
   "preset": {
     "title": "Avancerade assistentinställningar",
-    "text": "En förinställning avgör hur snabb och noggrann assistenten är med {provider}. Välj en för att ändra den, eller gör en egen.",
+    "text": "Välj hur snabb och noggrann assistenten är med {provider}.",
     "label": "Förinställning",
     "new": "Ny förinställning",
     "mine": "Min förinställning",

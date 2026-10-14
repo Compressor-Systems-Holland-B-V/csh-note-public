@@ -1,0 +1,144 @@
+{
+  "preview": "傳送給助理的內容",
+  "addToKnowledge": "加入知識庫",
+  "restored": "已對助理隱藏為：{kind}",
+  "unknownToken": "助理寫了一個 znote 不認得的代號，因此無法還原",
+  "otherKnowledge": "這個聊天使用另一個知識檔案隱藏了名稱。隱藏的名稱可能會顯示為代號。",
+  "panel": {
+    "hidden": "對助理隱藏",
+    "hiddenTitle": "名稱、金額和聯絡資訊會以代號傳送",
+    "notHidden": "未隱藏",
+    "notHiddenTitle": "助理會看到您的頁面和檔案的原始內容",
+    "locked": "已鎖定",
+    "lockedTitle": "請先在設定中開啟您的知識檔案。"
+  },
+  "saw": {
+    "prompt": "您的訊息"
+  },
+  "start": {
+    "title": "要對助理隱藏公司名稱嗎？",
+    "text": "傳送前，名稱、金額和聯絡資訊會換成 ⟦CUSTOMER_3⟧ 這樣的代號。",
+    "create": "建立知識檔案",
+    "import": "匯入知識檔案",
+    "notNow": "以後再說",
+    "later": "您之後可以在設定中變更。",
+    "downloadsTitle": "選用的下載項目",
+    "downloadsText": "兩者都只在這部電腦上執行。",
+    "how": "運作方式"
+  },
+  "unlock": {
+    "title": "開啟您的知識檔案",
+    "text": "請輸入「{name}」的密碼。"
+  },
+  "form": {
+    "defaultName": "我的知識",
+    "name": "名稱",
+    "choose": "選擇檔案…",
+    "nothingChosen": "未選擇檔案",
+    "current": "目前的密碼",
+    "password": "密碼",
+    "newPassword": "新密碼",
+    "again": "再次輸入密碼",
+    "tooShort": "請至少使用 {count} 個字元。",
+    "mismatch": "兩次輸入的密碼不相同。",
+    "exportHint": "任何擁有副本和這個密碼的人都能看到隱藏的內容。",
+    "remember": "在這部電腦上記住",
+    "rememberHint": "儲存在這部電腦的密碼存放區中。",
+    "submit": {
+      "create": "建立",
+      "import": "匯入",
+      "unlock": "開啟",
+      "export": "匯出…",
+      "password": "變更密碼"
+    },
+    "title": {
+      "create": "新增知識檔案",
+      "import": "匯入知識檔案",
+      "unlock": "開啟知識檔案",
+      "export": "匯出副本",
+      "password": "變更密碼"
+    }
+  },
+  "files": {
+    "title": "知識檔案",
+    "none": "目前還沒有知識檔案。",
+    "active": "使用中",
+    "open": "已開啟",
+    "locked": "已鎖定",
+    "use": "使用",
+    "new": "新增…",
+    "import": "匯入…",
+    "unlock": "開啟…",
+    "export": "匯出…",
+    "password": "變更密碼…",
+    "exported": "副本已儲存。",
+    "removeTitle": "刪除知識檔案「{name}」？",
+    "removeText": "其知識庫會被刪除，使用過它的聊天將無法繼續。如有需要，請先匯出副本。"
+  },
+  "settings": {
+    "title": "隱私權",
+    "text": "助理可以看到和查詢的內容。",
+    "needsFile": "請先建立或匯入知識檔案。",
+    "privacyVeil": "對助理隱藏名稱",
+    "privacyVeilHint": "客戶、人員、專案和聯絡資訊會換成代號。",
+    "privacyAmounts": "隱藏金額",
+    "privacyAmountsHint": "助理無法使用隱藏的金額進行計算。",
+    "privacyNames": "使用名稱辨識",
+    "privacyNamesHint": "也會隱藏不在您詞彙表中的名稱。可能會漏掉一些。",
+    "knowledgeOn": "知識庫",
+    "knowledgeOnHint": "助理會從您的頁面和檔案中取得相關筆記。",
+    "knowledgeAutoAdd": "自動加入我的頁面",
+    "knowledgeAutoAddHint": "頁面會在儲存時加入。"
+  },
+  "models": {
+    "names": "名稱辨識（約 50 MB）",
+    "namesHint": "找出不在您詞彙表中的人名、公司名稱和地名。",
+    "search": "智慧搜尋（約 30 MB）",
+    "searchHint": "依照意思尋找筆記，而不只是依照其中的字詞。",
+    "download": "下載",
+    "downloading": "正在下載… {done} / {total} MB",
+    "ready": "已下載"
+  },
+  "glossary": {
+    "title": "詞彙表",
+    "loaded_one": "已載入 {count} 個詞彙",
+    "loaded_other": "已載入 {count} 個詞彙",
+    "none": "只有標準類別。匯入您自己的詞彙表（SKOS）。",
+    "import": "匯入…"
+  },
+  "index": {
+    "title": "知識庫",
+    "rebuild": "重建",
+    "counts": "{sources} 個來源，{chunks} 個片段",
+    "forget": "忘記",
+    "empty": "知識庫中還沒有內容。",
+    "attachments": "附加的檔案"
+  },
+  "view": {
+    "title": "助理看到的內容",
+    "open": "顯示助理看到的內容",
+    "close": "返回頁面",
+    "hint": "在標記上按右鍵可查看內容，或選取文字後按右鍵將其隱藏。",
+    "isHidden": "「{text}」已隱藏為：{kind}",
+    "dontHide": "不要隱藏",
+    "alwaysHide": "一律隱藏",
+    "hideAs": "將「{text}」隱藏為",
+    "kind": "類型"
+  },
+  "kinds": {
+    "CUSTOMER": "客戶",
+    "PERSON": "人員",
+    "ORGANISATION": "組織",
+    "SUPPLIER": "供應商",
+    "PROJECT": "專案",
+    "PRODUCT": "產品",
+    "LOCATION": "地點"
+  },
+  "level": {
+    "label": "隱藏程度",
+    "own": "僅限你的清單和聯絡方式",
+    "light": "輕度：也包括人名",
+    "medium": "中度：也包括組織和地點",
+    "strict": "嚴格：也包括產品、專案、客戶和供應商"
+  }
+}

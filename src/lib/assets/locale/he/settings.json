@@ -1,4 +1,6 @@
 {
+  "general": "כללי",
+  "editor": "עורך",
   "fontSize": "גודל טקסט בעורך",
   "wrap": "גלישת שורות ארוכות",
   "autosave": "שמירה אוטומטית",
@@ -12,9 +14,6 @@
   "language": "שפה",
   "languageAuto": "זהה לשפת המחשב הזה",
   "assistant": "עוזר אישי",
-  "uses": "משתמש ב-{provider}.",
-  "notConnected": "טרם בוצע חיבור.",
-  "providers": "ספקים…",
   "file": "קובץ ה-znote שלך",
   "switch": "החלפה…"
 }

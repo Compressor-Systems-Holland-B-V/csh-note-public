@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Confirmar eliminação",
-    "text": "O assistente pretende eliminar “{path}”. Será movido para o Reciclagem, juntamente com tudo o que contém."
+    "text": "O assistente pretende eliminar “{path}”. Será movido para a Reciclagem."
   },
   "composer": {
     "placeholder": "Pergunte ao assistente… Ctrl+Enter para enviar",
@@ -88,11 +88,12 @@
     "edited": "Editou {page}",
     "renamed": "Mudou o nome de {from} para {to}",
     "created": "Criou {path}",
-    "deleted": "Eliminou {path}"
+    "deleted": "Eliminou {path}",
+    "notSaved": "Não guardou {page}"
   },
   "preset": {
     "title": "Definições avançadas do assistente",
-    "text": "Uma predefinição decide a rapidez e o cuidado do assistente com {provider}. Escolha uma para a alterar ou crie a sua própria.",
+    "text": "Escolha a rapidez e o cuidado do assistente com {provider}.",
     "label": "Predefinição",
     "new": "Nova predefinição",
     "mine": "A minha predefinição",

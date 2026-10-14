@@ -2,7 +2,7 @@
   "title": "Temi",
   "look": "Aspetto",
   "import": "Importa un file tema…",
-  "intro": "Un tema può modificare l'aspetto di znote, aggiungere modelli di pagina, o entrambi. Gli interruttori su un tema determinano se il suo aspetto e i suoi modelli vengono proposti; scegli l'aspetto da utilizzare dall'elenco qui sopra.",
+  "intro": "I temi cambiano l'aspetto, aggiungono modelli di pagina, o entrambi.",
   "storeFailure": "{reason} I temi già installati sono mostrati di seguito.",
   "search": "Cerca temi",
   "installed": "Installati",

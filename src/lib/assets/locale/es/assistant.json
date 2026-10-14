@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Confirmar eliminación",
-    "text": "El asistente quiere eliminar “{path}”. Se moverá a la Papelera de reciclaje, junto con todo su contenido."
+    "text": "El asistente quiere eliminar “{path}”. Se moverá a la Papelera de reciclaje."
   },
   "composer": {
     "placeholder": "Preguntar al asistente… Ctrl+Enter para enviar",
@@ -88,11 +88,12 @@
     "edited": "Editada {page}",
     "renamed": "Se cambió el nombre de {from} a {to}",
     "created": "Creado {path}",
-    "deleted": "Eliminado {path}"
+    "deleted": "Eliminado {path}",
+    "notSaved": "No se guardó {page}"
   },
   "preset": {
     "title": "Configuración avanzada del asistente",
-    "text": "Un ajuste preestablecido decide qué tan rápido y cuidadoso es el asistente con {provider}. Elige uno para cambiarlo o crea el tuyo propio.",
+    "text": "Elige qué tan rápido y cuidadoso es el asistente con {provider}.",
     "label": "Ajuste preestablecido",
     "new": "Nuevo ajuste preestablecido",
     "mine": "Mi ajuste preestablecido",

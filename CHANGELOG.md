@@ -27,7 +27,8 @@ All notable changes to znote are written down here. The format follows
 - Archive all and delete all in the chat history have labels.
 - A back button leads out of the chat history.
 - The workspace name next to the logo is easier to read.
-- A new app icon in the ZAL Analytics colours, generated with `scripts/generate_icon`.
+- A new app icon in the ZAL Analytics colours: a flat rounded tile on a transparent
+  background, generated as a PNG and vectorized with `scripts/generate_icon`.
 
 ## [0.7.0] - 2026-10-14
 

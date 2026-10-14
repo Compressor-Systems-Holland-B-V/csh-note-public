@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Löschen bestätigen",
-    "text": "Der Assistent möchte „{path}“ löschen. Es wird in den Papierkorb verschoben, zusammen mit allem, was darin enthalten ist."
+    "text": "Der Assistent möchte „{path}“ löschen. Es wird in den Papierkorb verschoben."
   },
   "composer": {
     "placeholder": "Assistent fragen… Strg+Eingabetaste zum Senden",
@@ -88,11 +88,12 @@
     "edited": "{page} bearbeitet",
     "renamed": "{from} in {to} umbenannt",
     "created": "{path} erstellt",
-    "deleted": "{path} gelöscht"
+    "deleted": "{path} gelöscht",
+    "notSaved": "{page} nicht gespeichert"
   },
   "preset": {
     "title": "Erweiterte Assistenten-Einstellungen",
-    "text": "Eine Voreinstellung bestimmt, wie schnell und sorgfältig der Assistent mit {provider} arbeitet. Wählen Sie eine aus, um sie zu ändern, oder erstellen Sie eine eigene.",
+    "text": "Wählen Sie, wie schnell und sorgfältig der Assistent mit {provider} arbeitet.",
     "label": "Voreinstellung",
     "new": "Neue Voreinstellung",
     "mine": "Meine Voreinstellung",

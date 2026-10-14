@@ -2,10 +2,10 @@
   "title": "Eksportér",
   "format": "Format",
   "pdfHint": "Ser præcis ud som forhåndsvisningen.",
-  "pptxHint": "Ét slide pr. side. Tekst forbliver redigerbar; alt andet er et billede.",
+  "pptxHint": "Ét slide pr. side. Kun tekst forbliver redigerbar.",
   "blocked": {
     "noPage": "Vælg en side, der skal eksporteres.",
-    "problems": "Denne side har problemer. Gå tilbage til Redigér og ret dem, før du eksporterer.",
+    "problems": "Ret først problemerne på denne side.",
     "empty": "Denne side indeholder endnu intet at eksportere."
   },
   "run": "Eksportér…",

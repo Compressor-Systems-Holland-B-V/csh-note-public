@@ -1,0 +1,144 @@
+{
+  "preview": "Co jest wysyłane do asystenta",
+  "addToKnowledge": "Dodaj do bazy wiedzy",
+  "restored": "Ukryte przed asystentem jako: {kind}",
+  "unknownToken": "Asystent napisał znacznik, którego znote nie zna, więc nie dało się go przywrócić",
+  "otherKnowledge": "W tym czacie nazwy ukrywano przy użyciu innego pliku wiedzy. Ukryte nazwy mogą być widoczne jako znaczniki.",
+  "panel": {
+    "hidden": "Ukryte przed asystentem",
+    "hiddenTitle": "Nazwy, kwoty i dane kontaktowe są wysyłane jako znaczniki",
+    "notHidden": "Nieukryte",
+    "notHiddenTitle": "Asystent widzi Twoje strony i pliki dokładnie takie, jakie są",
+    "locked": "Zablokowany",
+    "lockedTitle": "Najpierw otwórz plik wiedzy w Ustawieniach."
+  },
+  "saw": {
+    "prompt": "Twoja wiadomość"
+  },
+  "start": {
+    "title": "Ukrywać nazwy firm przed asystentem?",
+    "text": "Nazwy, kwoty i dane kontaktowe stają się znacznikami, np. ⟦CUSTOMER_3⟧, zanim cokolwiek zostanie wysłane.",
+    "create": "Utwórz plik wiedzy",
+    "import": "Importuj plik wiedzy",
+    "notNow": "Nie teraz",
+    "later": "Możesz to zmienić później w Ustawieniach.",
+    "downloadsTitle": "Opcjonalne pobrania",
+    "downloadsText": "Oba działają tylko na tym komputerze.",
+    "how": "Jak to działa"
+  },
+  "unlock": {
+    "title": "Otwórz plik wiedzy",
+    "text": "Wpisz hasło do „{name}”."
+  },
+  "form": {
+    "defaultName": "Moja wiedza",
+    "name": "Nazwa",
+    "choose": "Wybierz plik…",
+    "nothingChosen": "Nie wybrano pliku",
+    "current": "Obecne hasło",
+    "password": "Hasło",
+    "newPassword": "Nowe hasło",
+    "again": "Wpisz hasło ponownie",
+    "tooShort": "Minimalna liczba znaków: {count}.",
+    "mismatch": "Hasła nie są takie same.",
+    "exportHint": "Każdy, kto ma kopię i to hasło, może zobaczyć, co jest ukryte.",
+    "remember": "Zapamiętaj na tym komputerze",
+    "rememberHint": "Zapisane w magazynie haseł tego komputera.",
+    "submit": {
+      "create": "Utwórz",
+      "import": "Importuj",
+      "unlock": "Otwórz",
+      "export": "Eksportuj…",
+      "password": "Zmień hasło"
+    },
+    "title": {
+      "create": "Nowy plik wiedzy",
+      "import": "Importuj plik wiedzy",
+      "unlock": "Otwórz plik wiedzy",
+      "export": "Eksportuj kopię",
+      "password": "Zmień hasło"
+    }
+  },
+  "files": {
+    "title": "Pliki wiedzy",
+    "none": "Nie ma jeszcze pliku wiedzy.",
+    "active": "W użyciu",
+    "open": "Otwarty",
+    "locked": "Zablokowany",
+    "use": "Użyj",
+    "new": "Nowy…",
+    "import": "Importuj…",
+    "unlock": "Otwórz…",
+    "export": "Eksportuj…",
+    "password": "Zmień hasło…",
+    "exported": "Kopia została zapisana.",
+    "removeTitle": "Usunąć plik wiedzy „{name}”?",
+    "removeText": "Jego baza wiedzy zostanie usunięta, a czatów, które z niego korzystały, nie da się kontynuować. W razie potrzeby najpierw wyeksportuj kopię."
+  },
+  "settings": {
+    "title": "Prywatność",
+    "text": "Co asystent może widzieć i wyszukiwać.",
+    "needsFile": "Najpierw utwórz lub zaimportuj plik wiedzy.",
+    "privacyVeil": "Ukrywaj nazwy przed asystentem",
+    "privacyVeilHint": "Klienci, osoby, projekty i dane kontaktowe stają się znacznikami.",
+    "privacyAmounts": "Ukrywaj kwoty pieniędzy",
+    "privacyAmountsHint": "Asystent nie może liczyć na ukrytych kwotach.",
+    "privacyNames": "Używaj wyszukiwarki nazw",
+    "privacyNamesHint": "Ukrywa też nazwy, których nie ma w Twoim glosariuszu. Niektóre pominie.",
+    "knowledgeOn": "Baza wiedzy",
+    "knowledgeOnHint": "Asystent dostaje pasujące notatki z Twoich stron i plików.",
+    "knowledgeAutoAdd": "Dodawaj moje strony automatycznie",
+    "knowledgeAutoAddHint": "Strony są dodawane przy zapisie."
+  },
+  "models": {
+    "names": "Wyszukiwarka nazw (około 50 MB)",
+    "namesHint": "Znajduje nazwy osób, firm i miejsc, których nie ma w Twoim glosariuszu.",
+    "search": "Inteligentne wyszukiwanie (około 30 MB)",
+    "searchHint": "Znajduje notatki po znaczeniu, a nie tylko po słowach, które zawierają.",
+    "download": "Pobierz",
+    "downloading": "Pobieranie… {done} z {total} MB",
+    "ready": "Pobrano"
+  },
+  "glossary": {
+    "title": "Glosariusz",
+    "loaded_one": "Wczytane terminy: {count}",
+    "loaded_other": "Wczytane terminy: {count}",
+    "none": "Tylko standardowe kategorie. Zaimportuj własny glosariusz (SKOS).",
+    "import": "Importuj…"
+  },
+  "index": {
+    "title": "Baza wiedzy",
+    "rebuild": "Odbuduj",
+    "counts": "Źródła: {sources}, fragmenty: {chunks}",
+    "forget": "Zapomnij",
+    "empty": "Baza wiedzy jest jeszcze pusta.",
+    "attachments": "Załączone pliki"
+  },
+  "view": {
+    "title": "Co widzi asystent",
+    "open": "Pokaż, co widzi asystent",
+    "close": "Wróć do strony",
+    "hint": "Kliknij prawym przyciskiem token, aby go pokazać, albo zaznacz tekst i kliknij prawym przyciskiem, aby go ukryć.",
+    "isHidden": "„{text}” jest ukryte jako: {kind}",
+    "dontHide": "Nie ukrywaj tego",
+    "alwaysHide": "Zawsze to ukrywaj",
+    "hideAs": "Ukryj „{text}” jako",
+    "kind": "Rodzaj"
+  },
+  "kinds": {
+    "CUSTOMER": "Klient",
+    "PERSON": "Osoba",
+    "ORGANISATION": "Organizacja",
+    "SUPPLIER": "Dostawca",
+    "PROJECT": "Projekt",
+    "PRODUCT": "Produkt",
+    "LOCATION": "Miejsce"
+  },
+  "level": {
+    "label": "Ile jest ukrywane",
+    "own": "Tylko twoja lista i dane kontaktowe",
+    "light": "Lekko: także imiona i nazwiska osób",
+    "medium": "Średnio: także organizacje i miejsca",
+    "strict": "Ściśle: także produkty, projekty, klienci i dostawcy"
+  }
+}

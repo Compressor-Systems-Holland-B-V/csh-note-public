@@ -6,6 +6,10 @@
   "permissions": [
     "core:default",
     "core:window:allow-destroy",
-    "store:default"
+    "store:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [{ "url": "https://github.com/ZAL-Analytics/znote*" }]
+    }
   ]
 }

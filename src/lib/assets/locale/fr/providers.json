@@ -1,10 +1,9 @@
 {
   "connectTitle": "Connecter l'assistant",
-  "connectText": "Il rédige et modifie vos pages pour vous. Choisissez d'abord sur quoi il doit s'exécuter.",
+  "connectText": "Choisissez sur quoi l'assistant s'exécute.",
   "chooseElse": "Choisir autre chose",
   "nameConnected": "{name} · connecté",
-  "dialogTitle": "Fournisseurs d'assistant",
-  "dialogText": "Connectez-en un ou plusieurs, puis choisissez celui que l'assistant utilise.",
+  "dialogText": "Connectez-en un ou plusieurs et choisissez celui par défaut.",
   "connected": "Connecté",
   "connectedTo": "Connecté à {url}",
   "use": "Définir par défaut",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Saisir le nom d'un modèle",
-    "missing": "Choisissez un modèle avant de commencer. Il doit prendre en charge les outils.",
+    "missing": "Choisissez un modèle qui prend en charge les outils.",
     "hint": "Utilisé quand une discussion ou un préréglage ne choisit pas un autre modèle."
   },
   "signIn": {
     "installing": "Téléchargement de Claude Code…",
     "finish": "Terminez la connexion dans votre navigateur…",
-    "noBrowser": "Le navigateur ne s'est pas ouvert ? Copiez ce lien, ouvrez-le dans n'importe quel navigateur, puis collez le code qui s'affiche.",
+    "noBrowser": "Le navigateur ne s'est pas ouvert ? Ouvrez ce lien, puis collez le code affiché.",
     "link": "Lien de connexion",
     "copyLink": "Copier le lien de connexion",
     "code": "Code du navigateur",
     "unfinished": "La connexion n'a pas abouti. Appuyez sur Connecter pour réessayer.",
-    "note": "Exécute Claude Code avec votre propre compte. Vous vous connectez une fois dans votre navigateur.",
+    "note": "Connectez-vous une fois dans votre navigateur avec votre propre compte.",
     "subscription": "Abonnement Claude",
     "subscriptionHint": "Forfait Pro, Max ou Team",
     "console": "Compte API",
@@ -43,6 +42,6 @@
     "server": "Adresse du serveur",
     "label": "Clé API",
     "labelOptional": "Clé API (si le serveur en nécessite une)",
-    "note": "La clé est conservée chiffrée dans le gestionnaire de mots de passe de cet ordinateur et n'est jamais affichée à nouveau."
+    "note": "Conservée chiffrée sur cet ordinateur et jamais affichée à nouveau."
   }
 }

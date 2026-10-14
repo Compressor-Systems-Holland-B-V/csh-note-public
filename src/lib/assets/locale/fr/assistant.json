@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Confirmer la suppression",
-    "text": "L’assistant souhaite supprimer « {path} ». L’élément sera déplacé vers la Corbeille, avec tout son contenu."
+    "text": "L’assistant souhaite supprimer « {path} ». L’élément ira dans la Corbeille."
   },
   "composer": {
     "placeholder": "Demander à l’assistant… Ctrl+Entrée pour envoyer",
@@ -88,11 +88,12 @@
     "edited": "A modifié {page}",
     "renamed": "A renommé {from} en {to}",
     "created": "A créé {path}",
-    "deleted": "A supprimé {path}"
+    "deleted": "A supprimé {path}",
+    "notSaved": "Non enregistré : {page}"
   },
   "preset": {
     "title": "Paramètres avancés de l’assistant",
-    "text": "Un préréglage détermine la vitesse et la prudence de l’assistant avec {provider}. Choisissez-en un pour le modifier, ou créez le vôtre.",
+    "text": "Choisissez la vitesse et la prudence de l’assistant avec {provider}.",
     "label": "Préréglage",
     "new": "Nouveau préréglage",
     "mine": "Mon préréglage",

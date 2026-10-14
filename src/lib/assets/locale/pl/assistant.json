@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Potwierdź usunięcie",
-    "text": "Asystent chce usunąć „{path}”. Element zostanie przeniesiony do Kosza wraz z całą zawartością."
+    "text": "Asystent chce usunąć „{path}”. Element trafi do Kosza."
   },
   "composer": {
     "placeholder": "Zapytaj asystenta… Ctrl+Enter, aby wysłać",
@@ -88,11 +88,12 @@
     "edited": "Edytowano {page}",
     "renamed": "Zmieniono nazwę z {from} na {to}",
     "created": "Utworzono {path}",
-    "deleted": "Usunięto {path}"
+    "deleted": "Usunięto {path}",
+    "notSaved": "Nie zapisano {page}"
   },
   "preset": {
     "title": "Zaawansowane ustawienia asystenta",
-    "text": "Ustawienie wstępne określa, jak szybko i jak dokładnie asystent pracuje z {provider}. Wybierz jedno, aby je zmienić, lub stwórz własne.",
+    "text": "Wybierz, jak szybko i dokładnie asystent pracuje z {provider}.",
     "label": "Ustawienie wstępne",
     "new": "Nowe ustawienie wstępne",
     "mine": "Moje ustawienie wstępne",

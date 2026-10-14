@@ -1,10 +1,9 @@
 {
   "connectTitle": "Forbind assistenten",
-  "connectText": "Den skriver og redigerer dine sider for dig. Vælg først, hvad den skal køre på.",
+  "connectText": "Vælg, hvad assistenten kører på.",
   "chooseElse": "Vælg noget andet",
   "nameConnected": "{name} · forbundet",
-  "dialogTitle": "Assistent-udbydere",
-  "dialogText": "Forbind én eller flere, og vælg derefter, hvilken assistenten skal bruge.",
+  "dialogText": "Forbind én eller flere, og vælg en standard.",
   "connected": "Forbundet",
   "connectedTo": "Forbundet til {url}",
   "use": "Brug som standard",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Skriv navnet på en model",
-    "missing": "Vælg en model, før du starter. Den skal understøtte værktøjer.",
+    "missing": "Vælg en model, der understøtter værktøjer.",
     "hint": "Bruges, når en chat eller en forudindstilling ikke vælger en anden model."
   },
   "signIn": {
     "installing": "Downloader Claude Code…",
     "finish": "Afslut login i din browser…",
-    "noBrowser": "Åbnede browseren ikke? Kopiér dette link, åbn det i en valgfri browser, og indsæt derefter koden, den viser dig.",
+    "noBrowser": "Åbnede browseren ikke? Åbn dette link, og indsæt derefter koden, det viser.",
     "link": "Login-link",
     "copyLink": "Kopiér login-linket",
     "code": "Kode fra browseren",
     "unfinished": "Login blev ikke afsluttet. Tryk på Forbind for at prøve igen.",
-    "note": "Kører Claude Code med din egen konto. Du logger ind én gang i din browser.",
+    "note": "Log ind én gang i din browser med din egen konto.",
     "subscription": "Claude-abonnement",
     "subscriptionHint": "Pro-, Max- eller Team-abonnement",
     "console": "API-konto",
@@ -43,6 +42,6 @@
     "server": "Serveradresse",
     "label": "API-nøgle",
     "labelOptional": "API-nøgle (hvis serveren kræver én)",
-    "note": "Nøglen opbevares krypteret i denne computers adgangskodelager og vises aldrig igen."
+    "note": "Gemmes krypteret på denne computer og vises aldrig igen."
   }
 }

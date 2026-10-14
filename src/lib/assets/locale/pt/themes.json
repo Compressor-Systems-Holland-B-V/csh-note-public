@@ -2,7 +2,7 @@
   "title": "Temas",
   "look": "Aspeto",
   "import": "Importar um ficheiro de tema…",
-  "intro": "Um tema pode alterar o aspeto do znote, adicionar modelos de página, ou ambos. Os interruptores num tema decidem se o seu aspeto e os seus modelos são disponibilizados; escolha o aspeto a utilizar na lista acima.",
+  "intro": "Os temas alteram o aspeto, adicionam modelos de página, ou ambos.",
   "storeFailure": "{reason} Os temas que já instalou são apresentados abaixo.",
   "search": "Pesquisar temas",
   "installed": "Instalados",

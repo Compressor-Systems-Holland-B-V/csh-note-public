@@ -5,16 +5,16 @@
   "templateTitle": "Użyj szablonu dla tej strony",
   "fontSmaller": "Mniejszy tekst",
   "fontBigger": "Większy tekst",
-  "locked": "Asystent pisze tę stronę. Będziesz mógł edytować ponownie, gdy skończy.",
+  "locked": "Asystent edytuje tę stronę.",
   "review": {
-    "show": "Zobacz, co zmienił asystent, i zachowaj lub cofnij każdą część",
+    "show": "Przejrzyj zmiany asystenta",
     "hide": "Ukryj zmiany asystenta",
     "keep": "Zachowaj",
     "keepTitle": "Zachowaj tę zmianę",
     "undo": "Cofnij",
     "undoTitle": "Przywróć poprzednią zawartość",
-    "keepAllTitle": "Zachowaj wszystkie zmiany wprowadzone przez asystenta na tej stronie",
-    "undoAllTitle": "Przywróć stronę do stanu sprzed zmian asystenta"
+    "keepAllTitle": "Zachowaj wszystkie zmiany na tej stronie",
+    "undoAllTitle": "Cofnij wszystkie zmiany na tej stronie"
   },
   "problems": {
     "label": "Problemy",

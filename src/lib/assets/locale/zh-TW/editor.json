@@ -5,16 +5,16 @@
   "templateTitle": "為此頁面使用範本",
   "fontSmaller": "縮小文字",
   "fontBigger": "放大文字",
-  "locked": "助理正在撰寫此頁面。完成後您就可以再次編輯。",
+  "locked": "助理正在編輯此頁面。",
   "review": {
-    "show": "查看助理的變更內容，並保留或復原每一部分",
+    "show": "檢閱助理的變更",
     "hide": "隱藏助理的變更內容",
     "keep": "保留",
     "keepTitle": "保留此變更",
     "undo": "復原",
     "undoTitle": "還原為先前的內容",
-    "keepAllTitle": "保留助理在此頁面上的所有變更",
-    "undoAllTitle": "將此頁面還原為助理變更前的狀態"
+    "keepAllTitle": "保留此頁面上的所有變更",
+    "undoAllTitle": "復原此頁面上的所有變更"
   },
   "problems": {
     "label": "問題",

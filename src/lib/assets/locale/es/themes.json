@@ -2,7 +2,7 @@
   "title": "Temas",
   "look": "Apariencia",
   "import": "Importar un archivo de tema…",
-  "intro": "Un tema puede cambiar el aspecto de znote, añadir plantillas de página o ambas cosas. Los interruptores de un tema determinan si se ofrecen su apariencia y sus plantillas; elija la apariencia que desea usar de la lista anterior.",
+  "intro": "Los temas cambian el aspecto, añaden plantillas de página o ambas cosas.",
   "storeFailure": "{reason} Los temas que ya ha instalado se muestran a continuación.",
   "search": "Buscar temas",
   "installed": "Instalados",

@@ -1,4 +1,6 @@
 {
+  "general": "عام",
+  "editor": "المحرر",
   "fontSize": "حجم نص المحرر",
   "wrap": "التفاف الأسطر الطويلة",
   "autosave": "حفظ تلقائي",
@@ -12,9 +14,6 @@
   "language": "اللغة",
   "languageAuto": "مثل هذا الحاسوب",
   "assistant": "المساعد",
-  "uses": "يستخدم {provider}.",
-  "notConnected": "غير متصل بعد.",
-  "providers": "المزودون…",
   "file": "ملف znote الخاص بك",
   "switch": "تبديل…"
 }

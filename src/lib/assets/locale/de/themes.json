@@ -2,7 +2,7 @@
   "title": "Designs",
   "look": "Erscheinungsbild",
   "import": "Design-Datei importieren…",
-  "intro": "Ein Design kann das Aussehen von znote verändern, Seitenvorlagen hinzufügen oder beides. Die Schalter eines Designs bestimmen, ob dessen Aussehen und Vorlagen angeboten werden; wählen Sie das zu verwendende Aussehen aus der Liste oben aus.",
+  "intro": "Designs ändern das Aussehen, fügen Seitenvorlagen hinzu oder beides.",
   "storeFailure": "{reason} Bereits installierte Designs werden unten angezeigt.",
   "search": "Designs durchsuchen",
   "installed": "Installiert",

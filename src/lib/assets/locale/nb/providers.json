@@ -1,10 +1,9 @@
 {
   "connectTitle": "Koble til assistenten",
-  "connectText": "Den skriver og redigerer sidene dine for deg. Velg først hva den skal kjøre på.",
+  "connectText": "Velg hva assistenten skal kjøre på.",
   "chooseElse": "Velg noe annet",
   "nameConnected": "{name} · tilkoblet",
-  "dialogTitle": "Assistent-leverandører",
-  "dialogText": "Koble til én eller flere, og velg deretter hvilken assistenten skal bruke.",
+  "dialogText": "Koble til én eller flere, og velg en standard.",
   "connected": "Tilkoblet",
   "connectedTo": "Tilkoblet til {url}",
   "use": "Bruk som standard",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Skriv inn navnet på en modell",
-    "missing": "Velg en modell før du starter. Den må støtte verktøy.",
+    "missing": "Velg en modell som støtter verktøy.",
     "hint": "Brukes når en chat eller en forhåndsinnstilling ikke velger en annen modell."
   },
   "signIn": {
     "installing": "Laster ned Claude Code…",
     "finish": "Fullfør påloggingen i nettleseren…",
-    "noBrowser": "Åpnet ikke nettleseren seg? Kopier denne lenken, åpne den i en nettleser, og lim inn koden den viser deg.",
+    "noBrowser": "Åpnet ikke nettleseren seg? Åpne denne lenken, og lim inn koden den viser.",
     "link": "Påloggingslenke",
     "copyLink": "Kopier påloggingslenken",
     "code": "Kode fra nettleseren",
     "unfinished": "Påloggingen ble ikke fullført. Trykk på Koble til for å prøve igjen.",
-    "note": "Kjører Claude Code med din egen konto. Du logger inn én gang i nettleseren.",
+    "note": "Logg inn én gang i nettleseren med din egen konto.",
     "subscription": "Claude-abonnement",
     "subscriptionHint": "Pro-, Max- eller Team-plan",
     "console": "API-konto",
@@ -43,6 +42,6 @@
     "server": "Serveradresse",
     "label": "API-nøkkel",
     "labelOptional": "API-nøkkel (hvis serveren krever en)",
-    "note": "Nøkkelen lagres kryptert i passordlageret på denne datamaskinen og vises aldri igjen."
+    "note": "Lagres kryptert på denne datamaskinen og vises aldri igjen."
   }
 }

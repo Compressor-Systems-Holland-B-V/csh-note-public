@@ -1,0 +1,144 @@
+{
+  "preview": "Det som sendes til assistenten",
+  "addToKnowledge": "Legg til i kunnskapsbasen",
+  "restored": "Skjult for assistenten som: {kind}",
+  "unknownToken": "Assistenten skrev en plassholder som znote ikke kjenner, så den kunne ikke byttes tilbake",
+  "otherKnowledge": "Denne chatten skjulte navn med en annen kunnskapsfil. Skjulte navn kan vises som plassholdere.",
+  "panel": {
+    "hidden": "Skjult for assistenten",
+    "hiddenTitle": "Navn, beløp og kontaktopplysninger sendes som plassholdere",
+    "notHidden": "Ikke skjult",
+    "notHiddenTitle": "Assistenten ser sidene og filene dine akkurat slik de er",
+    "locked": "Låst",
+    "lockedTitle": "Åpne kunnskapsfilen din i Innstillinger først."
+  },
+  "saw": {
+    "prompt": "Meldingen din"
+  },
+  "start": {
+    "title": "Skjule firmanavn for assistenten?",
+    "text": "Navn, beløp og kontaktopplysninger blir til plassholdere som ⟦CUSTOMER_3⟧ før noe sendes.",
+    "create": "Opprett en kunnskapsfil",
+    "import": "Importer en kunnskapsfil",
+    "notNow": "Ikke nå",
+    "later": "Du kan endre dette senere i Innstillinger.",
+    "downloadsTitle": "Valgfrie nedlastinger",
+    "downloadsText": "Begge kjører bare på denne datamaskinen.",
+    "how": "Slik fungerer det"
+  },
+  "unlock": {
+    "title": "Åpne kunnskapsfilen din",
+    "text": "Skriv inn passordet for «{name}»."
+  },
+  "form": {
+    "defaultName": "Min kunnskap",
+    "name": "Navn",
+    "choose": "Velg en fil…",
+    "nothingChosen": "Ingen fil valgt",
+    "current": "Nåværende passord",
+    "password": "Passord",
+    "newPassword": "Nytt passord",
+    "again": "Skriv inn passordet på nytt",
+    "tooShort": "Bruk minst {count} tegn.",
+    "mismatch": "Passordene er ikke like.",
+    "exportHint": "Alle som har kopien og dette passordet, kan se hva som er skjult.",
+    "remember": "Husk på denne datamaskinen",
+    "rememberHint": "Lagres i passordlageret på denne datamaskinen.",
+    "submit": {
+      "create": "Opprett",
+      "import": "Importer",
+      "unlock": "Åpne",
+      "export": "Eksporter…",
+      "password": "Endre passord"
+    },
+    "title": {
+      "create": "Ny kunnskapsfil",
+      "import": "Importer en kunnskapsfil",
+      "unlock": "Åpne kunnskapsfilen",
+      "export": "Eksporter en kopi",
+      "password": "Endre passordet"
+    }
+  },
+  "files": {
+    "title": "Kunnskapsfiler",
+    "none": "Ingen kunnskapsfil ennå.",
+    "active": "I bruk",
+    "open": "Åpen",
+    "locked": "Låst",
+    "use": "Bruk",
+    "new": "Ny…",
+    "import": "Importer…",
+    "unlock": "Åpne…",
+    "export": "Eksporter…",
+    "password": "Endre passord…",
+    "exported": "Kopien ble lagret.",
+    "removeTitle": "Slette kunnskapsfilen «{name}»?",
+    "removeText": "Kunnskapsbasen dens slettes, og chatter som brukte den, kan ikke lenger fortsettes. Eksporter en kopi først om nødvendig."
+  },
+  "settings": {
+    "title": "Personvern",
+    "text": "Hva assistenten kan se og slå opp.",
+    "needsFile": "Opprett eller importer en kunnskapsfil først.",
+    "privacyVeil": "Skjul navn for assistenten",
+    "privacyVeilHint": "Kunder, personer, prosjekter og kontaktopplysninger blir til plassholdere.",
+    "privacyAmounts": "Skjul pengebeløp",
+    "privacyAmountsHint": "Assistenten kan ikke regne med skjulte beløp.",
+    "privacyNames": "Bruk navnefinneren",
+    "privacyNamesHint": "Skjuler også navn som ikke står i ordlisten din. Den vil overse noen.",
+    "knowledgeOn": "Kunnskapsbase",
+    "knowledgeOnHint": "Assistenten får relevante notater fra sidene og filene dine.",
+    "knowledgeAutoAdd": "Legg til sidene mine automatisk",
+    "knowledgeAutoAddHint": "Sider legges til når du lagrer dem."
+  },
+  "models": {
+    "names": "Navnefinner (omtrent 50 MB)",
+    "namesHint": "Finner navn på personer, firmaer og steder som ikke står i ordlisten din.",
+    "search": "Smart søk (omtrent 30 MB)",
+    "searchHint": "Finner notater etter mening, ikke bare etter ordene i dem.",
+    "download": "Last ned",
+    "downloading": "Laster ned… {done} av {total} MB",
+    "ready": "Lastet ned"
+  },
+  "glossary": {
+    "title": "Ordliste",
+    "loaded_one": "{count} begrep lastet inn",
+    "loaded_other": "{count} begreper lastet inn",
+    "none": "Bare standardkategoriene. Importer din egen ordliste (SKOS).",
+    "import": "Importer…"
+  },
+  "index": {
+    "title": "Kunnskapsbase",
+    "rebuild": "Bygg på nytt",
+    "counts": "{sources} kilder, {chunks} deler",
+    "forget": "Glem",
+    "empty": "Ingenting i kunnskapsbasen ennå.",
+    "attachments": "Vedlagte filer"
+  },
+  "view": {
+    "title": "Hva assistenten ser",
+    "open": "Vis hva assistenten ser",
+    "close": "Tilbake til siden",
+    "hint": "Høyreklikk på en plassholder for å vise den, eller merk tekst og høyreklikk for å skjule den.",
+    "isHidden": "«{text}» er skjult som: {kind}",
+    "dontHide": "Ikke skjul dette",
+    "alwaysHide": "Skjul dette alltid",
+    "hideAs": "Skjul «{text}» som",
+    "kind": "Type"
+  },
+  "kinds": {
+    "CUSTOMER": "Kunde",
+    "PERSON": "Person",
+    "ORGANISATION": "Organisasjon",
+    "SUPPLIER": "Leverandør",
+    "PROJECT": "Prosjekt",
+    "PRODUCT": "Produkt",
+    "LOCATION": "Sted"
+  },
+  "level": {
+    "label": "Hvor mye som skjules",
+    "own": "Bare din egen liste og kontaktinformasjon",
+    "light": "Lett: også navn på personer",
+    "medium": "Middels: også organisasjoner og steder",
+    "strict": "Streng: også produkter, prosjekter, kunder og leverandører"
+  }
+}

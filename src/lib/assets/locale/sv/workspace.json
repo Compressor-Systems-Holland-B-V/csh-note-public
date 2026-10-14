@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Välkommen till znote",
     "title": "Dina znote-filer",
-    "text": "Dina anteckningar finns i en znote-fil. Allt du skriver sparas i den, och du kan kopiera den till en annan dator.",
+    "text": "Alla dina anteckningar sparas i en fil som du kan kopiera till en annan dator.",
     "new": "Ny znote-fil…",
     "open": "Öppna en znote-fil…",
     "bringIn": "Importera anteckningar jag redan har…",
@@ -67,12 +67,17 @@
     "switch": "Öppna eller skapa en annan znote-fil",
     "savedAt": "Sparad kl. {time}",
     "themesTitle": "Installera temana i den här filen?",
-    "themesText": "Den här znote-filen har med sig teman som inte finns på den här datorn ännu. Sidorna behöver dem.",
+    "themesText": "Filen behöver teman som inte är installerade än.",
     "themesInstall": "Installera och öppna",
     "fontsTitle": "Vissa typsnitt är inte tillgängliga",
-    "fontsFallback": "När ett typsnitt inte är tillgängligt använder znote ett annat. Texten kan då ta mer eller mindre plats, så rader kan brytas på andra ställen och antalet sidor kan ändras.",
-    "fontsMissing": "De här typsnitten används i filen men finns inte på den här datorn:",
-    "fontsLeftOut": "De här typsnitten får inte kopieras in i en znote-fil. På en dator utan dem används ett annat typsnitt:",
+    "fontsFallback": "Andra typsnitt används i stället, så rader och sidor kan brytas annorlunda.",
+    "fontsMissing": "Finns inte på den här datorn:",
+    "fontsLeftOut": "De här typsnitten kan inte sparas i filen:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Kom igång",
+    "empty": "Filer du öppnar visas här.",
+    "back": "Tillbaka till {name}"
   }
 }

@@ -1,10 +1,9 @@
 {
   "connectTitle": "De assistent verbinden",
-  "connectText": "Hij schrijft en bewerkt je pagina's voor je. Kies eerst waarop hij moet draaien.",
+  "connectText": "Kies waarop de assistent draait.",
   "chooseElse": "Iets anders kiezen",
   "nameConnected": "{name} · verbonden",
-  "dialogTitle": "Providers voor de assistent",
-  "dialogText": "Verbind er een of meer en kies daarna welke de assistent gebruikt.",
+  "dialogText": "Verbind er een of meer en kies een standaard.",
   "connected": "Verbonden",
   "connectedTo": "Verbonden met {url}",
   "use": "Als standaard instellen",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Typ de naam van een model",
-    "missing": "Kies een model voordat je begint. Het moet tools ondersteunen.",
+    "missing": "Kies een model dat tools ondersteunt.",
     "hint": "Wordt gebruikt als een chat of voorinstelling geen ander model kiest."
   },
   "signIn": {
     "installing": "Claude Code downloaden…",
     "finish": "Rond het aanmelden af in je browser…",
-    "noBrowser": "Browser niet geopend? Kopieer deze koppeling, open die in een browser en plak daarna de code die je te zien krijgt.",
+    "noBrowser": "Browser niet geopend? Open deze koppeling en plak de code die je ziet.",
     "link": "Aanmeldkoppeling",
     "copyLink": "De aanmeldkoppeling kopiëren",
     "code": "Code uit de browser",
     "unfinished": "Het aanmelden is niet voltooid. Druk op Verbinden om het opnieuw te proberen.",
-    "note": "Voert Claude Code uit met je eigen account. Je meldt je één keer aan in je browser.",
+    "note": "Meld je één keer aan in je browser met je eigen account.",
     "subscription": "Claude-abonnement",
     "subscriptionHint": "Pro-, Max- of Team-abonnement",
     "console": "API-account",
@@ -43,6 +42,6 @@
     "server": "Serveradres",
     "label": "API-sleutel",
     "labelOptional": "API-sleutel (als de server er een nodig heeft)",
-    "note": "De sleutel wordt versleuteld bewaard in de wachtwoordkluis van deze computer en wordt nooit meer weergegeven."
+    "note": "Versleuteld bewaard op deze computer en nooit meer weergegeven."
   }
 }

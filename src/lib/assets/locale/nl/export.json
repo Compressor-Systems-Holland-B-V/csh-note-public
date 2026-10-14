@@ -2,10 +2,10 @@
   "title": "Exporteren",
   "format": "Indeling",
   "pdfHint": "Ziet er precies zo uit als het voorbeeld.",
-  "pptxHint": "Eén dia per pagina. Tekst blijft bewerkbaar; al het andere is een afbeelding.",
+  "pptxHint": "Eén dia per pagina. Alleen tekst blijft bewerkbaar.",
   "blocked": {
     "noPage": "Kies een pagina om te exporteren.",
-    "problems": "Deze pagina heeft problemen. Ga terug naar Bewerken en los ze op voordat je exporteert.",
+    "problems": "Los eerst de problemen op deze pagina op.",
     "empty": "Deze pagina heeft nog niets om te exporteren."
   },
   "run": "Exporteren…",

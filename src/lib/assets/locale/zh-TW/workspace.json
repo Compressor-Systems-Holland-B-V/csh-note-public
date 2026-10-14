@@ -56,7 +56,7 @@
   "file": {
     "welcome": "歡迎使用 znote",
     "title": "您的 znote 檔案",
-    "text": "您的筆記存放在一個 znote 檔案中。您寫的所有內容都會儲存到其中，也可以複製到另一台電腦。",
+    "text": "您的所有筆記都儲存在一個檔案中，可以複製到另一部電腦。",
     "new": "新增 znote 檔案…",
     "open": "開啟 znote 檔案…",
     "bringIn": "匯入我已有的筆記…",
@@ -67,12 +67,17 @@
     "switch": "開啟或建立另一個 znote 檔案",
     "savedAt": "儲存於 {time}",
     "themesTitle": "要安裝此檔案中的主題嗎？",
-    "themesText": "此 znote 檔案帶有這台電腦上還沒有的主題。檔案中的頁面需要這些主題。",
+    "themesText": "此檔案需要尚未安裝的主題。",
     "themesInstall": "安裝並開啟",
     "fontsTitle": "部分字型無法使用",
-    "fontsFallback": "當某個字型無法使用時，znote 會改用其他字型。文字佔用的空間可能變多或變少，因此換行位置和頁數都可能改變。",
-    "fontsMissing": "此檔案使用了下列字型，但這台電腦上沒有：",
-    "fontsLeftOut": "下列字型不允許複製到 znote 檔案中。在沒有這些字型的電腦上會改用其他字型：",
+    "fontsFallback": "將改用其他字型，因此換行和分頁可能不同。",
+    "fontsMissing": "這部電腦上沒有：",
+    "fontsLeftOut": "下列字型無法儲存到檔案中：",
     "fontsSeen": "確定"
+  },
+  "start": {
+    "start": "開始",
+    "empty": "你開啟過的檔案會顯示在這裡。",
+    "back": "返回 {name}"
   }
 }

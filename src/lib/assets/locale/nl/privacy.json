@@ -1,0 +1,144 @@
+{
+  "preview": "Wat naar de assistent wordt gestuurd",
+  "addToKnowledge": "Toevoegen aan kennisbank",
+  "restored": "Verborgen voor de assistent als: {kind}",
+  "unknownToken": "De assistent schreef een code die znote niet kent, dus die kon niet worden teruggezet",
+  "otherKnowledge": "In deze chat zijn namen verborgen met een ander kennisbestand. Verborgen namen kunnen als codes worden weergegeven.",
+  "panel": {
+    "hidden": "Verborgen voor assistent",
+    "hiddenTitle": "Namen, bedragen en contactgegevens worden als codes verzonden",
+    "notHidden": "Niet verborgen",
+    "notHiddenTitle": "De assistent ziet je pagina’s en bestanden precies zoals ze zijn",
+    "locked": "Vergrendeld",
+    "lockedTitle": "Open eerst je kennisbestand in Instellingen."
+  },
+  "saw": {
+    "prompt": "Je bericht"
+  },
+  "start": {
+    "title": "Bedrijfsnamen verbergen voor de assistent?",
+    "text": "Namen, bedragen en contactgegevens worden codes zoals ⟦CUSTOMER_3⟧ voordat er iets wordt verzonden.",
+    "create": "Kennisbestand maken",
+    "import": "Kennisbestand importeren",
+    "notNow": "Niet nu",
+    "later": "Je kunt dit later wijzigen in Instellingen.",
+    "downloadsTitle": "Optionele downloads",
+    "downloadsText": "Beide draaien alleen op deze computer.",
+    "how": "Zo werkt het"
+  },
+  "unlock": {
+    "title": "Je kennisbestand openen",
+    "text": "Typ het wachtwoord van “{name}”."
+  },
+  "form": {
+    "defaultName": "Mijn kennis",
+    "name": "Naam",
+    "choose": "Kies een bestand…",
+    "nothingChosen": "Geen bestand gekozen",
+    "current": "Huidig wachtwoord",
+    "password": "Wachtwoord",
+    "newPassword": "Nieuw wachtwoord",
+    "again": "Typ het wachtwoord opnieuw",
+    "tooShort": "Gebruik minstens {count} tekens.",
+    "mismatch": "De wachtwoorden zijn niet hetzelfde.",
+    "exportHint": "Iedereen met de kopie en dit wachtwoord kan zien wat er verborgen is.",
+    "remember": "Onthouden op deze computer",
+    "rememberHint": "Bewaard in de wachtwoordkluis van deze computer.",
+    "submit": {
+      "create": "Maken",
+      "import": "Importeren",
+      "unlock": "Openen",
+      "export": "Exporteren…",
+      "password": "Wachtwoord wijzigen"
+    },
+    "title": {
+      "create": "Nieuw kennisbestand",
+      "import": "Kennisbestand importeren",
+      "unlock": "Kennisbestand openen",
+      "export": "Kopie exporteren",
+      "password": "Wachtwoord wijzigen"
+    }
+  },
+  "files": {
+    "title": "Kennisbestanden",
+    "none": "Nog geen kennisbestand.",
+    "active": "In gebruik",
+    "open": "Open",
+    "locked": "Vergrendeld",
+    "use": "Gebruiken",
+    "new": "Nieuw…",
+    "import": "Importeren…",
+    "unlock": "Openen…",
+    "export": "Exporteren…",
+    "password": "Wachtwoord wijzigen…",
+    "exported": "De kopie is opgeslagen.",
+    "removeTitle": "Kennisbestand “{name}” verwijderen?",
+    "removeText": "De kennisbank ervan wordt verwijderd en chats die het gebruikten, kunnen niet verder. Exporteer zo nodig eerst een kopie."
+  },
+  "settings": {
+    "title": "Privacy",
+    "text": "Wat de assistent mag zien en opzoeken.",
+    "needsFile": "Maak of importeer eerst een kennisbestand.",
+    "privacyVeil": "Namen verbergen voor de assistent",
+    "privacyVeilHint": "Klanten, personen, projecten en contactgegevens worden codes.",
+    "privacyAmounts": "Geldbedragen verbergen",
+    "privacyAmountsHint": "De assistent kan niet rekenen met verborgen bedragen.",
+    "privacyNames": "Namenzoeker gebruiken",
+    "privacyNamesHint": "Verbergt ook namen die niet in je woordenlijst staan. Sommige worden gemist.",
+    "knowledgeOn": "Kennisbank",
+    "knowledgeOnHint": "De assistent krijgt passende notities uit je pagina’s en bestanden.",
+    "knowledgeAutoAdd": "Mijn pagina’s automatisch toevoegen",
+    "knowledgeAutoAddHint": "Pagina’s worden toegevoegd wanneer je ze opslaat."
+  },
+  "models": {
+    "names": "Namenzoeker (ongeveer 50 MB)",
+    "namesHint": "Vindt namen van personen, bedrijven en plaatsen die niet in je woordenlijst staan.",
+    "search": "Slim zoeken (ongeveer 30 MB)",
+    "searchHint": "Vindt notities op betekenis, niet alleen op de woorden erin.",
+    "download": "Downloaden",
+    "downloading": "Downloaden… {done} van {total} MB",
+    "ready": "Gedownload"
+  },
+  "glossary": {
+    "title": "Woordenlijst",
+    "loaded_one": "{count} term geladen",
+    "loaded_other": "{count} termen geladen",
+    "none": "Alleen de standaardcategorieën. Importeer je eigen woordenlijst (SKOS).",
+    "import": "Importeren…"
+  },
+  "index": {
+    "title": "Kennisbank",
+    "rebuild": "Opnieuw opbouwen",
+    "counts": "{sources} bronnen, {chunks} stukken",
+    "forget": "Vergeten",
+    "empty": "Nog niets in de kennisbank.",
+    "attachments": "Bijgevoegde bestanden"
+  },
+  "view": {
+    "title": "Wat de assistent ziet",
+    "open": "Tonen wat de assistent ziet",
+    "close": "Terug naar de pagina",
+    "hint": "Klik met de rechtermuisknop op een token om het te tonen, of selecteer tekst en klik met de rechtermuisknop om die te verbergen.",
+    "isHidden": "“{text}” is verborgen als: {kind}",
+    "dontHide": "Dit niet verbergen",
+    "alwaysHide": "Dit altijd verbergen",
+    "hideAs": "“{text}” verbergen als",
+    "kind": "Soort"
+  },
+  "kinds": {
+    "CUSTOMER": "Klant",
+    "PERSON": "Persoon",
+    "ORGANISATION": "Organisatie",
+    "SUPPLIER": "Leverancier",
+    "PROJECT": "Project",
+    "PRODUCT": "Product",
+    "LOCATION": "Locatie"
+  },
+  "level": {
+    "label": "Hoeveel er verborgen wordt",
+    "own": "Alleen je eigen lijst en contactgegevens",
+    "light": "Licht: ook namen van personen",
+    "medium": "Middel: ook organisaties en plaatsen",
+    "strict": "Streng: ook producten, projecten, klanten en leveranciers"
+  }
+}

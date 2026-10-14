@@ -2,10 +2,10 @@
   "title": "Exportera",
   "format": "Format",
   "pdfHint": "Ser exakt ut som förhandsgranskningen.",
-  "pptxHint": "En bild per sida. Texten förblir redigerbar; allt annat är en bild.",
+  "pptxHint": "En bild per sida. Bara texten förblir redigerbar.",
   "blocked": {
     "noPage": "Välj en sida att exportera.",
-    "problems": "Den här sidan har problem. Gå tillbaka till Redigera och åtgärda dem innan du exporterar.",
+    "problems": "Åtgärda problemen på den här sidan först.",
     "empty": "Den här sidan har inget att exportera än."
   },
   "run": "Exportera…",

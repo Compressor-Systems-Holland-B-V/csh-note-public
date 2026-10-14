@@ -88,6 +88,10 @@ export class Workspace {
     return this.attempt(() => this.flush());
   }
 
+  read(page: string) {
+    return page === this.page ? Promise.resolve(this.doc.text) : this.files.readPage(page);
+  }
+
   edit(text: string) {
     this.doc.edit(text);
     clearTimeout(this.timer);

@@ -5,16 +5,16 @@
   "templateTitle": "Utiliser un modèle pour cette page",
   "fontSmaller": "Texte plus petit",
   "fontBigger": "Texte plus grand",
-  "locked": "L'assistant écrit cette page. Vous pourrez la modifier de nouveau une fois terminé.",
+  "locked": "L'assistant modifie cette page.",
   "review": {
-    "show": "Voir ce que l'assistant a modifié, et conserver ou annuler chaque partie",
+    "show": "Vérifier les modifications de l'assistant",
     "hide": "Masquer ce que l'assistant a modifié",
     "keep": "Conserver",
     "keepTitle": "Conserver cette modification",
     "undo": "Annuler",
     "undoTitle": "Rétablir ce qui était ici auparavant",
-    "keepAllTitle": "Conserver tout ce que l'assistant a modifié sur cette page",
-    "undoAllTitle": "Rétablir cette page telle qu'elle était avant les modifications de l'assistant"
+    "keepAllTitle": "Conserver toutes les modifications de cette page",
+    "undoAllTitle": "Annuler toutes les modifications de cette page"
   },
   "problems": {
     "label": "Problèmes",

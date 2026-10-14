@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Bienvenue dans znote",
     "title": "Vos fichiers znote",
-    "text": "Vos notes sont conservées dans un fichier znote. Tout ce que vous écrivez y est enregistré, et vous pouvez le copier sur un autre ordinateur.",
+    "text": "Toutes vos notes sont enregistrées dans un seul fichier que vous pouvez copier sur un autre ordinateur.",
     "new": "Nouveau fichier znote…",
     "open": "Ouvrir un fichier znote…",
     "bringIn": "Importer mes notes existantes…",
@@ -67,12 +67,17 @@
     "switch": "Ouvrir ou créer un autre fichier znote",
     "savedAt": "Enregistré à {time}",
     "themesTitle": "Installer les thèmes de ce fichier ?",
-    "themesText": "Ce fichier znote apporte des thèmes qui ne sont pas encore sur cet ordinateur. Ses pages en ont besoin.",
+    "themesText": "Ce fichier nécessite des thèmes qui ne sont pas encore installés.",
     "themesInstall": "Installer et ouvrir",
     "fontsTitle": "Certaines polices ne sont pas disponibles",
-    "fontsFallback": "Lorsqu’une police n’est pas disponible, znote en utilise une autre. Le texte peut alors prendre plus ou moins de place : les lignes peuvent se couper ailleurs et le nombre de pages peut changer.",
-    "fontsMissing": "Ces polices sont utilisées dans ce fichier mais ne sont pas sur cet ordinateur :",
-    "fontsLeftOut": "Ces polices ne peuvent pas être copiées dans un fichier znote. Sur un ordinateur qui ne les a pas, une autre police est utilisée :",
+    "fontsFallback": "D’autres polices sont utilisées à la place : les lignes et les pages peuvent se couper différemment.",
+    "fontsMissing": "Absentes de cet ordinateur :",
+    "fontsLeftOut": "Ces polices ne peuvent pas être enregistrées dans le fichier :",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Commencer",
+    "empty": "Les fichiers que vous ouvrez apparaîtront ici.",
+    "back": "Retour à {name}"
   }
 }

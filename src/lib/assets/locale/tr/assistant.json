@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Silmeyi onayla",
-    "text": "Asistan “{path}” öğesini silmek istiyor. İçindeki her şeyle birlikte Geri Dönüşüm Kutusu'na taşınacak."
+    "text": "Asistan “{path}” öğesini silmek istiyor. Geri Dönüşüm Kutusu'na taşınacak."
   },
   "composer": {
     "placeholder": "Asistana sor… Göndermek için Ctrl+Enter",
@@ -88,11 +88,12 @@
     "edited": "{page} düzenlendi",
     "renamed": "{from}, {to} olarak yeniden adlandırıldı",
     "created": "{path} oluşturuldu",
-    "deleted": "{path} silindi"
+    "deleted": "{path} silindi",
+    "notSaved": "{page} kaydedilmedi"
   },
   "preset": {
     "title": "Gelişmiş asistan ayarları",
-    "text": "Bir ön ayar, asistanın {provider} ile ne kadar hızlı ve ne kadar dikkatli olacağına karar verir. Değiştirmek için birini seçin veya kendinizinkini oluşturun.",
+    "text": "Asistanın {provider} ile ne kadar hızlı ve dikkatli olacağını seçin.",
     "label": "Ön ayar",
     "new": "Yeni ön ayar",
     "mine": "Ön ayarım",

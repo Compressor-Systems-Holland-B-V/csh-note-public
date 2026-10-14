@@ -84,6 +84,11 @@ export function t(key: string, params: Params = {}) {
   return key;
 }
 
+export const languageOptions = () => [
+  { value: null as string | null, label: t("settings.languageAuto") },
+  ...locales.map(({ tag, name }) => ({ value: tag as string | null, label: name })),
+];
+
 function leaves(dict: Dict, prefix: string): [string, string][] {
   return Object.entries(dict).flatMap(([key, value]) => (typeof value === "string" ? [[`${prefix}${key}`, value] as [string, string]] : leaves(value, `${prefix}${key}.`)));
 }

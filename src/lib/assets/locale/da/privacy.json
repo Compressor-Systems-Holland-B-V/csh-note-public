@@ -1,0 +1,144 @@
+{
+  "preview": "Det, der sendes til assistenten",
+  "addToKnowledge": "Føj til vidensbasen",
+  "restored": "Skjult for assistenten som: {kind}",
+  "unknownToken": "Assistenten skrev en pladsholder, som znote ikke kender, så den kunne ikke sættes tilbage",
+  "otherKnowledge": "Denne chat skjulte navne med en anden vidensfil. Skjulte navne kan blive vist som pladsholdere.",
+  "panel": {
+    "hidden": "Skjult for assistenten",
+    "hiddenTitle": "Navne, beløb og kontaktoplysninger sendes som pladsholdere",
+    "notHidden": "Ikke skjult",
+    "notHiddenTitle": "Assistenten ser dine sider og filer præcis, som de er",
+    "locked": "Låst",
+    "lockedTitle": "Åbn først din vidensfil i Indstillinger."
+  },
+  "saw": {
+    "prompt": "Din besked"
+  },
+  "start": {
+    "title": "Skjul firmanavne for assistenten?",
+    "text": "Navne, beløb og kontaktoplysninger bliver til pladsholdere som ⟦CUSTOMER_3⟧, før noget sendes.",
+    "create": "Opret en vidensfil",
+    "import": "Importér en vidensfil",
+    "notNow": "Ikke nu",
+    "later": "Du kan ændre det senere i Indstillinger.",
+    "downloadsTitle": "Valgfrie downloads",
+    "downloadsText": "Begge kører kun på denne computer.",
+    "how": "Sådan virker det"
+  },
+  "unlock": {
+    "title": "Åbn din vidensfil",
+    "text": "Skriv adgangskoden til “{name}”."
+  },
+  "form": {
+    "defaultName": "Min viden",
+    "name": "Navn",
+    "choose": "Vælg en fil…",
+    "nothingChosen": "Ingen fil valgt",
+    "current": "Nuværende adgangskode",
+    "password": "Adgangskode",
+    "newPassword": "Ny adgangskode",
+    "again": "Skriv adgangskoden igen",
+    "tooShort": "Brug mindst {count} tegn.",
+    "mismatch": "Adgangskoderne er ikke ens.",
+    "exportHint": "Alle med kopien og denne adgangskode kan se, hvad der er skjult.",
+    "remember": "Husk på denne computer",
+    "rememberHint": "Gemmes i denne computers adgangskodelager.",
+    "submit": {
+      "create": "Opret",
+      "import": "Importér",
+      "unlock": "Åbn",
+      "export": "Eksportér…",
+      "password": "Skift adgangskode"
+    },
+    "title": {
+      "create": "Ny vidensfil",
+      "import": "Importér en vidensfil",
+      "unlock": "Åbn vidensfilen",
+      "export": "Eksportér en kopi",
+      "password": "Skift adgangskoden"
+    }
+  },
+  "files": {
+    "title": "Vidensfiler",
+    "none": "Ingen vidensfil endnu.",
+    "active": "I brug",
+    "open": "Åben",
+    "locked": "Låst",
+    "use": "Brug",
+    "new": "Ny…",
+    "import": "Importér…",
+    "unlock": "Åbn…",
+    "export": "Eksportér…",
+    "password": "Skift adgangskode…",
+    "exported": "Kopien blev gemt.",
+    "removeTitle": "Slet vidensfilen “{name}”?",
+    "removeText": "Dens vidensbase slettes, og chats, der brugte den, kan ikke længere fortsættes. Eksportér først en kopi, hvis det er nødvendigt."
+  },
+  "settings": {
+    "title": "Privatliv",
+    "text": "Hvad assistenten må se og slå op.",
+    "needsFile": "Opret eller importér først en vidensfil.",
+    "privacyVeil": "Skjul navne for assistenten",
+    "privacyVeilHint": "Kunder, personer, projekter og kontaktoplysninger bliver til pladsholdere.",
+    "privacyAmounts": "Skjul pengebeløb",
+    "privacyAmountsHint": "Assistenten kan ikke regne med skjulte beløb.",
+    "privacyNames": "Brug navnefinderen",
+    "privacyNamesHint": "Skjuler også navne, der ikke står i din ordliste. Den overser nogle.",
+    "knowledgeOn": "Vidensbase",
+    "knowledgeOnHint": "Assistenten får relevante noter fra dine sider og filer.",
+    "knowledgeAutoAdd": "Tilføj mine sider automatisk",
+    "knowledgeAutoAddHint": "Sider tilføjes, når du gemmer dem."
+  },
+  "models": {
+    "names": "Navnefinder (ca. 50 MB)",
+    "namesHint": "Finder navne på personer, firmaer og steder, der ikke står i din ordliste.",
+    "search": "Smart søgning (ca. 30 MB)",
+    "searchHint": "Finder noter ud fra betydning, ikke kun ud fra ordene i dem.",
+    "download": "Download",
+    "downloading": "Downloader… {done} af {total} MB",
+    "ready": "Downloadet"
+  },
+  "glossary": {
+    "title": "Ordliste",
+    "loaded_one": "{count} begreb indlæst",
+    "loaded_other": "{count} begreber indlæst",
+    "none": "Kun standardkategorierne. Importér din egen ordliste (SKOS).",
+    "import": "Importér…"
+  },
+  "index": {
+    "title": "Vidensbase",
+    "rebuild": "Genopbyg",
+    "counts": "{sources} kilder, {chunks} dele",
+    "forget": "Glem",
+    "empty": "Intet i vidensbasen endnu.",
+    "attachments": "Vedhæftede filer"
+  },
+  "view": {
+    "title": "Hvad assistenten ser",
+    "open": "Vis, hvad assistenten ser",
+    "close": "Tilbage til siden",
+    "hint": "Højreklik på en pladsholder for at vise den, eller markér tekst og højreklik for at skjule den.",
+    "isHidden": "“{text}” er skjult som: {kind}",
+    "dontHide": "Skjul ikke dette",
+    "alwaysHide": "Skjul altid dette",
+    "hideAs": "Skjul “{text}” som",
+    "kind": "Type"
+  },
+  "kinds": {
+    "CUSTOMER": "Kunde",
+    "PERSON": "Person",
+    "ORGANISATION": "Organisation",
+    "SUPPLIER": "Leverandør",
+    "PROJECT": "Projekt",
+    "PRODUCT": "Produkt",
+    "LOCATION": "Sted"
+  },
+  "level": {
+    "label": "Hvor meget der skjules",
+    "own": "Kun din egen liste og kontaktoplysninger",
+    "light": "Let: også navne på personer",
+    "medium": "Middel: også organisationer og steder",
+    "strict": "Streng: også produkter, projekter, kunder og leverandører"
+  }
+}

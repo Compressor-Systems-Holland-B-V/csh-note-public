@@ -2,7 +2,7 @@
   "title": "Teman",
   "look": "Utseende",
   "import": "Importera temafil…",
-  "intro": "Ett tema kan ändra hur znote ser ut, lägga till sidmallar eller båda delarna. Reglagen på ett tema avgör om dess utseende och mallar erbjuds; välj utseendet som ska användas från listan ovan.",
+  "intro": "Teman ändrar utseendet, lägger till sidmallar eller båda.",
   "storeFailure": "{reason} Teman du redan har installerat visas nedan.",
   "search": "Sök teman",
   "installed": "Installerade",

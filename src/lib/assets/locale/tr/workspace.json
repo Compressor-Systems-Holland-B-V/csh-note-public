@@ -56,7 +56,7 @@
   "file": {
     "welcome": "znote'a hoş geldiniz",
     "title": "znote dosyalarınız",
-    "text": "Notlarınız tek bir znote dosyasında yaşar. Yazdığınız her şey içine kaydedilir ve onu başka bir bilgisayara kopyalayabilirsiniz.",
+    "text": "Tüm notlarınız, başka bir bilgisayara kopyalayabileceğiniz tek bir dosyada saklanır.",
     "new": "Yeni znote dosyası…",
     "open": "Bir znote dosyası aç…",
     "bringIn": "Zaten sahip olduğum notları getir…",
@@ -67,12 +67,17 @@
     "switch": "Başka bir znote dosyası aç veya oluştur",
     "savedAt": "{time} saatinde kaydedildi",
     "themesTitle": "Bu dosyadaki temalar yüklensin mi?",
-    "themesText": "Bu znote dosyası, bu bilgisayarda henüz bulunmayan temalar getiriyor. Sayfalarının bunlara ihtiyacı var.",
+    "themesText": "Bu dosya henüz yüklü olmayan temalara ihtiyaç duyuyor.",
     "themesInstall": "Yükle ve aç",
     "fontsTitle": "Bazı yazı tipleri kullanılamıyor",
-    "fontsFallback": "Bir yazı tipi kullanılamadığında znote başka birini kullanır. Metin bu durumda daha fazla veya daha az yer kaplayabilir; satırlar başka yerlerde bölünebilir ve sayfa sayısı değişebilir.",
-    "fontsMissing": "Bu yazı tipleri bu dosyada kullanılıyor ancak bu bilgisayarda yok:",
-    "fontsLeftOut": "Bu yazı tiplerinin bir znote dosyasına kopyalanmasına izin verilmiyor. Bunların bulunmadığı bir bilgisayarda başka bir yazı tipi kullanılır:",
+    "fontsFallback": "Bunların yerine başka yazı tipleri kullanılır; satırlar ve sayfalar farklı bölünebilir.",
+    "fontsMissing": "Bu bilgisayarda yok:",
+    "fontsLeftOut": "Bu yazı tipleri dosyaya kaydedilemez:",
     "fontsSeen": "Tamam"
+  },
+  "start": {
+    "start": "Başla",
+    "empty": "Açtığınız dosyalar burada görünür.",
+    "back": "{name} dosyasına dön"
   }
 }

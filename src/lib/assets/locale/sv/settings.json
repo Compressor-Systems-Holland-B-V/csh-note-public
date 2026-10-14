@@ -1,4 +1,6 @@
 {
+  "general": "Allmänt",
+  "editor": "Redigering",
   "fontSize": "Textstorlek i redigeraren",
   "wrap": "Radbryt långa rader",
   "autosave": "Spara automatiskt",
@@ -12,9 +14,6 @@
   "language": "Språk",
   "languageAuto": "Samma som på den här datorn",
   "assistant": "Assistent",
-  "uses": "Använder {provider}.",
-  "notConnected": "Inte ansluten än.",
-  "providers": "Leverantörer…",
   "file": "Din znote-fil",
   "switch": "Växla…"
 }

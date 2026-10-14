@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Confirm deletion",
-    "text": "The assistant wants to delete “{path}”. It moves to the Recycle Bin, with everything inside it."
+    "text": "The assistant wants to delete “{path}”. It goes to the Recycle Bin."
   },
   "composer": {
     "placeholder": "Ask the assistant… Ctrl+Enter to send",
@@ -88,11 +88,12 @@
     "edited": "Edited {page}",
     "renamed": "Renamed {from} to {to}",
     "created": "Created {path}",
-    "deleted": "Deleted {path}"
+    "deleted": "Deleted {path}",
+    "notSaved": "Not saved {page}"
   },
   "preset": {
     "title": "Advanced assistant settings",
-    "text": "A preset decides how fast and how careful the assistant is with {provider}. Pick one to change it, or make your own.",
+    "text": "Choose how fast and careful the assistant is with {provider}.",
     "label": "Preset",
     "new": "New preset",
     "mine": "My preset",

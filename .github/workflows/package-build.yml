@@ -142,11 +142,12 @@ jobs:
 
           Copy-Item 'src-tauri/target/release/znote.exe' $layout
 
-          foreach ($logo in 'StoreLogo', 'Square44x44Logo', 'Square71x71Logo', 'Square150x150Logo', 'Square310x310Logo') {
+          foreach ($logo in 'StoreLogo', 'Square44x44Logo') {
             Copy-Item "src-tauri/icons/$logo.png" "$layout/Assets"
           }
 
-          Copy-Item 'packaging/msix/Assets/Wide310x150Logo.png' "$layout/Assets"
+          # the start tiles are opaque, built by tools/icon/msix-tiles.py
+          Copy-Item 'packaging/msix/Assets/*.png' "$layout/Assets"
 
           $manifest = Get-Content 'packaging/msix/AppxManifest.xml.in' -Raw
           $manifest.Replace('@VERSION@', "$env:VERSION.0") |

@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Conferma eliminazione",
-    "text": "L'assistente vuole eliminare “{path}”. Verrà spostato nel Cestino, insieme a tutto il suo contenuto."
+    "text": "L'assistente vuole eliminare “{path}”. Verrà spostato nel Cestino."
   },
   "composer": {
     "placeholder": "Chiedi all'assistente… Ctrl+Invio per inviare",
@@ -88,11 +88,12 @@
     "edited": "Modificata {page}",
     "renamed": "Rinominato {from} in {to}",
     "created": "Creato {path}",
-    "deleted": "Eliminato {path}"
+    "deleted": "Eliminato {path}",
+    "notSaved": "Non salvata {page}"
   },
   "preset": {
     "title": "Impostazioni avanzate dell'assistente",
-    "text": "Un preset decide quanto velocemente e con quanta attenzione l'assistente lavora con {provider}. Scegline uno per modificarlo o creane uno tuo.",
+    "text": "Scegli quanto l'assistente è veloce e accurato con {provider}.",
     "label": "Preset",
     "new": "Nuovo preset",
     "mine": "Il mio preset",

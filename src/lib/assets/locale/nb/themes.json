@@ -2,7 +2,7 @@
   "title": "Temaer",
   "look": "Utseende",
   "import": "Importer en temafil…",
-  "intro": "Et tema kan endre hvordan znote ser ut, legge til sidetemplater, eller begge deler. Bryterne på et tema avgjør om utseendet og templater tilbys; velg utseendet som skal brukes fra listen ovenfor.",
+  "intro": "Temaer endrer utseendet, legger til sidetemplater, eller begge deler.",
   "storeFailure": "{reason} Temaer du allerede har installert, vises nedenfor.",
   "search": "Søk etter temaer",
   "installed": "Installert",

@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Welcome to znote",
     "title": "Your znote files",
-    "text": "Your notes live in one znote file. Everything you write is saved into it, and you can copy it to another computer.",
+    "text": "All your notes are saved in one file you can copy to another computer.",
     "new": "New znote file…",
     "open": "Open a znote file…",
     "bringIn": "Bring in the notes I already have…",
@@ -67,12 +67,17 @@
     "switch": "Open or make another znote file",
     "savedAt": "Saved at {time}",
     "themesTitle": "Install the themes in this file?",
-    "themesText": "This znote file brings themes that are not on this computer yet. Its pages need them.",
+    "themesText": "This file needs themes that are not installed yet.",
     "themesInstall": "Install and open",
     "fontsTitle": "Some fonts are not available",
-    "fontsFallback": "Where a font is not available, znote uses another one. Text can then take more or less room, so lines may break in other places and the number of pages may change.",
-    "fontsMissing": "These fonts are used in this file but are not on this computer:",
-    "fontsLeftOut": "These fonts may not be copied into a znote file. On a computer without them, another font is used:",
+    "fontsFallback": "Other fonts are used instead, so lines and pages may break differently.",
+    "fontsMissing": "Not on this computer:",
+    "fontsLeftOut": "These fonts cannot be saved in the file:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Start",
+    "empty": "Files you open will show up here.",
+    "back": "Back to {name}"
   }
 }

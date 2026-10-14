@@ -56,7 +56,7 @@
   "file": {
     "welcome": "欢迎使用 znote",
     "title": "您的 znote 文件",
-    "text": "您的笔记保存在一个 znote 文件中。您写下的所有内容都会保存到其中，并且可以复制到另一台电脑上。",
+    "text": "您的所有笔记都保存在一个文件中，可复制到另一台电脑。",
     "new": "新建 znote 文件…",
     "open": "打开 znote 文件…",
     "bringIn": "导入我已有的笔记…",
@@ -67,12 +67,17 @@
     "switch": "打开或创建另一个 znote 文件",
     "savedAt": "保存于 {time}",
     "themesTitle": "要安装此文件中的主题吗？",
-    "themesText": "此 znote 文件带有这台电脑上还没有的主题。文件中的页面需要这些主题。",
+    "themesText": "此文件需要尚未安装的主题。",
     "themesInstall": "安装并打开",
     "fontsTitle": "部分字体不可用",
-    "fontsFallback": "当某个字体不可用时，znote 会改用其他字体。文字占用的空间可能变多或变少，因此换行位置和页数都可能发生变化。",
-    "fontsMissing": "此文件使用了以下字体，但这台电脑上没有：",
-    "fontsLeftOut": "以下字体不允许复制到 znote 文件中。在没有这些字体的电脑上会改用其他字体：",
+    "fontsFallback": "将改用其他字体，因此换行和分页可能不同。",
+    "fontsMissing": "这台电脑上没有：",
+    "fontsLeftOut": "以下字体无法保存到文件中：",
     "fontsSeen": "确定"
+  },
+  "start": {
+    "start": "开始",
+    "empty": "你打开过的文件会显示在这里。",
+    "back": "返回 {name}"
   }
 }

@@ -1,0 +1,144 @@
+{
+  "preview": "Det som skickas till assistenten",
+  "addToKnowledge": "Lägg till i kunskapsbasen",
+  "restored": "Dold för assistenten som: {kind}",
+  "unknownToken": "Assistenten skrev en platshållare som znote inte känner till, så den kunde inte bytas tillbaka",
+  "otherKnowledge": "Den här chatten dolde namn med en annan kunskapsfil. Dolda namn kan visas som platshållare.",
+  "panel": {
+    "hidden": "Dolt för assistenten",
+    "hiddenTitle": "Namn, belopp och kontaktuppgifter skickas som platshållare",
+    "notHidden": "Inte dolt",
+    "notHiddenTitle": "Assistenten ser dina sidor och filer precis som de är",
+    "locked": "Låst",
+    "lockedTitle": "Öppna din kunskapsfil i Inställningar först."
+  },
+  "saw": {
+    "prompt": "Ditt meddelande"
+  },
+  "start": {
+    "title": "Dölja företagsnamn för assistenten?",
+    "text": "Namn, belopp och kontaktuppgifter blir platshållare som ⟦CUSTOMER_3⟧ innan något skickas.",
+    "create": "Skapa en kunskapsfil",
+    "import": "Importera en kunskapsfil",
+    "notNow": "Inte nu",
+    "later": "Du kan ändra detta senare i Inställningar.",
+    "downloadsTitle": "Valfria nedladdningar",
+    "downloadsText": "Båda körs bara på den här datorn.",
+    "how": "Så fungerar det"
+  },
+  "unlock": {
+    "title": "Öppna din kunskapsfil",
+    "text": "Skriv lösenordet för ”{name}”."
+  },
+  "form": {
+    "defaultName": "Min kunskap",
+    "name": "Namn",
+    "choose": "Välj en fil…",
+    "nothingChosen": "Ingen fil vald",
+    "current": "Nuvarande lösenord",
+    "password": "Lösenord",
+    "newPassword": "Nytt lösenord",
+    "again": "Skriv lösenordet igen",
+    "tooShort": "Använd minst {count} tecken.",
+    "mismatch": "Lösenorden är inte likadana.",
+    "exportHint": "Alla med kopian och lösenordet kan se vad som är dolt.",
+    "remember": "Kom ihåg på den här datorn",
+    "rememberHint": "Sparas i datorns lösenordshanterare.",
+    "submit": {
+      "create": "Skapa",
+      "import": "Importera",
+      "unlock": "Öppna",
+      "export": "Exportera…",
+      "password": "Byt lösenord"
+    },
+    "title": {
+      "create": "Ny kunskapsfil",
+      "import": "Importera en kunskapsfil",
+      "unlock": "Öppna kunskapsfilen",
+      "export": "Exportera en kopia",
+      "password": "Byt lösenordet"
+    }
+  },
+  "files": {
+    "title": "Kunskapsfiler",
+    "none": "Ingen kunskapsfil ännu.",
+    "active": "Används",
+    "open": "Öppen",
+    "locked": "Låst",
+    "use": "Använd",
+    "new": "Ny…",
+    "import": "Importera…",
+    "unlock": "Öppna…",
+    "export": "Exportera…",
+    "password": "Byt lösenord…",
+    "exported": "Kopian sparades.",
+    "removeTitle": "Ta bort kunskapsfilen ”{name}”?",
+    "removeText": "Dess kunskapsbas tas bort och chattar som använde den kan inte fortsättas. Exportera en kopia först vid behov."
+  },
+  "settings": {
+    "title": "Integritet",
+    "text": "Vad assistenten får se och slå upp.",
+    "needsFile": "Skapa eller importera en kunskapsfil först.",
+    "privacyVeil": "Dölj namn för assistenten",
+    "privacyVeilHint": "Kunder, personer, projekt och kontaktuppgifter blir platshållare.",
+    "privacyAmounts": "Dölj penningbelopp",
+    "privacyAmountsHint": "Assistenten kan inte räkna med dolda belopp.",
+    "privacyNames": "Använd namnsökaren",
+    "privacyNamesHint": "Döljer även namn som inte finns i din ordlista. Den missar en del.",
+    "knowledgeOn": "Kunskapsbas",
+    "knowledgeOnHint": "Assistenten får matchande anteckningar från dina sidor och filer.",
+    "knowledgeAutoAdd": "Lägg till mina sidor automatiskt",
+    "knowledgeAutoAddHint": "Sidor läggs till när du sparar dem."
+  },
+  "models": {
+    "names": "Namnsökare (cirka 50 MB)",
+    "namesHint": "Hittar namn på personer, företag och platser som inte finns i din ordlista.",
+    "search": "Smart sökning (cirka 30 MB)",
+    "searchHint": "Hittar anteckningar efter betydelse, inte bara efter orden i dem.",
+    "download": "Ladda ner",
+    "downloading": "Laddar ner… {done} av {total} MB",
+    "ready": "Nedladdad"
+  },
+  "glossary": {
+    "title": "Ordlista",
+    "loaded_one": "{count} term inläst",
+    "loaded_other": "{count} termer inlästa",
+    "none": "Bara standardkategorierna. Importera din egen ordlista (SKOS).",
+    "import": "Importera…"
+  },
+  "index": {
+    "title": "Kunskapsbas",
+    "rebuild": "Bygg om",
+    "counts": "{sources} källor, {chunks} delar",
+    "forget": "Glöm",
+    "empty": "Inget i kunskapsbasen ännu.",
+    "attachments": "Bifogade filer"
+  },
+  "view": {
+    "title": "Vad assistenten ser",
+    "open": "Visa vad assistenten ser",
+    "close": "Tillbaka till sidan",
+    "hint": "Högerklicka på en platshållare för att visa den, eller markera text och högerklicka för att dölja den.",
+    "isHidden": "”{text}” är dold som: {kind}",
+    "dontHide": "Dölj inte detta",
+    "alwaysHide": "Dölj alltid detta",
+    "hideAs": "Dölj ”{text}” som",
+    "kind": "Typ"
+  },
+  "kinds": {
+    "CUSTOMER": "Kund",
+    "PERSON": "Person",
+    "ORGANISATION": "Organisation",
+    "SUPPLIER": "Leverantör",
+    "PROJECT": "Projekt",
+    "PRODUCT": "Produkt",
+    "LOCATION": "Plats"
+  },
+  "level": {
+    "label": "Hur mycket som döljs",
+    "own": "Bara din egen lista och kontaktuppgifter",
+    "light": "Lätt: även namn på personer",
+    "medium": "Medel: även organisationer och platser",
+    "strict": "Strikt: även produkter, projekt, kunder och leverantörer"
+  }
+}

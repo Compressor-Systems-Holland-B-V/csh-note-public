@@ -196,6 +196,10 @@ pub fn read_text(root: &Path, path: &str) -> Result<String, String> {
     fs::read_to_string(page_file(root, path)?).map_err(|error| failed("open", path, error))
 }
 
+pub fn page_exists(root: &Path, path: &str) -> bool {
+    page_file(root, path).is_ok_and(|file| file.is_file())
+}
+
 pub fn write_text(root: &Path, path: &str, text: &str) -> Result<(), String> {
     let file = page_file(root, path)?;
     let temp = file.with_extension("typ.tmp");
@@ -241,6 +245,7 @@ fn watch(app: AppHandle, root: PathBuf) -> notify::Result<RecommendedWatcher> {
             return;
         }
         for page in event.paths.iter().filter_map(|path| page_of(&folder, path)) {
+            crate::knowledge::saved(&app, page.clone());
             let _ = app.emit("page-changed", page);
         }
         if !event

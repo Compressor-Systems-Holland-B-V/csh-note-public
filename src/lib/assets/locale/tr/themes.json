@@ -2,7 +2,7 @@
   "title": "Temalar",
   "look": "Görünüm",
   "import": "Bir tema dosyası içe aktar…",
-  "intro": "Bir tema, znote'un görünümünü değiştirebilir, sayfa şablonları ekleyebilir veya her ikisini birden yapabilir. Temadaki anahtarlar, görünümünün ve şablonlarının sunulup sunulmayacağını belirler; yukarıdaki listeden kullanılacak görünümü seçin.",
+  "intro": "Temalar görünümü değiştirir, sayfa şablonları ekler veya ikisini birden yapar.",
   "storeFailure": "{reason} Daha önce yüklediğiniz temalar aşağıda gösterilmiştir.",
   "search": "Tema ara",
   "installed": "Yüklü",

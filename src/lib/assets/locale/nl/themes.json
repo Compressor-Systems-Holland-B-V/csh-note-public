@@ -2,7 +2,7 @@
   "title": "Thema's",
   "look": "Uiterlijk",
   "import": "Een themabestand importeren…",
-  "intro": "Een thema kan het uiterlijk van znote wijzigen, paginasjablonen toevoegen, of beide. De schakelaars op een thema bepalen of het uiterlijk en de sjablonen worden aangeboden; kies het uiterlijk dat je wilt gebruiken in de lijst hierboven.",
+  "intro": "Thema's wijzigen het uiterlijk, voegen paginasjablonen toe, of beide.",
   "storeFailure": "{reason} Thema's die je al hebt geïnstalleerd, staan hieronder.",
   "search": "Thema's zoeken",
   "installed": "Geïnstalleerd",

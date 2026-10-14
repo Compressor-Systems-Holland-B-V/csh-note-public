@@ -1,0 +1,15 @@
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix znote: <urn:znote:skos#> .
+
+znote:categories a skos:ConceptScheme ;
+  skos:prefLabel "znote categories"@en ;
+  skos:hasTopConcept znote:person, znote:organisation, znote:customer, znote:supplier,
+    znote:project, znote:product, znote:location .
+
+znote:person a skos:Concept ; skos:prefLabel "Person"@en ; skos:topConceptOf znote:categories .
+znote:organisation a skos:Concept ; skos:prefLabel "Organisation"@en ; skos:topConceptOf znote:categories .
+znote:customer a skos:Concept ; skos:prefLabel "Customer"@en ; skos:topConceptOf znote:categories .
+znote:supplier a skos:Concept ; skos:prefLabel "Supplier"@en ; skos:topConceptOf znote:categories .
+znote:project a skos:Concept ; skos:prefLabel "Project"@en ; skos:topConceptOf znote:categories .
+znote:product a skos:Concept ; skos:prefLabel "Product"@en ; skos:topConceptOf znote:categories .
+znote:location a skos:Concept ; skos:prefLabel "Location"@en ; skos:topConceptOf znote:categories .

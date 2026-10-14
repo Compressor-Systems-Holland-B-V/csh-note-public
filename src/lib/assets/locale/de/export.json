@@ -2,10 +2,10 @@
   "title": "Exportieren",
   "format": "Format",
   "pdfHint": "Sieht genauso aus wie die Vorschau.",
-  "pptxHint": "Eine Folie pro Seite. Text bleibt bearbeitbar; alles andere ist ein Bild.",
+  "pptxHint": "Eine Folie pro Seite. Nur Text bleibt bearbeitbar.",
   "blocked": {
     "noPage": "Wählen Sie eine Seite zum Exportieren aus.",
-    "problems": "Diese Seite enthält Fehler. Gehen Sie zurück zum Bearbeiten und beheben Sie diese vor dem Export.",
+    "problems": "Beheben Sie zuerst die Fehler auf dieser Seite.",
     "empty": "Diese Seite enthält noch nichts zum Exportieren."
   },
   "run": "Exportieren…",

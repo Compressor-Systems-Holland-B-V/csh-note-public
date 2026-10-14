@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Welkom bij znote",
     "title": "Je znote-bestanden",
-    "text": "Je notities staan in één znote-bestand. Alles wat je schrijft, wordt erin opgeslagen, en je kunt het naar een andere computer kopiëren.",
+    "text": "Al je notities worden opgeslagen in één bestand dat je naar een andere computer kunt kopiëren.",
     "new": "Nieuw znote-bestand…",
     "open": "Een znote-bestand openen…",
     "bringIn": "De notities die ik al heb toevoegen…",
@@ -67,12 +67,17 @@
     "switch": "Een ander znote-bestand openen of maken",
     "savedAt": "Opgeslagen om {time}",
     "themesTitle": "De thema's in dit bestand installeren?",
-    "themesText": "Dit znote-bestand bevat thema's die nog niet op deze computer staan. De pagina's hebben ze nodig.",
+    "themesText": "Dit bestand heeft thema's nodig die nog niet zijn geïnstalleerd.",
     "themesInstall": "Installeren en openen",
     "fontsTitle": "Sommige lettertypen zijn niet beschikbaar",
-    "fontsFallback": "Waar een lettertype niet beschikbaar is, gebruikt znote een ander. Tekst kan dan meer of minder ruimte innemen, waardoor regels op andere plaatsen kunnen afbreken en het aantal pagina's kan veranderen.",
-    "fontsMissing": "Deze lettertypen worden in dit bestand gebruikt, maar staan niet op deze computer:",
-    "fontsLeftOut": "Deze lettertypen mogen niet naar een znote-bestand worden gekopieerd. Op een computer zonder deze lettertypen wordt een ander lettertype gebruikt:",
+    "fontsFallback": "Er worden andere lettertypen gebruikt, dus regels en pagina's kunnen anders afbreken.",
+    "fontsMissing": "Niet op deze computer:",
+    "fontsLeftOut": "Deze lettertypen kunnen niet in het bestand worden opgeslagen:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Beginnen",
+    "empty": "Bestanden die je opent, verschijnen hier.",
+    "back": "Terug naar {name}"
   }
 }

@@ -5,6 +5,7 @@ import type { Preset, Reference } from "$lib/assistant";
 import { messageOf } from "$lib/utils";
 import { Chats, chats } from "./chats.svelte";
 import { Document, doc } from "./document.svelte";
+import { privacy } from "./privacy.svelte";
 import { Connections, connections } from "./providers.svelte";
 import { SettingsState, settings } from "./settings.svelte";
 import { theme } from "./theme.svelte";
@@ -12,11 +13,11 @@ import type { TemplateChoice } from "./theme.svelte";
 import { Workspace, moved, workspace } from "./workspace.svelte";
 import { t, translated } from "$lib/i18n.svelte";
 
-type Backend = Pick<typeof ipc, "agentCancel" | "agentRun" | "agentAttach" | "agentForget" | "createEntry" | "writePage">;
+type Backend = Pick<typeof ipc, "agentCancel" | "agentRun" | "agentAttach" | "agentLevel" | "agentForget" | "createEntry" | "writePage">;
 
 type Connected = Pick<Connections, "active" | "model" | "check" | "connected">;
 
-type Run = { id: string; messages: ChatMessage[]; session: string | null; provider: string; model: string | null; preset: Preset };
+type Run = { id: string; messages: ChatMessage[]; session: string | null; provider: string; model: string | null; preset: Preset; knowledge: string | null };
 
 type Templates = Pick<TemplateChoice, "label" | "kind" | "snippet">[];
 
@@ -34,6 +35,7 @@ export class Agent {
   pending = $state<Record<string, string>>({});
   reviewing = $state(false);
   choice = $state<{ provider: string; model: string | null } | null>(null);
+  conflicts = $state<Record<string, string>>({});
 
   chatId = $state<string | null>(null);
   trail = $state<string[]>([]);
@@ -55,6 +57,7 @@ export class Agent {
     private templates: () => Templates,
     private chats: Chats,
     private connections: Connected,
+    private veiledWith: () => string | null = () => null,
   ) {}
 
   get runningChat() {
@@ -80,6 +83,11 @@ export class Agent {
     const preset = this.preset;
     if (!standard(preset.id) && preset.model !== null) return preset.model;
     return picked ?? preset.model ?? this.connections.model(provider);
+  }
+
+  get otherKnowledge() {
+    const kept = this.chats.list.find((chat) => chat.id === this.chatId)?.knowledge ?? null;
+    return kept !== null && kept !== this.veiledWith();
   }
 
   get providerOrDefault() {
@@ -170,10 +178,10 @@ export class Agent {
     this.chatId = null;
   }
 
-  private remember({ id, messages, session, provider }: Run) {
+  private remember({ id, messages, session, provider, knowledge }: Run) {
     const title = messages[0]?.parts[0]?.text.trim().slice(0, 60) ?? "";
     const archived = this.chats.list.find((chat) => chat.id === id)?.archived ?? false;
-    this.chats.save({ id, title, session, provider, messages: $state.snapshot(messages), archived, updated: Date.now() });
+    this.chats.save({ id, title, session, provider, messages: $state.snapshot(messages), archived, updated: Date.now(), knowledge });
   }
 
   private doing(activity: string) {
@@ -199,7 +207,14 @@ export class Agent {
   }
 
   async review(page: string) {
-    await this.attempt(() => this.workspace.open(page));
+    const theirs = this.conflicts[page];
+    await this.attempt(async () => {
+      await this.workspace.open(page);
+      if (theirs === undefined) return;
+      delete this.conflicts[page];
+      this.pending[page] = this.doc.text;
+      this.workspace.rewrite(() => theirs);
+    });
     this.reviewing = this.original !== null;
   }
 
@@ -231,7 +246,16 @@ export class Agent {
   attach() {
     return this.attempt(async () => {
       const files = await this.backend.agentAttach(this.chat());
-      this.references.push(...files.map(({ name, path }) => ({ label: name, line: `the attached file ${path}` })));
+      this.references.push(...files.map(({ name, path, text, level }) => ({ label: name, line: `the attached file ${path}`, path, text, level })));
+    });
+  }
+
+  setLevel(reference: Reference, level: number) {
+    const { path } = reference;
+    if (path === undefined) return;
+    return this.attempt(async () => {
+      await this.backend.agentLevel(this.chat(), path, level);
+      reference.level = level;
     });
   }
 
@@ -244,7 +268,7 @@ export class Agent {
     this.started = Date.now();
     this.stopped = false;
     const session = this.provider === provider ? this.session : null;
-    const run: Run = { id: this.chat(), messages: this.messages, session, provider, model: this.model, preset: this.preset };
+    const run: Run = { id: this.chat(), messages: this.messages, session, provider, model: this.model, preset: this.preset, knowledge: this.veiledWith() };
     this.run = run;
     this.provider = provider;
     run.messages.push({
@@ -317,6 +341,16 @@ export class Agent {
       } else if (event.kind === "edited") {
         this.record(event.page, event.before);
         this.say(run, "note", `Edited ${event.page}`, event.page);
+      } else if (event.kind === "veiled") {
+        const asked = run.messages.findLast(({ from }) => from === "you");
+        if (asked !== undefined) asked.hidden ??= Object.values(event.kinds).reduce((sum, count) => sum + count, 0);
+      } else if (event.kind === "restored") {
+        (run.messages[run.messages.length - 1].restored ??= []).push(...event.texts);
+      } else if (event.kind === "saw") {
+        (run.messages[run.messages.length - 1].saw ??= []).push({ label: event.label, text: event.text });
+      } else if (event.kind === "conflict") {
+        this.conflicts[event.page] = event.theirs;
+        this.say(run, "note", `Not saved ${event.page}`, event.page);
       } else {
         this.say(run, "note", `Read ${event.page}`);
       }
@@ -394,7 +428,7 @@ export class Agent {
   }
 }
 
-export const agent = new Agent(ipc, workspace, doc, settings, () => theme.offered, chats, connections);
+export const agent = new Agent(ipc, workspace, doc, settings, () => theme.offered, chats, connections, () => (privacy.hiding ? (privacy.status?.active ?? null) : null));
 
 if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;
@@ -437,7 +471,8 @@ if (import.meta.vitest) {
         handler({ kind: "text", text });
         handler({ kind: "done", session: "session-1", failure: null });
       }),
-      agentAttach: vi.fn(async () => [{ name: "report.pdf", path: "/data/assistant/1-report.pdf" }]),
+      agentAttach: vi.fn(async () => [{ name: "report.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
+      agentLevel: vi.fn(async () => {}),
       agentForget: vi.fn(async () => {}),
       createEntry: files.createEntry,
       writePage: files.writePage,
@@ -579,6 +614,9 @@ if (import.meta.vitest) {
     await agent.attach();
     const abandoned = agent.chatId;
     expect(backend.agentAttach).toHaveBeenCalledWith(abandoned);
+    await agent.setLevel(agent.references[0], 3);
+    expect(backend.agentLevel).toHaveBeenCalledWith(abandoned, "/data/assistant/1-report.pdf", 3);
+    expect(agent.references[0].level).toBe(3);
     await agent.newChat();
     expect(backend.agentForget).toHaveBeenCalledWith(abandoned);
     backend.agentForget.mockClear();
@@ -646,6 +684,32 @@ if (import.meta.vitest) {
     expect(backend.agentCancel).toHaveBeenCalledWith(agent.chatId);
     expect(prompts).toHaveLength(1);
     expect(agent.running).toBe(false);
+  });
+
+  test("hidden names are counted, restored names and what the assistant saw are kept, and a conflict waits for review", async () => {
+    const { agent, backend, space, document, disk, history } = setup([]);
+    await space.useFolder("/notes", false);
+    backend.agentRun.mockImplementationOnce(async (_turn, handler) => {
+      handler({ kind: "veiled", kinds: { CUSTOMER: 2, EMAIL: 1 } });
+      handler({ kind: "saw", label: "prompt", text: "Tell ⟦CUSTOMER_1⟧" });
+      handler({ kind: "text", text: "Told Acme." });
+      handler({ kind: "restored", texts: [{ text: "Acme", kind: "CUSTOMER" }] });
+      handler({ kind: "conflict", page: "Work/Notes/A", theirs: "= A\nfrom the assistant\n" });
+      handler({ kind: "done", session: "s", failure: null });
+    });
+    await agent.send("Tell Acme");
+    const [asked, answer] = agent.messages;
+    expect(asked.hidden).toBe(3);
+    expect(answer.restored).toEqual([{ text: "Acme", kind: "CUSTOMER" }]);
+    expect(answer.saw).toEqual([{ label: "prompt", text: "Tell ⟦CUSTOMER_1⟧" }]);
+    expect(answer.parts.at(-1)).toEqual({ kind: "note", text: "Not saved Work/Notes/A", page: "Work/Notes/A" });
+    expect(history.list[0].knowledge).toBe(null);
+    expect(disk["Work/Notes/A"]).toBe("= A\n");
+    await agent.review("Work/Notes/A");
+    expect(document.text).toBe("= A\nfrom the assistant\n");
+    expect(agent.original).toBe("= A\n");
+    expect(agent.reviewing).toBe(true);
+    expect(agent.conflicts).toEqual({});
   });
 
   test("a failed turn shows the reason and checks the connection again", async () => {

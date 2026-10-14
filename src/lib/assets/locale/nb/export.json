@@ -2,10 +2,10 @@
   "title": "Eksporter",
   "format": "Format",
   "pdfHint": "Ser nøyaktig ut som forhåndsvisningen.",
-  "pptxHint": "Én lysbilde per side. Tekst forblir redigerbar; alt annet er et bilde.",
+  "pptxHint": "Ett lysbilde per side. Bare tekst forblir redigerbar.",
   "blocked": {
     "noPage": "Velg en side som skal eksporteres.",
-    "problems": "Denne siden har problemer. Gå tilbake til Rediger og fiks dem før du eksporterer.",
+    "problems": "Fiks problemene på denne siden først.",
     "empty": "Denne siden har ingenting å eksportere ennå."
   },
   "run": "Eksporter…",

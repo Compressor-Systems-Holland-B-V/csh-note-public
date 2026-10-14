@@ -1,0 +1,144 @@
+{
+  "preview": "Ce qui est envoyé à l’assistant",
+  "addToKnowledge": "Ajouter à la base de connaissances",
+  "restored": "Masqué pour l’assistant en tant que : {kind}",
+  "unknownToken": "L’assistant a écrit un jeton que znote ne connaît pas, il n’a donc pas pu être remplacé",
+  "otherKnowledge": "Cette discussion a masqué des noms avec un autre fichier de connaissances. Les noms masqués peuvent apparaître sous forme de jetons.",
+  "panel": {
+    "hidden": "Masqué pour l’assistant",
+    "hiddenTitle": "Les noms, montants et coordonnées sont envoyés sous forme de jetons",
+    "notHidden": "Non masqué",
+    "notHiddenTitle": "L’assistant voit vos pages et vos fichiers tels quels",
+    "locked": "Verrouillé",
+    "lockedTitle": "Ouvrez d’abord votre fichier de connaissances dans les Paramètres."
+  },
+  "saw": {
+    "prompt": "Votre message"
+  },
+  "start": {
+    "title": "Masquer les noms d’entreprises pour l’assistant ?",
+    "text": "Les noms, montants et coordonnées deviennent des jetons comme ⟦CUSTOMER_3⟧ avant tout envoi.",
+    "create": "Créer un fichier de connaissances",
+    "import": "Importer un fichier de connaissances",
+    "notNow": "Pas maintenant",
+    "later": "Vous pourrez modifier ce choix plus tard dans les Paramètres.",
+    "downloadsTitle": "Téléchargements facultatifs",
+    "downloadsText": "Les deux fonctionnent uniquement sur cet ordinateur.",
+    "how": "Comment ça marche"
+  },
+  "unlock": {
+    "title": "Ouvrir votre fichier de connaissances",
+    "text": "Saisissez le mot de passe de « {name} »."
+  },
+  "form": {
+    "defaultName": "Mes connaissances",
+    "name": "Nom",
+    "choose": "Choisir un fichier…",
+    "nothingChosen": "Aucun fichier choisi",
+    "current": "Mot de passe actuel",
+    "password": "Mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "again": "Saisissez à nouveau le mot de passe",
+    "tooShort": "Utilisez au moins {count} caractères.",
+    "mismatch": "Les mots de passe ne sont pas identiques.",
+    "exportHint": "Toute personne disposant de la copie et de ce mot de passe peut voir ce qui est masqué.",
+    "remember": "Mémoriser sur cet ordinateur",
+    "rememberHint": "Conservé dans le gestionnaire de mots de passe de cet ordinateur.",
+    "submit": {
+      "create": "Créer",
+      "import": "Importer",
+      "unlock": "Ouvrir",
+      "export": "Exporter…",
+      "password": "Changer le mot de passe"
+    },
+    "title": {
+      "create": "Nouveau fichier de connaissances",
+      "import": "Importer un fichier de connaissances",
+      "unlock": "Ouvrir le fichier de connaissances",
+      "export": "Exporter une copie",
+      "password": "Changer le mot de passe"
+    }
+  },
+  "files": {
+    "title": "Fichiers de connaissances",
+    "none": "Aucun fichier de connaissances pour l’instant.",
+    "active": "Utilisé",
+    "open": "Ouvert",
+    "locked": "Verrouillé",
+    "use": "Utiliser",
+    "new": "Nouveau…",
+    "import": "Importer…",
+    "unlock": "Ouvrir…",
+    "export": "Exporter…",
+    "password": "Changer le mot de passe…",
+    "exported": "La copie a été enregistrée.",
+    "removeTitle": "Supprimer le fichier de connaissances « {name} » ?",
+    "removeText": "Sa base de connaissances est supprimée et les discussions qui l’utilisaient ne pourront plus continuer. Exportez d’abord une copie si besoin."
+  },
+  "settings": {
+    "title": "Confidentialité",
+    "text": "Ce que l’assistant peut voir et consulter.",
+    "needsFile": "Créez ou importez d’abord un fichier de connaissances.",
+    "privacyVeil": "Masquer les noms pour l’assistant",
+    "privacyVeilHint": "Les clients, personnes, projets et coordonnées deviennent des jetons.",
+    "privacyAmounts": "Masquer les montants",
+    "privacyAmountsHint": "L’assistant ne peut pas faire de calculs avec des montants masqués.",
+    "privacyNames": "Utiliser le détecteur de noms",
+    "privacyNamesHint": "Masque aussi les noms qui ne figurent pas dans votre glossaire. Il en manquera certains.",
+    "knowledgeOn": "Base de connaissances",
+    "knowledgeOnHint": "L’assistant reçoit les notes pertinentes de vos pages et fichiers.",
+    "knowledgeAutoAdd": "Ajouter mes pages automatiquement",
+    "knowledgeAutoAddHint": "Les pages sont ajoutées lorsque vous les enregistrez."
+  },
+  "models": {
+    "names": "Détecteur de noms (environ 50 MB)",
+    "namesHint": "Trouve les noms de personnes, d’entreprises et de lieux qui ne figurent pas dans votre glossaire.",
+    "search": "Recherche intelligente (environ 30 MB)",
+    "searchHint": "Trouve les notes selon leur sens, pas seulement selon les mots qu’elles contiennent.",
+    "download": "Télécharger",
+    "downloading": "Téléchargement… {done} sur {total} MB",
+    "ready": "Téléchargé"
+  },
+  "glossary": {
+    "title": "Glossaire",
+    "loaded_one": "{count} terme chargé",
+    "loaded_other": "{count} termes chargés",
+    "none": "Uniquement les catégories standard. Importez votre propre glossaire (SKOS).",
+    "import": "Importer…"
+  },
+  "index": {
+    "title": "Base de connaissances",
+    "rebuild": "Reconstruire",
+    "counts": "{sources} sources, {chunks} extraits",
+    "forget": "Oublier",
+    "empty": "La base de connaissances est encore vide.",
+    "attachments": "Fichiers joints"
+  },
+  "view": {
+    "title": "Ce que voit l’assistant",
+    "open": "Afficher ce que voit l’assistant",
+    "close": "Retour à la page",
+    "hint": "Faites un clic droit sur un code pour l’afficher, ou sélectionnez du texte et faites un clic droit pour le masquer.",
+    "isHidden": "« {text} » est masqué en tant que : {kind}",
+    "dontHide": "Ne pas masquer",
+    "alwaysHide": "Toujours masquer",
+    "hideAs": "Masquer « {text} » en tant que",
+    "kind": "Type"
+  },
+  "kinds": {
+    "CUSTOMER": "Client",
+    "PERSON": "Personne",
+    "ORGANISATION": "Organisation",
+    "SUPPLIER": "Fournisseur",
+    "PROJECT": "Projet",
+    "PRODUCT": "Produit",
+    "LOCATION": "Lieu"
+  },
+  "level": {
+    "label": "Niveau de masquage",
+    "own": "Seulement votre liste et les coordonnées",
+    "light": "Léger : aussi les noms de personnes",
+    "medium": "Moyen : aussi les organisations et lieux",
+    "strict": "Strict : aussi les produits, projets, clients et fournisseurs"
+  }
+}

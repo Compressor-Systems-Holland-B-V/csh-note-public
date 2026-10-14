@@ -9,7 +9,8 @@ use std::time::Duration;
 use serde_json::{Value, json};
 
 use super::secrets::{self, Secret};
-use super::{Event, POLL, Running, Send, Status, Turn, keep, web};
+use super::{Event, POLL, Running, Send, Status, Turn, keep, level_of, seen, web};
+use crate::knowledge::{Gate, LIGHT};
 use crate::{extract, workspace};
 
 const OPENROUTER: &str = "https://openrouter.ai/api/v1";
@@ -143,10 +144,11 @@ impl Hosted {
         root: &Path,
         folder: &Path,
         turn: &Turn,
+        gate: &Gate,
         send: Send,
     ) -> Result<(), String> {
         let secret = secrets::read(self.id)?.ok_or("Connect the assistant in Settings first.")?;
-        run(running, root, folder, turn, &secret, send)
+        run(running, root, folder, turn, &secret, gate, send)
     }
 }
 
@@ -211,7 +213,7 @@ fn models(secret: &Secret) -> Result<Vec<String>, String> {
     Ok(ids)
 }
 
-fn tools(read_only: bool, web: bool) -> Value {
+fn tools(read_only: bool, web: bool, knows: bool) -> Value {
     let tool = |name: &str, description: &str, fields: &[(&str, &str)]| {
         let properties: serde_json::Map<String, Value> = fields
             .iter()
@@ -243,6 +245,18 @@ fn tools(read_only: bool, web: bool) -> Value {
             ],
         ),
     ];
+    if knows {
+        tools.push(tool(
+            "search_knowledge",
+            "Search the user's knowledge base of notes and files. Gives at most 10 pieces of text.",
+            &[("query", "What to look for")],
+        ));
+        tools.push(tool(
+            "knowledge_entity",
+            "Tell what the knowledge base knows about a token such as ⟦CUSTOMER_3⟧, and which pages mention it.",
+            &[("token", "The token, written exactly")],
+        ));
+    }
     if web {
         tools.push(tool("fetch_url", "Read the text of a public web page. Use it only for an address the user gave or asked for.", &[("url", "The https:// address")]));
     }
@@ -265,6 +279,7 @@ fn shown(tool: &str) -> &'static str {
     match tool {
         "read_page" | "read_file" => "Read",
         "write_page" | "edit_page" => "Edit",
+        "search_knowledge" | "knowledge_entity" => "Knowledge",
         _ => "Search",
     }
 }
@@ -414,8 +429,11 @@ struct Tools<'a> {
     root: &'a Path,
     folder: &'a Path,
     turn: &'a Turn,
+    gate: &'a Gate<'a>,
     send: Send<'a>,
 }
+
+const LOCAL: [&str; 6] = ["path", "name", "text", "old", "new", "query"];
 
 impl Tools<'_> {
     fn call(&self, name: &str, input: &Value) -> Result<String, String> {
@@ -423,6 +441,7 @@ impl Tools<'_> {
             root,
             folder,
             turn,
+            gate,
             send,
         } = self;
         let text = |field: &str| {
@@ -457,12 +476,14 @@ impl Tools<'_> {
                 let end = start + MAX_PIECE;
                 Ok(if read.chars().nth(end).is_some() { format!("{piece}\n… there is more. Call read_file again with start {end}.") } else { piece })
             }
+            "search_knowledge" => gate.search(text("query")?),
+            "knowledge_entity" => gate.entity(text("token")?),
             "fetch_url" if !turn.web => Err("This chat may not use the internet. The user can allow it from the paperclip menu.".into()),
             "fetch_url" => web::fetch(text("url")?),
             "write_page" | "edit_page" if turn.read_only => Err("You may only read pages in this chat. Tell the user what you would change.".into()),
             "write_page" => {
                 let page = page(input);
-                let source = text("text")?;
+                let source = &gate.unveil_typst(text("text")?);
                 step("Write", &page)?;
                 workspace::ensure(root, &page)?;
                 let before = workspace::read_text(root, &page)?;
@@ -478,7 +499,7 @@ impl Tools<'_> {
                 match before.matches(old).count() {
                     0 => Err("The old text is not on the page. Read the page again and copy it exactly.".into()),
                     1 => {
-                        workspace::write_text(root, &page, &before.replacen(old, new, 1))?;
+                        workspace::write_text(root, &page, &gate.unveil_typst(&before.replacen(old, new, 1)))?;
                         send(Event::Edited { page, before: Some(before) })?;
                         Ok("Saved.".into())
                     }
@@ -490,15 +511,60 @@ impl Tools<'_> {
     }
 
     fn answer(&self, call: &Call) -> String {
-        let input: Value = serde_json::from_str(&call.arguments).unwrap_or_default();
+        let mut input: Value = serde_json::from_str(&call.arguments).unwrap_or_default();
+        // Page text is unveiled once it is whole, so the real text can be escaped for where it lands.
+        let typst = match call.name.as_str() {
+            "write_page" => "text",
+            "edit_page" => "new",
+            _ => "",
+        };
+        if call.name != "fetch_url" {
+            for field in LOCAL.into_iter().filter(|field| *field != typst) {
+                if let Some(text) = input[field].as_str() {
+                    input[field] = Value::String(self.gate.unveil(text).0);
+                }
+            }
+        }
         let output = self
             .call(&call.name, &input)
             .unwrap_or_else(|error| format!("Error: {error}"));
-        if output.len() <= MAX_OUTPUT {
+        let output = if output.len() <= MAX_OUTPUT {
+            output
+        } else {
+            let cut: String = output.chars().take(MAX_OUTPUT / 4).collect();
+            format!("{cut}\n… the rest was left out because it is too long.")
+        };
+        if !self.gate.on() {
             return output;
         }
-        let cut: String = output.chars().take(MAX_OUTPUT / 4).collect();
-        format!("{cut}\n… the rest was left out because it is too long.")
+        let level = match call.name.as_str() {
+            "read_file" => input["name"]
+                .as_str()
+                .and_then(|name| Path::new(name).file_name())
+                .map_or(LIGHT, |name| level_of(self.folder, &name.to_string_lossy())),
+            _ => LIGHT,
+        };
+        match self.gate.veil_at(&output, level) {
+            Ok(veiled) => {
+                if matches!(
+                    call.name.as_str(),
+                    "read_page"
+                        | "read_file"
+                        | "search_pages"
+                        | "search_knowledge"
+                        | "knowledge_entity"
+                        | "fetch_url"
+                ) {
+                    let about = ["path", "name", "query", "token", "url"]
+                        .iter()
+                        .find_map(|field| input[field].as_str())
+                        .unwrap_or_default();
+                    let _ = (self.send)(seen(&format!("{} {about}", call.name), &veiled.text));
+                }
+                veiled.text
+            }
+            Err(error) => format!("Error: {error}"),
+        }
     }
 }
 
@@ -514,10 +580,10 @@ fn trim(history: &mut Vec<Value>) {
     }
 }
 
-fn body(turn: &Turn, model: &str, history: &[Value]) -> Value {
+fn body(turn: &Turn, model: &str, history: &[Value], knows: bool) -> Value {
     let mut messages = vec![json!({ "role": "system", "content": turn.system })];
     messages.extend_from_slice(history);
-    let mut body = json!({ "model": model, "messages": messages, "stream": true, "tools": tools(turn.read_only, turn.web) });
+    let mut body = json!({ "model": model, "messages": messages, "stream": true, "tools": tools(turn.read_only, turn.web, knows) });
     if let Some(effort) = turn.effort.as_deref() {
         body["reasoning_effort"] = json!(if matches!(effort, "low" | "medium") {
             effort
@@ -534,6 +600,7 @@ pub fn run(
     folder: &Path,
     turn: &Turn,
     secret: &Secret,
+    gate: &Gate,
     send: Send,
 ) -> Result<(), String> {
     let model = turn
@@ -546,6 +613,7 @@ pub fn run(
         root,
         folder,
         turn,
+        gate,
         send,
     };
     let file = folder.join("history.json");
@@ -553,7 +621,14 @@ pub fn run(
         .ok()
         .and_then(|bytes| serde_json::from_slice(&bytes).ok())
         .unwrap_or_default();
-    history.push(json!({ "role": "user", "content": turn.prompt }));
+    let prompt = gate.veil(&turn.prompt)?;
+    if gate.on() {
+        send(Event::Veiled {
+            kinds: prompt.kinds,
+        })?;
+        send(seen("prompt", &prompt.text))?;
+    }
+    history.push(json!({ "role": "user", "content": prompt.text }));
     let mut failure = None;
     for step in 0.. {
         if step == MAX_STEPS {
@@ -564,7 +639,7 @@ pub fn run(
         let reply = match stream(
             running,
             secret,
-            body(turn, model, &history).to_string(),
+            body(turn, model, &history, gate.knows()).to_string(),
             send,
         ) {
             Ok(reply) => reply,
@@ -608,6 +683,8 @@ mod tests {
 
     use super::super::Agent;
     use super::*;
+    use crate::knowledge::{Knowledge, Options};
+    use crate::privacy::glossary;
 
     fn scratch(test: &str) -> std::path::PathBuf {
         let base = std::env::temp_dir().join(format!("znote-openai-{test}-{}", std::process::id()));
@@ -748,6 +825,8 @@ mod tests {
             seen.lock().unwrap().push(event);
             Ok(())
         };
+        let knowledge = Knowledge::default();
+        let gate = knowledge.gate().unwrap();
         let call = |name: &str, input: Value, read_only: bool| {
             Tools {
                 root: &root,
@@ -756,6 +835,7 @@ mod tests {
                     read_only,
                     ..turn()
                 },
+                gate: &gate,
                 send: &send,
             }
             .call(name, &input)
@@ -857,8 +937,13 @@ mod tests {
                 .unwrap_err()
                 .starts_with("This chat may not use the internet")
         );
-        let named = |web: bool| tools(true, web).to_string().contains("fetch_url");
+        let named = |web: bool| tools(true, web, false).to_string().contains("fetch_url");
         assert!(named(true) && !named(false));
+        assert!(
+            tools(true, false, true)
+                .to_string()
+                .contains("search_knowledge")
+        );
         let edits: Vec<Event> = seen
             .lock()
             .unwrap()
@@ -912,6 +997,7 @@ mod tests {
             seen.lock().unwrap().push(event);
             Ok(())
         };
+        let knowledge = Knowledge::default();
         run(
             &running,
             &root,
@@ -921,6 +1007,7 @@ mod tests {
                 url,
                 key: "secret-key".into(),
             },
+            &knowledge.gate().unwrap(),
             &send,
         )
         .unwrap();
@@ -988,12 +1075,15 @@ mod tests {
             url: "http://127.0.0.1:1/v1".into(),
             key: String::new(),
         };
+        let knowledge = Knowledge::default();
+        let gate = knowledge.gate().unwrap();
         run(
             &running,
             &root,
             &root.join("chat"),
             &turn(),
             &nowhere,
+            &gate,
             &send,
         )
         .unwrap();
@@ -1017,9 +1107,111 @@ mod tests {
                     ..turn()
                 },
                 &nowhere,
+                &gate,
                 &send
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn with_veiling_on_the_provider_sees_tokens_only_and_edits_land_with_the_real_name() {
+        let root = scratch("veiled");
+        let folder = root.join("chat");
+        workspace::write_text(
+            &root,
+            "Work/Notes/Monday",
+            "= Monday\n- call Acme Corporation\n",
+        )
+        .unwrap();
+        let ttl = "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+<urn:c> skos:prefLabel \"Customer\" ; skos:topConceptOf <urn:s> .
+<urn:a> skos:prefLabel \"Acme Corporation\" ; skos:altLabel \"Acme\" ; skos:broader <urn:c> .";
+        let glossary = glossary::parse(ttl.as_bytes(), oxrdfio::RdfFormat::Turtle).unwrap();
+        let knowledge = Knowledge::in_memory(
+            &glossary,
+            Options {
+                veil: true,
+                ..Options::default()
+            },
+        );
+        let gate = knowledge.gate().unwrap();
+        let call = |id: &str, name: &str, arguments: Value| {
+            let delta = json!({ "choices": [{ "delta": { "tool_calls": [{ "index": 0, "id": id, "function": { "name": name, "arguments": arguments.to_string() } }] } }] });
+            format!("data: {delta}\n\ndata: [DONE]\n\n")
+        };
+        let answers = vec![
+            call("call_a", "read_page", json!({ "path": "Work/Notes/Monday" })),
+            call("call_b", "edit_page", json!({ "path": "Work/Notes/Monday", "old": "- call ⟦CUSTOMER_1⟧", "new": "- call ⟦CUSTOMER_1⟧ and ⟦CUSTOMER_1~1⟧ again at ⟦EMAIL_1⟧" })),
+            call("call_c", "search_pages", json!({ "query": "⟦CUSTOMER_1~1⟧" })),
+            "data: {\"choices\":[{\"delta\":{\"content\":\"Done with ⟦CUST\"}}]}\n\ndata: {\"choices\":[{\"delta\":{\"content\":\"OMER_1⟧ and ⟦NOPE_2⟧.\"}}]}\n\ndata: [DONE]\n\n".into(),
+        ];
+        let (url, asked) = serve(answers);
+        let agent = Agent::default();
+        let running = agent.begin("chat").unwrap();
+        let seen = Mutex::new(Vec::new());
+        let raw = |event: Event| {
+            seen.lock().unwrap().push(event);
+            Ok(())
+        };
+        let streams = Mutex::new(Default::default());
+        let send = |event| super::super::unveiled(&gate, &streams, &raw, event);
+        let veiled_turn = Turn {
+            prompt: "Tell Acme Corporation about Acme, mail jan@acme.example".into(),
+            ..turn()
+        };
+        run(
+            &running,
+            &root,
+            &folder,
+            &veiled_turn,
+            &Secret {
+                url,
+                key: String::new(),
+            },
+            &gate,
+            &send,
+        )
+        .unwrap();
+
+        assert_eq!(
+            workspace::read_text(&root, "Work/Notes/Monday").unwrap(),
+            "= Monday\n- call Acme Corporation and Acme again at jan\\@acme.example\n"
+        );
+        let asked = asked.lock().unwrap();
+        assert_eq!(asked.len(), 4);
+        for body in asked.iter() {
+            assert!(!body.to_lowercase().contains("acme"), "{body}");
+        }
+        let first: Value = serde_json::from_str(&asked[0]).unwrap();
+        assert_eq!(
+            first["messages"][1]["content"],
+            "Tell ⟦CUSTOMER_1⟧ about ⟦CUSTOMER_1~1⟧, mail ⟦EMAIL_1⟧"
+        );
+        let last: Value = serde_json::from_str(&asked[3]).unwrap();
+        assert!(
+            last["messages"]
+                .to_string()
+                .contains("Work/Notes/Monday.typ:2: - call ⟦CUSTOMER_1⟧ and ⟦CUSTOMER_1~1⟧ again")
+        );
+        let history = fs::read_to_string(folder.join("history.json")).unwrap();
+        assert!(!history.to_lowercase().contains("acme"));
+        let events = seen.lock().unwrap();
+        let said: String = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::Text { text } => Some(text.as_str()),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(said, "Done with Acme Corporation and ⟦NOPE_2⟧.");
+        assert!(events.iter().any(|event| matches!(event, Event::Restored { texts } if texts[0].text == "Acme Corporation" && texts[0].kind == "CUSTOMER")));
+        assert!(
+            events
+                .iter()
+                .any(|event| matches!(event, Event::Veiled { kinds } if kinds["CUSTOMER"] == 2))
+        );
+        assert!(events.iter().any(|event| matches!(event, Event::Edited { before: Some(before), .. } if before.contains("Acme Corporation"))));
+        assert!(events.iter().any(|event| matches!(event, Event::Saw { label, text } if label == "read_page Work/Notes/Monday" && text.contains("⟦CUSTOMER_1⟧"))));
     }
 }

@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Witaj w znote",
     "title": "Twoje pliki znote",
-    "text": "Twoje notatki znajdują się w jednym pliku znote. Wszystko, co napiszesz, jest w nim zapisywane i możesz go skopiować na inny komputer.",
+    "text": "Wszystkie notatki są zapisywane w jednym pliku, który możesz skopiować na inny komputer.",
     "new": "Nowy plik znote…",
     "open": "Otwórz plik znote…",
     "bringIn": "Zaimportuj notatki, które już mam…",
@@ -67,12 +67,17 @@
     "switch": "Otwórz lub utwórz inny plik znote",
     "savedAt": "Zapisano o {time}",
     "themesTitle": "Zainstalować motywy z tego pliku?",
-    "themesText": "Ten plik znote zawiera motywy, których nie ma jeszcze na tym komputerze. Jego strony ich potrzebują.",
+    "themesText": "Ten plik wymaga motywów, które nie są jeszcze zainstalowane.",
     "themesInstall": "Zainstaluj i otwórz",
     "fontsTitle": "Niektóre czcionki są niedostępne",
-    "fontsFallback": "Gdy czcionka jest niedostępna, znote używa innej. Tekst może wtedy zająć więcej lub mniej miejsca, więc wiersze mogą łamać się w innych miejscach, a liczba stron może się zmienić.",
-    "fontsMissing": "Te czcionki są używane w tym pliku, ale nie ma ich na tym komputerze:",
-    "fontsLeftOut": "Tych czcionek nie wolno kopiować do pliku znote. Na komputerze, który ich nie ma, używana jest inna czcionka:",
+    "fontsFallback": "Zamiast nich używane są inne czcionki, więc wiersze i strony mogą łamać się inaczej.",
+    "fontsMissing": "Brak na tym komputerze:",
+    "fontsLeftOut": "Tych czcionek nie można zapisać w pliku:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Zacznij",
+    "empty": "Tutaj pojawią się otwierane pliki.",
+    "back": "Wróć do {name}"
   }
 }

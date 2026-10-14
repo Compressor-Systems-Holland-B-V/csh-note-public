@@ -2,10 +2,10 @@
   "title": "Esporta",
   "format": "Formato",
   "pdfHint": "Identico all'anteprima.",
-  "pptxHint": "Una diapositiva per pagina. Il testo rimane modificabile; tutto il resto è un'immagine.",
+  "pptxHint": "Una diapositiva per pagina. Solo il testo resta modificabile.",
   "blocked": {
     "noPage": "Scegli una pagina da esportare.",
-    "problems": "Questa pagina presenta dei problemi. Torna a Modifica e risolvili prima di esportare.",
+    "problems": "Prima risolvi i problemi in questa pagina.",
     "empty": "Questa pagina non contiene ancora nulla da esportare."
   },
   "run": "Esporta…",

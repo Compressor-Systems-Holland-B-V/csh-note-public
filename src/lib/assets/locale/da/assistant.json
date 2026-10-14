@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Bekræft sletning",
-    "text": "Assistenten vil slette “{path}”. Den flyttes til papirkurven sammen med alt indhold."
+    "text": "Assistenten vil slette “{path}”. Den flyttes til papirkurven."
   },
   "composer": {
     "placeholder": "Spørg assistenten… Ctrl+Enter for at sende",
@@ -88,11 +88,12 @@
     "edited": "Redigerede {page}",
     "renamed": "Omdøbte {from} til {to}",
     "created": "Oprettede {path}",
-    "deleted": "Slettede {path}"
+    "deleted": "Slettede {path}",
+    "notSaved": "Gemte ikke {page}"
   },
   "preset": {
     "title": "Avancerede assistentindstillinger",
-    "text": "En forudindstilling bestemmer, hvor hurtig og grundig assistenten er med {provider}. Vælg en for at ændre den, eller lav din egen.",
+    "text": "Vælg, hvor hurtig og grundig assistenten er med {provider}.",
     "label": "Forudindstilling",
     "new": "Ny forudindstilling",
     "mine": "Min forudindstilling",

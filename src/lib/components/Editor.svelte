@@ -5,7 +5,7 @@
   import { setDiagnostics } from "@codemirror/lint";
   import { getOriginalDoc, unifiedMergeView } from "@codemirror/merge";
   import { Compartment, EditorState } from "@codemirror/state";
-  import { Decoration, EditorView, ViewPlugin, lineNumbers } from "@codemirror/view";
+  import { Decoration, EditorView, MatchDecorator, ViewPlugin, lineNumbers } from "@codemirror/view";
   import type { DecorationSet, ViewUpdate } from "@codemirror/view";
   import { tags } from "@lezer/highlight";
   import { typst_lezer } from "codemirror-lang-typst/lezer";
@@ -73,6 +73,23 @@
     ),
   ];
 
+  const tokenMarks = new MatchDecorator({
+    regexp: /⟦[^⟦⟧\n]{1,38}⟧/g,
+    decoration: Decoration.mark({ class: "cm-token", attributes: { title: t("privacy.unknownToken") } }),
+  });
+  const unknownTokens = ViewPlugin.fromClass(
+    class {
+      decorations: DecorationSet;
+      constructor(view: EditorView) {
+        this.decorations = tokenMarks.createDeco(view);
+      }
+      update(update: ViewUpdate) {
+        this.decorations = tokenMarks.updateDeco(update, this.decorations);
+      }
+    },
+    { decorations: (plugin) => plugin.decorations },
+  );
+
   const colours = EditorView.theme({
     "&": { height: "100%", color: "var(--foreground)", backgroundColor: "var(--background)" },
     "&.cm-focused": { outline: "2px solid var(--ring)", outlineOffset: "-2px" },
@@ -92,6 +109,7 @@
       backgroundColor: "var(--popover)",
       border: "1px solid var(--border)",
     },
+    ".cm-token": { color: "var(--destructive)", textDecoration: "underline wavy var(--destructive)" },
     ".cm-written": { backgroundColor: "color-mix(in oklab, var(--chart-2) 25%, transparent)" },
     "&.cm-merge-b .cm-changedLine, .cm-inlineChangedLine": { backgroundColor: "color-mix(in oklab, var(--chart-2) 15%, transparent)" },
     "&.cm-merge-b .cm-changedText": { background: "color-mix(in oklab, var(--chart-2) 35%, transparent)" },
@@ -145,6 +163,7 @@
         minimalSetup,
         lineNumbers(),
         bothDirections,
+        unknownTokens,
         look.of([]),
         lock.of([]),
         marks.of([]),

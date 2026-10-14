@@ -1,10 +1,9 @@
 {
   "connectTitle": "Assistenten verbinden",
-  "connectText": "Er schreibt und bearbeitet Ihre Seiten für Sie. Wählen Sie zuerst aus, womit er betrieben werden soll.",
+  "connectText": "Wählen Sie, womit der Assistent betrieben wird.",
   "chooseElse": "Etwas anderes auswählen",
   "nameConnected": "{name} · verbunden",
-  "dialogTitle": "Assistenten-Anbieter",
-  "dialogText": "Verbinden Sie einen oder mehrere und wählen Sie dann aus, welchen der Assistent verwenden soll.",
+  "dialogText": "Verbinden Sie einen oder mehrere und wählen Sie einen Standard.",
   "connected": "Verbunden",
   "connectedTo": "Verbunden mit {url}",
   "use": "Als Standard festlegen",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Geben Sie den Namen eines Modells ein",
-    "missing": "Wählen Sie ein Modell aus, bevor Sie beginnen. Es muss Tools unterstützen.",
+    "missing": "Wählen Sie ein Modell, das Tools unterstützt.",
     "hint": "Wird verwendet, wenn ein Chat oder eine Voreinstellung kein anderes Modell wählt."
   },
   "signIn": {
     "installing": "Claude Code wird heruntergeladen…",
     "finish": "Schließen Sie die Anmeldung in Ihrem Browser ab…",
-    "noBrowser": "Browser hat sich nicht geöffnet? Kopieren Sie diesen Link, öffnen Sie ihn in einem beliebigen Browser und fügen Sie dann den Code ein, der Ihnen dort angezeigt wird.",
+    "noBrowser": "Browser nicht geöffnet? Öffnen Sie diesen Link und fügen Sie dann den angezeigten Code ein.",
     "link": "Anmeldelink",
     "copyLink": "Anmeldelink kopieren",
     "code": "Code aus dem Browser",
     "unfinished": "Die Anmeldung wurde nicht abgeschlossen. Drücken Sie auf „Verbinden“, um es erneut zu versuchen.",
-    "note": "Führt Claude Code mit Ihrem eigenen Konto aus. Sie melden sich einmalig in Ihrem Browser an.",
+    "note": "Melden Sie sich einmalig im Browser mit Ihrem eigenen Konto an.",
     "subscription": "Claude-Abonnement",
     "subscriptionHint": "Pro-, Max- oder Team-Tarif",
     "console": "API-Konto",
@@ -43,6 +42,6 @@
     "server": "Serveradresse",
     "label": "API-Schlüssel",
     "labelOptional": "API-Schlüssel (falls der Server einen benötigt)",
-    "note": "Der Schlüssel wird verschlüsselt im Passwortspeicher dieses Computers aufbewahrt und nie wieder angezeigt."
+    "note": "Wird verschlüsselt auf diesem Computer gespeichert und nie wieder angezeigt."
   }
 }

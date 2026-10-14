@@ -1,10 +1,9 @@
 {
   "connectTitle": "Połącz asystenta",
-  "connectText": "Pisze i edytuje strony za Ciebie. Najpierw wybierz, na czym ma działać.",
+  "connectText": "Wybierz, na czym działa asystent.",
   "chooseElse": "Wybierz coś innego",
   "nameConnected": "{name} · połączono",
-  "dialogTitle": "Dostawcy asystenta",
-  "dialogText": "Połącz jednego lub więcej, a następnie wybierz, którego ma używać asystent.",
+  "dialogText": "Połącz jednego lub więcej i wybierz domyślnego.",
   "connected": "Połączono",
   "connectedTo": "Połączono z {url}",
   "use": "Ustaw jako domyślne",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Wpisz nazwę modelu",
-    "missing": "Wybierz model przed rozpoczęciem. Musi obsługiwać narzędzia.",
+    "missing": "Wybierz model obsługujący narzędzia.",
     "hint": "Używany, gdy czat lub ustawienie wstępne nie wybiera innego modelu."
   },
   "signIn": {
     "installing": "Pobieranie Claude Code…",
     "finish": "Dokończ logowanie w przeglądarce…",
-    "noBrowser": "Przeglądarka się nie otworzyła? Skopiuj ten link, otwórz go w dowolnej przeglądarce, a następnie wklej kod, który się wyświetli.",
+    "noBrowser": "Przeglądarka się nie otworzyła? Otwórz ten link i wklej wyświetlony kod.",
     "link": "Link do logowania",
     "copyLink": "Skopiuj link do logowania",
     "code": "Kod z przeglądarki",
     "unfinished": "Logowanie nie zostało ukończone. Naciśnij „Połącz”, aby spróbować ponownie.",
-    "note": "Uruchamia Claude Code przy użyciu Twojego konta. Logujesz się raz w przeglądarce.",
+    "note": "Zaloguj się raz w przeglądarce na własne konto.",
     "subscription": "Subskrypcja Claude",
     "subscriptionHint": "Plan Pro, Max lub Team",
     "console": "Konto API",
@@ -43,6 +42,6 @@
     "server": "Adres serwera",
     "label": "Klucz API",
     "labelOptional": "Klucz API (jeśli serwer go wymaga)",
-    "note": "Klucz jest przechowywany w zaszyfrowanej formie w menedżerze haseł tego komputera i nigdy więcej nie będzie wyświetlany."
+    "note": "Szyfrowany i przechowywany na tym komputerze; nie będzie już wyświetlany."
   }
 }

@@ -1,0 +1,144 @@
+{
+  "preview": "发送给助手的内容",
+  "addToKnowledge": "添加到知识库",
+  "restored": "已对助手隐藏为：{kind}",
+  "unknownToken": "助手写了一个 znote 不认识的代号，因此无法还原",
+  "otherKnowledge": "此聊天使用另一个知识文件隐藏了名称。隐藏的名称可能会显示为代号。",
+  "panel": {
+    "hidden": "对助手隐藏",
+    "hiddenTitle": "名称、金额和联系方式以代号发送",
+    "notHidden": "未隐藏",
+    "notHiddenTitle": "助手会看到您的页面和文件的原本内容",
+    "locked": "已锁定",
+    "lockedTitle": "请先在设置中打开您的知识文件。"
+  },
+  "saw": {
+    "prompt": "您的消息"
+  },
+  "start": {
+    "title": "要对助手隐藏公司名称吗？",
+    "text": "发送前，名称、金额和联系方式会变成 ⟦CUSTOMER_3⟧ 这样的代号。",
+    "create": "创建知识文件",
+    "import": "导入知识文件",
+    "notNow": "以后再说",
+    "later": "您以后可以在设置中更改此选项。",
+    "downloadsTitle": "可选下载",
+    "downloadsText": "两者都只在这台电脑上运行。",
+    "how": "工作原理"
+  },
+  "unlock": {
+    "title": "打开您的知识文件",
+    "text": "请输入“{name}”的密码。"
+  },
+  "form": {
+    "defaultName": "我的知识",
+    "name": "名称",
+    "choose": "选择文件…",
+    "nothingChosen": "未选择文件",
+    "current": "当前密码",
+    "password": "密码",
+    "newPassword": "新密码",
+    "again": "再次输入密码",
+    "tooShort": "请至少使用 {count} 个字符。",
+    "mismatch": "两次输入的密码不一致。",
+    "exportHint": "任何拥有副本和此密码的人都能看到隐藏的内容。",
+    "remember": "在这台电脑上记住",
+    "rememberHint": "保存在这台电脑的密码存储中。",
+    "submit": {
+      "create": "创建",
+      "import": "导入",
+      "unlock": "打开",
+      "export": "导出…",
+      "password": "更改密码"
+    },
+    "title": {
+      "create": "新建知识文件",
+      "import": "导入知识文件",
+      "unlock": "打开知识文件",
+      "export": "导出副本",
+      "password": "更改密码"
+    }
+  },
+  "files": {
+    "title": "知识文件",
+    "none": "还没有知识文件。",
+    "active": "使用中",
+    "open": "已打开",
+    "locked": "已锁定",
+    "use": "使用",
+    "new": "新建…",
+    "import": "导入…",
+    "unlock": "打开…",
+    "export": "导出…",
+    "password": "更改密码…",
+    "exported": "副本已保存。",
+    "removeTitle": "删除知识文件“{name}”？",
+    "removeText": "其知识库将被删除，使用过它的聊天将无法继续。如有需要，请先导出副本。"
+  },
+  "settings": {
+    "title": "隐私",
+    "text": "助手可以看到和查找的内容。",
+    "needsFile": "请先创建或导入一个知识文件。",
+    "privacyVeil": "对助手隐藏名称",
+    "privacyVeilHint": "客户、人员、项目和联系方式会变成代号。",
+    "privacyAmounts": "隐藏金额",
+    "privacyAmountsHint": "助手无法使用隐藏的金额进行计算。",
+    "privacyNames": "使用名称识别",
+    "privacyNamesHint": "也会隐藏不在您词汇表中的名称。可能会漏掉一些。",
+    "knowledgeOn": "知识库",
+    "knowledgeOnHint": "助手会从您的页面和文件中获取相关笔记。",
+    "knowledgeAutoAdd": "自动添加我的页面",
+    "knowledgeAutoAddHint": "页面在保存时添加。"
+  },
+  "models": {
+    "names": "名称识别（约 50 MB）",
+    "namesHint": "查找不在您词汇表中的人名、公司名和地名。",
+    "search": "智能搜索（约 30 MB）",
+    "searchHint": "按含义查找笔记，而不仅仅是按其中的字词。",
+    "download": "下载",
+    "downloading": "正在下载… {done} / {total} MB",
+    "ready": "已下载"
+  },
+  "glossary": {
+    "title": "词汇表",
+    "loaded_one": "已加载 {count} 个术语",
+    "loaded_other": "已加载 {count} 个术语",
+    "none": "仅包含标准类别。导入您自己的词汇表（SKOS）。",
+    "import": "导入…"
+  },
+  "index": {
+    "title": "知识库",
+    "rebuild": "重建",
+    "counts": "{sources} 个来源，{chunks} 个片段",
+    "forget": "忘记",
+    "empty": "知识库中还没有内容。",
+    "attachments": "附加的文件"
+  },
+  "view": {
+    "title": "助手看到的内容",
+    "open": "显示助手看到的内容",
+    "close": "返回页面",
+    "hint": "右键点击标记可查看其内容，或选中文本后右键点击将其隐藏。",
+    "isHidden": "“{text}”已隐藏为：{kind}",
+    "dontHide": "不要隐藏",
+    "alwaysHide": "始终隐藏",
+    "hideAs": "将“{text}”隐藏为",
+    "kind": "类型"
+  },
+  "kinds": {
+    "CUSTOMER": "客户",
+    "PERSON": "人员",
+    "ORGANISATION": "组织",
+    "SUPPLIER": "供应商",
+    "PROJECT": "项目",
+    "PRODUCT": "产品",
+    "LOCATION": "地点"
+  },
+  "level": {
+    "label": "隐藏程度",
+    "own": "仅限你的列表和联系方式",
+    "light": "轻度：也包括人名",
+    "medium": "中度：也包括组织和地点",
+    "strict": "严格：也包括产品、项目、客户和供应商"
+  }
+}

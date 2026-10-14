@@ -2,6 +2,9 @@ mod agent;
 mod compile;
 mod export;
 mod extract;
+mod knowledge;
+mod models;
+mod privacy;
 mod project;
 mod snapshot;
 mod theme;
@@ -38,6 +41,7 @@ pub fn run() {
         .manage(export::Exports::default())
         .manage(agent::Agent::default())
         .manage(project::Project::default())
+        .manage(knowledge::Knowledge::default())
         .invoke_handler(tauri::generate_handler![
             app_version,
             compile::compile,
@@ -70,11 +74,32 @@ pub fn run() {
             agent::agent_cancel,
             agent::agent_run,
             agent::agent_attach,
+            agent::agent_level,
             agent::agent_forget,
             agent::provider_connect,
             agent::provider_models,
             agent::chats_list,
             agent::chat_save,
+            knowledge::privacy_options,
+            knowledge::privacy_view,
+            knowledge::privacy_override,
+            knowledge::knowledge_status,
+            knowledge::knowledge_create,
+            knowledge::knowledge_pick,
+            knowledge::knowledge_import,
+            knowledge::knowledge_unlock,
+            knowledge::knowledge_activate,
+            knowledge::knowledge_export,
+            knowledge::knowledge_password,
+            knowledge::knowledge_remove,
+            knowledge::knowledge_sync,
+            knowledge::knowledge_add,
+            knowledge::knowledge_attach,
+            knowledge::knowledge_forget,
+            knowledge::knowledge_rebuild,
+            knowledge::glossary_import,
+            models::models_download,
+            models::models_cancel,
         ])
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::Focused(false) = event {

@@ -10,7 +10,7 @@ keywords = ["typst", "editor", "tauri"]
 categories = ["text-editors"]
 edition = "2024"
 # dist/ is the gitignored frontend build; listing it here ships it in the crate so `cargo install` works
-include = ["src/**", "build.rs", "tauri.conf.json", "capabilities/**", "icons/**", "dist/**"]
+include = ["src/**", "resources/**", "build.rs", "tauri.conf.json", "capabilities/**", "icons/**", "dist/**"]
 
 [lib]
 # The `_lib` suffix may seem redundant but it is necessary
@@ -44,6 +44,21 @@ typst-svg = "0.15.1"
 zip = { version = "9.0.2", default-features = false, features = ["deflate"] }
 lopdf = { version = "0.45.0", default-features = false }
 roxmltree = "0.21"
+aho-corasick = "1"
+regex = "1"
+sha2 = "0.10"
+oxrdfio = "0.2"
+oxrdf = "0.3"
+ort = { version = "=2.0.0-rc.9", default-features = false, features = ["ndarray", "download-binaries"] }
+ndarray = "0.16"
+tokenizers = { version = "0.21", default-features = false, features = ["fancy-regex"] }
+model2vec-rs = { version = "0.3", default-features = false, features = ["fancy-regex"] }
+
+[target.'cfg(windows)'.dependencies]
+rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }
+
+[target.'cfg(not(windows))'.dependencies]
+rusqlite = { version = "0.40", features = ["bundled-sqlcipher"] }
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]

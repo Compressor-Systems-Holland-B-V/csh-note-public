@@ -1,4 +1,6 @@
 {
+  "general": "Genel",
+  "editor": "Düzenleyici",
   "fontSize": "Düzenleyici metin boyutu",
   "wrap": "Uzun satırları kaydır",
   "autosave": "Otomatik kaydet",
@@ -12,9 +14,6 @@
   "language": "Dil",
   "languageAuto": "Bu bilgisayarla aynı",
   "assistant": "Asistan",
-  "uses": "{provider} kullanılıyor.",
-  "notConnected": "Henüz bağlanmadı.",
-  "providers": "Sağlayıcılar…",
   "file": "znote dosyanız",
   "switch": "Değiştir…"
 }

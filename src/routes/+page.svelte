@@ -13,10 +13,14 @@
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
   import Editor from "$lib/components/Editor.svelte";
   import EditorBar from "$lib/components/EditorBar.svelte";
+  import KnowledgeUnlock from "$lib/components/KnowledgeUnlock.svelte";
   import Preview from "$lib/components/Preview.svelte";
+  import PrivacyStart from "$lib/components/PrivacyStart.svelte";
+  import PrivacyView from "$lib/components/PrivacyView.svelte";
   import ProjectNotices from "$lib/components/ProjectNotices.svelte";
   import ProjectStart from "$lib/components/ProjectStart.svelte";
   import Problems from "$lib/components/Problems.svelte";
+  import Picker from "$lib/components/Picker.svelte";
   import SettingsDialog from "$lib/components/SettingsDialog.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SnapshotButtons from "$lib/components/SnapshotButtons.svelte";
@@ -28,11 +32,12 @@
   import { agent } from "$lib/state/agent.svelte";
   import { chats } from "$lib/state/chats.svelte";
   import { doc } from "$lib/state/document.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { projects } from "$lib/state/project.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
-  import { i18n, t } from "$lib/i18n.svelte";
+  import { i18n, languageOptions, t } from "$lib/i18n.svelte";
 
   let settingsOpen = $state(false);
   let assistantOpen = $state(false);
@@ -90,13 +95,16 @@
       {#if theme.logo}<img src={theme.logo} alt={theme.active?.name} class="h-5" />{:else}znote{/if}
       {#if projects.title}
         <Separator orientation="vertical" class="my-2.5" />
-        <span
-          class="flex min-w-0 items-center gap-1.5 rounded-md bg-muted px-2 py-0.5 font-normal"
-          title={projects.savedAt === null ? projects.file : `${projects.file}\n${t("workspace.file.savedAt", { time: new Date(projects.savedAt).toLocaleTimeString(i18n.locale) })}`}
+        <button
+          type="button"
+          class="flex min-w-0 items-center gap-1.5 rounded-md bg-muted px-2 py-0.5 font-normal outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
+          title={`${t("workspace.file.switch")}\n${projects.file}${projects.savedAt === null ? "" : `\n${t("workspace.file.savedAt", { time: new Date(projects.savedAt).toLocaleTimeString(i18n.locale) })}`}`}
+          disabled={agent.running}
+          onclick={() => (projects.choosing = true)}
         >
           <FileBox class="size-3.5 shrink-0 text-muted-foreground" />
           <span class="truncate">{projects.title}</span><span class="-ms-1.5 text-muted-foreground">.znote</span>
-        </span>
+        </button>
       {/if}
     </div>
     <div class="flex items-center gap-1">
@@ -108,6 +116,7 @@
     </div>
     <div class="flex items-center gap-1">
       <SnapshotButtons />
+      <Picker size="sm" class="w-32" aria-label={t("settings.language")} title={t("settings.language")} value={settings.values.language} options={languageOptions()} onchange={(language) => settings.set("language", language)} />
       <Button variant="ghost" size="icon-sm" aria-label={t("common.settings")} title={t("common.settings")} onclick={() => (settingsOpen = true)}>
         <Settings />
       </Button>
@@ -136,6 +145,8 @@
         <div class="min-h-0 flex-1 {agent.locked ? 'ring-2 ring-chart-2 ring-inset' : ''}">
           {#if workspace.page === null}
             {@render placeholder(t("workspace.placeholder"))}
+          {:else if privacy.viewing && privacy.hiding && privacy.open}
+            <PrivacyView text={doc.text} />
           {:else}
             {@const page = workspace.page}
             {#key doc.opened}
@@ -208,5 +219,13 @@
 {#if ask}<AskDialog {ask} onclose={() => (ask = null)} />{/if}
 
 {#if projects.choosing}<ProjectStart />{/if}
+
+{#if settings.loaded && privacy.status !== null && !projects.choosing}
+  {#if !settings.values.privacyAsked}
+    <PrivacyStart />
+  {:else if privacy.locked && (settings.values.privacyVeil || settings.values.knowledgeOn) && !privacy.unlockDismissed}
+    <KnowledgeUnlock />
+  {/if}
+{/if}
 
 <ProjectNotices />

@@ -1,4 +1,6 @@
 {
+  "general": "General",
+  "editor": "Editor",
   "fontSize": "Editor text size",
   "wrap": "Wrap long lines",
   "autosave": "Save automatically",
@@ -12,9 +14,6 @@
   "language": "Language",
   "languageAuto": "Same as this computer",
   "assistant": "Assistant",
-  "uses": "Uses {provider}.",
-  "notConnected": "Not connected yet.",
-  "providers": "Providers…",
   "file": "Your znote file",
   "switch": "Switch…"
 }

@@ -5,16 +5,16 @@
   "templateTitle": "Bruk en mal for denne siden",
   "fontSmaller": "Mindre tekst",
   "fontBigger": "Større tekst",
-  "locked": "Assistenten skriver på denne siden. Du kan redigere igjen når den er ferdig.",
+  "locked": "Assistenten redigerer denne siden.",
   "review": {
-    "show": "Se hva assistenten endret, og behold eller angre hver del",
+    "show": "Se gjennom endringene fra assistenten",
     "hide": "Skjul hva assistenten endret",
     "keep": "Behold",
     "keepTitle": "Behold denne endringen",
     "undo": "Angre",
     "undoTitle": "Gjenopprett det som var her før",
-    "keepAllTitle": "Behold alt assistenten endret på denne siden",
-    "undoAllTitle": "Tilbakestill denne siden til slik den var før assistenten endret den"
+    "keepAllTitle": "Behold alle endringer på denne siden",
+    "undoAllTitle": "Angre alle endringer på denne siden"
   },
   "problems": {
     "label": "Problemer",

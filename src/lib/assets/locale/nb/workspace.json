@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Velkommen til znote",
     "title": "Dine znote-filer",
-    "text": "Notatene dine ligger i én znote-fil. Alt du skriver lagres i den, og du kan kopiere den til en annen datamaskin.",
+    "text": "Alle notatene dine lagres i én fil som du kan kopiere til en annen datamaskin.",
     "new": "Ny znote-fil…",
     "open": "Åpne en znote-fil…",
     "bringIn": "Hent inn notater jeg allerede har…",
@@ -67,12 +67,17 @@
     "switch": "Åpne eller opprett en annen znote-fil",
     "savedAt": "Lagret kl. {time}",
     "themesTitle": "Installere temaene i denne filen?",
-    "themesText": "Denne znote-filen har med temaer som ikke finnes på denne datamaskinen ennå. Sidene trenger dem.",
+    "themesText": "Denne filen trenger temaer som ikke er installert ennå.",
     "themesInstall": "Installer og åpne",
     "fontsTitle": "Noen skrifter er ikke tilgjengelige",
-    "fontsFallback": "Når en skrift ikke er tilgjengelig, bruker znote en annen. Teksten kan da ta mer eller mindre plass, så linjer kan brytes andre steder og antall sider kan endre seg.",
-    "fontsMissing": "Disse skriftene brukes i denne filen, men finnes ikke på denne datamaskinen:",
-    "fontsLeftOut": "Disse skriftene kan ikke kopieres inn i en znote-fil. På en datamaskin uten dem brukes en annen skrift:",
+    "fontsFallback": "Andre skrifter brukes i stedet, så linjer og sider kan brytes annerledes.",
+    "fontsMissing": "Finnes ikke på denne datamaskinen:",
+    "fontsLeftOut": "Disse skriftene kan ikke lagres i filen:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Kom i gang",
+    "empty": "Filer du åpner, vises her.",
+    "back": "Tilbake til {name}"
   }
 }

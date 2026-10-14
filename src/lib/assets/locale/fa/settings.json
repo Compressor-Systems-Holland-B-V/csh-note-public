@@ -1,4 +1,6 @@
 {
+  "general": "عمومی",
+  "editor": "ویرایشگر",
   "fontSize": "اندازه متن ویرایشگر",
   "wrap": "شکستن خطوط طولانی",
   "autosave": "ذخیره خودکار",
@@ -12,9 +14,6 @@
   "language": "زبان",
   "languageAuto": "مشابه این رایانه",
   "assistant": "دستیار",
-  "uses": "از {provider} استفاده می‌کند.",
-  "notConnected": "هنوز متصل نشده است.",
-  "providers": "ارائه‌دهندگان…",
   "file": "فایل znote شما",
   "switch": "تغییر…"
 }

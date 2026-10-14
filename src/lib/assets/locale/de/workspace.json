@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Willkommen bei znote",
     "title": "Ihre znote-Dateien",
-    "text": "Ihre Notizen befinden sich in einer znote-Datei. Alles, was Sie schreiben, wird darin gespeichert, und Sie können sie auf einen anderen Computer kopieren.",
+    "text": "Alle Ihre Notizen werden in einer Datei gespeichert, die Sie auf einen anderen Computer kopieren können.",
     "new": "Neue znote-Datei…",
     "open": "znote-Datei öffnen…",
     "bringIn": "Vorhandene Notizen importieren…",
@@ -67,12 +67,17 @@
     "switch": "Andere znote-Datei öffnen oder erstellen",
     "savedAt": "Gespeichert um {time}",
     "themesTitle": "Die Designs aus dieser Datei installieren?",
-    "themesText": "Diese znote-Datei bringt Designs mit, die auf diesem Computer noch fehlen. Ihre Seiten brauchen sie.",
+    "themesText": "Diese Datei braucht Designs, die noch nicht installiert sind.",
     "themesInstall": "Installieren und öffnen",
     "fontsTitle": "Einige Schriftarten sind nicht verfügbar",
-    "fontsFallback": "Ist eine Schriftart nicht verfügbar, verwendet znote eine andere. Der Text kann dann mehr oder weniger Platz brauchen, sodass Zeilen an anderen Stellen umbrechen und sich die Seitenzahl ändern kann.",
-    "fontsMissing": "Diese Schriftarten werden in dieser Datei verwendet, sind aber nicht auf diesem Computer:",
-    "fontsLeftOut": "Diese Schriftarten dürfen nicht in eine znote-Datei kopiert werden. Auf einem Computer ohne sie wird eine andere Schriftart verwendet:",
+    "fontsFallback": "Stattdessen werden andere Schriftarten verwendet, daher können Zeilen und Seiten anders umbrechen.",
+    "fontsMissing": "Nicht auf diesem Computer:",
+    "fontsLeftOut": "Diese Schriftarten können nicht in der Datei gespeichert werden:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Loslegen",
+    "empty": "Geöffnete Dateien erscheinen hier.",
+    "back": "Zurück zu {name}"
   }
 }

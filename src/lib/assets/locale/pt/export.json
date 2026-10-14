@@ -2,10 +2,10 @@
   "title": "Exportar",
   "format": "Formato",
   "pdfHint": "Parece-se exatamente com a pré-visualização.",
-  "pptxHint": "Um diapositivo por página. O texto permanece editável; tudo o resto é uma imagem.",
+  "pptxHint": "Um diapositivo por página. Só o texto permanece editável.",
   "blocked": {
     "noPage": "Escolha uma página para exportar.",
-    "problems": "Esta página tem problemas. Volte a Editar e corrija-os antes de exportar.",
+    "problems": "Corrija primeiro os problemas desta página.",
     "empty": "Esta página ainda não tem nada para exportar."
   },
   "run": "Exportar…",

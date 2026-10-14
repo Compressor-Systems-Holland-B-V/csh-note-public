@@ -4,8 +4,9 @@
   import { connect } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { loadThemes, theme } from "$lib/state/theme.svelte";
-  import { inDesktopApp, projectNote } from "$lib/ipc";
-  import { noteOf, start } from "$lib/state/project.svelte";
+  import { inDesktopApp, knowledgeSync, privacyOptions, projectNote } from "$lib/ipc";
+  import { privacy } from "$lib/state/privacy.svelte";
+  import { noteOf, projects, start } from "$lib/state/project.svelte";
   import { setLocale } from "$lib/i18n.svelte";
 
   let { children } = $props();
@@ -36,10 +37,20 @@
 
   $effect(() => setLocale(settings.loaded ? settings.values.language : null));
 
+  $effect(() => {
+    if (!inDesktopApp() || !settings.loaded || privacy.status === null) return;
+    const options = privacy.options;
+    void projects.file;
+    privacyOptions(options)
+      .then(() => (options.knowledge && options.autoAdd ? knowledgeSync() : undefined))
+      .catch(() => {});
+  });
+
   connect();
   start();
   loadThemes();
   loadChats();
+  if (inDesktopApp()) privacy.load();
 </script>
 
 {@render children()}

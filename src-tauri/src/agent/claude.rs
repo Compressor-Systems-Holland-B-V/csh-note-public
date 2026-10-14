@@ -7,7 +7,11 @@ use std::thread::spawn;
 use serde_json::Value;
 use tauri::{AppHandle, Manager};
 
-use super::{Agent, Event, Running, Send, Status, Turn, keep, label, last_line, plain};
+use super::mirror::Mirror;
+use super::{
+    Agent, Event, Running, Send, Status, Turn, keep, label, last_line, mirror_root, plain, seen,
+};
+use crate::knowledge::Gate;
 
 pub const ID: &str = "claude";
 
@@ -353,21 +357,77 @@ pub fn disconnect(app: &AppHandle) -> Result<Status, String> {
     Ok(status(app))
 }
 
+fn relay(
+    lines: impl Iterator<Item = String>,
+    place: &Path,
+    root: &Path,
+    mut mirror: Option<&mut Mirror>,
+    gate: &Gate,
+    send: Send,
+) -> Result<Option<Event>, String> {
+    let mut done = None;
+    for event in lines.flat_map(|line| parse(place, &line)) {
+        let event = match (mirror.as_deref_mut(), event) {
+            (Some(mirror), Event::Edited { page, .. }) => match mirror.sync(root, &page, gate)? {
+                Some(event) => event,
+                None => continue,
+            },
+            (Some(mirror), Event::Read { page }) => {
+                send(seen(&page, &mirror.text(&page)))?;
+                Event::Read { page }
+            }
+            (_, event @ Event::Done { .. }) => {
+                done = Some(event);
+                continue;
+            }
+            (_, event) => event,
+        };
+        send(event)?;
+    }
+    Ok(done)
+}
+
 pub fn run(
     app: &AppHandle,
     running: &Running,
     root: &Path,
     folder: &Path,
     turn: &Turn,
+    gate: &Gate,
     send: Send,
 ) -> Result<(), String> {
     let system = folder.join("system.txt");
     keep(&system, turn.system.as_bytes())
         .map_err(|error| format!("The assistant could not be prepared: {error}"))?;
+    let mut mirror = match gate.on() {
+        true => Some(Mirror::build(
+            mirror_root(app, root)?,
+            root,
+            folder,
+            &turn.chat,
+            gate,
+        )?),
+        false => None,
+    };
+    let (place, attachments, prompt) = match &mirror {
+        Some(mirror) => {
+            let veiled = gate.veil(&mirror.rewrite(&turn.prompt))?;
+            send(Event::Veiled {
+                kinds: veiled.kinds,
+            })?;
+            send(seen("prompt", &veiled.text))?;
+            (mirror.root.clone(), mirror.attachments.clone(), veiled.text)
+        }
+        None => (
+            root.to_path_buf(),
+            folder.to_path_buf(),
+            turn.prompt.clone(),
+        ),
+    };
     let mut command = claude(app)?;
     command
-        .args(arguments(turn, folder, &system)?)
-        .current_dir(root)
+        .args(arguments(turn, &attachments, &system)?)
+        .current_dir(&place)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
@@ -378,19 +438,20 @@ pub fn run(
     let said = complaints(child.stderr.take());
     running.hold(child)?;
     let (mut input, output) = pipes.ok_or("Claude Code could not be reached.")?;
-    let _ = input.write_all(turn.prompt.as_bytes());
+    let _ = input.write_all(prompt.as_bytes());
     drop(input);
-    let mut done = false;
-    for event in BufReader::new(output)
-        .lines()
-        .map_while(Result::ok)
-        .flat_map(|line| parse(root, &line))
-    {
-        done |= matches!(event, Event::Done { .. });
-        send(event)?;
-    }
+    let lines = BufReader::new(output).lines().map_while(Result::ok);
+    let done = relay(lines, &place, root, mirror.as_mut(), gate, send)?;
     running.wait()?;
-    if done || running.stopped() {
+    if let Some(mirror) = mirror.as_mut() {
+        for event in mirror.finish(root, gate)? {
+            send(event)?;
+        }
+    }
+    if let Some(done) = done {
+        return send(done);
+    }
+    if running.stopped() {
         return Ok(());
     }
     Err(run_failure(&said()))
@@ -472,6 +533,89 @@ not json at all"#;
             },
         ];
         assert_eq!(events, expected);
+    }
+
+    #[test]
+    fn with_veiling_on_an_edit_in_the_mirror_lands_unveiled_and_a_conflicting_one_waits() {
+        use crate::knowledge::{Knowledge, Options};
+        use crate::privacy::glossary;
+        use crate::workspace;
+        use std::sync::Mutex;
+
+        let base = std::env::temp_dir().join(format!("znote-claude-mirror-{}", std::process::id()));
+        let _ = fs::remove_dir_all(&base);
+        let (real, place, chat) = (base.join("real"), base.join("mirror"), base.join("chat"));
+        fs::create_dir_all(&chat).unwrap();
+        fs::create_dir_all(&real).unwrap();
+        workspace::ensure(&real, "Work/Notes/Monday").unwrap();
+        workspace::write_text(&real, "Work/Notes/Monday", "= Monday\nAcme\n").unwrap();
+        let ttl = "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+<urn:c> skos:prefLabel \"Customer\" ; skos:topConceptOf <urn:s> .
+<urn:a> skos:prefLabel \"Acme\" ; skos:broader <urn:c> .";
+        let glossary = glossary::parse(ttl.as_bytes(), oxrdfio::RdfFormat::Turtle).unwrap();
+        let knowledge = Knowledge::in_memory(
+            &glossary,
+            Options {
+                veil: true,
+                ..Options::default()
+            },
+        );
+        let gate = knowledge.gate().unwrap();
+        let mut mirror = Mirror::build(place.clone(), &real, &chat, "chat-1", &gate).unwrap();
+        assert_eq!(mirror.text("Work/Notes/Monday"), "= Monday\n⟦CUSTOMER_1⟧\n");
+        let recorded = |edited: &str| {
+            fs::write(place.join("Work/Notes/Monday.typ"), edited).unwrap();
+            RECORDED
+                .replace("/w/", &format!("{}/", place.to_string_lossy()))
+                .replace("= Monday\\n- milk\\n", &edited.replace('\n', "\\n"))
+        };
+        let seen = Mutex::new(Vec::new());
+        let send = |event: Event| {
+            seen.lock().unwrap().push(event);
+            Ok(())
+        };
+        let lines = recorded("= Monday\n⟦CUSTOMER_1⟧ and milk\n");
+        let done = relay(
+            lines.lines().map(str::to_string),
+            &place,
+            &real,
+            Some(&mut mirror),
+            &gate,
+            &send,
+        )
+        .unwrap();
+        assert!(matches!(done, Some(Event::Done { failure: None, .. })));
+        assert_eq!(
+            workspace::read_text(&real, "Work/Notes/Monday").unwrap(),
+            "= Monday\nAcme and milk\n"
+        );
+        let events = seen.lock().unwrap().clone();
+        assert!(events.contains(&Event::Edited {
+            page: "Work/Notes/Monday".into(),
+            before: Some("= Monday\nAcme\n".into())
+        }));
+        assert!(events.iter().any(|event| matches!(event, Event::Saw { label, text } if label == "Work/Notes/Monday" && text.contains("⟦CUSTOMER_1⟧"))));
+
+        workspace::write_text(&real, "Work/Notes/Monday", "the user typed this\n").unwrap();
+        seen.lock().unwrap().clear();
+        let lines = recorded("= Monday\n⟦CUSTOMER_1⟧ only\n");
+        relay(
+            lines.lines().map(str::to_string),
+            &place,
+            &real,
+            Some(&mut mirror),
+            &gate,
+            &send,
+        )
+        .unwrap();
+        assert_eq!(
+            workspace::read_text(&real, "Work/Notes/Monday").unwrap(),
+            "the user typed this\n"
+        );
+        assert!(seen.lock().unwrap().contains(&Event::Conflict {
+            page: "Work/Notes/Monday".into(),
+            theirs: "= Monday\nAcme only\n".into()
+        }));
     }
 
     #[test]

@@ -2,7 +2,7 @@
   "title": "Temaer",
   "look": "Udseende",
   "import": "Importér en temafil…",
-  "intro": "Et tema kan ændre, hvordan znote ser ud, tilføje sidetabeler eller begge dele. Kontakterne på et tema afgør, om dets udseende og skabeloner tilbydes; vælg det udseende, der skal bruges, fra listen ovenfor.",
+  "intro": "Temaer ændrer udseendet, tilføjer sideskabeloner eller begge dele.",
   "storeFailure": "{reason} Temaer, du allerede har installeret, vises nedenfor.",
   "search": "Søg efter temaer",
   "installed": "Installeret",

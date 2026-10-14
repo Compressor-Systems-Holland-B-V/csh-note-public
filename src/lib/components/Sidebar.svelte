@@ -12,6 +12,7 @@
   import { theme, withTemplate } from "$lib/state/theme.svelte";
   import { pickTypstFile } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { childOf, nameOf, parentOf, workspace } from "$lib/state/workspace.svelte";
   import { t } from "$lib/i18n.svelte";
 
@@ -90,6 +91,9 @@
         <DropdownMenu.Item onSelect={() => add("project", "")}>{t("workspace.menu.newProject")}</DropdownMenu.Item>
         {#if project}
           <DropdownMenu.Item onSelect={() => rename("project", project)}>{t("workspace.menu.renameProject")}</DropdownMenu.Item>
+          {#if privacy.options.knowledge}
+            <DropdownMenu.Item onSelect={() => privacy.add(project)}>{t("privacy.addToKnowledge")}</DropdownMenu.Item>
+          {/if}
           <DropdownMenu.Item variant="destructive" onSelect={() => remove("project", project)}>
             {t("workspace.menu.deleteProject")}
           </DropdownMenu.Item>
@@ -128,6 +132,9 @@
             <ContextMenu.Item onSelect={() => addPage(path)}>{t("workspace.menu.newPage")}</ContextMenu.Item>
             <ContextMenu.Item onSelect={() => importPage(path)}>{t("workspace.menu.importPage")}</ContextMenu.Item>
             <ContextMenu.Item onSelect={() => rename("notebook", path)}>{t("workspace.menu.rename")}</ContextMenu.Item>
+            {#if privacy.options.knowledge}
+              <ContextMenu.Item onSelect={() => privacy.add(path)}>{t("privacy.addToKnowledge")}</ContextMenu.Item>
+            {/if}
             <ContextMenu.Item variant="destructive" onSelect={() => remove("notebook", path)}>{t("workspace.menu.delete")}</ContextMenu.Item>
           </ContextMenu.Content>
         </ContextMenu.Root>
@@ -153,6 +160,9 @@
             </ContextMenu.Trigger>
             <ContextMenu.Content>
               <ContextMenu.Item onSelect={() => rename("page", pagePath)}>{t("workspace.menu.rename")}</ContextMenu.Item>
+              {#if privacy.options.knowledge}
+                <ContextMenu.Item onSelect={() => privacy.add(pagePath)}>{t("privacy.addToKnowledge")}</ContextMenu.Item>
+              {/if}
               {#each workspace.notebooks as other (other.name)}
                 {#if other.name !== notebook.name}
                   <ContextMenu.Item

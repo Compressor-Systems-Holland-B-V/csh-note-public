@@ -1,4 +1,6 @@
 {
+  "general": "Generelt",
+  "editor": "Redigering",
   "fontSize": "Tekststørrelse i editor",
   "wrap": "Ombryd lange linjer",
   "autosave": "Gem automatisk",
@@ -12,9 +14,6 @@
   "language": "Sprog",
   "languageAuto": "Samme som denne computer",
   "assistant": "Assistent",
-  "uses": "Bruger {provider}.",
-  "notConnected": "Ikke forbundet endnu.",
-  "providers": "Udbydere…",
   "file": "Din znote-fil",
   "switch": "Skift…"
 }

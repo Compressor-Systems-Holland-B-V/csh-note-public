@@ -1,10 +1,9 @@
 {
   "connectTitle": "Anslut assistenten",
-  "connectText": "Den skriver och redigerar dina sidor åt dig. Välj först vad den ska köras på.",
+  "connectText": "Välj vad assistenten ska köras på.",
   "chooseElse": "Välj något annat",
   "nameConnected": "{name} · ansluten",
-  "dialogTitle": "Assistentleverantörer",
-  "dialogText": "Anslut en eller flera, välj sedan vilken assistenten ska använda.",
+  "dialogText": "Anslut en eller flera och välj en standard.",
   "connected": "Ansluten",
   "connectedTo": "Ansluten till {url}",
   "use": "Använd som standard",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Skriv namnet på en modell",
-    "missing": "Välj en modell innan du börjar. Den måste ha stöd för verktyg.",
+    "missing": "Välj en modell som har stöd för verktyg.",
     "hint": "Används när en chatt eller förinställning inte väljer en annan modell."
   },
   "signIn": {
     "installing": "Laddar ner Claude Code…",
     "finish": "Slutför inloggningen i din webbläsare…",
-    "noBrowser": "Öppnades inte webbläsaren? Kopiera den här länken, öppna den i valfri webbläsare och klistra sedan in koden som visas.",
+    "noBrowser": "Öppnades inte webbläsaren? Öppna länken och klistra in koden som visas.",
     "link": "Inloggningslänk",
     "copyLink": "Kopiera inloggningslänken",
     "code": "Kod från webbläsaren",
     "unfinished": "Inloggningen slutfördes inte. Tryck på Anslut för att försöka igen.",
-    "note": "Kör Claude Code med ditt eget konto. Du loggar in en gång i din webbläsare.",
+    "note": "Logga in en gång i webbläsaren med ditt eget konto.",
     "subscription": "Claude-abonnemang",
     "subscriptionHint": "Pro-, Max- eller Team-plan",
     "console": "API-konto",
@@ -43,6 +42,6 @@
     "server": "Serveradress",
     "label": "API-nyckel",
     "labelOptional": "API-nyckel (om servern kräver en)",
-    "note": "Nyckeln lagras krypterad i datorns lösenordshanterare och visas aldrig igen."
+    "note": "Lagras krypterad på den här datorn och visas aldrig igen."
   }
 }

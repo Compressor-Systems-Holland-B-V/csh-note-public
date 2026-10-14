@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "Verwijderen bevestigen",
-    "text": "De assistent wil “{path}” verwijderen. Het wordt naar de Prullenbak verplaatst, met alles wat erin zit."
+    "text": "De assistent wil “{path}” verwijderen. Het gaat naar de Prullenbak."
   },
   "composer": {
     "placeholder": "Vraag de assistent… Ctrl+Enter om te verzenden",
@@ -88,11 +88,12 @@
     "edited": "{page} bewerkt",
     "renamed": "Naam van {from} gewijzigd in {to}",
     "created": "{path} gemaakt",
-    "deleted": "{path} verwijderd"
+    "deleted": "{path} verwijderd",
+    "notSaved": "{page} niet opgeslagen"
   },
   "preset": {
     "title": "Geavanceerde instellingen voor de assistent",
-    "text": "Een voorinstelling bepaalt hoe snel en hoe zorgvuldig de assistent werkt met {provider}. Kies er een om die te wijzigen, of maak je eigen.",
+    "text": "Kies hoe snel en zorgvuldig de assistent werkt met {provider}.",
     "label": "Voorinstelling",
     "new": "Nieuwe voorinstelling",
     "mine": "Mijn voorinstelling",

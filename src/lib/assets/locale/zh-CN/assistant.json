@@ -11,7 +11,7 @@
   },
   "deletion": {
     "label": "确认删除",
-    "text": "助手想要删除“{path}”。它将连同其中的所有内容一起移到回收站。"
+    "text": "助手想要删除“{path}”。它将移到回收站。"
   },
   "composer": {
     "placeholder": "向助手提问… 按 Ctrl+Enter 发送",
@@ -88,11 +88,12 @@
     "edited": "编辑了 {page}",
     "renamed": "已将 {from} 重命名为 {to}",
     "created": "已创建 {path}",
-    "deleted": "已删除 {path}"
+    "deleted": "已删除 {path}",
+    "notSaved": "未保存 {page}"
   },
   "preset": {
     "title": "助手高级设置",
-    "text": "预设决定助手使用 {provider} 时的速度和谨慎程度。选择一个预设进行修改,或创建自己的预设。",
+    "text": "选择助手使用 {provider} 时的速度和谨慎程度。",
     "label": "预设",
     "new": "新建预设",
     "mine": "我的预设",

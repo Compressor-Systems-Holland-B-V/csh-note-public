@@ -56,7 +56,7 @@
   "file": {
     "welcome": "Bem-vindo ao znote",
     "title": "Os seus ficheiros znote",
-    "text": "As suas notas residem num ficheiro znote. Tudo o que escreve é guardado nele, e pode copiá-lo para outro computador.",
+    "text": "Todas as suas notas são guardadas num ficheiro que pode copiar para outro computador.",
     "new": "Novo ficheiro znote…",
     "open": "Abrir um ficheiro znote…",
     "bringIn": "Importar as notas que já tenho…",
@@ -67,12 +67,17 @@
     "switch": "Abrir ou criar outro ficheiro znote",
     "savedAt": "Guardado às {time}",
     "themesTitle": "Instalar os temas deste ficheiro?",
-    "themesText": "Este ficheiro znote traz temas que ainda não estão neste computador. As páginas precisam deles.",
+    "themesText": "Este ficheiro precisa de temas que ainda não estão instalados.",
     "themesInstall": "Instalar e abrir",
     "fontsTitle": "Alguns tipos de letra não estão disponíveis",
-    "fontsFallback": "Quando um tipo de letra não está disponível, o znote usa outro. O texto pode ocupar mais ou menos espaço, pelo que as linhas podem quebrar noutros sítios e o número de páginas pode mudar.",
-    "fontsMissing": "Estes tipos de letra são usados neste ficheiro, mas não estão neste computador:",
-    "fontsLeftOut": "Estes tipos de letra não podem ser copiados para um ficheiro znote. Num computador que não os tenha é usado outro tipo de letra:",
+    "fontsFallback": "São usados outros tipos de letra, pelo que as linhas e páginas podem quebrar de forma diferente.",
+    "fontsMissing": "Não estão neste computador:",
+    "fontsLeftOut": "Estes tipos de letra não podem ser guardados no ficheiro:",
     "fontsSeen": "OK"
+  },
+  "start": {
+    "start": "Começar",
+    "empty": "Os ficheiros que abrir aparecem aqui.",
+    "back": "Voltar a {name}"
   }
 }

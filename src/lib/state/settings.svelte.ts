@@ -21,6 +21,12 @@ export type Settings = {
   assistantPreset: string | null;
   assistantModels: Record<string, string>;
   assistantPresets: Record<string, Preset[]>;
+  privacyAsked: boolean;
+  privacyVeil: boolean;
+  privacyAmounts: boolean;
+  privacyNames: boolean;
+  knowledgeOn: boolean;
+  knowledgeAutoAdd: boolean;
 };
 
 type Persist = (key: string, value: unknown) => Promise<void>;
@@ -45,6 +51,12 @@ export const defaults: Settings = {
   assistantPreset: null,
   assistantModels: {},
   assistantPresets: {},
+  privacyAsked: false,
+  privacyVeil: false,
+  privacyAmounts: true,
+  privacyNames: false,
+  knowledgeOn: false,
+  knowledgeAutoAdd: true,
 };
 
 export function merged(stored: Record<string, unknown>, osPrefersDark: boolean): Settings {
@@ -75,6 +87,12 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     assistantPreset: text(stored.assistantPreset),
     assistantModels: names(stored.assistantModels),
     assistantPresets: storedPresets(stored.assistantPresets),
+    privacyAsked: flag(stored.privacyAsked, defaults.privacyAsked),
+    privacyVeil: flag(stored.privacyVeil, defaults.privacyVeil),
+    privacyAmounts: flag(stored.privacyAmounts, defaults.privacyAmounts),
+    privacyNames: flag(stored.privacyNames, defaults.privacyNames),
+    knowledgeOn: flag(stored.knowledgeOn, defaults.knowledgeOn),
+    knowledgeAutoAdd: flag(stored.knowledgeAutoAdd, defaults.knowledgeAutoAdd),
   };
 }
 

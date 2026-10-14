@@ -1,4 +1,5 @@
 mod claude;
+mod mirror;
 mod openai;
 mod secrets;
 mod web;
@@ -19,13 +20,22 @@ use tauri::ipc::Channel;
 use tauri::{AppHandle, Manager, State};
 use tauri_plugin_dialog::DialogExt;
 
+pub use openai::{connection, refused};
+
 use crate::extract;
+use crate::knowledge::{Gate, Knowledge, LIGHT, STRICT};
+use crate::privacy::{Restored, Stream};
 use crate::workspace::Workspace;
 
 const MAX_ATTACHMENT_BYTES: u64 = 32 * 1024 * 1024;
 const MAX_CHAT_BYTES: usize = 16 * 1024 * 1024;
 const POLL: Duration = Duration::from_millis(150);
 const SETUP: &str = "setup";
+const MARK: &str = "veil.txt";
+const LEVELS: &str = "levels.json";
+const OFF: &str = "off";
+const MAX_SEEN: usize = 20_000;
+const TOKENS: &str = "Some names, numbers and other details in this conversation are hidden behind tokens such as ⟦CUSTOMER_3⟧ or ⟦PERSON_1~2⟧. Each token stands for one piece of hidden text, and tokens with the same number stand for the same thing. Keep every token exactly as it is written, brackets included, when you quote, edit or write text. Never make up new tokens and never guess what a token hides.";
 
 struct Job {
     child: Option<Child>,
@@ -163,13 +173,27 @@ pub enum Event {
     Read {
         page: String,
     },
+    Veiled {
+        kinds: std::collections::BTreeMap<String, usize>,
+    },
+    Restored {
+        texts: Vec<Restored>,
+    },
+    Saw {
+        label: String,
+        text: String,
+    },
+    Conflict {
+        page: String,
+        theirs: String,
+    },
     Done {
         session: String,
         failure: Option<String>,
     },
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Turn {
     chat: String,
@@ -190,6 +214,89 @@ type Send<'a> = &'a dyn Fn(Event) -> Result<(), String>;
 pub struct Attachment {
     name: String,
     path: String,
+    text: Option<String>,
+    level: u8,
+}
+
+pub fn seen(label: &str, text: &str) -> Event {
+    let mut shown: String = text.chars().take(MAX_SEEN).collect();
+    if shown.len() < text.len() {
+        shown.push_str("\n…");
+    }
+    Event::Saw {
+        label: label.into(),
+        text: shown,
+    }
+}
+
+fn unveiled(
+    gate: &Gate,
+    streams: &Mutex<(Stream, Stream)>,
+    send: Send,
+    event: Event,
+) -> Result<(), String> {
+    if !gate.on() {
+        return send(event);
+    }
+    let mut streams = streams.lock().map_err(|error| error.to_string())?;
+    let (text, thought) = &mut *streams;
+    let pass = |released: String, thinking: bool| -> Result<(), String> {
+        if released.is_empty() {
+            return Ok(());
+        }
+        let (real, texts) = gate.unveil(&released);
+        send(if thinking {
+            Event::Thought { text: real }
+        } else {
+            Event::Text { text: real }
+        })?;
+        if !texts.is_empty() {
+            send(Event::Restored { texts })?;
+        }
+        Ok(())
+    };
+    match event {
+        Event::Text { text: piece } => pass(text.push(&piece), false),
+        Event::Thought { text: piece } => pass(thought.push(&piece), true),
+        other => {
+            pass(text.finish(), false)?;
+            pass(thought.finish(), true)?;
+            send(other)
+        }
+    }
+}
+
+fn marked(folder: &Path, gate: &Gate, resumed: bool) -> Result<(), String> {
+    let wanted = gate.id().unwrap_or_else(|| OFF.into());
+    let file = folder.join(MARK);
+    let mark = match fs::read_to_string(&file) {
+        Ok(mark) => mark.trim().to_string(),
+        Err(_) if resumed || folder.join("history.json").exists() => OFF.into(),
+        Err(_) => {
+            keep(&file, wanted.as_bytes())
+                .map_err(|error| format!("The chat could not be prepared: {error}"))?;
+            return Ok(());
+        }
+    };
+    match (mark == wanted, mark == OFF, wanted == OFF) {
+        (true, _, _) => Ok(()),
+        (_, true, _) => Err("This chat started without hiding names. Start a new chat to hide them.".into()),
+        (_, _, true) => Err("This chat hid names from the assistant. Turn hiding back on in Settings, or start a new chat.".into()),
+        _ => Err("This chat hid names with another knowledge file. Switch back to it, or start a new chat.".into()),
+    }
+}
+
+fn prepared(knowledge: &Knowledge, gate: &Gate, turn: &Turn) -> Result<Turn, String> {
+    let mut turn = turn.clone();
+    let asked = gate.unveil(&turn.prompt).0;
+    let notes = knowledge.notes(&asked)?;
+    if !notes.is_empty() {
+        turn.prompt = format!("{notes}\n\n{}", turn.prompt);
+    }
+    if gate.on() {
+        turn.system = format!("{}\n\n{TOKENS}", turn.system);
+    }
+    Ok(turn)
 }
 
 fn label(root: &Path, file: &str) -> String {
@@ -213,7 +320,7 @@ fn last_line(output: &str) -> Option<&str> {
         .find(|line| !line.is_empty())
 }
 
-fn keep(file: &Path, bytes: &[u8]) -> std::io::Result<()> {
+pub fn keep(file: &Path, bytes: &[u8]) -> std::io::Result<()> {
     let mut temp = file.to_path_buf();
     temp.as_mut_os_string().push(".tmp");
     fs::File::create(&temp).and_then(|mut handle| {
@@ -228,6 +335,22 @@ fn chat_folder(data: &Path, chat: &str) -> Result<PathBuf, String> {
         return Err("This chat cannot hold attached files.".into());
     }
     Ok(data.join("assistant").join(chat))
+}
+
+pub fn mirror_root(app: &AppHandle, root: &Path) -> Result<PathBuf, String> {
+    Ok(app
+        .path()
+        .app_local_data_dir()
+        .map_err(|error| error.to_string())?
+        .join("mirror")
+        .join(format!(
+            "{:032x}",
+            typst::utils::hash128(&root.to_string_lossy())
+        )))
+}
+
+pub fn chat_path(app: &AppHandle, chat: &str) -> Result<PathBuf, String> {
+    chat_folder(&data(app)?, chat)
 }
 
 fn data(app: &AppHandle) -> Result<PathBuf, String> {
@@ -265,7 +388,33 @@ fn attach(folder: &Path, file: &Path) -> Result<Attachment, String> {
     Ok(Attachment {
         name,
         path: copy.to_string_lossy().into_owned(),
+        text: None,
+        level: LIGHT,
     })
+}
+
+fn levels(folder: &Path) -> HashMap<String, u8> {
+    fs::read(folder.join(LEVELS))
+        .ok()
+        .and_then(|bytes| serde_json::from_slice(&bytes).ok())
+        .unwrap_or_default()
+}
+
+pub fn level_of(folder: &Path, file: &str) -> u8 {
+    levels(folder).get(file).copied().unwrap_or(LIGHT)
+}
+
+fn set_level(folder: &Path, path: &str, level: u8) -> Result<(), String> {
+    let file = Path::new(path)
+        .file_name()
+        .map(|name| name.to_string_lossy().into_owned())
+        .filter(|name| folder.join(name).is_file())
+        .ok_or("This file is not attached to the chat.")?;
+    let mut levels = levels(folder);
+    levels.insert(file, level.min(STRICT));
+    let bytes = serde_json::to_vec(&levels).map_err(|error| error.to_string())?;
+    keep(&folder.join(LEVELS), &bytes)
+        .map_err(|error| format!("The level could not be saved: {error}"))
 }
 
 fn saved_chats(data: &Path) -> Vec<Value> {
@@ -318,6 +467,7 @@ impl Provider {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn run(
         &self,
         app: &AppHandle,
@@ -325,11 +475,12 @@ impl Provider {
         root: &Path,
         folder: &Path,
         turn: &Turn,
+        gate: &Gate,
         send: Send,
     ) -> Result<(), String> {
         match self {
-            Self::Claude => claude::run(app, running, root, folder, turn, send),
-            Self::Hosted(hosted) => hosted.run(running, root, folder, turn, send),
+            Self::Claude => claude::run(app, running, root, folder, turn, gate, send),
+            Self::Hosted(hosted) => hosted.run(running, root, folder, turn, gate, send),
         }
     }
 }
@@ -392,17 +543,25 @@ pub fn agent_cancel(agent: State<Agent>, key: Option<String>) -> Result<(), Stri
 pub fn agent_run(app: AppHandle, turn: Turn, events: Channel<Event>) -> Result<(), String> {
     let provider = Provider::find(&turn.provider)?;
     let agent = app.state::<Agent>();
+    let knowledge = app.state::<Knowledge>();
+    let gate = knowledge.gate()?;
     let root = app.state::<Workspace>().root()?;
     let folder = chat_folder(&data(&app)?, &turn.chat)?;
     fs::create_dir_all(&folder).map_err(|error| error.to_string())?;
+    marked(&folder, &gate, turn.session.is_some())?;
     let running = agent.begin(&turn.chat)?;
-    let send = |event| events.send(event).map_err(|error| error.to_string());
-    provider.run(&app, &running, &root, &folder, &turn, &send)
+    let turn = prepared(&knowledge, &gate, &turn)?;
+    let raw = |event| events.send(event).map_err(|error| error.to_string());
+    let streams = Mutex::new((Stream::default(), Stream::default()));
+    let send = |event| unveiled(&gate, &streams, &raw, event);
+    provider.run(&app, &running, &root, &folder, &turn, &gate, &send)
 }
 
 #[tauri::command(async)]
 pub fn agent_attach(app: AppHandle, chat: String) -> Result<Vec<Attachment>, String> {
     let folder = chat_folder(&data(&app)?, &chat)?;
+    let knowledge = app.state::<Knowledge>();
+    let gate = knowledge.gate()?;
     let files = app
         .dialog()
         .file()
@@ -411,12 +570,21 @@ pub fn agent_attach(app: AppHandle, chat: String) -> Result<Vec<Attachment>, Str
     files
         .into_iter()
         .map(|file| {
-            attach(
+            let mut attached = attach(
                 &folder,
                 &file.into_path().map_err(|error| error.to_string())?,
-            )
+            )?;
+            if gate.on() {
+                attached.text = Some(extract::text(Path::new(&attached.path))?);
+            }
+            Ok(attached)
         })
         .collect()
+}
+
+#[tauri::command]
+pub fn agent_level(app: AppHandle, chat: String, path: String, level: u8) -> Result<(), String> {
+    set_level(&chat_folder(&data(&app)?, &chat)?, &path, level)
 }
 
 #[tauri::command]
@@ -506,6 +674,31 @@ mod tests {
         assert_eq!(fs::read_to_string(first.path).unwrap(), "first");
         assert_eq!(fs::read_to_string(second.path).unwrap(), "second");
         assert!(attach(&folder, &base.join("missing.txt")).is_err());
+    }
+
+    #[test]
+    fn a_level_is_kept_per_attached_file_and_only_for_attached_files() {
+        let base = scratch("level");
+        let folder = base.join("chat");
+        let file = base.join("notes.txt");
+        fs::write(&file, "notes").unwrap();
+        let first = attach(&folder, &file).unwrap();
+        let second = attach(&folder, &file).unwrap();
+        assert_eq!(first.level, LIGHT);
+        set_level(&folder, &first.path, 9).unwrap();
+        assert_eq!(level_of(&folder, "1-notes.txt"), STRICT);
+        assert_eq!(
+            level_of(
+                &folder,
+                Path::new(&second.path)
+                    .file_name()
+                    .unwrap()
+                    .to_str()
+                    .unwrap()
+            ),
+            LIGHT
+        );
+        assert!(set_level(&folder, &base.join("elsewhere.txt").to_string_lossy(), 0).is_err());
     }
 
     #[test]

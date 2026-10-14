@@ -1,10 +1,9 @@
 {
   "connectTitle": "Connect the assistant",
-  "connectText": "It writes and edits your pages for you. First choose what it should run on.",
+  "connectText": "Choose what the assistant runs on.",
   "chooseElse": "Choose something else",
   "nameConnected": "{name} · connected",
-  "dialogTitle": "Assistant providers",
-  "dialogText": "Connect one or more, then choose which one the assistant uses.",
+  "dialogText": "Connect one or more and pick a default.",
   "connected": "Connected",
   "connectedTo": "Connected to {url}",
   "use": "Set as default",
@@ -20,18 +19,18 @@
   },
   "model": {
     "type": "Type the name of a model",
-    "missing": "Choose a model before you start. It needs to support tools.",
+    "missing": "Choose a model that supports tools.",
     "hint": "Used when a chat or preset does not pick another model."
   },
   "signIn": {
     "installing": "Downloading Claude Code…",
     "finish": "Finish signing in in your browser…",
-    "noBrowser": "Browser did not open? Copy this link, open it in any browser, then paste the code it shows you.",
+    "noBrowser": "Browser didn't open? Open this link, then paste the code it shows.",
     "link": "Sign-in link",
     "copyLink": "Copy the sign-in link",
     "code": "Code from the browser",
     "unfinished": "The sign-in did not finish. Press Connect to try again.",
-    "note": "Runs Claude Code with your own account. You sign in once in your browser.",
+    "note": "Sign in once in your browser with your own account.",
     "subscription": "Claude subscription",
     "subscriptionHint": "Pro, Max or Team plan",
     "console": "API account",
@@ -43,6 +42,6 @@
     "server": "Server address",
     "label": "API key",
     "labelOptional": "API key (if the server needs one)",
-    "note": "The key is kept encrypted in the password store of this computer and is never shown again."
+    "note": "Stored encrypted on this computer and never shown again."
   }
 }

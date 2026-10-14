@@ -1,4 +1,6 @@
 {
+  "general": "Ogólne",
+  "editor": "Edytor",
   "fontSize": "Rozmiar tekstu w edytorze",
   "wrap": "Zawijaj długie linie",
   "autosave": "Zapisuj automatycznie",
@@ -12,9 +14,6 @@
   "language": "Język",
   "languageAuto": "Taki sam jak w systemie",
   "assistant": "Asystent",
-  "uses": "Używa {provider}.",
-  "notConnected": "Jeszcze nie połączono.",
-  "providers": "Dostawcy…",
   "file": "Twój plik znote",
   "switch": "Przełącz…"
 }

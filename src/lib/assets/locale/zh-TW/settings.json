@@ -1,4 +1,6 @@
 {
+  "general": "一般",
+  "editor": "編輯器",
   "fontSize": "編輯器文字大小",
   "wrap": "自動換行",
   "autosave": "自動儲存",
@@ -12,9 +14,6 @@
   "language": "語言",
   "languageAuto": "與這部電腦相同",
   "assistant": "助理",
-  "uses": "使用 {provider}。",
-  "notConnected": "尚未連線。",
-  "providers": "服務提供者…",
   "file": "您的 znote 檔案",
   "switch": "切換…"
 }
