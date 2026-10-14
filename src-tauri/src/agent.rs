@@ -65,8 +65,18 @@ impl Agent {
             return Err("The assistant is still busy. Wait for it to finish, or stop it.".into());
         }
         let stopped = Arc::new(AtomicBool::new(false));
-        jobs.insert(key.to_string(), Job { child: None, stopped: stopped.clone() });
-        Ok(Running { agent: self, key: key.to_string(), stopped })
+        jobs.insert(
+            key.to_string(),
+            Job {
+                child: None,
+                stopped: stopped.clone(),
+            },
+        );
+        Ok(Running {
+            agent: self,
+            key: key.to_string(),
+            stopped,
+        })
     }
 
     fn cancel(&self, key: &str) -> Result<(), String> {
@@ -88,7 +98,11 @@ impl Running<'_> {
         let mut jobs = self.agent.jobs()?;
         match jobs.get_mut(&self.key) {
             Some(job) if !self.stopped() => job.child = Some(child),
-            _ => Job { child: Some(child), stopped: self.stopped.clone() }.stop(),
+            _ => Job {
+                child: Some(child),
+                stopped: self.stopped.clone(),
+            }
+            .stop(),
         }
         Ok(())
     }
@@ -100,7 +114,9 @@ impl Running<'_> {
     fn wait(&self) -> Result<bool, String> {
         loop {
             let mut jobs = self.agent.jobs()?;
-            let Some(child) = jobs.get_mut(&self.key).and_then(|job| job.child.as_mut()) else { return Ok(false) };
+            let Some(child) = jobs.get_mut(&self.key).and_then(|job| job.child.as_mut()) else {
+                return Ok(false);
+            };
             if let Some(status) = child.try_wait().map_err(|error| error.to_string())? {
                 return Ok(status.success());
             }
@@ -130,12 +146,27 @@ pub struct Status {
 #[derive(Debug, Clone, Serialize, PartialEq)]
 #[serde(tag = "kind", rename_all = "camelCase")]
 pub enum Event {
-    Text { text: String },
-    Thought { text: String },
-    Step { tool: String, page: String },
-    Edited { page: String, before: Option<String> },
-    Read { page: String },
-    Done { session: String, failure: Option<String> },
+    Text {
+        text: String,
+    },
+    Thought {
+        text: String,
+    },
+    Step {
+        tool: String,
+        page: String,
+    },
+    Edited {
+        page: String,
+        before: Option<String>,
+    },
+    Read {
+        page: String,
+    },
+    Done {
+        session: String,
+        failure: Option<String>,
+    },
 }
 
 #[derive(Deserialize)]
@@ -175,7 +206,11 @@ fn plain(id: &str) -> bool {
 }
 
 fn last_line(output: &str) -> Option<&str> {
-    output.lines().rev().map(str::trim).find(|line| !line.is_empty())
+    output
+        .lines()
+        .rev()
+        .map(str::trim)
+        .find(|line| !line.is_empty())
 }
 
 fn keep(file: &Path, bytes: &[u8]) -> std::io::Result<()> {
@@ -200,21 +235,37 @@ fn data(app: &AppHandle) -> Result<PathBuf, String> {
 }
 
 fn attach(folder: &Path, file: &Path) -> Result<Attachment, String> {
-    let name = file.file_name().unwrap_or_default().to_string_lossy().into_owned();
+    let name = file
+        .file_name()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .into_owned();
     let unreadable = |error| format!("“{name}” could not be attached: {error}");
     if fs::metadata(file).map_err(unreadable)?.len() > MAX_ATTACHMENT_BYTES {
-        return Err(format!("“{name}” is too large to attach. The limit is 32 MB."));
+        return Err(format!(
+            "“{name}” is too large to attach. The limit is 32 MB."
+        ));
     }
     fs::create_dir_all(folder).map_err(unreadable)?;
-    let mut copy = folder.join(format!("{}-{name}", fs::read_dir(folder).map_err(unreadable)?.count() + 1));
-    let kind = file.extension().unwrap_or_default().to_string_lossy().to_lowercase();
+    let mut copy = folder.join(format!(
+        "{}-{name}",
+        fs::read_dir(folder).map_err(unreadable)?.count() + 1
+    ));
+    let kind = file
+        .extension()
+        .unwrap_or_default()
+        .to_string_lossy()
+        .to_lowercase();
     if extract::OFFICE.contains(&kind.as_str()) {
         copy.as_mut_os_string().push(".txt");
         keep(&copy, extract::text(file)?.as_bytes()).map_err(unreadable)?;
     } else {
         fs::copy(file, &copy).map_err(unreadable)?;
     }
-    Ok(Attachment { name, path: copy.to_string_lossy().into_owned() })
+    Ok(Attachment {
+        name,
+        path: copy.to_string_lossy().into_owned(),
+    })
 }
 
 fn saved_chats(data: &Path) -> Vec<Value> {
@@ -229,21 +280,63 @@ fn saved_chats(data: &Path) -> Vec<Value> {
 
 fn save_chat(data: &Path, chat: &Value) -> Result<(), String> {
     let unsaved = |error: &dyn std::fmt::Display| format!("This chat could not be saved: {error}");
-    let folder = chat_folder(data, chat["id"].as_str().unwrap_or_default()).map_err(|error| unsaved(&error))?;
+    let folder = chat_folder(data, chat["id"].as_str().unwrap_or_default())
+        .map_err(|error| unsaved(&error))?;
     let bytes = serde_json::to_vec(chat).map_err(|error| unsaved(&error))?;
     if bytes.len() > MAX_CHAT_BYTES {
         return Err(unsaved(&"it has grown too long. Start a new chat."));
     }
-    fs::create_dir_all(&folder).and_then(|()| keep(&folder.join("chat.json"), &bytes)).map_err(|error| unsaved(&error))
+    fs::create_dir_all(&folder)
+        .and_then(|()| keep(&folder.join("chat.json"), &bytes))
+        .map_err(|error| unsaved(&error))
+}
+
+enum Provider {
+    Claude,
+    Hosted(&'static openai::Hosted),
+}
+
+impl Provider {
+    fn find(id: &str) -> Result<Self, String> {
+        if id == claude::ID {
+            return Ok(Self::Claude);
+        }
+        openai::hosted(id).map(Self::Hosted)
+    }
+
+    fn status(&self, app: &AppHandle) -> Result<Status, String> {
+        match self {
+            Self::Claude => Ok(claude::status(app)),
+            Self::Hosted(hosted) => hosted.status(),
+        }
+    }
+
+    fn disconnect(&self, app: &AppHandle) -> Result<Status, String> {
+        match self {
+            Self::Claude => claude::disconnect(app),
+            Self::Hosted(hosted) => hosted.disconnect(),
+        }
+    }
+
+    fn run(
+        &self,
+        app: &AppHandle,
+        running: &Running,
+        root: &Path,
+        folder: &Path,
+        turn: &Turn,
+        send: Send,
+    ) -> Result<(), String> {
+        match self {
+            Self::Claude => claude::run(app, running, root, folder, turn, send),
+            Self::Hosted(hosted) => hosted.run(running, root, folder, turn, send),
+        }
+    }
 }
 
 #[tauri::command(async)]
 pub fn agent_status(app: AppHandle, provider: String) -> Result<Status, String> {
-    if provider == claude::ID {
-        return Ok(claude::status(&app));
-    }
-    let secret = secrets::read(&provider)?;
-    Ok(Status { installed: true, connected: secret.is_some(), url: secret.map(|secret| secret.url) })
+    Provider::find(&provider)?.status(&app)
 }
 
 #[tauri::command(async)]
@@ -252,7 +345,11 @@ pub fn agent_install(app: AppHandle) -> Result<(), String> {
 }
 
 #[tauri::command(async)]
-pub fn agent_connect(app: AppHandle, method: Option<String>, link: Channel<String>) -> Result<Status, String> {
+pub fn agent_connect(
+    app: AppHandle,
+    method: Option<String>,
+    link: Channel<String>,
+) -> Result<Status, String> {
     let agent = app.state::<Agent>();
     claude::connect(&app, &agent, &agent.begin(SETUP)?, method, &|found| {
         let _ = link.send(found);
@@ -265,28 +362,22 @@ pub fn agent_code(agent: State<Agent>, code: String) -> Result<(), String> {
 }
 
 #[tauri::command(async)]
-pub fn provider_connect(provider: String, url: Option<String>, key: String) -> Result<Vec<String>, String> {
-    let secret = openai::secret(&provider, url.as_deref(), &key)?;
-    let models = openai::check(&provider, &secret)?;
-    secrets::write(&provider, &secret)?;
-    Ok(models)
+pub fn provider_connect(
+    provider: String,
+    url: Option<String>,
+    key: String,
+) -> Result<Vec<String>, String> {
+    openai::hosted(&provider)?.connect(url.as_deref(), &key)
 }
 
 #[tauri::command(async)]
 pub fn provider_models(provider: String) -> Result<Vec<String>, String> {
-    match secrets::read(&provider)? {
-        Some(secret) => openai::models(&secret),
-        None => Ok(Vec::new()),
-    }
+    openai::hosted(&provider)?.models()
 }
 
 #[tauri::command(async)]
 pub fn agent_disconnect(app: AppHandle, provider: String) -> Result<Status, String> {
-    if provider == claude::ID {
-        return claude::disconnect(&app);
-    }
-    secrets::clear(&provider)?;
-    Ok(Status { installed: true, connected: false, url: None })
+    Provider::find(&provider)?.disconnect(&app)
 }
 
 #[tauri::command]
@@ -299,26 +390,32 @@ pub fn agent_cancel(agent: State<Agent>, key: Option<String>) -> Result<(), Stri
 
 #[tauri::command(async)]
 pub fn agent_run(app: AppHandle, turn: Turn, events: Channel<Event>) -> Result<(), String> {
+    let provider = Provider::find(&turn.provider)?;
     let agent = app.state::<Agent>();
     let root = app.state::<Workspace>().root()?;
     let folder = chat_folder(&data(&app)?, &turn.chat)?;
     fs::create_dir_all(&folder).map_err(|error| error.to_string())?;
     let running = agent.begin(&turn.chat)?;
     let send = |event| events.send(event).map_err(|error| error.to_string());
-    if turn.provider == claude::ID {
-        return claude::run(&app, &running, &root, &folder, &turn, &send);
-    }
-    let secret = secrets::read(&turn.provider)?.ok_or("Connect the assistant in Settings first.")?;
-    openai::run(&running, &root, &folder, &turn, &secret, &send)
+    provider.run(&app, &running, &root, &folder, &turn, &send)
 }
 
 #[tauri::command(async)]
 pub fn agent_attach(app: AppHandle, chat: String) -> Result<Vec<Attachment>, String> {
     let folder = chat_folder(&data(&app)?, &chat)?;
-    let files = app.dialog().file().blocking_pick_files().unwrap_or_default();
+    let files = app
+        .dialog()
+        .file()
+        .blocking_pick_files()
+        .unwrap_or_default();
     files
         .into_iter()
-        .map(|file| attach(&folder, &file.into_path().map_err(|error| error.to_string())?))
+        .map(|file| {
+            attach(
+                &folder,
+                &file.into_path().map_err(|error| error.to_string())?,
+            )
+        })
         .collect()
 }
 
@@ -326,7 +423,8 @@ pub fn agent_attach(app: AppHandle, chat: String) -> Result<Vec<Attachment>, Str
 pub fn agent_forget(app: AppHandle, chat: String) -> Result<(), String> {
     let folder = chat_folder(&data(&app)?, &chat)?;
     if folder.exists() {
-        fs::remove_dir_all(&folder).map_err(|error| format!("The chat could not be cleared: {error}"))?;
+        fs::remove_dir_all(&folder)
+            .map_err(|error| format!("The chat could not be cleared: {error}"))?;
     }
     Ok(())
 }
@@ -353,15 +451,42 @@ mod tests {
     }
 
     #[test]
+    fn every_offered_provider_is_found_and_an_unknown_one_is_refused() {
+        assert!(matches!(Provider::find("claude"), Ok(Provider::Claude)));
+        for id in ["openrouter", "custom"] {
+            assert!(
+                matches!(Provider::find(id), Ok(Provider::Hosted(hosted)) if hosted.id == id),
+                "{id}"
+            );
+        }
+        for bad in ["", "Claude", "openai", "../claude"] {
+            assert!(
+                Provider::find(bad)
+                    .is_err_and(|error| error.contains("not a provider znote knows")),
+                "{bad:?}"
+            );
+        }
+    }
+
+    #[test]
     fn a_file_outside_the_workspace_is_shown_by_name_only() {
-        assert_eq!(label(Path::new("/w"), "/data/assistant/1-report.pdf"), "1-report.pdf");
-        assert_eq!(label(Path::new("/w"), "/w/Work/Notes/v1.2.typ"), "Work/Notes/v1.2");
+        assert_eq!(
+            label(Path::new("/w"), "/data/assistant/1-report.pdf"),
+            "1-report.pdf"
+        );
+        assert_eq!(
+            label(Path::new("/w"), "/w/Work/Notes/v1.2.typ"),
+            "Work/Notes/v1.2"
+        );
     }
 
     #[test]
     fn each_chat_has_its_own_folder_and_an_odd_chat_name_gets_none() {
         let data = Path::new("/data");
-        assert_eq!(chat_folder(data, "8ec00c1e-4fd4").unwrap(), Path::new("/data/assistant/8ec00c1e-4fd4"));
+        assert_eq!(
+            chat_folder(data, "8ec00c1e-4fd4").unwrap(),
+            Path::new("/data/assistant/8ec00c1e-4fd4")
+        );
         for bad in ["", "..", "../claude", "a/b", "a\\b", "C:"] {
             assert!(chat_folder(data, bad).is_err(), "{bad:?}");
         }
@@ -388,30 +513,60 @@ mod tests {
         let base = scratch("office");
         let file = base.join("Report.DOCX");
         let mut archive = zip::ZipWriter::new(fs::File::create(&file).unwrap());
-        archive.start_file("word/document.xml", zip::write::SimpleFileOptions::default()).unwrap();
+        archive
+            .start_file(
+                "word/document.xml",
+                zip::write::SimpleFileOptions::default(),
+            )
+            .unwrap();
         archive.write_all(br#"<w:document xmlns:w="w"><w:p><w:r><w:t>Quarterly numbers</w:t></w:r></w:p></w:document>"#).unwrap();
         archive.finish().unwrap();
         let folder = base.join("assistant");
         let attached = attach(&folder, &file).unwrap();
         assert_eq!(attached.name, "Report.DOCX");
-        assert!(attached.path.ends_with("1-Report.DOCX.txt"), "{}", attached.path);
-        assert_eq!(fs::read_to_string(attached.path).unwrap(), "Quarterly numbers");
+        assert!(
+            attached.path.ends_with("1-Report.DOCX.txt"),
+            "{}",
+            attached.path
+        );
+        assert_eq!(
+            fs::read_to_string(attached.path).unwrap(),
+            "Quarterly numbers"
+        );
 
         fs::write(base.join("broken.xlsx"), "not a zip").unwrap();
-        assert!(attach(&folder, &base.join("broken.xlsx")).is_err_and(|error| error.starts_with("This xlsx file cannot be read")));
+        assert!(
+            attach(&folder, &base.join("broken.xlsx"))
+                .is_err_and(|error| error.starts_with("This xlsx file cannot be read"))
+        );
         assert_eq!(fs::read_dir(&folder).unwrap().count(), 1);
     }
 
     #[test]
     fn each_chat_is_saved_in_its_own_file_and_a_damaged_one_is_skipped() {
         let base = scratch("chats");
-        save_chat(&base, &serde_json::json!({ "id": "chat-1", "title": "first" })).unwrap();
-        save_chat(&base, &serde_json::json!({ "id": "chat-2", "title": "second" })).unwrap();
-        save_chat(&base, &serde_json::json!({ "id": "chat-1", "title": "renamed" })).unwrap();
+        save_chat(
+            &base,
+            &serde_json::json!({ "id": "chat-1", "title": "first" }),
+        )
+        .unwrap();
+        save_chat(
+            &base,
+            &serde_json::json!({ "id": "chat-2", "title": "second" }),
+        )
+        .unwrap();
+        save_chat(
+            &base,
+            &serde_json::json!({ "id": "chat-1", "title": "renamed" }),
+        )
+        .unwrap();
         assert!(save_chat(&base, &serde_json::json!({ "id": "../outside" })).is_err());
         fs::create_dir_all(base.join("assistant/chat-3")).unwrap();
         fs::write(base.join("assistant/chat-3/chat.json"), "{ not json").unwrap();
-        let mut titles: Vec<String> = saved_chats(&base).iter().map(|chat| chat["title"].to_string()).collect();
+        let mut titles: Vec<String> = saved_chats(&base)
+            .iter()
+            .map(|chat| chat["title"].to_string())
+            .collect();
         titles.sort();
         assert_eq!(titles, ["\"renamed\"", "\"second\""]);
         assert!(!base.join("assistant/chat-1/chat.json.tmp").exists());
@@ -435,8 +590,15 @@ mod tests {
     fn a_process_left_running_is_ended_with_its_job() {
         let agent = Agent::default();
         let running = agent.begin("chat-1").unwrap();
-        let sleeper = if cfg!(windows) { ("timeout", "30") } else { ("sleep", "30") };
-        let child = std::process::Command::new(sleeper.0).arg(sleeper.1).spawn().unwrap();
+        let sleeper = if cfg!(windows) {
+            ("timeout", "30")
+        } else {
+            ("sleep", "30")
+        };
+        let child = std::process::Command::new(sleeper.0)
+            .arg(sleeper.1)
+            .spawn()
+            .unwrap();
         let id = child.id();
         running.hold(child).unwrap();
         drop(running);

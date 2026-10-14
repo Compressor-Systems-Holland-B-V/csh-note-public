@@ -1,22 +1,19 @@
 {
   "source": "Typst 原始碼",
-  "save": "儲存",
   "saveTitle": "儲存此頁面",
-  "load": "載入",
   "loadTitle": "以檔案內容取代此頁面",
   "templateTitle": "為此頁面使用範本",
+  "fontSmaller": "縮小文字",
+  "fontBigger": "放大文字",
   "locked": "助理正在撰寫此頁面。完成後您就可以再次編輯。",
   "review": {
-    "button": "檢視變更",
     "show": "查看助理的變更內容，並保留或復原每一部分",
     "hide": "隱藏助理的變更內容",
     "keep": "保留",
     "keepTitle": "保留此變更",
     "undo": "復原",
     "undoTitle": "還原為先前的內容",
-    "keepAll": "全部保留",
     "keepAllTitle": "保留助理在此頁面上的所有變更",
-    "undoAll": "全部復原",
     "undoAllTitle": "將此頁面還原為助理變更前的狀態"
   },
   "problems": {

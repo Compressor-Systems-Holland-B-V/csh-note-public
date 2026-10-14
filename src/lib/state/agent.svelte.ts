@@ -1,6 +1,6 @@
 import * as ipc from "$lib/ipc";
 import type { ChatMessage, ChatPart } from "$lib/ipc";
-import { actionsIn, changedLines, chosenPreset, describe, promptFor, referenceTo, say, standard, systemPrompt } from "$lib/assistant";
+import { actionsIn, changedLines, chosenPreset, defaultProvider, describe, promptFor, providerOf, referenceTo, say, standard, systemPrompt } from "$lib/assistant";
 import type { Preset, Reference } from "$lib/assistant";
 import { messageOf } from "$lib/utils";
 import { Chats, chats } from "./chats.svelte";
@@ -82,8 +82,12 @@ export class Agent {
     return picked ?? preset.model ?? this.connections.model(provider);
   }
 
+  get providerOrDefault() {
+    return this.using ?? defaultProvider;
+  }
+
   get preset() {
-    const provider = this.using ?? "claude";
+    const provider = this.providerOrDefault;
     return chosenPreset(provider, this.settings.values.assistantPresets[provider] ?? [], this.settings.values.assistantPreset);
   }
 
@@ -293,7 +297,7 @@ export class Agent {
       model: run.model,
       effort,
       readOnly: access === "read",
-      fast: fast && run.provider === "claude",
+      fast: fast && providerOf(run.provider)?.fast === true,
       web: web ?? this.web,
     };
     await this.backend.agentRun(turn, (event) => {

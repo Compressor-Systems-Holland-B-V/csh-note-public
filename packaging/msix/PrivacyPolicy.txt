@@ -1,0 +1,84 @@
+Privacy Policy for znote
+
+Last updated: 14 October 2026
+
+znote is a desktop editor for Typst documents, published by ZAL Analytics.
+This policy explains what the app does with your data. The short version: znote
+itself collects nothing. Your documents leave your computer only when you use
+the assistant, and then only to the provider you chose.
+
+What the app collects
+
+Nothing. znote has no accounts of its own, no analytics, no advertising, no
+tracking and no crash reporting. ZAL Analytics runs no server that the app
+talks to.
+
+What the app stores on your device
+
+Your projects, notebooks and pages, your settings, the themes you installed and
+your assistant chats are saved in the application data folder Windows gives the
+app. When you save or open a .znote file, it is written to or read from the
+place you pick. None of this is uploaded by znote.
+
+Keys for assistant providers (an OpenRouter key, or the key of a server you run
+yourself) are kept in the Windows Credential Manager. They are only sent to the
+provider they belong to, and never written to a settings file or a log.
+
+Uninstalling the app removes it along with the data in its application data
+folder. .znote files you saved elsewhere stay where you put them.
+
+Network use
+
+znote works offline. It goes online only in these cases:
+
+- Typst packages. When a document imports a package such as
+  @preview/name:1.0.0 that is not on your computer yet, znote downloads it from
+  packages.typst.org, the official Typst package registry.
+
+- The theme store. When you open the theme store, znote reads the list of
+  themes and downloads the ones you install from ZAL Analytics' public dataset
+  on Hugging Face (huggingface.co/datasets/zal-analytics-core/znote-data).
+
+- The assistant, only if you set it up and use it. What you type, the chat so
+  far, and the pages and files you attach or let the assistant read are sent
+  to the provider you picked:
+    * Claude: znote runs Anthropic's own Claude Code program, which you sign in
+      to yourself. Claude Code sends your requests to Anthropic. If Claude Code
+      is not installed yet, znote downloads Anthropic's installer from
+      claude.ai when you press Connect. znote never reads or stores your
+      Claude sign-in.
+    * OpenRouter: requests go to openrouter.ai with your own key.
+    * A server you run yourself, such as Ollama: requests go only to the
+      address you entered.
+  Each of these providers handles your data under its own privacy policy.
+
+- Web pages for the assistant, only if you allow internet use in a chat. The
+  assistant can then read public https:// web pages. With OpenRouter or your
+  own server, znote fetches the page itself; addresses on your local network
+  are refused. With Claude, Claude Code's own web tools are used.
+
+These requests carry no information about you beyond what is described above.
+Like any web server, each service sees the IP address a request comes from.
+
+Children
+
+znote is a general purpose writing tool and collects no personal data from
+anyone, children included.
+
+Permissions
+
+znote runs as a full trust desktop app. It reads and writes its own data
+folder, the files you open or save, and uses the network as described above.
+
+Changes to this policy
+
+If this policy changes, the updated version ships with a new release of the app
+and the date at the top is updated. The app is open source, so any change to
+what it does with your data is visible in its history.
+
+Contact
+
+Questions about this policy can go to:
+
+info@zal-analytics.nl
+https://github.com/ZAL-Analytics/znote

@@ -17,14 +17,29 @@
 
   const cssPixelsPerPoint = 96 / 72;
   const step = 1.25;
+  const wheelStep = 1.1;
 
   let zoom = $state(untrack(() => startZoom));
 
   const zoomLabel = $derived(zoom === null ? t("editor.preview.fit") : `${Math.round(zoom * 100)}%`);
 
+  let scroller = $state<HTMLDivElement>();
+
   function scale(factor: number) {
     zoom = Math.min(8, Math.max(0.1, (zoom ?? 1) * factor));
   }
+
+  $effect(() => {
+    const element = scroller;
+    if (!element) return;
+    const wheel = (event: WheelEvent) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      scale(event.deltaY < 0 ? wheelStep : 1 / wheelStep);
+    };
+    element.addEventListener("wheel", wheel, { passive: false });
+    return () => element.removeEventListener("wheel", wheel);
+  });
 </script>
 
 <div class="flex h-full flex-col">
@@ -45,7 +60,7 @@
     <Button variant="ghost" size="xs" disabled={zoom === null} onclick={() => (zoom = null)}>{t("common.fitWidth")}</Button>
   </div>
 
-  <div class="min-h-0 flex-1 overflow-auto bg-muted p-4">
+  <div bind:this={scroller} class="min-h-0 flex-1 overflow-auto bg-muted p-4">
     {#if pages.length === 0}
       <div class="flex h-full items-center justify-center text-sm text-muted-foreground">
         {t("editor.preview.empty")}

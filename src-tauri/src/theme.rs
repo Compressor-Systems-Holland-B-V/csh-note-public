@@ -158,13 +158,17 @@ fn failed(action: &str, error: impl Display) -> String {
 pub fn valid_id(id: &str) -> bool {
     (1..=40).contains(&id.len())
         && id.starts_with(|first: char| first.is_ascii_lowercase())
-        && id.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-')
+        && id
+            .chars()
+            .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '-')
 }
 
 fn is_label(text: &str, extra: &str) -> bool {
     (1..=60).contains(&text.chars().count())
         && text.trim() == text
-        && text.chars().all(|c| c.is_alphanumeric() || extra.contains(c))
+        && text
+            .chars()
+            .all(|c| c.is_alphanumeric() || extra.contains(c))
 }
 
 fn is_number(text: &str) -> bool {
@@ -174,7 +178,9 @@ fn is_number(text: &str) -> bool {
 }
 
 fn is_length(value: &str) -> bool {
-    ["rem", "em", "px", "%", ""].iter().any(|unit| value.strip_suffix(unit).is_some_and(is_number))
+    ["rem", "em", "px", "%", ""]
+        .iter()
+        .any(|unit| value.strip_suffix(unit).is_some_and(is_number))
 }
 
 fn is_colour(value: &str) -> bool {
@@ -182,10 +188,15 @@ fn is_colour(value: &str) -> bool {
         matches!(digits.len(), 3 | 4 | 6 | 8) && digits.chars().all(|c| c.is_ascii_hexdigit())
     });
     let function = COLOUR_FUNCTIONS.iter().any(|start| {
-        value.strip_prefix(start).and_then(|rest| rest.strip_suffix(')')).is_some_and(|inside| {
-            inside.chars().any(|c| c.is_ascii_digit())
-                && inside.chars().all(|c| c.is_ascii_digit() || " .,%/-".contains(c))
-        })
+        value
+            .strip_prefix(start)
+            .and_then(|rest| rest.strip_suffix(')'))
+            .is_some_and(|inside| {
+                inside.chars().any(|c| c.is_ascii_digit())
+                    && inside
+                        .chars()
+                        .all(|c| c.is_ascii_digit() || " .,%/-".contains(c))
+            })
     });
     hex || function
 }
@@ -193,12 +204,20 @@ fn is_colour(value: &str) -> bool {
 fn check_tokens(tokens: &Tokens) -> Result<(), String> {
     for (name, value) in tokens {
         if !TOKENS.contains(&name.as_str()) {
-            return Err(format!("The theme sets “{name}”, which is not a setting a theme can change."));
+            return Err(format!(
+                "The theme sets “{name}”, which is not a setting a theme can change."
+            ));
         }
-        let fits = if name == "--radius" { is_length(value) } else { is_colour(value) };
+        let fits = if name == "--radius" {
+            is_length(value)
+        } else {
+            is_colour(value)
+        };
         if !fits {
             let wanted = if name == "--radius" { "size" } else { "colour" };
-            return Err(format!("The theme gives “{name}” the value “{value}”, which is not a {wanted}."));
+            return Err(format!(
+                "The theme gives “{name}” the value “{value}”, which is not a {wanted}."
+            ));
         }
     }
     Ok(())
@@ -209,9 +228,13 @@ fn check_file(path: &str, extensions: &[&str]) -> Result<(), String> {
         && path.split('/').all(|name| {
             !name.is_empty()
                 && !name.starts_with('.')
-                && !name.chars().any(|c| c.is_control() || r#"<>:"\|?*"#.contains(c))
+                && !name
+                    .chars()
+                    .any(|c| c.is_control() || r#"<>:"\|?*"#.contains(c))
         });
-    let known = path.rsplit_once('.').is_some_and(|(_, extension)| extensions.contains(&extension));
+    let known = path
+        .rsplit_once('.')
+        .is_some_and(|(_, extension)| extensions.contains(&extension));
     if !plain || !known {
         return Err(format!(
             "The theme points to “{path}”, which is not a file of the right kind inside the theme."
@@ -231,7 +254,10 @@ fn check(manifest: &Manifest) -> Result<(), String> {
         ));
     }
     if manifest.version.parse::<PackageVersion>().is_err() {
-        return Err(format!("“{}” is not a version like 1.0.0.", manifest.version));
+        return Err(format!(
+            "“{}” is not a version like 1.0.0.",
+            manifest.version
+        ));
     }
     if !is_label(&manifest.name, " -_.&") {
         return Err("The theme name must be 1 to 60 letters, digits or spaces.".into());
@@ -239,7 +265,8 @@ fn check(manifest: &Manifest) -> Result<(), String> {
     let described = manifest.description.chars().count() <= MAX_DESCRIPTION
         && !manifest.description.chars().any(char::is_control);
     let sorted = manifest.category.is_empty() || is_label(&manifest.category, " -&");
-    let tagged = manifest.tags.len() <= MAX_TAGS && manifest.tags.iter().all(|tag| is_label(tag, " -"));
+    let tagged =
+        manifest.tags.len() <= MAX_TAGS && manifest.tags.iter().all(|tag| is_label(tag, " -"));
     if !described || !sorted || !tagged {
         return Err("The theme’s description, category or tags are too long or use characters that are not allowed.".into());
     }
@@ -266,7 +293,8 @@ fn check(manifest: &Manifest) -> Result<(), String> {
 }
 
 fn parse(json: &[u8]) -> Result<Manifest, String> {
-    let manifest = serde_json::from_slice(json).map_err(|error| format!("The theme’s theme.json is not valid: {error}"))?;
+    let manifest = serde_json::from_slice(json)
+        .map_err(|error| format!("The theme’s theme.json is not valid: {error}"))?;
     check(&manifest)?;
     Ok(manifest)
 }
@@ -274,9 +302,14 @@ fn parse(json: &[u8]) -> Result<Manifest, String> {
 fn inside(folder: &Path, path: &str) -> Result<PathBuf, String> {
     let file = folder.join(PathBuf::from_iter(path.split('/')));
     let contained = file.is_file()
-        && file.canonicalize().and_then(|file| Ok(file.starts_with(folder.canonicalize()?))).unwrap_or(false);
+        && file
+            .canonicalize()
+            .and_then(|file| Ok(file.starts_with(folder.canonicalize()?)))
+            .unwrap_or(false);
     if !contained {
-        return Err(format!("The theme points to “{path}”, but that file is not in the theme."));
+        return Err(format!(
+            "The theme points to “{path}”, but that file is not in the theme."
+        ));
     }
     Ok(file)
 }
@@ -297,7 +330,17 @@ fn font_file(folder: &Path, path: &str) -> Result<FontFile, String> {
 }
 
 fn listed(manifest: Manifest) -> Theme {
-    let Manifest { id, name, version, description, category, tags, ui, typst, .. } = manifest;
+    let Manifest {
+        id,
+        name,
+        version,
+        description,
+        category,
+        tags,
+        ui,
+        typst,
+        ..
+    } = manifest;
     Theme {
         id,
         name,
@@ -316,30 +359,52 @@ fn listed(manifest: Manifest) -> Theme {
 }
 
 fn view(folder: &Path, manifest: Manifest) -> Result<Theme, String> {
-    let image = |path: &Option<String>| path.as_ref().map(|path| inside(folder, path).map(shown)).transpose();
+    let image = |path: &Option<String>| {
+        path.as_ref()
+            .map(|path| inside(folder, path).map(shown))
+            .transpose()
+    };
     let logo = image(&manifest.ui.logo)?;
     let logo_dark = image(&manifest.ui.logo_dark)?;
     let files = manifest.ui.font.iter().flat_map(|font| &font.files);
-    let fonts = files.map(|path| font_file(folder, path)).collect::<Result<_, _>>()?;
-    Ok(Theme { logo, logo_dark, fonts, ..listed(manifest) })
+    let fonts = files
+        .map(|path| font_file(folder, path))
+        .collect::<Result<_, _>>()?;
+    Ok(Theme {
+        logo,
+        logo_dark,
+        fonts,
+        ..listed(manifest)
+    })
 }
 
 fn entry_path(name: &str) -> Option<PathBuf> {
     let names: Vec<&str> = name.strip_suffix('/').unwrap_or(name).split('/').collect();
     let safe = names.iter().all(|name| {
-        !matches!(*name, "" | "." | "..") && !name.chars().any(|c| c.is_control() || c == '\\' || c == ':')
+        !matches!(*name, "" | "." | "..")
+            && !name
+                .chars()
+                .any(|c| c.is_control() || c == '\\' || c == ':')
     });
     safe.then(|| PathBuf::from_iter(names))
 }
 
-pub fn unpack<R: Read + Seek>(archive: &mut ZipArchive<R>, target: &Path, limit: u64, what: &str) -> Result<(), String> {
+pub fn unpack<R: Read + Seek>(
+    archive: &mut ZipArchive<R>,
+    target: &Path,
+    limit: u64,
+    what: &str,
+) -> Result<(), String> {
     let broken = |error: &dyn Display| format!("This {what} could not be read: {error}");
     let mut left = limit;
     for index in 0..archive.len() {
         let mut entry = archive.by_index(index).map_err(|error| broken(&error))?;
         let name = entry.name().map_err(|error| broken(&error))?.into_owned();
-        let path = entry_path(&name)
-            .ok_or_else(|| format!("This {what} tries to put “{name}” outside its own folder, so it was not imported."))?;
+        let path = entry_path(&name).ok_or_else(|| {
+            format!(
+                "This {what} tries to put “{name}” outside its own folder, so it was not imported."
+            )
+        })?;
         let file = target.join(path);
         if entry.is_dir() {
             fs::create_dir_all(&file).map_err(|error| broken(&error))?;
@@ -349,9 +414,12 @@ pub fn unpack<R: Read + Seek>(archive: &mut ZipArchive<R>, target: &Path, limit:
             fs::create_dir_all(parent).map_err(|error| broken(&error))?;
         }
         let mut output = File::create(&file).map_err(|error| broken(&error))?;
-        let written = io::copy(&mut entry.by_ref().take(left + 1), &mut output).map_err(|error| broken(&error))?;
+        let written = io::copy(&mut entry.by_ref().take(left + 1), &mut output)
+            .map_err(|error| broken(&error))?;
         if written > left {
-            return Err(format!("This {what} is too large once unpacked, so it was not imported."));
+            return Err(format!(
+                "This {what} is too large once unpacked, so it was not imported."
+            ));
         }
         left -= written;
     }
@@ -359,7 +427,10 @@ pub fn unpack<R: Read + Seek>(archive: &mut ZipArchive<R>, target: &Path, limit:
 }
 
 fn open(folder: &Path) -> Result<Theme, String> {
-    view(folder, parse(&fs::read(folder.join("theme.json")).map_err(broken)?)?)
+    view(
+        folder,
+        parse(&fs::read(folder.join("theme.json")).map_err(broken)?)?,
+    )
 }
 
 pub fn install(themes: &Path, archive: &Path) -> Result<Theme, String> {
@@ -370,8 +441,13 @@ pub fn install(themes: &Path, archive: &Path) -> Result<Theme, String> {
     unpacked(themes, file, None)
 }
 
-fn unpacked(themes: &Path, archive: impl Read + Seek, wanted: Option<&str>) -> Result<Theme, String> {
-    let mut archive = ZipArchive::new(archive).map_err(|_| "This file is not a znote theme.".to_string())?;
+fn unpacked(
+    themes: &Path,
+    archive: impl Read + Seek,
+    wanted: Option<&str>,
+) -> Result<Theme, String> {
+    let mut archive =
+        ZipArchive::new(archive).map_err(|_| "This file is not a znote theme.".to_string())?;
     if archive.len() > MAX_ENTRIES {
         return Err("This theme has too many files, so it was not imported.".into());
     }
@@ -391,10 +467,14 @@ fn unpacked(themes: &Path, archive: impl Read + Seek, wanted: Option<&str>) -> R
     let home = themes.join(&manifest.id);
     let folder = home.join(&manifest.version);
     let _ = fs::remove_dir_all(&staging);
-    let moved = unpack(&mut archive, &staging, MAX_UNPACKED_BYTES, "theme").and_then(|()| open(&staging)).and_then(|_| {
-        let _ = fs::remove_dir_all(&home);
-        fs::create_dir_all(&home).and_then(|()| fs::rename(&staging, &folder)).map_err(|error| failed("save", error))
-    });
+    let moved = unpack(&mut archive, &staging, MAX_UNPACKED_BYTES, "theme")
+        .and_then(|()| open(&staging))
+        .and_then(|_| {
+            let _ = fs::remove_dir_all(&home);
+            fs::create_dir_all(&home)
+                .and_then(|()| fs::rename(&staging, &folder))
+                .map_err(|error| failed("save", error))
+        });
     if moved.is_err() {
         let _ = fs::remove_dir_all(&staging);
     }
@@ -412,7 +492,9 @@ fn copy(from: &Path, to: &Path, left: &mut u64, count: &mut usize) -> Result<(),
             copy(&entry.path(), &target, left, count)?;
         } else if kind.is_file() {
             let size = fs::copy(entry.path(), target).map_err(|error| failed("save", error))?;
-            *left = left.checked_sub(size).ok_or("This theme is too large once unpacked, so it was not imported.")?;
+            *left = left
+                .checked_sub(size)
+                .ok_or("This theme is too large once unpacked, so it was not imported.")?;
         }
         if *count > MAX_ENTRIES {
             return Err("This theme has too many files, so it was not imported.".into());
@@ -422,13 +504,18 @@ fn copy(from: &Path, to: &Path, left: &mut u64, count: &mut usize) -> Result<(),
 }
 
 pub fn named(folder: &Path) -> Option<String> {
-    open(folder).ok().map(|theme| format!("{} {}", theme.name, theme.version))
+    open(folder)
+        .ok()
+        .map(|theme| format!("{} {}", theme.name, theme.version))
 }
 
 pub fn adopt(themes: &Path, folder: &Path) -> Result<(), String> {
     let theme = open(folder)?;
     if !folder.ends_with(Path::new(&theme.id).join(&theme.version)) {
-        return Err(format!("The theme “{}” is not stored where it says it is, so it was not installed.", theme.name));
+        return Err(format!(
+            "The theme “{}” is not stored where it says it is, so it was not installed.",
+            theme.name
+        ));
     }
     let target = themes.join(&theme.id).join(&theme.version);
     if target.is_dir() {
@@ -438,7 +525,11 @@ pub fn adopt(themes: &Path, folder: &Path) -> Result<(), String> {
     let _ = fs::remove_dir_all(&staging);
     let moved = copy(folder, &staging, &mut MAX_UNPACKED_BYTES.clone(), &mut 0)
         .and_then(|()| open(&staging).map(drop))
-        .and_then(|()| fs::create_dir_all(themes.join(&theme.id)).and_then(|()| fs::rename(&staging, &target)).map_err(|error| failed("save", error)));
+        .and_then(|()| {
+            fs::create_dir_all(themes.join(&theme.id))
+                .and_then(|()| fs::rename(&staging, &target))
+                .map_err(|error| failed("save", error))
+        });
     if moved.is_err() {
         let _ = fs::remove_dir_all(&staging);
     }
@@ -459,7 +550,13 @@ fn latest(found: Vec<Theme>) -> Vec<Theme> {
 }
 
 fn folders(folder: &Path) -> Vec<PathBuf> {
-    fs::read_dir(folder).into_iter().flatten().flatten().map(|entry| entry.path()).filter(|path| path.is_dir()).collect()
+    fs::read_dir(folder)
+        .into_iter()
+        .flatten()
+        .flatten()
+        .map(|entry| entry.path())
+        .filter(|path| path.is_dir())
+        .collect()
 }
 
 pub fn list(themes: &Path) -> Vec<Theme> {
@@ -468,7 +565,9 @@ pub fn list(themes: &Path) -> Vec<Theme> {
         .flat_map(|home| folders(home))
         .filter_map(|folder| {
             let theme = open(&folder).ok()?;
-            folder.ends_with(Path::new(&theme.id).join(&theme.version)).then_some(theme)
+            folder
+                .ends_with(Path::new(&theme.id).join(&theme.version))
+                .then_some(theme)
         })
         .collect();
     found.sort_by_key(|theme| theme.name.to_lowercase());
@@ -476,7 +575,10 @@ pub fn list(themes: &Path) -> Vec<Theme> {
 }
 
 pub fn installed(themes: &Path) -> Vec<(String, String)> {
-    list(themes).into_iter().map(|theme| (theme.id, theme.version)).collect()
+    list(themes)
+        .into_iter()
+        .map(|theme| (theme.id, theme.version))
+        .collect()
 }
 
 pub fn remove(themes: &Path, id: &str) -> Result<(), String> {
@@ -487,8 +589,8 @@ pub fn remove(themes: &Path, id: &str) -> Result<(), String> {
 }
 
 pub fn catalog(json: &[u8]) -> Result<Vec<Theme>, String> {
-    let entries: Vec<serde_json::Value> =
-        serde_json::from_slice(json).map_err(|_| "The theme store sent a list that znote cannot read.".to_string())?;
+    let entries: Vec<serde_json::Value> = serde_json::from_slice(json)
+        .map_err(|_| "The theme store sent a list that znote cannot read.".to_string())?;
     let mut found: Vec<Theme> = entries
         .into_iter()
         .filter_map(|entry| {
@@ -502,11 +604,19 @@ pub fn catalog(json: &[u8]) -> Result<Vec<Theme>, String> {
 }
 
 fn fetch(path: &str, limit: u64) -> Result<Vec<u8>, String> {
-    let unreachable = |_| "The theme store could not be reached. Check your internet connection and try again.".to_string();
+    let unreachable = |_| {
+        "The theme store could not be reached. Check your internet connection and try again."
+            .to_string()
+    };
     let downloader = SystemDownloader::new(concat!("znote/", env!("CARGO_PKG_VERSION")));
-    let (_, reader) = downloader.stream(&(), &format!("{STORE}/{path}")).map_err(unreachable)?;
+    let (_, reader) = downloader
+        .stream(&(), &format!("{STORE}/{path}"))
+        .map_err(unreachable)?;
     let mut data = Vec::new();
-    reader.take(limit + 1).read_to_end(&mut data).map_err(unreachable)?;
+    reader
+        .take(limit + 1)
+        .read_to_end(&mut data)
+        .map_err(unreachable)?;
     if data.len() as u64 > limit {
         return Err("The theme store sent more data than znote accepts.".into());
     }
@@ -514,7 +624,11 @@ fn fetch(path: &str, limit: u64) -> Result<Vec<u8>, String> {
 }
 
 pub fn folder(app: &AppHandle) -> Result<PathBuf, String> {
-    Ok(app.path().app_data_dir().map_err(|error| error.to_string())?.join("themes"))
+    Ok(app
+        .path()
+        .app_data_dir()
+        .map_err(|error| error.to_string())?
+        .join("themes"))
 }
 
 #[tauri::command]
@@ -524,7 +638,12 @@ pub fn list_themes(app: AppHandle) -> Result<Vec<Theme>, String> {
 
 #[tauri::command(async)]
 pub fn import_theme(app: AppHandle) -> Result<Option<Theme>, String> {
-    let Some(file) = app.dialog().file().add_filter("znote theme", &["znote-theme"]).blocking_pick_file() else {
+    let Some(file) = app
+        .dialog()
+        .file()
+        .add_filter("znote theme", &["znote-theme"])
+        .blocking_pick_file()
+    else {
         return Ok(None);
     };
     let file = file.into_path().map_err(|error| error.to_string())?;
@@ -565,7 +684,8 @@ mod tests {
     use super::*;
 
     fn scratch(name: &str) -> PathBuf {
-        let folder = std::env::temp_dir().join(format!("znote-theme-{name}-{}", std::process::id()));
+        let folder =
+            std::env::temp_dir().join(format!("znote-theme-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&folder);
         fs::create_dir_all(&folder).unwrap();
         folder
@@ -575,7 +695,9 @@ mod tests {
         let file = folder.join("test.znote-theme");
         let mut writer = ZipWriter::new(File::create(&file).unwrap());
         for (name, data) in entries {
-            writer.start_file(*name, SimpleFileOptions::default()).unwrap();
+            writer
+                .start_file(*name, SimpleFileOptions::default())
+                .unwrap();
             writer.write_all(data).unwrap();
         }
         writer.finish().unwrap();
@@ -583,7 +705,10 @@ mod tests {
     }
 
     fn manifest(ui: &str) -> Vec<u8> {
-        format!(r#"{{ "format": 1, "id": "acme", "name": "Acme", "version": "0.1.0", "ui": {ui} }}"#).into_bytes()
+        format!(
+            r#"{{ "format": 1, "id": "acme", "name": "Acme", "version": "0.1.0", "ui": {ui} }}"#
+        )
+        .into_bytes()
     }
 
     #[test]
@@ -605,7 +730,10 @@ mod tests {
             &folder,
             &[
                 ("theme.json", json),
-                ("ui/logo.svg", b"<svg xmlns=\"http://www.w3.org/2000/svg\"/>"),
+                (
+                    "ui/logo.svg",
+                    b"<svg xmlns=\"http://www.w3.org/2000/svg\"/>",
+                ),
                 ("typst/fonts/regular.ttf", font.data()),
                 ("typst/typst.toml", b""),
             ],
@@ -615,7 +743,10 @@ mod tests {
         assert_eq!(theme.light["--primary"], "#0F172A");
         assert_eq!(theme.templates[0].kind, Kind::Document);
         assert_eq!(theme.fonts.len(), 1);
-        assert!(Path::new(theme.logo.as_deref().unwrap()).starts_with(themes.join("acme").join("0.1.0")));
+        assert!(
+            Path::new(theme.logo.as_deref().unwrap())
+                .starts_with(themes.join("acme").join("0.1.0"))
+        );
         assert!(themes.join("acme/0.1.0/typst/typst.toml").is_file());
         assert_eq!(list(&themes), [theme]);
 
@@ -631,8 +762,16 @@ mod tests {
     fn an_archive_that_writes_outside_its_folder_is_refused() {
         let folder = scratch("slip");
         let themes = folder.join("themes");
-        for name in ["../escaped.txt", "/escaped.txt", "ui/../../escaped.txt", "ui\\..\\..\\escaped.txt"] {
-            let file = archive(&folder, &[("theme.json", &manifest("{}")), (name, b"gotcha")]);
+        for name in [
+            "../escaped.txt",
+            "/escaped.txt",
+            "ui/../../escaped.txt",
+            "ui\\..\\..\\escaped.txt",
+        ] {
+            let file = archive(
+                &folder,
+                &[("theme.json", &manifest("{}")), (name, b"gotcha")],
+            );
             let error = install(&themes, &file).unwrap_err();
             assert!(error.contains("outside its own folder"), "{name}: {error}");
             assert!(list(&themes).is_empty());
@@ -645,19 +784,33 @@ mod tests {
     fn a_theme_that_is_too_large_is_refused() {
         let folder = scratch("large");
         let huge = folder.join("huge.znote-theme");
-        File::create(&huge).unwrap().set_len(MAX_ARCHIVE_BYTES + 1).unwrap();
-        assert!(install(&folder.join("themes"), &huge).unwrap_err().contains("larger than 50 MB"));
+        File::create(&huge)
+            .unwrap()
+            .set_len(MAX_ARCHIVE_BYTES + 1)
+            .unwrap();
+        assert!(
+            install(&folder.join("themes"), &huge)
+                .unwrap_err()
+                .contains("larger than 50 MB")
+        );
 
         let file = archive(&folder, &[("typst/zeros.bin", &[0; 4096])]);
         let mut bomb = ZipArchive::new(File::open(file).unwrap()).unwrap();
-        assert!(unpack(&mut bomb, &folder.join("out"), 4095, "theme").unwrap_err().contains("too large"));
+        assert!(
+            unpack(&mut bomb, &folder.join("out"), 4095, "theme")
+                .unwrap_err()
+                .contains("too large")
+        );
         assert!(unpack(&mut bomb, &folder.join("out"), 4096, "theme").is_ok());
     }
 
     #[test]
     fn unknown_settings_and_unsafe_values_are_refused() {
         for name in ["--evil", "background", "--font-sans", "--primary; color"] {
-            let error = parse(&manifest(&format!(r##"{{ "light": {{ "{name}": "#fff" }} }}"##))).unwrap_err();
+            let error = parse(&manifest(&format!(
+                r##"{{ "light": {{ "{name}": "#fff" }} }}"##
+            )))
+            .unwrap_err();
             assert!(error.contains("not a setting"), "{name}: {error}");
         }
         for value in [
@@ -670,10 +823,19 @@ mod tests {
             "var(--primary)",
             "",
         ] {
-            let error = parse(&manifest(&format!(r#"{{ "dark": {{ "--primary": "{value}" }} }}"#))).unwrap_err();
+            let error = parse(&manifest(&format!(
+                r#"{{ "dark": {{ "--primary": "{value}" }} }}"#
+            )))
+            .unwrap_err();
             assert!(error.contains("not a colour"), "{value}: {error}");
         }
-        for value in ["#fff", "#0F172Acc", "rgb(15 23 42)", "hsl(205, 100%, 10%)", "oklch(0.5 0.1 240 / 50%)"] {
+        for value in [
+            "#fff",
+            "#0F172Acc",
+            "rgb(15 23 42)",
+            "hsl(205, 100%, 10%)",
+            "oklch(0.5 0.1 240 / 50%)",
+        ] {
             assert!(is_colour(value), "{value}");
         }
         assert!(parse(&manifest(r##"{ "light": { "--radius": "#fff" } }"##)).is_err());
@@ -686,22 +848,46 @@ mod tests {
         assert!(parse(&manifest(r#"{ "logo": "../../secret.svg" }"#)).is_err());
         assert!(parse(&manifest(r#"{ "logo": "ui/logo.html" }"#)).is_err());
         assert!(parse(&manifest(r#"{ "logo": "C:\\logo.svg" }"#)).is_err());
-        assert!(parse(&manifest(r#"{ "font": { "family": "x; } body { display: none", "files": [] } }"#)).is_err());
-        assert!(parse(&manifest(r#"{ "font": { "family": "Acme Sans", "files": ["ui/font.exe"] } }"#)).is_err());
+        assert!(
+            parse(&manifest(
+                r#"{ "font": { "family": "x; } body { display: none", "files": [] } }"#
+            ))
+            .is_err()
+        );
+        assert!(
+            parse(&manifest(
+                r#"{ "font": { "family": "Acme Sans", "files": ["ui/font.exe"] } }"#
+            ))
+            .is_err()
+        );
         assert!(parse(&manifest(r#"{ "logo": "ui/logo.svg" }"#)).is_ok());
 
         let named = |id: &str, version: &str| {
-            parse(format!(r#"{{ "format": 1, "id": "{id}", "name": "Acme", "version": "{version}" }}"#).as_bytes())
+            parse(
+                format!(
+                    r#"{{ "format": 1, "id": "{id}", "name": "Acme", "version": "{version}" }}"#
+                )
+                .as_bytes(),
+            )
         };
         assert!(named("acme", "0.1.0").is_ok());
         assert!(named("../acme", "0.1.0").is_err());
         assert!(named("Acme", "0.1.0").is_err());
         assert!(named("acme", "../1").is_err());
-        assert!(parse(br#"{ "format": 2, "id": "acme", "name": "Acme", "version": "0.1.0" }"#).is_err());
+        assert!(
+            parse(br#"{ "format": 2, "id": "acme", "name": "Acme", "version": "0.1.0" }"#).is_err()
+        );
 
         let folder = scratch("missing");
-        let file = archive(&folder, &[("theme.json", &manifest(r#"{ "logo": "ui/logo.svg" }"#))]);
-        assert!(install(&folder.join("themes"), &file).unwrap_err().contains("not in the theme"));
+        let file = archive(
+            &folder,
+            &[("theme.json", &manifest(r#"{ "logo": "ui/logo.svg" }"#))],
+        );
+        assert!(
+            install(&folder.join("themes"), &file)
+                .unwrap_err()
+                .contains("not in the theme")
+        );
         assert!(list(&folder.join("themes")).is_empty());
     }
 
@@ -716,15 +902,27 @@ mod tests {
         ]"##;
         let themes = catalog(json).unwrap();
         assert_eq!(themes.len(), 1);
-        assert_eq!((themes[0].id.as_str(), themes[0].category.as_str()), ("paper", "Interface"));
+        assert_eq!(
+            (themes[0].id.as_str(), themes[0].category.as_str()),
+            ("paper", "Interface")
+        );
         assert_eq!(themes[0].tags, ["sepia"]);
         assert!(catalog(b"{}").is_err());
 
         let folder = scratch("store");
         let themes = folder.join("themes");
         let data = fs::read(archive(&folder, &[("theme.json", &manifest("{}"))])).unwrap();
-        assert!(unpacked(&themes, Cursor::new(data.clone()), Some("paper")).unwrap_err().contains("different theme"));
+        assert!(
+            unpacked(&themes, Cursor::new(data.clone()), Some("paper"))
+                .unwrap_err()
+                .contains("different theme")
+        );
         assert!(list(&themes).is_empty());
-        assert_eq!(unpacked(&themes, Cursor::new(data), Some("acme")).unwrap().id, "acme");
+        assert_eq!(
+            unpacked(&themes, Cursor::new(data), Some("acme"))
+                .unwrap()
+                .id,
+            "acme"
+        );
     }
 }

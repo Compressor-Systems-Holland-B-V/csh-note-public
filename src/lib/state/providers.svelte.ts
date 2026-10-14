@@ -1,6 +1,6 @@
 import * as ipc from "$lib/ipc";
 import type { AgentStatus } from "$lib/ipc";
-import { curated, offeredModels, providers } from "$lib/assistant";
+import { curated, listsModels, offeredModels, providers } from "$lib/assistant";
 import { messageOf } from "$lib/utils";
 import { SettingsState, settings } from "./settings.svelte";
 import { t } from "$lib/i18n.svelte";
@@ -31,7 +31,7 @@ export class Connections {
   }
 
   get ready() {
-    return this.active !== null && (this.active === "claude" || this.model(this.active) !== null);
+    return this.active !== null && (!listsModels(this.active) || this.model(this.active) !== null);
   }
 
   model(provider: string): string | null {
@@ -67,7 +67,7 @@ export class Connections {
   }
 
   private async listModels(provider: string) {
-    if (provider !== "claude") this.models[provider] = await this.backend.providerModels(provider);
+    if (listsModels(provider)) this.models[provider] = await this.backend.providerModels(provider);
   }
 
   use(provider: string) {

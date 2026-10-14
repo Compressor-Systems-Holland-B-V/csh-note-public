@@ -34,6 +34,7 @@
   },
   "history": {
     "title": "Chat precedenti",
+    "back": "Torna alla chat",
     "newChat": "Nuova chat",
     "which": "Quali chat mostrare",
     "chats": "Chat",

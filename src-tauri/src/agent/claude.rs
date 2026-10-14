@@ -18,18 +18,26 @@ const WEB: [&str; 2] = ["WebFetch", "WebSearch"];
 const BLOCKED: &str = "On a work computer the installer may be blocked. Ask your IT team to install Claude Code, then press Connect again.";
 
 fn parse(root: &Path, line: &str) -> Vec<Event> {
-    let Ok(event) = serde_json::from_str::<Value>(line) else { return Vec::new() };
+    let Ok(event) = serde_json::from_str::<Value>(line) else {
+        return Vec::new();
+    };
     let one = |event: Option<Event>| event.into_iter().collect();
     match event["type"].as_str().unwrap_or_default() {
         "stream_event" => {
             let delta = &event["event"]["delta"];
             let block = &event["event"]["content_block"];
             one(match (delta["type"].as_str(), block["type"].as_str()) {
-                (Some("text_delta"), _) => Some(Event::Text { text: delta["text"].as_str().unwrap_or_default().into() }),
-                (_, Some("thinking")) => Some(Event::Step { tool: "Thinking".into(), page: String::new() }),
-                (_, Some("tool_use")) => {
-                    Some(Event::Step { tool: block["name"].as_str().unwrap_or_default().into(), page: String::new() })
-                }
+                (Some("text_delta"), _) => Some(Event::Text {
+                    text: delta["text"].as_str().unwrap_or_default().into(),
+                }),
+                (_, Some("thinking")) => Some(Event::Step {
+                    tool: "Thinking".into(),
+                    page: String::new(),
+                }),
+                (_, Some("tool_use")) => Some(Event::Step {
+                    tool: block["name"].as_str().unwrap_or_default().into(),
+                    page: String::new(),
+                }),
                 _ => None,
             })
         }
@@ -39,23 +47,37 @@ fn parse(root: &Path, line: &str) -> Vec<Event> {
             .flatten()
             .filter_map(|block| {
                 let file = block["input"]["file_path"].as_str()?;
-                Some(Event::Step { tool: block["name"].as_str()?.into(), page: label(root, file) })
+                Some(Event::Step {
+                    tool: block["name"].as_str()?.into(),
+                    page: label(root, file),
+                })
             })
             .collect(),
         "user" => {
             let result = &event["tool_use_result"];
             if let Some(file) = result["filePath"].as_str() {
                 let before = result["originalFile"].as_str().map(str::to_string);
-                return vec![Event::Edited { page: label(root, file), before }];
+                return vec![Event::Edited {
+                    page: label(root, file),
+                    before,
+                }];
             }
-            one(result["file"]["filePath"].as_str().map(|file| Event::Read { page: label(root, file) }))
+            one(result["file"]["filePath"].as_str().map(|file| Event::Read {
+                page: label(root, file),
+            }))
         }
         "result" => {
             let failed = event["is_error"].as_bool().unwrap_or(true);
-            let message = event["result"].as_str().filter(|message| !message.is_empty());
+            let message = event["result"]
+                .as_str()
+                .filter(|message| !message.is_empty());
             vec![Event::Done {
                 session: event["session_id"].as_str().unwrap_or_default().into(),
-                failure: failed.then(|| message.unwrap_or("The assistant stopped before it finished.").to_string()),
+                failure: failed.then(|| {
+                    message
+                        .unwrap_or("The assistant stopped before it finished.")
+                        .to_string()
+                }),
             }]
         }
         _ => Vec::new(),
@@ -63,8 +85,16 @@ fn parse(root: &Path, line: &str) -> Vec<Event> {
 }
 
 fn arguments(turn: &Turn, attachments: &Path, system: &Path) -> Result<Vec<String>, String> {
-    let files = if turn.read_only { "Read,Glob,Grep" } else { "Read,Edit,Write,Glob,Grep" };
-    let tools = if turn.web { format!("{files},{}", WEB.join(",")) } else { files.to_string() };
+    let files = if turn.read_only {
+        "Read,Glob,Grep"
+    } else {
+        "Read,Edit,Write,Glob,Grep"
+    };
+    let tools = if turn.web {
+        format!("{files},{}", WEB.join(","))
+    } else {
+        files.to_string()
+    };
     let mut arguments: Vec<String> = [
         "-p",
         "--output-format",
@@ -94,7 +124,13 @@ fn arguments(turn: &Turn, attachments: &Path, system: &Path) -> Result<Vec<Strin
         arguments.extend(WEB.map(str::to_string));
     }
     arguments.extend(
-        ["--system-prompt-file", &system.to_string_lossy(), "--add-dir", &attachments.to_string_lossy()].map(str::to_string),
+        [
+            "--system-prompt-file",
+            &system.to_string_lossy(),
+            "--add-dir",
+            &attachments.to_string_lossy(),
+        ]
+        .map(str::to_string),
     );
     if turn.fast {
         arguments.extend(["--settings", r#"{"fastMode":true}"#].map(str::to_string));
@@ -108,22 +144,42 @@ fn arguments(turn: &Turn, attachments: &Path, system: &Path) -> Result<Vec<Strin
         Ok(())
     };
     option("--model", &turn.model, &|model| MODELS.contains(&model))?;
-    option("--effort", &turn.effort, &|effort| EFFORTS.contains(&effort))?;
+    option("--effort", &turn.effort, &|effort| {
+        EFFORTS.contains(&effort)
+    })?;
     option("--resume", &turn.session, &plain)?;
     Ok(arguments)
 }
 
 fn binary(app: &AppHandle) -> Option<PathBuf> {
-    let name = if cfg!(windows) { "claude.exe" } else { "claude" };
-    let installed = app.path().home_dir().ok().map(|home| home.join(".local").join("bin"));
-    let listed = std::env::var_os("PATH").map(|path| std::env::split_paths(&path).collect::<Vec<_>>());
-    installed.into_iter().chain(listed.into_iter().flatten()).map(|folder| folder.join(name)).find(|file| file.is_file())
+    let name = if cfg!(windows) {
+        "claude.exe"
+    } else {
+        "claude"
+    };
+    let installed = app
+        .path()
+        .home_dir()
+        .ok()
+        .map(|home| home.join(".local").join("bin"));
+    let listed =
+        std::env::var_os("PATH").map(|path| std::env::split_paths(&path).collect::<Vec<_>>());
+    installed
+        .into_iter()
+        .chain(listed.into_iter().flatten())
+        .map(|folder| folder.join(name))
+        .find(|file| file.is_file())
 }
 
 fn claude(app: &AppHandle) -> Result<Command, String> {
     let file = binary(app).ok_or_else(|| "Claude Code is not installed yet.".to_string())?;
-    let account = app.path().app_data_dir().map_err(|error| error.to_string())?.join("claude");
-    fs::create_dir_all(&account).map_err(|error| format!("The assistant’s folder could not be created: {error}"))?;
+    let account = app
+        .path()
+        .app_data_dir()
+        .map_err(|error| error.to_string())?
+        .join("claude");
+    fs::create_dir_all(&account)
+        .map_err(|error| format!("The assistant’s folder could not be created: {error}"))?;
     let mut command = quiet(Command::new(file));
     command.env("CLAUDE_CONFIG_DIR", account);
     Ok(command)
@@ -135,7 +191,10 @@ fn quiet(mut command: Command) -> Command {
         use std::os::windows::process::CommandExt;
         command.creation_flags(0x0800_0000);
     }
-    command.stdin(Stdio::null()).stdout(Stdio::null()).stderr(Stdio::null());
+    command
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
     command
 }
 
@@ -143,7 +202,13 @@ fn installer() -> Command {
     let mut command;
     if cfg!(windows) {
         command = Command::new("powershell");
-        command.args(["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "irm https://claude.ai/install.ps1 | iex"]);
+        command.args([
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            "irm https://claude.ai/install.ps1 | iex",
+        ]);
     } else {
         command = Command::new("sh");
         command.args(["-c", "curl -fsSL https://claude.ai/install.sh | bash"]);
@@ -159,13 +224,19 @@ fn complaints(errors: Option<impl Read + std::marker::Send + 'static>) -> impl F
             String::from_utf8_lossy(&said).into_owned()
         })
     });
-    move || reader.and_then(|reader| reader.join().ok()).unwrap_or_default()
+    move || {
+        reader
+            .and_then(|reader| reader.join().ok())
+            .unwrap_or_default()
+    }
 }
 
 fn install_failure(said: &str) -> String {
     match last_line(said) {
         Some(reason) => format!("Claude Code could not be installed: {reason}\n{BLOCKED}"),
-        None => format!("Claude Code could not be installed. Check your internet connection and try again.\n{BLOCKED}"),
+        None => format!(
+            "Claude Code could not be installed. Check your internet connection and try again.\n{BLOCKED}"
+        ),
     }
 }
 
@@ -177,26 +248,37 @@ fn run_failure(said: &str) -> String {
 }
 
 fn sign_in_link(line: &str) -> Option<&str> {
-    line.split_whitespace().find(|word| word.starts_with("https://"))
+    line.split_whitespace()
+        .find(|word| word.starts_with("https://"))
 }
 
 fn sign_in_code(code: &str) -> Result<&str, String> {
     let code = code.trim();
     if code.is_empty() || code.len() > 1024 || !code.chars().all(|c| c.is_ascii_graphic()) {
-        return Err("That does not look like a sign-in code. Copy it again from the browser.".into());
+        return Err(
+            "That does not look like a sign-in code. Copy it again from the browser.".into(),
+        );
     }
     Ok(code)
 }
 
 pub fn status(app: &AppHandle) -> Status {
     let answer = claude(app).ok().and_then(|mut command| {
-        command.args(["auth", "status", "--json"]).stdout(Stdio::piped()).output().ok()
+        command
+            .args(["auth", "status", "--json"])
+            .stdout(Stdio::piped())
+            .output()
+            .ok()
     });
     let connected = answer
         .as_ref()
         .and_then(|output| serde_json::from_slice::<Value>(&output.stdout).ok())
         .is_some_and(|status| status["loggedIn"] == true);
-    Status { installed: answer.is_some(), connected, url: None }
+    Status {
+        installed: answer.is_some(),
+        connected,
+        url: None,
+    }
 }
 
 pub fn install(app: &AppHandle, running: &Running) -> Result<(), String> {
@@ -237,7 +319,10 @@ pub fn connect(
     running.hold(child)?;
     std::thread::scope(|scope| {
         scope.spawn(|| {
-            for line in output.into_iter().flat_map(|output| BufReader::new(output).lines().map_while(Result::ok)) {
+            for line in output
+                .into_iter()
+                .flat_map(|output| BufReader::new(output).lines().map_while(Result::ok))
+            {
                 if let Some(found) = sign_in_link(&line) {
                     show(found.to_string());
                 }
@@ -252,18 +337,33 @@ pub fn connect(
 pub fn code(agent: &Agent, code: &str) -> Result<(), String> {
     let code = sign_in_code(code)?;
     let mut input = agent.input.lock().map_err(|error| error.to_string())?;
-    let pipe = input.as_mut().ok_or_else(|| "Press Connect first, then paste the code.".to_string())?;
-    writeln!(pipe, "{code}").and_then(|()| pipe.flush()).map_err(|error| format!("The code could not be passed on: {error}"))
+    let pipe = input
+        .as_mut()
+        .ok_or_else(|| "Press Connect first, then paste the code.".to_string())?;
+    writeln!(pipe, "{code}")
+        .and_then(|()| pipe.flush())
+        .map_err(|error| format!("The code could not be passed on: {error}"))
 }
 
 pub fn disconnect(app: &AppHandle) -> Result<Status, String> {
-    claude(app)?.args(["auth", "logout"]).status().map_err(|error| format!("Could not disconnect: {error}"))?;
+    claude(app)?
+        .args(["auth", "logout"])
+        .status()
+        .map_err(|error| format!("Could not disconnect: {error}"))?;
     Ok(status(app))
 }
 
-pub fn run(app: &AppHandle, running: &Running, root: &Path, folder: &Path, turn: &Turn, send: Send) -> Result<(), String> {
+pub fn run(
+    app: &AppHandle,
+    running: &Running,
+    root: &Path,
+    folder: &Path,
+    turn: &Turn,
+    send: Send,
+) -> Result<(), String> {
     let system = folder.join("system.txt");
-    keep(&system, turn.system.as_bytes()).map_err(|error| format!("The assistant could not be prepared: {error}"))?;
+    keep(&system, turn.system.as_bytes())
+        .map_err(|error| format!("The assistant could not be prepared: {error}"))?;
     let mut command = claude(app)?;
     command
         .args(arguments(turn, folder, &system)?)
@@ -271,7 +371,9 @@ pub fn run(app: &AppHandle, running: &Running, root: &Path, folder: &Path, turn:
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
-    let mut child = command.spawn().map_err(|error| format!("Claude Code could not be started: {error}"))?;
+    let mut child = command
+        .spawn()
+        .map_err(|error| format!("Claude Code could not be started: {error}"))?;
     let pipes = child.stdin.take().zip(child.stdout.take());
     let said = complaints(child.stderr.take());
     running.hold(child)?;
@@ -279,7 +381,11 @@ pub fn run(app: &AppHandle, running: &Running, root: &Path, folder: &Path, turn:
     let _ = input.write_all(turn.prompt.as_bytes());
     drop(input);
     let mut done = false;
-    for event in BufReader::new(output).lines().map_while(Result::ok).flat_map(|line| parse(root, &line)) {
+    for event in BufReader::new(output)
+        .lines()
+        .map_while(Result::ok)
+        .flat_map(|line| parse(root, &line))
+    {
         done |= matches!(event, Event::Done { .. });
         send(event)?;
     }
@@ -327,23 +433,43 @@ not json at all"#;
     }
 
     fn arguments(turn: &Turn) -> Result<Vec<String>, String> {
-        super::arguments(turn, Path::new("/data/assistant"), Path::new("/data/assistant/system.txt"))
+        super::arguments(
+            turn,
+            Path::new("/data/assistant"),
+            Path::new("/data/assistant/system.txt"),
+        )
     }
 
     #[test]
     fn a_recorded_stream_becomes_text_file_notes_and_one_ending() {
-        let events: Vec<Event> = RECORDED.lines().flat_map(|line| parse(Path::new("/w"), line)).collect();
-        let step = |tool: &str, page: &str| Event::Step { tool: tool.into(), page: page.into() };
+        let events: Vec<Event> = RECORDED
+            .lines()
+            .flat_map(|line| parse(Path::new("/w"), line))
+            .collect();
+        let step = |tool: &str, page: &str| Event::Step {
+            tool: tool.into(),
+            page: page.into(),
+        };
         let expected = [
             step("Thinking", ""),
             step("Read", "Work/Notes/Monday"),
-            Event::Read { page: "Work/Notes/Monday".into() },
+            Event::Read {
+                page: "Work/Notes/Monday".into(),
+            },
             step("Edit", ""),
             step("Edit", "Work/Notes/Monday"),
-            Event::Edited { page: "Work/Notes/Monday".into(), before: Some("= Monday\n".into()) },
+            Event::Edited {
+                page: "Work/Notes/Monday".into(),
+                before: Some("= Monday\n".into()),
+            },
             Event::Text { text: "I".into() },
-            Event::Text { text: " added \"milk\".".into() },
-            Event::Done { session: "8ec00c1e-4fd4-499d-b38c-1b893b2fac63".into(), failure: None },
+            Event::Text {
+                text: " added \"milk\".".into(),
+            },
+            Event::Done {
+                session: "8ec00c1e-4fd4-499d-b38c-1b893b2fac63".into(),
+                failure: None,
+            },
         ];
         assert_eq!(events, expected);
     }
@@ -352,18 +478,34 @@ not json at all"#;
     fn every_file_the_assistant_opens_in_one_message_is_reported() {
         let line = r#"{"type":"assistant","message":{"content":[{"type":"text","text":"Reading both."},{"type":"tool_use","name":"Read","input":{"file_path":"/w/A/B/One.typ"}},{"type":"tool_use","name":"Read","input":{"file_path":"/w/A/B/Two.typ"}}]}}"#;
         let pages: Vec<Event> = parse(Path::new("/w"), line);
-        let step = |page: &str| Event::Step { tool: "Read".into(), page: page.into() };
+        let step = |page: &str| Event::Step {
+            tool: "Read".into(),
+            page: page.into(),
+        };
         assert_eq!(pages, [step("A/B/One"), step("A/B/Two")]);
     }
 
     #[test]
     fn the_sign_in_link_is_found_and_a_code_is_one_plain_word() {
         let printed = "If the browser didn't open, visit: https://claude.com/cai/oauth/authorize?code=true&client_id=9d1c";
-        assert_eq!(sign_in_link(printed), Some("https://claude.com/cai/oauth/authorize?code=true&client_id=9d1c"));
+        assert_eq!(
+            sign_in_link(printed),
+            Some("https://claude.com/cai/oauth/authorize?code=true&client_id=9d1c")
+        );
         assert_eq!(sign_in_link("Opening browser to sign in…"), None);
         assert_eq!(sign_in_link("Paste code here if prompted > "), None);
-        assert_eq!(sign_in_code("  abc_123-DEF#state9 \n"), Ok("abc_123-DEF#state9"));
-        for bad in ["", "   ", "two words", "line\nbreak", "tab\there", "ünïcode"] {
+        assert_eq!(
+            sign_in_code("  abc_123-DEF#state9 \n"),
+            Ok("abc_123-DEF#state9")
+        );
+        for bad in [
+            "",
+            "   ",
+            "two words",
+            "line\nbreak",
+            "tab\there",
+            "ünïcode",
+        ] {
             assert!(sign_in_code(bad).is_err(), "{bad:?}");
         }
     }
@@ -371,51 +513,98 @@ not json at all"#;
     #[test]
     fn a_failed_turn_carries_the_message_claude_code_gave() {
         let limit = r#"{"type":"result","is_error":true,"session_id":"s","result":"You've hit your usage limit"}"#;
-        let silent = r#"{"type":"result","subtype":"error_max_turns","is_error":true,"session_id":"s"}"#;
+        let silent =
+            r#"{"type":"result","subtype":"error_max_turns","is_error":true,"session_id":"s"}"#;
         let failure = |line| match parse(Path::new("/w"), line).pop() {
             Some(Event::Done { failure, .. }) => failure,
             other => panic!("{other:?}"),
         };
-        assert_eq!(failure(limit).as_deref(), Some("You've hit your usage limit"));
-        assert_eq!(failure(silent).as_deref(), Some("The assistant stopped before it finished."));
+        assert_eq!(
+            failure(limit).as_deref(),
+            Some("You've hit your usage limit")
+        );
+        assert_eq!(
+            failure(silent).as_deref(),
+            Some("The assistant stopped before it finished.")
+        );
     }
 
     #[test]
     fn what_claude_code_or_its_installer_complained_about_reaches_the_user() {
-        assert!(run_failure("warning: x\nError: Invalid API key\n\n").ends_with("without an answer: Error: Invalid API key"));
+        assert!(
+            run_failure("warning: x\nError: Invalid API key\n\n")
+                .ends_with("without an answer: Error: Invalid API key")
+        );
         assert!(run_failure("").contains("connected and online"));
-        assert!(install_failure("irm : Access is denied\n").starts_with("Claude Code could not be installed: irm : Access is denied"));
+        assert!(
+            install_failure("irm : Access is denied\n")
+                .starts_with("Claude Code could not be installed: irm : Access is denied")
+        );
         assert!(install_failure("").contains("IT team"));
     }
 
     #[test]
     fn the_assistant_gets_file_tools_only_and_no_way_to_ask_for_more() {
         let arguments = arguments(&turn()).unwrap();
-        let after = |flag: &str| arguments[arguments.iter().position(|argument| argument == flag).unwrap() + 1].clone();
+        let after = |flag: &str| {
+            arguments[arguments
+                .iter()
+                .position(|argument| argument == flag)
+                .unwrap()
+                + 1]
+            .clone()
+        };
         assert_eq!(after("--tools"), "Read,Edit,Write,Glob,Grep");
         assert_eq!(after("--permission-mode"), "dontAsk");
         assert_eq!(after("--permission-prompts"), "none");
         assert_eq!(after("--system-prompt-file"), "/data/assistant/system.txt");
         assert!(arguments.contains(&"--restricted".to_string()));
         assert!(arguments.contains(&"Edit(/**/*.typ)".to_string()));
-        assert!(!arguments.iter().any(|argument| ["--resume", "--model", "--settings", "write Typst"].contains(&argument.as_str())));
+        assert!(!arguments.iter().any(|argument| {
+            ["--resume", "--model", "--settings", "write Typst"].contains(&argument.as_str())
+        }));
     }
 
     #[test]
     fn a_read_only_turn_has_no_tool_that_can_change_a_page() {
-        let arguments = arguments(&Turn { read_only: true, fast: true, ..turn() }).unwrap();
+        let arguments = arguments(&Turn {
+            read_only: true,
+            fast: true,
+            ..turn()
+        })
+        .unwrap();
         assert!(arguments.contains(&"Read,Glob,Grep".to_string()));
-        assert!(!arguments.iter().any(|argument| argument.contains("Edit") || argument.contains("Write")));
+        assert!(
+            !arguments
+                .iter()
+                .any(|argument| argument.contains("Edit") || argument.contains("Write"))
+        );
         assert!(arguments.contains(&r#"{"fastMode":true}"#.to_string()));
     }
 
     #[test]
     fn the_web_tools_are_offered_only_when_the_chat_allows_the_internet() {
-        assert!(!arguments(&turn()).unwrap().iter().any(|argument| argument.contains("Web")));
-        let arguments = arguments(&Turn { read_only: true, web: true, ..turn() }).unwrap();
+        assert!(
+            !arguments(&turn())
+                .unwrap()
+                .iter()
+                .any(|argument| argument.contains("Web"))
+        );
+        let arguments = arguments(&Turn {
+            read_only: true,
+            web: true,
+            ..turn()
+        })
+        .unwrap();
         assert!(arguments.contains(&"Read,Glob,Grep,WebFetch,WebSearch".to_string()));
-        let allowed = arguments.iter().position(|argument| argument == "--allowedTools").unwrap();
-        assert_eq!(arguments[allowed + 1..allowed + 6], ["Read", "Glob", "Grep", "WebFetch", "WebSearch"]);
+        let allowed = arguments
+            .iter()
+            .position(|argument| argument == "--allowedTools")
+            .unwrap();
+        assert_eq!(
+            arguments[allowed + 1..allowed + 6],
+            ["Read", "Glob", "Grep", "WebFetch", "WebSearch"]
+        );
     }
 
     #[test]
@@ -427,10 +616,50 @@ not json at all"#;
             ..turn()
         };
         let arguments = arguments(&chosen).unwrap();
-        assert_eq!(arguments[arguments.len() - 6..], ["--model", "opus", "--effort", "high", "--resume", "8ec00c1e-4fd4"]);
+        assert_eq!(
+            arguments[arguments.len() - 6..],
+            [
+                "--model",
+                "opus",
+                "--effort",
+                "high",
+                "--resume",
+                "8ec00c1e-4fd4"
+            ]
+        );
 
-        assert!(super::arguments(&Turn { model: Some("--dangerously-skip-permissions".into()), ..turn() }, Path::new("/d"), Path::new("/d/s")).is_err());
-        assert!(super::arguments(&Turn { effort: Some("extreme".into()), ..turn() }, Path::new("/d"), Path::new("/d/s")).is_err());
-        assert!(super::arguments(&Turn { session: Some("x --add-dir /".into()), ..turn() }, Path::new("/d"), Path::new("/d/s")).is_err());
+        assert!(
+            super::arguments(
+                &Turn {
+                    model: Some("--dangerously-skip-permissions".into()),
+                    ..turn()
+                },
+                Path::new("/d"),
+                Path::new("/d/s")
+            )
+            .is_err()
+        );
+        assert!(
+            super::arguments(
+                &Turn {
+                    effort: Some("extreme".into()),
+                    ..turn()
+                },
+                Path::new("/d"),
+                Path::new("/d/s")
+            )
+            .is_err()
+        );
+        assert!(
+            super::arguments(
+                &Turn {
+                    session: Some("x --add-dir /".into()),
+                    ..turn()
+                },
+                Path::new("/d"),
+                Path::new("/d/s")
+            )
+            .is_err()
+        );
     }
 }

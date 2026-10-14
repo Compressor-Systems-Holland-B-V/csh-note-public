@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=znote
+Comment=Write Typst documents with a live preview
+Exec=znote %f
+Icon=com.zalanalytics.znote
+Terminal=false
+Categories=Office;TextEditor;
+Keywords=typst;editor;notes;markup;pdf;

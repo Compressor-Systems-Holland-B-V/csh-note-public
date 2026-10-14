@@ -62,10 +62,17 @@ const EMBEDDING_RESTRICTED: u16 = 0x02;
 
 fn table<'a>(font: &'a Font, tag: &[u8; 4]) -> Option<&'a [u8]> {
     let data: &[u8] = font.data();
-    let long = |at: usize| Some(u32::from_be_bytes(data.get(at..at + 4)?.try_into().ok()?) as usize);
-    let start = if data.starts_with(b"ttcf") { long(12 + 4 * font.index() as usize)? } else { 0 };
+    let long =
+        |at: usize| Some(u32::from_be_bytes(data.get(at..at + 4)?.try_into().ok()?) as usize);
+    let start = if data.starts_with(b"ttcf") {
+        long(12 + 4 * font.index() as usize)?
+    } else {
+        0
+    };
     let count = usize::from(short(data, start + 4)?);
-    let record = (0..count).map(|index| start + 12 + 16 * index).find(|&at| data.get(at..at + 4) == Some(tag))?;
+    let record = (0..count)
+        .map(|index| start + 12 + 16 * index)
+        .find(|&at| data.get(at..at + 4) == Some(tag))?;
     data.get(long(record + 8)?..)?.get(..long(record + 12)?)
 }
 
@@ -74,11 +81,17 @@ fn short(bytes: &[u8], at: usize) -> Option<u16> {
 }
 
 pub fn restricted(font: &Font) -> bool {
-    table(font, b"OS/2").and_then(|os2| short(os2, 8)).is_some_and(|permissions| permissions & EMBEDDING_RESTRICTED != 0)
+    table(font, b"OS/2")
+        .and_then(|os2| short(os2, 8))
+        .is_some_and(|permissions| permissions & EMBEDDING_RESTRICTED != 0)
 }
 
 fn name(font: &FontInstance, id: u16) -> Option<String> {
-    font.ttf().names().into_iter().filter(|name| name.name_id == id).find_map(|name| name.to_string())
+    font.ttf()
+        .names()
+        .into_iter()
+        .filter(|name| name.name_id == id)
+        .find_map(|name| name.to_string())
 }
 
 struct Face {
@@ -93,8 +106,12 @@ fn face(instance: &FontInstance) -> Face {
     let selection = table(font, b"OS/2").and_then(|os2| short(os2, 62));
     Face {
         family: name(instance, NAME_FAMILY).unwrap_or_else(|| info.family.clone()),
-        bold: selection.map_or(info.variant.weight >= FontWeight::SEMIBOLD, |bits| bits & SELECTION_BOLD != 0),
-        italic: selection.map_or(info.variant.style != FontStyle::Normal, |bits| bits & SELECTION_ITALIC != 0),
+        bold: selection.map_or(info.variant.weight >= FontWeight::SEMIBOLD, |bits| {
+            bits & SELECTION_BOLD != 0
+        }),
+        italic: selection.map_or(info.variant.style != FontStyle::Normal, |bits| {
+            bits & SELECTION_ITALIC != 0
+        }),
     }
 }
 
@@ -105,11 +122,21 @@ fn embeddable(instance: &FontInstance) -> Option<Vec<u8>> {
     let os2 = table(font, b"OS/2").filter(|os2| os2.len() >= 78)?;
     let adjustment = table(font, b"head")?.get(8..12)?;
     let permissions = short(os2, 8)?;
-    if !true_type || font.info().flags.contains(FontFlags::VARIABLE) || permissions & EMBEDDING_RESTRICTED != 0 {
+    if !true_type
+        || font.info().flags.contains(FontFlags::VARIABLE)
+        || permissions & EMBEDDING_RESTRICTED != 0
+    {
         return None;
     }
 
-    let swapped = |bytes: &[u8]| bytes.as_chunks::<4>().0.iter().flat_map(|long| long.iter().rev().copied()).collect::<Vec<u8>>();
+    let swapped = |bytes: &[u8]| {
+        bytes
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .flat_map(|long| long.iter().rev().copied())
+            .collect::<Vec<u8>>()
+    };
     let mut eot = Vec::with_capacity(data.len() + 256);
     eot.extend([0; 4]);
     eot.extend((data.len() as u32).to_le_bytes());
@@ -126,7 +153,11 @@ fn embeddable(instance: &FontInstance) -> Option<Vec<u8>> {
     eot.extend(swapped(adjustment));
     eot.extend([0; 16]);
     for id in [NAME_FAMILY, NAME_STYLE, NAME_VERSION, NAME_FULL] {
-        let text: Vec<u8> = name(instance, id).unwrap_or_default().encode_utf16().flat_map(u16::to_le_bytes).collect();
+        let text: Vec<u8> = name(instance, id)
+            .unwrap_or_default()
+            .encode_utf16()
+            .flat_map(u16::to_le_bytes)
+            .collect();
         eot.extend([0; 2]);
         eot.extend((text.len() as u16).to_le_bytes());
         eot.extend(text);
@@ -142,18 +173,27 @@ fn run(text: &TextItem, at: Point, element: Option<Location>) -> Option<Run> {
     let font = text.font.font();
     let info = font.info();
     let face = face(&text.font);
-    let Paint::Solid(colour) = &text.fill else { return None };
+    let Paint::Solid(colour) = &text.fill else {
+        return None;
+    };
     if text.stroke.is_some() || info.flags.contains(FontFlags::MATH) {
         return None;
     }
     let metrics = text.font.metrics();
     let advance = |bytes: std::ops::Range<usize>| -> f64 {
-        let inside = text.glyphs.iter().filter(|glyph| bytes.contains(&glyph.range().start));
-        inside.map(|glyph| glyph.x_advance.at(text.size).to_pt()).sum()
+        let inside = text
+            .glyphs
+            .iter()
+            .filter(|glyph| bytes.contains(&glyph.range().start));
+        inside
+            .map(|glyph| glyph.x_advance.at(text.size).to_pt())
+            .sum()
     };
     let content = text.text.as_str();
     let lead = content.len() - content.trim_start().len();
-    let word_end = content[lead..].find(char::is_whitespace).map_or(content.len(), |index| lead + index);
+    let word_end = content[lead..]
+        .find(char::is_whitespace)
+        .map_or(content.len(), |index| lead + index);
     Some(Run {
         x: at.x.to_pt(),
         baseline: at.y.to_pt(),
@@ -184,7 +224,9 @@ fn inside(run: &Run, clip: Option<Rect>) -> bool {
 }
 
 fn narrowed(clip: Option<Rect>, group: &GroupItem, origin: Point) -> Option<Rect> {
-    let Some(curve) = &group.clip else { return clip };
+    let Some(curve) = &group.clip else {
+        return clip;
+    };
     let own = curve.bbox(None);
     let (min, max) = (own.min + origin, own.max + origin);
     Some(match clip {
@@ -207,13 +249,21 @@ fn split_text(
             FrameItem::Group(group) if group.transform.is_only_translate() => {
                 let inner = at + Point::new(group.transform.tx, group.transform.ty);
                 let mut group = group.clone();
-                group.frame = split_text(&group.frame, inner, narrowed(clip, &group, inner), open, runs);
+                group.frame = split_text(
+                    &group.frame,
+                    inner,
+                    narrowed(clip, &group, inner),
+                    open,
+                    runs,
+                );
                 rest.push(*position, FrameItem::Group(group));
             }
-            FrameItem::Text(text) => match run(text, at, open.last().copied()).filter(|run| inside(run, clip)) {
-                Some(run) => runs.push(run),
-                None => rest.push(*position, item.clone()),
-            },
+            FrameItem::Text(text) => {
+                match run(text, at, open.last().copied()).filter(|run| inside(run, clip)) {
+                    Some(run) => runs.push(run),
+                    None => rest.push(*position, item.clone()),
+                }
+            }
             FrameItem::Tag(tag) => {
                 match tag {
                     Tag::Start(content, _) => open.extend(content.location()),
@@ -269,7 +319,10 @@ struct Paragraph {
 }
 
 fn span(line: &[Run]) -> (f64, f64) {
-    let right = line.iter().map(|run| run.x + run.width - run.trailing).fold(line[0].x, f64::max);
+    let right = line
+        .iter()
+        .map(|run| run.x + run.width - run.trailing)
+        .fold(line[0].x, f64::max);
     (line[0].x, right)
 }
 
@@ -308,14 +361,21 @@ fn joins(paragraph: &Paragraph, line: &[Run]) -> Option<(Align, f64)> {
 fn paragraphs(lines: Vec<Vec<Run>>) -> Vec<Paragraph> {
     let mut paragraphs: Vec<Paragraph> = Vec::new();
     for line in lines {
-        let joined = paragraphs.iter_mut().rev().find_map(|paragraph| Some((joins(paragraph, &line)?, paragraph)));
+        let joined = paragraphs
+            .iter_mut()
+            .rev()
+            .find_map(|paragraph| Some((joins(paragraph, &line)?, paragraph)));
         match joined {
             Some(((align, pitch), paragraph)) => {
                 paragraph.align = align;
                 paragraph.pitch = pitch;
                 paragraph.lines.push(line);
             }
-            None => paragraphs.push(Paragraph { lines: vec![line], align: Align::Left, pitch: 0.0 }),
+            None => paragraphs.push(Paragraph {
+                lines: vec![line],
+                align: Align::Left,
+                pitch: 0.0,
+            }),
         }
     }
     paragraphs
@@ -358,19 +418,39 @@ fn text_box(id: usize, paragraph: &Paragraph) -> String {
     let wrapped = lines.len() > 1;
     let ascent = first.iter().map(|run| run.ascent).fold(0.0, f64::max);
     let descent = first.iter().map(|run| run.descent).fold(0.0, f64::max);
-    let left = lines.iter().map(|line| span(line).0).fold(f64::INFINITY, f64::min);
+    let left = lines
+        .iter()
+        .map(|line| span(line).0)
+        .fold(f64::INFINITY, f64::min);
     let right = lines.iter().map(|line| span(line).1).fold(left, f64::max);
-    let width = if wrapped { (right - left) * WRAP_SLACK } else { right - left };
+    let width = if wrapped {
+        (right - left) * WRAP_SLACK
+    } else {
+        right - left
+    };
     let x = match paragraph.align {
         Align::Left => left,
         Align::Centre => (left + right - width) / 2.0,
         Align::Right => right - width,
     };
     let (top, height, wrap, spacing) = if wrapped {
-        let spacing = format!(r#"<a:spcPts val="{}"/>"#, (paragraph.pitch * 100.0).round() as i64);
-        (first[0].baseline + descent - paragraph.pitch, paragraph.pitch * lines.len() as f64, "square", spacing)
+        let spacing = format!(
+            r#"<a:spcPts val="{}"/>"#,
+            (paragraph.pitch * 100.0).round() as i64
+        );
+        (
+            first[0].baseline + descent - paragraph.pitch,
+            paragraph.pitch * lines.len() as f64,
+            "square",
+            spacing,
+        )
     } else {
-        (first[0].baseline - ascent, ascent + descent, "none", r#"<a:spcPct val="100000"/>"#.to_string())
+        (
+            first[0].baseline - ascent,
+            ascent + descent,
+            "none",
+            r#"<a:spcPct val="100000"/>"#.to_string(),
+        )
     };
     let align = match paragraph.align {
         Align::Left => "l",
@@ -389,7 +469,10 @@ fn text_box(id: usize, paragraph: &Paragraph) -> String {
         if let Some(above) = index.checked_sub(1).map(|above| &lines[above]) {
             let (above_left, above_right) = span(above);
             let word_space = 0.25 * line[0].size;
-            let open_ended = above.last().is_some_and(|run| !run.text.ends_with(|last: char| last.is_whitespace() || last == '-'));
+            let open_ended = above.last().is_some_and(|run| {
+                !run.text
+                    .ends_with(|last: char| last.is_whitespace() || last == '-')
+            });
             if above_right - above_left + word_space + line[0].first_word <= width {
                 xml.push_str("<a:br/>");
             } else if open_ended {
@@ -397,7 +480,11 @@ fn text_box(id: usize, paragraph: &Paragraph) -> String {
             }
         }
         for (position, run) in line.iter().enumerate() {
-            let text = if position == 0 { format!("{glue}{}", run.text) } else { run.text.clone() };
+            let text = if position == 0 {
+                format!("{glue}{}", run.text)
+            } else {
+                run.text.clone()
+            };
             xml.push_str(&text_run(run, &text));
         }
     }
@@ -420,7 +507,10 @@ struct Slide {
 
 fn slide(page: &Page) -> Result<Slide, String> {
     let (background, runs) = layers(page);
-    let options = RenderOptions { pixel_per_pt: BACKGROUND_PIXELS_PER_POINT.into(), ..Default::default() };
+    let options = RenderOptions {
+        pixel_per_pt: BACKGROUND_PIXELS_PER_POINT.into(),
+        ..Default::default()
+    };
     let picture = typst_render::render(&background, &options)
         .encode_png()
         .map_err(|error| format!("A slide could not be drawn: {error}"))?;
@@ -440,13 +530,21 @@ fn slide(page: &Page) -> Result<Slide, String> {
         xml.push_str(&text_box(index + 3, paragraph));
     }
     let _ = write!(xml, "</p:spTree></p:cSld>{COLOUR_MAP}</p:sld>");
-    Ok(Slide { xml, picture, fonts })
+    Ok(Slide {
+        xml,
+        picture,
+        fonts,
+    })
 }
 
 fn relationships(targets: &[(&str, String)]) -> String {
     let mut xml = format!(r#"{XML}<Relationships xmlns="{RELATIONSHIPS}">"#);
     for (index, (kind, target)) in targets.iter().enumerate() {
-        let _ = write!(xml, r#"<Relationship Id="rId{}" Type="{OFFICE}/{kind}" Target="{target}"/>"#, index + 1);
+        let _ = write!(
+            xml,
+            r#"<Relationship Id="rId{}" Type="{OFFICE}/{kind}" Target="{target}"/>"#,
+            index + 1
+        );
     }
     xml.push_str("</Relationships>");
     xml
@@ -457,7 +555,10 @@ fn content_types(slides: usize) -> String {
         r#"{XML}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="fntdata" ContentType="application/x-fontdata"/><Override PartName="/ppt/presentation.xml" ContentType="{PRESENTATION}.presentation.main+xml"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="{PRESENTATION}.slideMaster+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="{PRESENTATION}.slideLayout+xml"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>"#
     );
     for number in 1..=slides {
-        let _ = write!(xml, r#"<Override PartName="/ppt/slides/slide{number}.xml" ContentType="{PRESENTATION}.slide+xml"/>"#);
+        let _ = write!(
+            xml,
+            r#"<Override PartName="/ppt/slides/slide{number}.xml" ContentType="{PRESENTATION}.slide+xml"/>"#
+        );
     }
     xml.push_str("</Types>");
     xml
@@ -470,14 +571,29 @@ fn presentation(slides: usize, width: i64, height: i64, embedded: &Embedded) -> 
         r#"{XML}<p:presentation {NAMESPACES} embedTrueTypeFonts="1"><p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst><p:sldIdLst>"#
     );
     for index in 0..slides {
-        let _ = write!(xml, r#"<p:sldId id="{}" r:id="rId{}"/>"#, 256 + index, 3 + index);
+        let _ = write!(
+            xml,
+            r#"<p:sldId id="{}" r:id="rId{}"/>"#,
+            256 + index,
+            3 + index
+        );
     }
-    let _ = write!(xml, r#"</p:sldIdLst><p:sldSz cx="{width}" cy="{height}"/><p:notesSz cx="6858000" cy="9144000"/>"#);
+    let _ = write!(
+        xml,
+        r#"</p:sldIdLst><p:sldSz cx="{width}" cy="{height}"/><p:notesSz cx="6858000" cy="9144000"/>"#
+    );
     if !embedded.is_empty() {
         xml.push_str("<p:embeddedFontLst>");
         for (family, styles) in embedded {
-            let _ = write!(xml, r#"<p:embeddedFont><p:font typeface="{}"/>"#, escape(family));
-            for (style, link) in ["regular", "bold", "italic", "boldItalic"].iter().zip(styles) {
+            let _ = write!(
+                xml,
+                r#"<p:embeddedFont><p:font typeface="{}"/>"#,
+                escape(family)
+            );
+            for (style, link) in ["regular", "bold", "italic", "boldItalic"]
+                .iter()
+                .zip(styles)
+            {
                 if let Some(link) = link {
                     let _ = write!(xml, r#"<p:{style} r:id="rId{link}"/>"#);
                 }
@@ -522,7 +638,8 @@ fn office_theme() -> String {
     .collect();
     let font = r#"<a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/>"#;
     let fill = r#"<a:solidFill><a:schemeClr val="phClr"/></a:solidFill>"#.repeat(3);
-    let line = r#"<a:ln w="9525"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln>"#.repeat(3);
+    let line =
+        r#"<a:ln w="9525"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill></a:ln>"#.repeat(3);
     let effect = "<a:effectStyle><a:effectLst/></a:effectStyle>".repeat(3);
     format!(
         r#"{XML}<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="znote"><a:themeElements><a:clrScheme name="znote">{colours}</a:clrScheme><a:fontScheme name="znote"><a:majorFont>{font}</a:majorFont><a:minorFont>{font}</a:minorFont></a:fontScheme><a:fmtScheme name="znote"><a:fillStyleLst>{fill}</a:fillStyleLst><a:lnStyleLst>{line}</a:lnStyleLst><a:effectStyleLst>{effect}</a:effectStyleLst><a:bgFillStyleLst>{fill}</a:bgFillStyleLst></a:fmtScheme></a:themeElements></a:theme>"#
@@ -531,20 +648,30 @@ fn office_theme() -> String {
 
 pub fn pdf(document: &PagedDocument) -> Result<Vec<u8>, String> {
     typst_pdf::pdf(document, &PdfOptions::default()).map_err(|errors| {
-        let reason = errors.first().map(|error| error.message.to_string()).unwrap_or_default();
+        let reason = errors
+            .first()
+            .map(|error| error.message.to_string())
+            .unwrap_or_default();
         format!("The PDF could not be made: {reason}")
     })
 }
 
 pub fn pptx(document: &PagedDocument) -> Result<(Vec<u8>, BTreeSet<String>), String> {
-    let failed = |error: zip::result::ZipError| format!("The presentation could not be made: {error}");
+    let failed =
+        |error: zip::result::ZipError| format!("The presentation could not be made: {error}");
     let pages = document.pages();
     let first = pages.first().ok_or("This page has nothing to export.")?;
     let side = |points: f64| emu(points).clamp(*SLIDE_EMU.start(), *SLIDE_EMU.end());
 
     let mut parts = vec![
-        ("[Content_Types].xml".to_string(), content_types(pages.len())),
-        ("_rels/.rels".into(), relationships(&[("officeDocument", "ppt/presentation.xml".into())])),
+        (
+            "[Content_Types].xml".to_string(),
+            content_types(pages.len()),
+        ),
+        (
+            "_rels/.rels".into(),
+            relationships(&[("officeDocument", "ppt/presentation.xml".into())]),
+        ),
         ("ppt/slideMasters/slideMaster1.xml".into(), master()),
         (
             "ppt/slideMasters/_rels/slideMaster1.xml.rels".into(),
@@ -560,7 +687,10 @@ pub fn pptx(document: &PagedDocument) -> Result<(Vec<u8>, BTreeSet<String>), Str
         ),
         ("ppt/theme/theme1.xml".into(), office_theme()),
     ];
-    let mut links = vec![("slideMaster", "slideMasters/slideMaster1.xml".to_string()), ("theme", "theme/theme1.xml".into())];
+    let mut links = vec![
+        ("slideMaster", "slideMasters/slideMaster1.xml".to_string()),
+        ("theme", "theme/theme1.xml".into()),
+    ];
     let mut fonts = BTreeMap::new();
     let mut writer = ZipWriter::new(Cursor::new(Vec::new()));
     let stored = SimpleFileOptions::default().compression_method(CompressionMethod::Stored);
@@ -578,8 +708,12 @@ pub fn pptx(document: &PagedDocument) -> Result<(Vec<u8>, BTreeSet<String>), Str
                 ("image", format!("../media/image{number}.png")),
             ]),
         ));
-        writer.start_file(format!("ppt/media/image{number}.png"), stored).map_err(failed)?;
-        writer.write_all(&slide.picture).map_err(|error| failed(error.into()))?;
+        writer
+            .start_file(format!("ppt/media/image{number}.png"), stored)
+            .map_err(failed)?;
+        writer
+            .write_all(&slide.picture)
+            .map_err(|error| failed(error.into()))?;
     }
 
     let mut embedded = Embedded::new();
@@ -591,23 +725,46 @@ pub fn pptx(document: &PagedDocument) -> Result<(Vec<u8>, BTreeSet<String>), Str
         };
         let number = links.len() + 1;
         links.push(("font", format!("fonts/font{number}.fntdata")));
-        embedded.entry(family).or_default()[usize::from(bold) + 2 * usize::from(italic)] = Some(number);
-        writer.start_file(format!("ppt/fonts/font{number}.fntdata"), SimpleFileOptions::default()).map_err(failed)?;
-        writer.write_all(&data).map_err(|error| failed(error.into()))?;
+        embedded.entry(family).or_default()[usize::from(bold) + 2 * usize::from(italic)] =
+            Some(number);
+        writer
+            .start_file(
+                format!("ppt/fonts/font{number}.fntdata"),
+                SimpleFileOptions::default(),
+            )
+            .map_err(failed)?;
+        writer
+            .write_all(&data)
+            .map_err(|error| failed(error.into()))?;
     }
-    let (width, height) = (side(first.frame.width().to_pt()), side(first.frame.height().to_pt()));
-    parts.push(("ppt/presentation.xml".into(), presentation(pages.len(), width, height, &embedded)));
-    parts.push(("ppt/_rels/presentation.xml.rels".into(), relationships(&links)));
+    let (width, height) = (
+        side(first.frame.width().to_pt()),
+        side(first.frame.height().to_pt()),
+    );
+    parts.push((
+        "ppt/presentation.xml".into(),
+        presentation(pages.len(), width, height, &embedded),
+    ));
+    parts.push((
+        "ppt/_rels/presentation.xml.rels".into(),
+        relationships(&links),
+    ));
 
     for (name, xml) in parts {
-        writer.start_file(name, SimpleFileOptions::default()).map_err(failed)?;
-        writer.write_all(xml.as_bytes()).map_err(|error| failed(error.into()))?;
+        writer
+            .start_file(name, SimpleFileOptions::default())
+            .map_err(failed)?;
+        writer
+            .write_all(xml.as_bytes())
+            .map_err(|error| failed(error.into()))?;
     }
     Ok((writer.finish().map_err(failed)?.into_inner(), referenced))
 }
 
 fn not_installed(used: BTreeSet<String>, installed: &HashSet<String>) -> Vec<String> {
-    used.into_iter().filter(|family| !installed.contains(&family.to_lowercase())).collect()
+    used.into_iter()
+        .filter(|family| !installed.contains(&family.to_lowercase()))
+        .collect()
 }
 
 #[derive(Clone, Copy, Deserialize)]
@@ -632,7 +789,8 @@ pub struct Exports {
 impl Exports {
     fn last(&self) -> Result<PathBuf, String> {
         let last = self.last.lock().map_err(|error| error.to_string())?;
-        last.clone().ok_or_else(|| "Nothing has been exported yet.".to_string())
+        last.clone()
+            .ok_or_else(|| "Nothing has been exported yet.".to_string())
     }
 }
 
@@ -650,12 +808,19 @@ pub fn export_page(
         Format::Pptx => ("PowerPoint", "pptx"),
     };
     let name = page.rsplit('/').next().unwrap_or(&page);
-    let dialog = app.dialog().file().set_file_name(format!("{name}.{extension}")).add_filter(label, &[extension]);
+    let dialog = app
+        .dialog()
+        .file()
+        .set_file_name(format!("{name}.{extension}"))
+        .add_filter(label, &[extension]);
     let Some(target) = dialog.blocking_save_file() else {
         return Ok(None);
     };
     let mut path = target.into_path().map_err(|error| error.to_string())?;
-    if path.extension().is_none_or(|given| !given.eq_ignore_ascii_case(extension)) {
+    if path
+        .extension()
+        .is_none_or(|given| !given.eq_ignore_ascii_case(extension))
+    {
         path.as_mut_os_string().push(format!(".{extension}"));
     }
 
@@ -663,19 +828,27 @@ pub fn export_page(
         Format::Pdf => (pdf(&document)?, Vec::new()),
         Format::Pptx => {
             let (bytes, used) = pptx(&document)?;
-            let installed = fonts::system().map(|(_, info)| info.family.to_lowercase()).collect();
+            let installed = fonts::system()
+                .map(|(_, info)| info.family.to_lowercase())
+                .collect();
             (bytes, not_installed(used, &installed))
         }
     };
-    std::fs::write(&path, bytes).map_err(|error| format!("The file could not be saved: {error}"))?;
+    std::fs::write(&path, bytes)
+        .map_err(|error| format!("The file could not be saved: {error}"))?;
     *exports.last.lock().map_err(|error| error.to_string())? = Some(path.clone());
-    Ok(Some(Exported { path: path.to_string_lossy().into_owned(), missing_fonts }))
+    Ok(Some(Exported {
+        path: path.to_string_lossy().into_owned(),
+        missing_fonts,
+    }))
 }
 
 #[tauri::command]
 pub fn open_export(app: AppHandle, exports: State<Exports>) -> Result<(), String> {
     let path = exports.last()?.to_string_lossy().into_owned();
-    app.opener().open_path(path, None::<&str>).map_err(|error| format!("The file could not be opened: {error}"))
+    app.opener()
+        .open_path(path, None::<&str>)
+        .map_err(|error| format!("The file could not be opened: {error}"))
 }
 
 #[tauri::command]
@@ -701,7 +874,14 @@ mod tests {
 
     fn world() -> PageWorld {
         let folder = std::env::temp_dir();
-        PageWorld::new(&folder, "main.typ", &folder.join("no-themes"), FONTS.clone(), |_| {}).unwrap()
+        PageWorld::new(
+            &folder,
+            "main.typ",
+            &folder.join("no-themes"),
+            FONTS.clone(),
+            |_| {},
+        )
+        .unwrap()
     }
 
     fn document(text: &str) -> PagedDocument {
@@ -710,13 +890,20 @@ mod tests {
 
     fn part(archive: &mut ZipArchive<Cursor<Vec<u8>>>, name: &str) -> String {
         let mut text = String::new();
-        archive.by_name(name).unwrap().read_to_string(&mut text).unwrap();
+        archive
+            .by_name(name)
+            .unwrap()
+            .read_to_string(&mut text)
+            .unwrap();
         text
     }
 
     fn blank(page: &Page) -> bool {
         let picture = typst_render::render(page, &RenderOptions::default());
-        picture.pixels().iter().all(|pixel| *pixel == picture.pixels()[0])
+        picture
+            .pixels()
+            .iter()
+            .all(|pixel| *pixel == picture.pixels()[0])
     }
 
     #[test]
@@ -727,7 +914,12 @@ mod tests {
     #[test]
     fn a_page_with_problems_is_not_exported() {
         let mut world = world();
-        assert!(world.document("#nope".into()).unwrap_err().contains("Fix the problems"));
+        assert!(
+            world
+                .document("#nope".into())
+                .unwrap_err()
+                .contains("Fix the problems")
+        );
     }
 
     #[test]
@@ -736,20 +928,38 @@ mod tests {
         let document = document(source);
         let (bytes, fonts) = pptx(&document).unwrap();
         let mut archive = ZipArchive::new(Cursor::new(bytes)).unwrap();
-        let names: Vec<String> = (0..archive.len()).map(|index| archive.by_index(index).unwrap().name().unwrap().to_string()).collect();
+        let names: Vec<String> = (0..archive.len())
+            .map(|index| archive.by_index(index).unwrap().name().unwrap().to_string())
+            .collect();
 
-        let count = |folder: &str| names.iter().filter(|name| name.starts_with(folder) && !name.contains("_rels")).count();
+        let count = |folder: &str| {
+            names
+                .iter()
+                .filter(|name| name.starts_with(folder) && !name.contains("_rels"))
+                .count()
+        };
         assert_eq!(count("ppt/slides/"), 2);
         assert_eq!(count("ppt/media/"), 2);
-        assert!(part(&mut archive, "ppt/presentation.xml").contains(r#"<p:sldSz cx="5080000" cy="2857500"/>"#));
-        assert!(part(&mut archive, "ppt/_rels/presentation.xml.rels").contains("slides/slide2.xml"));
+        assert!(
+            part(&mut archive, "ppt/presentation.xml")
+                .contains(r#"<p:sldSz cx="5080000" cy="2857500"/>"#)
+        );
+        assert!(
+            part(&mut archive, "ppt/_rels/presentation.xml.rels").contains("slides/slide2.xml")
+        );
         assert!(part(&mut archive, "[Content_Types].xml").contains("/ppt/slides/slide2.xml"));
 
         let slide = part(&mut archive, "ppt/slides/slide1.xml");
         assert!(slide.contains("<a:t>Known heading</a:t>"), "{slide}");
         assert!(slide.contains("A &amp; B &lt; C"), "{slide}");
-        assert!(slide.contains(r#"b="1" i="0""#) && slide.contains(r#"b="0" i="1""#), "{slide}");
-        assert!(slide.contains(r#"<a:latin typeface="Libertinus Serif"/>"#), "{slide}");
+        assert!(
+            slide.contains(r#"b="1" i="0""#) && slide.contains(r#"b="0" i="1""#),
+            "{slide}"
+        );
+        assert!(
+            slide.contains(r#"<a:latin typeface="Libertinus Serif"/>"#),
+            "{slide}"
+        );
         assert_eq!(slide.matches("<p:sp>").count(), 2);
         assert!(part(&mut archive, "ppt/slides/slide2.xml").contains("<a:t>Two</a:t>"));
         assert!(fonts.contains("Libertinus Serif"));
@@ -774,24 +984,39 @@ mod tests {
             "#block(width: 200pt, inset: 10pt, radius: 8pt, fill: aqua, clip: true)[Inside the panel]\n#block(width: 30pt, height: 8pt, clip: true)[Cut off by the clip]",
         );
         let slide = slide(&document.pages()[0]).unwrap();
-        assert!(slide.xml.contains("<a:t>Inside the panel</a:t>"), "{}", slide.xml);
+        assert!(
+            slide.xml.contains("<a:t>Inside the panel</a:t>"),
+            "{}",
+            slide.xml
+        );
         assert!(!slide.xml.contains("Cut off"), "{}", slide.xml);
     }
 
     #[test]
     fn lines_of_one_paragraph_share_a_box_that_wraps() {
         let narrow = "#set page(width: 200pt, height: 400pt)\n";
-        let boxes = |source: &str| slide(&document(&format!("{narrow}{source}")).pages()[0]).unwrap().xml;
+        let boxes = |source: &str| {
+            slide(&document(&format!("{narrow}{source}")).pages()[0])
+                .unwrap()
+                .xml
+        };
 
         let heading = boxes("= A heading that is long enough to wrap");
         assert_eq!(heading.matches("<p:sp>").count(), 1, "{heading}");
-        assert!(heading.contains(r#"wrap="square""#) && heading.contains("<a:spcPts"), "{heading}");
-        assert!(heading.contains("long enough to wrap</a:t>") && !heading.contains("<a:br/>"), "{heading}");
+        assert!(
+            heading.contains(r#"wrap="square""#) && heading.contains("<a:spcPts"),
+            "{heading}"
+        );
+        assert!(
+            heading.contains("long enough to wrap</a:t>") && !heading.contains("<a:br/>"),
+            "{heading}"
+        );
 
         let untagged = boxes("#block(width: 100pt, text(20pt)[Block title wrapping here])");
         assert_eq!(untagged.matches("<p:sp>").count(), 1, "{untagged}");
 
-        let centred = boxes("#align(center)[A centred paragraph that is long enough to wrap over lines]");
+        let centred =
+            boxes("#align(center)[A centred paragraph that is long enough to wrap over lines]");
         assert_eq!(centred.matches("<p:sp>").count(), 1, "{centred}");
         assert!(centred.contains(r#"algn="ctr""#), "{centred}");
 
@@ -800,7 +1025,10 @@ mod tests {
         assert!(forced.contains("<a:br/>"), "{forced}");
 
         let glued = boxes("#block(width: 150pt)[Building Excellence, \\ Timeless Quality.]");
-        assert!(glued.contains("<a:br/>") || glued.contains("<a:t> Timeless Quality.</a:t>"), "{glued}");
+        assert!(
+            glued.contains("<a:br/>") || glued.contains("<a:t> Timeless Quality.</a:t>"),
+            "{glued}"
+        );
 
         let single = boxes("Short");
         assert!(single.contains(r#"wrap="none""#), "{single}");
@@ -816,14 +1044,21 @@ mod tests {
         let mut archive = ZipArchive::new(Cursor::new(bytes)).unwrap();
 
         let links = part(&mut archive, "ppt/_rels/presentation.xml.rels");
-        assert!(links.contains(r#"relationships/font" Target="fonts/font4.fntdata""#), "{links}");
+        assert!(
+            links.contains(r#"relationships/font" Target="fonts/font4.fntdata""#),
+            "{links}"
+        );
         let presentation = part(&mut archive, "ppt/presentation.xml");
         let listed = r#"<p:embeddedFontLst><p:embeddedFont><p:font typeface="DejaVu Sans Mono"/><p:regular r:id="rId4"/></p:embeddedFont></p:embeddedFontLst>"#;
         assert!(presentation.contains(listed), "{presentation}");
         assert!(part(&mut archive, "[Content_Types].xml").contains("application/x-fontdata"));
 
         let mut font = Vec::new();
-        archive.by_name("ppt/fonts/font4.fntdata").unwrap().read_to_end(&mut font).unwrap();
+        archive
+            .by_name("ppt/fonts/font4.fntdata")
+            .unwrap()
+            .read_to_end(&mut font)
+            .unwrap();
         let size = |at: usize| u32::from_le_bytes(font[at..at + 4].try_into().unwrap()) as usize;
         assert_eq!(size(0), font.len());
         assert_eq!(&font[34..36], &[0x4C, 0x50]);

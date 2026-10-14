@@ -1,22 +1,19 @@
 {
   "source": "Código-fonte Typst",
-  "save": "Guardar",
   "saveTitle": "Guardar esta página",
-  "load": "Carregar",
   "loadTitle": "Substituir esta página pelo texto de um ficheiro",
   "templateTitle": "Utilizar um modelo para esta página",
+  "fontSmaller": "Texto mais pequeno",
+  "fontBigger": "Texto maior",
   "locked": "O assistente está a escrever esta página. Pode voltar a editar quando terminar.",
   "review": {
-    "button": "Rever alterações",
     "show": "Ver o que o assistente alterou e manter ou anular cada parte",
     "hide": "Ocultar o que o assistente alterou",
     "keep": "Manter",
     "keepTitle": "Manter esta alteração",
     "undo": "Anular",
     "undoTitle": "Repor o que estava aqui anteriormente",
-    "keepAll": "Manter tudo",
     "keepAllTitle": "Manter tudo o que o assistente alterou nesta página",
-    "undoAll": "Anular tudo",
     "undoAllTitle": "Repor esta página como estava antes das alterações do assistente"
   },
   "problems": {

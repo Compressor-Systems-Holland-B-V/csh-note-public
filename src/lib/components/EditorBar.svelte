@@ -1,13 +1,16 @@
 <script lang="ts">
+  import AArrowDown from "@lucide/svelte/icons/a-arrow-down";
+  import AArrowUp from "@lucide/svelte/icons/a-arrow-up";
+  import CheckCheck from "@lucide/svelte/icons/check-check";
   import FolderOpen from "@lucide/svelte/icons/folder-open";
   import GitCompare from "@lucide/svelte/icons/git-compare";
   import Lock from "@lucide/svelte/icons/lock";
   import Save from "@lucide/svelte/icons/save";
-  import ProblemsBadge from "$lib/components/ProblemsBadge.svelte";
+  import Undo2 from "@lucide/svelte/icons/undo-2";
   import TemplatePicker from "$lib/components/TemplatePicker.svelte";
   import { Button } from "$lib/components/ui/button";
   import { agent } from "$lib/state/agent.svelte";
-  import { doc } from "$lib/state/document.svelte";
+  import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import { t } from "$lib/i18n.svelte";
 
@@ -15,34 +18,37 @@
 
   const lockedLabel = $derived(t("editor.locked"));
   const reviewLabel = $derived(t(agent.reviewing ? "editor.review.hide" : "editor.review.show"));
+  const size = $derived(settings.values.fontSize);
 </script>
 
-<fieldset class="flex h-9 min-w-0 shrink-0 items-center gap-1 border-b px-2" disabled={agent.locked}>
+{#snippet action(label: string, onclick: () => void, Icon: typeof Save, disabled = false)}
+  <Button variant="ghost" size="icon-sm" aria-label={label} title={label} {disabled} {onclick}><Icon /></Button>
+{/snippet}
+
+<fieldset class="flex h-9 min-w-0 shrink-0 items-center gap-0.5 border-b px-2" disabled={agent.locked}>
   <TemplatePicker />
-  <Button variant="ghost" size="sm" disabled={!workspace.unsaved} title={t("editor.saveTitle")} onclick={() => workspace.save()}>
-    <Save /> {t("editor.save")}
-  </Button>
-  <Button variant="ghost" size="sm" title={t("editor.loadTitle")} onclick={onload}>
-    <FolderOpen /> {t("editor.load")}
-  </Button>
+  {@render action(t("editor.saveTitle"), () => workspace.save(), Save, !workspace.unsaved)}
+  {@render action(t("editor.loadTitle"), onload, FolderOpen)}
+  {@render action(t("editor.fontSmaller"), () => settings.set("fontSize", size - 1), AArrowDown, size <= fontSizes.min)}
+  {@render action(t("editor.fontBigger"), () => settings.set("fontSize", size + 1), AArrowUp, size >= fontSizes.max)}
   <span class="flex-1"></span>
   {#if agent.locked}
     <span class="text-destructive" role="status" aria-label={lockedLabel} title={lockedLabel}><Lock class="size-3.5" /></span>
   {:else if agent.original !== null}
     {#if agent.reviewing}
-      <Button variant="ghost" size="sm" title={t("editor.review.keepAllTitle")} onclick={() => agent.keepAll(page)}>{t("editor.review.keepAll")}</Button>
-      <Button variant="ghost" size="sm" title={t("editor.review.undoAllTitle")} onclick={() => agent.undoAll(page)}>{t("editor.review.undoAll")}</Button>
+      {@render action(t("editor.review.keepAllTitle"), () => agent.keepAll(page), CheckCheck)}
+      {@render action(t("editor.review.undoAllTitle"), () => agent.undoAll(page), Undo2)}
     {/if}
     <Button
       variant={agent.reviewing ? "secondary" : "ghost"}
-      size="sm"
+      size="icon-sm"
       class="animate-in duration-300 fade-in"
       aria-pressed={agent.reviewing}
+      aria-label={reviewLabel}
       title={reviewLabel}
       onclick={() => (agent.reviewing = !agent.reviewing)}
     >
-      <GitCompare /> {t("editor.review.button")}
+      <GitCompare />
     </Button>
   {/if}
-  <ProblemsBadge diagnostics={doc.diagnostics} />
 </fieldset>

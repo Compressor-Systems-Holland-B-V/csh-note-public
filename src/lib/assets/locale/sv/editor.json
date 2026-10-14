@@ -1,22 +1,19 @@
 {
   "source": "Typst-källkod",
-  "save": "Spara",
   "saveTitle": "Spara den här sidan",
-  "load": "Öppna",
   "loadTitle": "Ersätt den här sidan med texten från en fil",
   "templateTitle": "Använd en mall för den här sidan",
+  "fontSmaller": "Mindre text",
+  "fontBigger": "Större text",
   "locked": "Assistenten skriver på den här sidan. Du kan redigera igen när den är klar.",
   "review": {
-    "button": "Granska ändringar",
     "show": "Se vad assistenten ändrade, och behåll eller ångra varje del",
     "hide": "Dölj vad assistenten ändrade",
     "keep": "Behåll",
     "keepTitle": "Behåll den här ändringen",
     "undo": "Ångra",
     "undoTitle": "Återställ det som fanns här tidigare",
-    "keepAll": "Behåll alla",
     "keepAllTitle": "Behåll allt som assistenten ändrade på den här sidan",
-    "undoAll": "Ångra alla",
     "undoAllTitle": "Återställ den här sidan till hur den var innan assistenten ändrade den"
   },
   "problems": {

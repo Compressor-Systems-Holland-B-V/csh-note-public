@@ -34,6 +34,7 @@
   },
   "history": {
     "title": "以前的聊天",
+    "back": "返回聊天",
     "newChat": "新建聊天",
     "which": "显示哪些聊天",
     "chats": "聊天",

@@ -21,6 +21,7 @@ vite.config.ts.timestamp-*
 /.metadata_cache
 AGENTS.md
 GUIDELINES.md
+.xprarc
 
 # Planning notes
 /roadmap

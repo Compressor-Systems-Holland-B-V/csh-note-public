@@ -34,6 +34,7 @@
   },
   "history": {
     "title": "Earlier chats",
+    "back": "Back to the chat",
     "newChat": "New chat",
     "which": "Which chats to show",
     "chats": "Chats",

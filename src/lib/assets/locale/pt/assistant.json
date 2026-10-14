@@ -34,6 +34,7 @@
   },
   "history": {
     "title": "Conversas anteriores",
+    "back": "Voltar à conversa",
     "newChat": "Nova conversa",
     "which": "Que conversas mostrar",
     "chats": "Conversas",

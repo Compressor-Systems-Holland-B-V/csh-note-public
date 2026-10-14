@@ -18,7 +18,7 @@ export type Preset = {
   web: boolean | null;
 };
 
-export type Provider = { id: string; needs: "sign-in" | "key" | "server" };
+export type Provider = { id: string; needs: "sign-in" | "key" | "server"; sizes?: Record<string, string>; fast?: boolean };
 
 export type Model = { id: string; label: string };
 
@@ -32,10 +32,16 @@ const startedFence = /(^|\n)`{1,3}z?n?o?t?e?$/;
 const maxThought = 2000;
 
 export const providers: Provider[] = [
-  { id: "claude", needs: "sign-in" },
+  { id: "claude", needs: "sign-in", sizes: { quick: "haiku", balanced: "sonnet", thorough: "opus" }, fast: true },
   { id: "openrouter", needs: "key" },
   { id: "custom", needs: "server" },
 ];
+
+export const defaultProvider = providers[0].id;
+
+export const providerOf = (id: string) => providers.find((provider) => provider.id === id);
+
+export const listsModels = (id: string) => providerOf(id)?.needs !== "sign-in";
 
 export const curated: Record<string, Model[]> = Object.fromEntries(
   Object.entries(import.meta.glob<Model[]>("./assets/models/*.json", { eager: true, import: "default" })).map(([path, list]) => [path.replace(/^.*\/|\.json$/g, ""), list]),
@@ -52,9 +58,9 @@ export const efforts = ["low", "medium", "high", "xhigh", "max"];
 export const accesses: Access[] = ["read", "edit", "full"];
 
 const sizes = [
-  { id: "quick", name: "Quick", hint: "Short notes and small fixes. Fastest.", claude: "haiku", effort: "low" },
-  { id: "balanced", name: "Balanced", hint: "Everyday documents. A good default.", claude: "sonnet", effort: "medium" },
-  { id: "thorough", name: "Thorough", hint: "Long reports and careful rewrites. Slowest.", claude: "opus", effort: "high" },
+  { id: "quick", name: "Quick", hint: "Short notes and small fixes. Fastest.", effort: "low" },
+  { id: "balanced", name: "Balanced", hint: "Everyday documents. A good default.", effort: "medium" },
+  { id: "thorough", name: "Thorough", hint: "Long reports and careful rewrites. Slowest.", effort: "high" },
 ];
 
 export const defaultPreset = "balanced";
@@ -67,17 +73,19 @@ export const presetName = ({ id, name }: Pick<Preset, "id" | "name">) => (standa
 
 export const presetHint = ({ id, hint }: Pick<Preset, "id" | "hint">) => (standard(id) ? t(`assistant.size.${id}Hint`) : hint);
 
-export const builtIn = (provider: string): Preset[] =>
-  sizes.map(({ id, name, hint, claude, effort }) => ({
+export function builtIn(provider: string): Preset[] {
+  const models = providerOf(provider)?.sizes;
+  return sizes.map(({ id, name, hint, effort }) => ({
     id,
     name,
     hint,
-    model: provider === "claude" ? claude : null,
-    effort: provider === "claude" ? effort : null,
+    model: models?.[id] ?? null,
+    effort: models === undefined ? null : effort,
     access: "edit",
     fast: false,
     web: null,
   }));
+}
 
 export function presetsFor(provider: string, saved: Preset[]) {
   const sized = builtIn(provider).map((preset) => saved.find(({ id }) => id === preset.id) ?? preset);
@@ -164,6 +172,28 @@ export function referenceTo(path: string): Reference {
   return { label: path, line: kind === "page" ? `the page ${path}.typ` : `the ${kind} folder ${path}` };
 }
 
+export type ReferenceKind = "project" | "notebook" | "page" | "image" | "sheet" | "slides" | "document" | "code" | "file";
+
+const fileKinds: Record<string, ReferenceKind> = Object.fromEntries(
+  Object.entries({
+    image: ["png", "jpg", "jpeg", "gif", "webp", "svg", "bmp"],
+    sheet: ["xlsx", "ods", "csv", "tsv"],
+    slides: ["pptx", "odp"],
+    document: ["pdf", "docx", "odt", "md", "txt", "rtf"],
+    code: ["typ", "json", "toml", "yaml", "yml", "xml", "html", "css", "js", "ts", "py", "rs", "sh", "bib"],
+  }).flatMap(([kind, extensions]) => extensions.map((extension) => [extension, kind as ReferenceKind])),
+);
+
+// ponytail: attachments are file names and workspace references are slash paths, so a project
+// whose name ends in a file extension shows as that file. Store the kind on the chat part if it matters.
+export function referenceKind(label: string): ReferenceKind {
+  const depth = label.split("/").length;
+  if (depth > 1) return depth === 2 ? "notebook" : "page";
+  const extension = /\.([a-z0-9]{1,5})$/i.exec(label)?.[1].toLowerCase();
+  if (extension === undefined) return "project";
+  return fileKinds[extension] ?? "file";
+}
+
 export function promptFor(text: string, page: string | null, references: Reference[]) {
   const open = page === null ? "No page is open in the editor." : `The page open in the editor is ${page}.typ.`;
   const pointed = references.map((reference) => `\n- ${reference.line}`).join("");
@@ -237,6 +267,21 @@ Use bold, bullets and inline code only. No headings, tables, links or images. Do
 
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
+
+  test("a reference is shown as the kind of thing it points to", () => {
+    expect(["Work", "Work/Notes", "Work/Notes/A", "plan.PDF", "logo.png", "budget.xlsx", "deck.pptx", "main.typ", "data.bin", "Makefile"].map(referenceKind)).toEqual([
+      "project",
+      "notebook",
+      "page",
+      "document",
+      "image",
+      "sheet",
+      "slides",
+      "code",
+      "file",
+      "project",
+    ]);
+  });
 
   test("every hidden block is read as actions and none of it is shown", () => {
     const reply =

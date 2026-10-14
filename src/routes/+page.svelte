@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileBox from "@lucide/svelte/icons/file-box";
   import FileOutput from "@lucide/svelte/icons/file-output";
   import Moon from "@lucide/svelte/icons/moon";
   import Palette from "@lucide/svelte/icons/palette";
@@ -22,6 +23,7 @@
   import ThemeGallery from "$lib/components/ThemeGallery.svelte";
   import { Button } from "$lib/components/ui/button";
   import * as Resizable from "$lib/components/ui/resizable";
+  import { Separator } from "$lib/components/ui/separator";
   import { appVersion, pickTypstFile } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { chats } from "$lib/state/chats.svelte";
@@ -74,9 +76,9 @@
   <div class="flex h-full items-center justify-center text-sm text-muted-foreground">{text}</div>
 {/snippet}
 
-{#snippet preview()}
+{#snippet preview(startZoom: number | null)}
   {#if settings.loaded}
-    <Preview pages={doc.pages} startZoom={settings.values.zoom} loading={doc.loading} onrefresh={() => doc.refresh()} />
+    <Preview pages={doc.pages} {startZoom} loading={doc.loading} onrefresh={() => doc.refresh()} />
   {/if}
 {/snippet}
 
@@ -84,11 +86,16 @@
 
 <div class="flex h-screen flex-col">
   <header class="flex h-10 shrink-0 items-center justify-between border-b px-3 text-sm font-medium">
-    <div class="flex min-w-0 items-center gap-2">
+    <div class="flex min-w-0 items-center gap-3">
       {#if theme.logo}<img src={theme.logo} alt={theme.active?.name} class="h-5" />{:else}znote{/if}
       {#if projects.title}
-        <span class="truncate font-normal text-muted-foreground" title={projects.savedAt === null ? projects.file : `${projects.file}\n${t("workspace.file.savedAt", { time: new Date(projects.savedAt).toLocaleTimeString(i18n.locale) })}`}>
-          {projects.title}
+        <Separator orientation="vertical" class="my-2.5" />
+        <span
+          class="flex min-w-0 items-center gap-1.5 rounded-md bg-muted px-2 py-0.5 font-normal"
+          title={projects.savedAt === null ? projects.file : `${projects.file}\n${t("workspace.file.savedAt", { time: new Date(projects.savedAt).toLocaleTimeString(i18n.locale) })}`}
+        >
+          <FileBox class="size-3.5 shrink-0 text-muted-foreground" />
+          <span class="truncate">{projects.title}</span><span class="-ms-1.5 text-muted-foreground">.znote</span>
         </span>
       {/if}
     </div>
@@ -110,7 +117,7 @@
   {#if mode === "export"}
     <div class="flex min-h-0 flex-1">
       <div class="min-w-0 flex-1">
-        {@render preview()}
+        {@render preview(1)}
       </div>
       {#key workspace.page}<ExportPanel />{/key}
     </div>
@@ -154,11 +161,11 @@
     </Resizable.Pane>
     <Resizable.Handle />
     <Resizable.Pane defaultSize={32} minSize={15}>
-      {@render preview()}
+      {@render preview(settings.values.zoom)}
     </Resizable.Pane>
     {#if assistantOpen}
       <Resizable.Handle />
-      <Resizable.Pane defaultSize={26} minSize={15} class="bg-sidebar">
+      <Resizable.Pane defaultSize={20} minSize={15} class="bg-sidebar">
         <AgentPanel />
       </Resizable.Pane>
     {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Select from "$lib/components/ui/select";
-  import { providerName, providers } from "$lib/assistant";
+  import { listsModels, providerName, providers } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
   import { connections } from "$lib/state/providers.svelte";
   import { t } from "$lib/i18n.svelte";
@@ -11,10 +11,10 @@
     providers
       .filter(({ id }) => connections.connected(id))
       .flatMap(({ id }) => {
-        const models = id === "claude" ? [] : connections.offered(id);
+        const models = listsModels(id) ? connections.offered(id) : [];
         return models.length > 0
           ? models.map((model) => ({ provider: id, model: model.id as string | null, label: model.label }))
-          : [{ provider: id, model: null, label: (id === "claude" ? null : connections.model(id)) ?? providerName(id) }];
+          : [{ provider: id, model: null, label: (listsModels(id) ? connections.model(id) : null) ?? providerName(id) }];
       }),
   );
   const several = $derived(new Set(options.map(({ provider }) => provider)).size > 1);

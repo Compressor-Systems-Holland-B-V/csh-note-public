@@ -5,7 +5,7 @@
   import { Input } from "$lib/components/ui/input";
   import { Label } from "$lib/components/ui/label";
   import { Switch } from "$lib/components/ui/switch";
-  import { accesses, builtIn, efforts, movePreset, presetName, presetsFor, providerName, providers } from "$lib/assistant";
+  import { accesses, builtIn, efforts, movePreset, presetName, presetsFor, providerName, providerOf, providers } from "$lib/assistant";
   import type { Preset } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
   import { connections } from "$lib/state/providers.svelte";
@@ -15,13 +15,13 @@
 
   let { open = $bindable() }: { open: boolean } = $props();
 
-  const provider = $derived(agent.using ?? "claude");
+  const provider = $derived(agent.providerOrDefault);
   const providerLabel = $derived(providerName(provider));
   const saved = $derived(settings.values.assistantPresets[provider] ?? []);
   const preset = $derived(agent.preset);
   const standard = $derived(builtIn(provider).find(({ id }) => id === preset.id));
   const changed = $derived(saved.some(({ id }) => id === preset.id));
-  const claude = $derived(provider === "claude");
+  const offersFast = $derived(providerOf(provider)?.fast === true);
   const models = $derived(connections.offered(provider));
   const usual = $derived(connections.model(provider));
   const linked = $derived(providers.map(({ id }) => id).filter((id) => id === provider || connections.connected(id)));
@@ -131,7 +131,7 @@
         onchange={(web) => change({ web })}
       />
 
-      {#if claude}
+      {#if offersFast}
         <div>
           <Label for="preset-fast">{t("assistant.preset.fast")}</Label>
           <p class="text-xs text-muted-foreground">{t("assistant.preset.fastHint")}</p>

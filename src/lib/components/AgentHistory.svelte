@@ -1,5 +1,6 @@
 <script lang="ts">
   import Archive from "@lucide/svelte/icons/archive";
+  import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
   import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
   import Trash2 from "@lucide/svelte/icons/trash-2";
@@ -45,19 +46,17 @@
 </script>
 
 <div class="flex min-h-0 flex-1 flex-col">
-  <div class="flex shrink-0 gap-1 p-2" role="group" aria-label={t("assistant.history.which")}>
-    <Button variant={archived ? "ghost" : "secondary"} size="sm" aria-pressed={!archived} onclick={() => (archived = false)}>{t("assistant.history.chats")}</Button>
-    <Button variant={archived ? "secondary" : "ghost"} size="sm" aria-pressed={archived} onclick={() => (archived = true)}>{t("assistant.history.archived")}</Button>
-    <Button
-      variant="ghost"
-      size="icon-sm"
-      class="ms-auto"
-      aria-label={t(archived ? "assistant.history.deleteAll" : "assistant.history.archiveAll")}
-      title={t(archived ? "assistant.history.deleteAll" : "assistant.history.archiveAll")}
-      disabled={shown.length === 0}
-      onclick={all}
-    >
+  <div class="flex shrink-0 flex-wrap items-center gap-1 p-2">
+    <Button variant="ghost" size="icon-sm" aria-label={t("assistant.history.back")} title={t("assistant.history.back")} onclick={onopen}>
+      <ArrowLeft class="rtl:rotate-180" />
+    </Button>
+    <div class="flex gap-1" role="group" aria-label={t("assistant.history.which")}>
+      <Button variant={archived ? "ghost" : "secondary"} size="sm" aria-pressed={!archived} onclick={() => (archived = false)}>{t("assistant.history.chats")}</Button>
+      <Button variant={archived ? "secondary" : "ghost"} size="sm" aria-pressed={archived} onclick={() => (archived = true)}>{t("assistant.history.archived")}</Button>
+    </div>
+    <Button variant="ghost" size="sm" class="ms-auto" disabled={shown.length === 0} onclick={all}>
       {#if archived}<Trash2 />{:else}<Archive />{/if}
+      {t(archived ? "assistant.history.deleteAll" : "assistant.history.archiveAll")}
     </Button>
   </div>
   <ul class="flex min-h-0 flex-1 flex-col gap-1 overflow-auto px-2 pb-2">

@@ -5,6 +5,12 @@ Make it yours with fully customizable themes for both the editor and the interfa
 
 znote also has an assistant. Connect your own Claude subscription (it runs Claude Code), an OpenRouter key, or your own OpenAI-compatible server such as Ollama, and use the assistant panel to generate new documents from a prompt, restructure sections, fix formatting, or ask for edits in plain language. The assistant works directly on your `.typ` files, every change shows up live in the preview, and you can review each change in the editor and keep or undo it.
 
+## Download
+
+Get znote for Windows, macOS or Linux from the
+[download page](https://zal-analytics.github.io/znote/), or pick a file from the
+[latest release](https://github.com/ZAL-Analytics/znote/releases/latest).
+
 **Features**
 - Live Typst preview that updates as you type
 - Custom themes for the editor and UI
@@ -14,3 +20,31 @@ znote also has an assistant. Connect your own Claude subscription (it runs Claud
 
 **Documentation**
 - [The `.znote-theme` format](docs/znote-theme.md): how to build a theme file with UI colours, logos, fonts and Typst templates
+
+## Verifying a download
+
+Every package on the releases page has two files next to it: a `.sha256`
+checksum and a `.asc` OpenPGP signature by Arsalan Anwari (`arsalan-anwari`).
+The checksum shows the file arrived intact, the signature that it was
+published by the maintainer and nobody else.
+
+```sh
+# once: import the signing key, from github or from keys.openpgp.org
+curl -sL https://github.com/arsalan-anwari.gpg | gpg --import
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 88A9AE5871B9A36EE3305977829EFCCDE81402E6
+
+# for each download, next to its .asc and .sha256
+sha256sum -c znote_0.8.0_amd64.deb.sha256
+gpg --verify znote_0.8.0_amd64.deb.asc znote_0.8.0_amd64.deb
+```
+
+`gpg` must print `Good signature` and the primary key fingerprint
+`88A9 AE58 71B9 A36E E330  5977 829E FCCD E814 02E6`. Any other fingerprint, or
+a `BAD signature`, means the file is not the one that was published: do not install it.
+
+Each package also carries a build provenance attestation, which shows it was
+built by this repository's release workflow from the tagged source:
+
+```sh
+gh attestation verify znote_0.8.0_amd64.deb --repo ZAL-Analytics/znote
+```

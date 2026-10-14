@@ -8,6 +8,7 @@ use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, State};
 use typst::diag::{FileResult, PackageError, Severity, SourceDiagnostic, SourceResult, Warned};
 use typst::foundations::{Bytes, Datetime, Duration};
+use typst::layout::{Frame, FrameItem};
 use typst::syntax::package::PackageSpec;
 use typst::syntax::{FileId, RootedPath, Source, VirtualPath, VirtualRoot};
 use typst::text::{Font, FontBook};
@@ -16,7 +17,6 @@ use typst::{Library, LibraryExt, World, WorldExt};
 use typst_kit::datetime::Time;
 use typst_kit::downloader::{Downloader, SystemDownloader};
 use typst_kit::files::{FileLoader, FileStore, FsRoot};
-use typst::layout::{Frame, FrameItem};
 use typst_kit::fonts::{self, FontPath, FontStore};
 use typst_kit::packages::SystemPackages;
 use typst_layout::PagedDocument;
@@ -46,7 +46,9 @@ fn fonts_in(frame: &Frame, found: &mut Vec<Font>) {
     for (_, item) in frame.items() {
         match item {
             FrameItem::Group(group) => fonts_in(&group.frame, found),
-            FrameItem::Text(text) if !found.contains(text.font.font()) => found.push(text.font.font().clone()),
+            FrameItem::Text(text) if !found.contains(text.font.font()) => {
+                found.push(text.font.font().clone())
+            }
             _ => {}
         }
     }
@@ -116,7 +118,11 @@ impl FileLoader for Loader {
         }
         match id.root() {
             VirtualRoot::Package(spec) if spec.namespace == "themes" => {
-                let package = self.themes.join(spec.name.as_str()).join(spec.version.to_string()).join("typst");
+                let package = self
+                    .themes
+                    .join(spec.name.as_str())
+                    .join(spec.version.to_string())
+                    .join("typst");
                 if !theme::valid_id(&spec.name) || !package.is_dir() {
                     return Err(PackageError::NotFound(spec.clone()).into());
                 }
@@ -188,7 +194,14 @@ impl PageWorld {
             themes: themes.to_path_buf(),
             packages: SystemPackages::new(downloader),
         };
-        Ok(Self { main, files: FileStore::new(loader), fonts, time: Time::system(), hashes: Vec::new(), used: Vec::new() })
+        Ok(Self {
+            main,
+            files: FileStore::new(loader),
+            fonts,
+            time: Time::system(),
+            hashes: Vec::new(),
+            used: Vec::new(),
+        })
     }
 
     pub fn forget_sent_pages(&mut self) {
@@ -203,25 +216,41 @@ impl PageWorld {
     }
 
     pub fn document(&mut self, text: String) -> Result<PagedDocument, String> {
-        self.typeset(text).output.map_err(|_| "Fix the problems on this page before you export it.".to_string())
+        self.typeset(text)
+            .output
+            .map_err(|_| "Fix the problems on this page before you export it.".to_string())
     }
 
     pub fn compile(&mut self, text: String) -> Compiled {
         let warned = self.typeset(text);
-        let mut diagnostics: Vec<Diagnostic> =
-            warned.warnings.iter().filter(|d| !self.template_font_fallback(d)).map(|d| self.diagnostic(d)).collect();
+        let mut diagnostics: Vec<Diagnostic> = warned
+            .warnings
+            .iter()
+            .filter(|d| !self.template_font_fallback(d))
+            .map(|d| self.diagnostic(d))
+            .collect();
 
         let document = match warned.output {
             Ok(document) => document,
             Err(errors) => {
                 diagnostics.extend(errors.iter().map(|d| self.diagnostic(d)));
-                return Compiled { page_count: None, pages: Vec::new(), diagnostics };
+                return Compiled {
+                    page_count: None,
+                    pages: Vec::new(),
+                    diagnostics,
+                };
             }
         };
 
         let mut fonts = Vec::new();
-        document.pages().iter().for_each(|page| fonts_in(&page.frame, &mut fonts));
-        self.used = fonts.iter().filter_map(|font| self.used_font(font)).collect();
+        document
+            .pages()
+            .iter()
+            .for_each(|page| fonts_in(&page.frame, &mut fonts));
+        self.used = fonts
+            .iter()
+            .filter_map(|font| self.used_font(font))
+            .collect();
 
         let hashes: Vec<u128> = document.pages().iter().map(hash128).collect();
         let pages = document
@@ -237,15 +266,26 @@ impl PageWorld {
             })
             .collect();
         self.hashes = hashes;
-        Compiled { page_count: Some(self.hashes.len()), pages, diagnostics }
+        Compiled {
+            page_count: Some(self.hashes.len()),
+            pages,
+            diagnostics,
+        }
     }
 
     fn used_font(&self, font: &Font) -> Option<UsedFont> {
         let info = font.info();
-        let index = self.fonts.book().select(&info.family.to_lowercase(), info.variant)?;
+        let index = self
+            .fonts
+            .book()
+            .select(&info.family.to_lowercase(), info.variant)?;
         let source: &dyn Any = self.fonts.source(index)?;
         let file = source.downcast_ref::<FontPath>()?.path.clone();
-        Some(UsedFont { family: info.family.clone(), file, restricted: crate::export::restricted(font) })
+        Some(UsedFont {
+            family: info.family.clone(),
+            file,
+            restricted: crate::export::restricted(font),
+        })
     }
 
     pub fn used_fonts(&self) -> &[UsedFont] {
@@ -253,7 +293,8 @@ impl PageWorld {
     }
 
     fn template_font_fallback(&self, diagnostic: &SourceDiagnostic) -> bool {
-        diagnostic.span.id() != Some(self.main) && diagnostic.message.starts_with("unknown font family")
+        diagnostic.span.id() != Some(self.main)
+            && diagnostic.message.starts_with("unknown font family")
     }
 
     fn diagnostic(&self, diagnostic: &SourceDiagnostic) -> Diagnostic {
@@ -281,7 +322,10 @@ impl PageWorld {
         let range = self.range(diagnostic.span)?;
         let source = self.source(self.main).ok()?;
         let lines = source.lines();
-        Some((lines.byte_to_utf16(range.start)?, lines.byte_to_utf16(range.end)?))
+        Some((
+            lines.byte_to_utf16(range.start)?,
+            lines.byte_to_utf16(range.end)?,
+        ))
     }
 }
 
@@ -302,7 +346,11 @@ impl Compiler {
 
 type OpenWorld = Option<(PathBuf, PageWorld)>;
 
-fn open_world<'a>(app: &AppHandle, open: &'a mut OpenWorld, page: &str) -> Result<&'a mut PageWorld, String> {
+fn open_world<'a>(
+    app: &AppHandle,
+    open: &'a mut OpenWorld,
+    page: &str,
+) -> Result<&'a mut PageWorld, String> {
     let (project, main) = app.state::<Workspace>().typst_source(page)?;
     let file = project.join(&main);
     if open.as_ref().is_none_or(|(current, _)| *current != file) {
@@ -326,7 +374,9 @@ fn open_world<'a>(app: &AppHandle, open: &'a mut OpenWorld, page: &str) -> Resul
         })?;
         *open = Some((file, world));
     }
-    open.as_mut().map(|(_, world)| world).ok_or_else(|| "The page could not be opened.".to_string())
+    open.as_mut()
+        .map(|(_, world)| world)
+        .ok_or_else(|| "The page could not be opened.".to_string())
 }
 
 pub fn document(app: &AppHandle, page: &str, text: String) -> Result<PagedDocument, String> {
@@ -335,10 +385,21 @@ pub fn document(app: &AppHandle, page: &str, text: String) -> Result<PagedDocume
     open_world(app, &mut open, page)?.document(text)
 }
 
-fn compile_page(app: &AppHandle, page: &str, seq: u64, text: String, fresh: bool) -> Result<(), String> {
+fn compile_page(
+    app: &AppHandle,
+    page: &str,
+    seq: u64,
+    text: String,
+    fresh: bool,
+) -> Result<(), String> {
     let compiler = app.state::<Compiler>();
     let mut open = compiler.world.lock().map_err(|error| error.to_string())?;
-    let superseded = compiler.latest.lock().map_err(|error| error.to_string())?.get(page) != Some(&seq);
+    let superseded = compiler
+        .latest
+        .lock()
+        .map_err(|error| error.to_string())?
+        .get(page)
+        != Some(&seq);
     if superseded {
         return Ok(());
     }
@@ -350,7 +411,15 @@ fn compile_page(app: &AppHandle, page: &str, seq: u64, text: String, fresh: bool
     if result.page_count.is_some() {
         crate::project::fonts_used(app, page, world.used_fonts());
     }
-    app.emit("compiled", CompiledEvent { page, seq, result: &result }).map_err(|error| error.to_string())
+    app.emit(
+        "compiled",
+        CompiledEvent {
+            page,
+            seq,
+            result: &result,
+        },
+    )
+    .map_err(|error| error.to_string())
 }
 
 #[tauri::command]
@@ -362,7 +431,11 @@ pub fn compile(
     text: String,
     fresh: bool,
 ) -> Result<(), String> {
-    compiler.latest.lock().map_err(|error| error.to_string())?.insert(page.clone(), seq);
+    compiler
+        .latest
+        .lock()
+        .map_err(|error| error.to_string())?
+        .insert(page.clone(), seq);
     std::thread::spawn(move || {
         if let Err(message) = compile_page(&app, &page, seq, text, fresh) {
             let _ = app.emit("compile-failed", message);
@@ -375,40 +448,79 @@ pub fn compile(
 mod tests {
     use super::*;
 
-    static FONTS: LazyLock<Arc<FontStore>> =
-        LazyLock::new(|| Arc::new(font_store(Path::new(env!("CARGO_MANIFEST_DIR")).join("no-themes").as_path())));
+    static FONTS: LazyLock<Arc<FontStore>> = LazyLock::new(|| {
+        Arc::new(font_store(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("no-themes")
+                .as_path(),
+        ))
+    });
 
     fn world() -> PageWorld {
         let folder = std::env::temp_dir();
-        PageWorld::new(&folder, "main.typ", &folder.join("no-themes"), FONTS.clone(), |_| {}).unwrap()
+        PageWorld::new(
+            &folder,
+            "main.typ",
+            &folder.join("no-themes"),
+            FONTS.clone(),
+            |_| {},
+        )
+        .unwrap()
     }
 
     #[test]
     fn a_theme_package_is_read_from_the_themes_folder_with_its_fonts() {
-        let themes = std::env::temp_dir().join(format!("znote-compile-themes-{}", std::process::id()));
+        let themes =
+            std::env::temp_dir().join(format!("znote-compile-themes-{}", std::process::id()));
         let package = themes.join("acme").join("0.1.0").join("typst");
         std::fs::create_dir_all(package.join("fonts")).unwrap();
-        std::fs::write(package.join("typst.toml"), "[package]\nname = \"acme\"\nversion = \"0.1.0\"\nentrypoint = \"lib.typ\"\n")
-            .unwrap();
-        std::fs::write(package.join("lib.typ"), "#let brand = text(font: (\"Not Shipped\", \"Libertinus Serif\"))[Acme]").unwrap();
+        std::fs::write(
+            package.join("typst.toml"),
+            "[package]\nname = \"acme\"\nversion = \"0.1.0\"\nentrypoint = \"lib.typ\"\n",
+        )
+        .unwrap();
+        std::fs::write(
+            package.join("lib.typ"),
+            "#let brand = text(font: (\"Not Shipped\", \"Libertinus Serif\"))[Acme]",
+        )
+        .unwrap();
         let font = fonts::embedded().next().unwrap().0;
         std::fs::write(package.join("fonts").join("copy.ttf"), font.data()).unwrap();
 
         let fonts = Arc::new(font_store(&themes));
         assert!(FONTS.book().families().count() > 0);
-        assert!(fonts.source(FONTS.book().families().map(|(_, infos)| infos.count()).sum::<usize>()).is_some());
+        assert!(
+            fonts
+                .source(
+                    FONTS
+                        .book()
+                        .families()
+                        .map(|(_, infos)| infos.count())
+                        .sum::<usize>()
+                )
+                .is_some()
+        );
 
-        let mut world = PageWorld::new(&std::env::temp_dir(), "main.typ", &themes, fonts, |_| {}).unwrap();
+        let mut world =
+            PageWorld::new(&std::env::temp_dir(), "main.typ", &themes, fonts, |_| {}).unwrap();
         let result = world.compile("#import \"@themes/acme:0.1.0\": brand\n#brand".into());
         assert!(result.diagnostics.is_empty(), "{:?}", result.diagnostics);
         assert_eq!(result.page_count, Some(1));
 
         let own = world.compile("#set text(font: \"Not Shipped\")\nHello".into());
-        assert!(own.diagnostics[0].message.contains("unknown font family"), "{:?}", own.diagnostics);
+        assert!(
+            own.diagnostics[0].message.contains("unknown font family"),
+            "{:?}",
+            own.diagnostics
+        );
 
         let missing = world.compile("#import \"@themes/other:0.1.0\": brand".into());
         assert_eq!(missing.page_count, None);
-        assert!(missing.diagnostics[0].message.contains("package not found"), "{:?}", missing.diagnostics);
+        assert!(
+            missing.diagnostics[0].message.contains("package not found"),
+            "{:?}",
+            missing.diagnostics
+        );
     }
 
     #[test]
@@ -416,8 +528,14 @@ mod tests {
         let project = std::env::temp_dir().join(format!("znote-compile-{}", std::process::id()));
         std::fs::create_dir_all(project.join("Notes")).unwrap();
         std::fs::write(project.join("shared.typ"), "#let greeting = [Hello]").unwrap();
-        let mut world =
-            PageWorld::new(&project, "Notes/Page.typ", &project.join("no-themes"), FONTS.clone(), |_| {}).unwrap();
+        let mut world = PageWorld::new(
+            &project,
+            "Notes/Page.typ",
+            &project.join("no-themes"),
+            FONTS.clone(),
+            |_| {},
+        )
+        .unwrap();
 
         let result = world.compile("#import \"../shared.typ\": greeting\n#greeting".into());
         assert!(result.diagnostics.is_empty(), "{:?}", result.diagnostics);
@@ -453,14 +571,24 @@ mod tests {
         world.compile("One #pagebreak() Two".into());
         let result = world.compile("One #pagebreak() Changed".into());
         assert_eq!(result.page_count, Some(2));
-        assert_eq!(result.pages.iter().map(|page| page.index).collect::<Vec<_>>(), [1]);
+        assert_eq!(
+            result
+                .pages
+                .iter()
+                .map(|page| page.index)
+                .collect::<Vec<_>>(),
+            [1]
+        );
 
         let unchanged = world.compile("One #pagebreak() Changed".into());
         assert_eq!(unchanged.page_count, Some(2));
         assert!(unchanged.pages.is_empty());
 
         world.forget_sent_pages();
-        assert_eq!(world.compile("One #pagebreak() Changed".into()).pages.len(), 2);
+        assert_eq!(
+            world.compile("One #pagebreak() Changed".into()).pages.len(),
+            2
+        );
     }
 
     #[test]
@@ -472,20 +600,40 @@ mod tests {
         assert!(!entries.is_empty());
         assert_eq!(theme::catalog(&index).unwrap().len(), entries.len());
 
-        let folder = std::env::temp_dir().join(format!("znote-compile-data-{}", std::process::id()));
+        let folder =
+            std::env::temp_dir().join(format!("znote-compile-data-{}", std::process::id()));
         let themes = folder.join("themes");
         for entry in &entries {
             let id = entry["id"].as_str().unwrap();
-            theme::install(&themes, &data.join("themes").join(format!("{id}.znote-theme"))).unwrap();
+            theme::install(
+                &themes,
+                &data.join("themes").join(format!("{id}.znote-theme")),
+            )
+            .unwrap();
         }
         assert_eq!(theme::list(&themes).len(), entries.len());
 
         let fonts = Arc::new(font_store(&themes));
-        for template in entries.iter().flat_map(|entry| entry["typst"]["templates"].as_array().into_iter().flatten()) {
-            let mut world = PageWorld::new(&folder, "main.typ", &themes, fonts.clone(), |_| {}).unwrap();
-            let result = world.compile(format!("{}\n= Heading\nSome text.\n", template["snippet"].as_str().unwrap()));
-            let errors: Vec<_> = result.diagnostics.iter().filter(|problem| problem.severity == "error").collect();
-            assert!(result.page_count.is_some() && errors.is_empty(), "{}: {errors:?}", template["label"]);
+        for template in entries
+            .iter()
+            .flat_map(|entry| entry["typst"]["templates"].as_array().into_iter().flatten())
+        {
+            let mut world =
+                PageWorld::new(&folder, "main.typ", &themes, fonts.clone(), |_| {}).unwrap();
+            let result = world.compile(format!(
+                "{}\n= Heading\nSome text.\n",
+                template["snippet"].as_str().unwrap()
+            ));
+            let errors: Vec<_> = result
+                .diagnostics
+                .iter()
+                .filter(|problem| problem.severity == "error")
+                .collect();
+            assert!(
+                result.page_count.is_some() && errors.is_empty(),
+                "{}: {errors:?}",
+                template["label"]
+            );
         }
     }
 }

@@ -7,11 +7,15 @@
   import Folder from "@lucide/svelte/icons/folder";
   import Globe from "@lucide/svelte/icons/globe";
   import GlobeOff from "@lucide/svelte/icons/globe-off";
+  import Microscope from "@lucide/svelte/icons/microscope";
   import Paperclip from "@lucide/svelte/icons/paperclip";
+  import PencilRuler from "@lucide/svelte/icons/pencil-ruler";
+  import Scale from "@lucide/svelte/icons/scale";
   import Send from "@lucide/svelte/icons/send";
   import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
   import Square from "@lucide/svelte/icons/square";
   import X from "@lucide/svelte/icons/x";
+  import Zap from "@lucide/svelte/icons/zap";
   import { Button } from "$lib/components/ui/button";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { presetHint, presetName, presetsFor, standard } from "$lib/assistant";
@@ -19,13 +23,16 @@
   import { settings } from "$lib/state/settings.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import ModelPicker from "./ModelPicker.svelte";
+  import ReferenceIcon from "./ReferenceIcon.svelte";
   import PresetDialog from "./PresetDialog.svelte";
   import { t } from "$lib/i18n.svelte";
+
+  const sizeIcons: Record<string, typeof Scale> = { quick: Zap, balanced: Scale, thorough: Microscope };
 
   let host: HTMLDivElement;
   let advanced = $state(false);
 
-  const provider = $derived(agent.using ?? "claude");
+  const provider = $derived(agent.providerOrDefault);
   const presets = $derived(presetsFor(provider, settings.values.assistantPresets[provider] ?? []));
   const sized = $derived(presets.filter(({ id }) => standard(id)));
   const own = $derived(presets.filter(({ id }) => !standard(id)));
@@ -90,6 +97,7 @@
     <ul class="flex flex-wrap gap-1" aria-label={t("assistant.composer.references")}>
       {#each agent.references as { label }, index (label)}
         <li class="flex items-center gap-1 rounded-md bg-accent py-0.5 pe-0.5 ps-1.5 text-xs">
+          <ReferenceIcon {label} />
           <span class="max-w-40 truncate" title={label}>{label}</span>
           <Button variant="ghost" size="icon-xs" aria-label={t("assistant.composer.removeReference", { label })} onclick={() => agent.references.splice(index, 1)}>
             <X />
@@ -102,31 +110,35 @@
     bind:this={host}
     class="h-40 overflow-hidden rounded-md border border-input shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30"
   ></div>
-  <div class="flex gap-0.5 rounded-md border p-0.5" role="radiogroup" aria-label={t("assistant.composer.presets")}>
-    {#each sized as { id, name, hint } (id)}
+  <div class="flex min-w-0 items-center gap-1">
+    <div class="flex shrink-0 gap-0.5 rounded-md border p-0.5" role="radiogroup" aria-label={t("assistant.composer.presets")}>
+      {#each sized as { id, name, hint } (id)}
+        {@const Icon = sizeIcons[id] ?? Scale}
+        <Button
+          variant={agent.preset.id === id ? "secondary" : "ghost"}
+          size="icon-xs"
+          role="radio"
+          aria-checked={agent.preset.id === id}
+          aria-label={presetName({ id, name })}
+          title={`${presetName({ id, name })}: ${presetHint({ id, hint })}`}
+          onclick={() => settings.set("assistantPreset", id)}
+        >
+          <Icon />
+        </Button>
+      {/each}
       <Button
-        variant={agent.preset.id === id ? "secondary" : "ghost"}
-        size="xs"
-        class="min-w-0 flex-auto px-1.5"
+        variant={custom ? "secondary" : "ghost"}
+        size="icon-xs"
         role="radio"
-        aria-checked={agent.preset.id === id}
-        title={presetHint({ id, hint })}
-        onclick={() => settings.set("assistantPreset", id)}
+        aria-checked={custom}
+        aria-label={t("assistant.size.custom")}
+        title={custom ? `${t("assistant.size.custom")}: ${agent.preset.name}` : t("assistant.composer.advancedTitle")}
+        onclick={useOwn}
       >
-        <span class="truncate">{presetName({ id, name })}</span>
+        <PencilRuler />
       </Button>
-    {/each}
-    <Button
-      variant={custom ? "secondary" : "ghost"}
-      size="xs"
-      class="min-w-0 flex-auto px-1.5"
-      role="radio"
-      aria-checked={custom}
-      title={custom ? agent.preset.name : t("assistant.composer.advancedTitle")}
-      onclick={useOwn}
-    >
-      <span class="truncate">{t("assistant.size.custom")}</span>
-    </Button>
+    </div>
+    {#if !custom}<ModelPicker class="w-auto max-w-48 min-w-0 shrink" />{/if}
   </div>
   <div class="flex items-center gap-1">
     <DropdownMenu.Root>
@@ -170,13 +182,12 @@
     <Button variant="ghost" size="icon-sm" aria-label={t("assistant.composer.advanced")} title={t("assistant.composer.advancedTitle")} onclick={() => (advanced = true)}>
       <SlidersHorizontal />
     </Button>
-    {#if !custom}<ModelPicker class="w-auto max-w-48 min-w-0 shrink" />{/if}
     <span class="flex-1"></span>
     {#if agent.here}
-      <Button variant="destructive" size="sm" class="shrink-0" onclick={() => agent.stop()}><Square /> {t("assistant.composer.stop")}</Button>
+      <Button variant="destructive" size="icon-sm" class="shrink-0" aria-label={t("assistant.composer.stop")} title={t("assistant.composer.stop")} onclick={() => agent.stop()}><Square /></Button>
     {:else}
-      <Button type="submit" size="sm" class="shrink-0" disabled={empty || agent.running} title={t(agent.running ? "assistant.composer.busyElsewhere" : "assistant.composer.sendTitle")}>
-        <Send /> {t("assistant.composer.send")}
+      <Button type="submit" size="icon-sm" class="shrink-0" disabled={empty || agent.running} aria-label={t("assistant.composer.send")} title={t(agent.running ? "assistant.composer.busyElsewhere" : "assistant.composer.sendTitle")}>
+        <Send />
       </Button>
     {/if}
   </div>

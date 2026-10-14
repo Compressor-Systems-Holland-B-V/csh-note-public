@@ -1,0 +1,31 @@
+pkgname=znote
+pkgver=0.8.0
+pkgrel=1
+pkgdesc="A lightweight desktop editor for Typst with live preview"
+arch=('x86_64')
+url="https://github.com/ZAL-Analytics/znote"
+license=('Apache-2.0')
+depends=('webkit2gtk-4.1' 'gtk3' 'openssl')
+optdepends=('gnome-keyring: store assistant provider keys'
+            'kwallet: store assistant provider keys')
+makedepends=('rust' 'cargo' 'nodejs' 'pnpm')
+options=('!debug' '!lto')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$srcdir/$pkgname-$pkgver"
+  pnpm install --frozen-lockfile
+  pnpm build
+  cargo build --release --locked --manifest-path src-tauri/Cargo.toml --features tauri/custom-protocol
+}
+
+package() {
+  cd "$srcdir/$pkgname-$pkgver"
+  install -Dm755 "src-tauri/target/release/znote" "$pkgdir/usr/bin/znote"
+  install -Dm644 "packaging/linux/com.zalanalytics.znote.desktop" "$pkgdir/usr/share/applications/com.zalanalytics.znote.desktop"
+  install -Dm644 "packaging/linux/com.zalanalytics.znote.metainfo.xml" "$pkgdir/usr/share/metainfo/com.zalanalytics.znote.metainfo.xml"
+  install -Dm644 "src-tauri/icons/128x128.png" "$pkgdir/usr/share/icons/hicolor/128x128/apps/com.zalanalytics.znote.png"
+  install -Dm644 "src-tauri/icons/32x32.png" "$pkgdir/usr/share/icons/hicolor/32x32/apps/com.zalanalytics.znote.png"
+  install -Dm644 "LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

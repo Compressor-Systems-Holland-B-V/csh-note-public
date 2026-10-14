@@ -1,22 +1,19 @@
 {
   "source": "Typst kaynağı",
-  "save": "Kaydet",
   "saveTitle": "Bu sayfayı kaydet",
-  "load": "Yükle",
   "loadTitle": "Bu sayfayı bir dosyanın metniyle değiştir",
   "templateTitle": "Bu sayfa için bir şablon kullan",
+  "fontSmaller": "Daha küçük metin",
+  "fontBigger": "Daha büyük metin",
   "locked": "Asistan bu sayfayı yazıyor. İşlem bittiğinde tekrar düzenleyebilirsiniz.",
   "review": {
-    "button": "Değişiklikleri gözden geçir",
     "show": "Asistanın neleri değiştirdiğini görün ve her bir kısmı tutun veya geri alın",
     "hide": "Asistanın değiştirdiklerini gizle",
     "keep": "Tut",
     "keepTitle": "Bu değişikliği tut",
     "undo": "Geri al",
     "undoTitle": "Burada daha önce olanı geri getir",
-    "keepAll": "Hepsini tut",
     "keepAllTitle": "Asistanın bu sayfada değiştirdiği her şeyi tut",
-    "undoAll": "Hepsini geri al",
     "undoAllTitle": "Bu sayfayı asistan değiştirmeden önceki haline döndür"
   },
   "problems": {

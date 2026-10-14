@@ -1,22 +1,19 @@
 {
   "source": "Typst-kilde",
-  "save": "Lagre",
   "saveTitle": "Lagre denne siden",
-  "load": "Åpne",
   "loadTitle": "Erstatt denne siden med teksten fra en fil",
   "templateTitle": "Bruk en mal for denne siden",
+  "fontSmaller": "Mindre tekst",
+  "fontBigger": "Større tekst",
   "locked": "Assistenten skriver på denne siden. Du kan redigere igjen når den er ferdig.",
   "review": {
-    "button": "Se gjennom endringer",
     "show": "Se hva assistenten endret, og behold eller angre hver del",
     "hide": "Skjul hva assistenten endret",
     "keep": "Behold",
     "keepTitle": "Behold denne endringen",
     "undo": "Angre",
     "undoTitle": "Gjenopprett det som var her før",
-    "keepAll": "Behold alle",
     "keepAllTitle": "Behold alt assistenten endret på denne siden",
-    "undoAll": "Angre alle",
     "undoAllTitle": "Tilbakestill denne siden til slik den var før assistenten endret den"
   },
   "problems": {

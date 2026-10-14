@@ -1,6 +1,5 @@
 <script lang="ts">
   import Bot from "@lucide/svelte/icons/bot";
-  import FileText from "@lucide/svelte/icons/file-text";
   import History from "@lucide/svelte/icons/history";
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
   import MessageSquarePlus from "@lucide/svelte/icons/message-square-plus";
@@ -9,6 +8,7 @@
   import AgentHistory from "$lib/components/AgentHistory.svelte";
   import AgentReply from "$lib/components/AgentReply.svelte";
   import AgentSteps from "$lib/components/AgentSteps.svelte";
+  import ReferenceIcon from "$lib/components/ReferenceIcon.svelte";
   import { Button } from "$lib/components/ui/button";
   import { tick } from "svelte";
   import { grouped } from "$lib/assistant";
@@ -86,7 +86,7 @@
           <div class="ms-6 flex min-w-0 shrink-0 animate-in flex-col gap-2 rounded-lg bg-accent px-4 py-3 duration-300 fade-in slide-in-from-bottom-2">
             {#each message.parts as part, position (position)}
               {#if part.kind === "note"}
-                <p class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"><FileText class="size-3 shrink-0" /> <span class="truncate" title={part.text}>{part.text}</span></p>
+                <p class="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground"><ReferenceIcon label={part.text} /> <span class="truncate" title={part.text}>{part.text}</span></p>
               {:else}
                 <p class="min-w-0 wrap-anywhere whitespace-pre-wrap">{part.text}</p>
               {/if}

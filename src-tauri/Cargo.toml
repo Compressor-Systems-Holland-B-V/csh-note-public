@@ -1,7 +1,7 @@
 [package]
 name = "znote"
 
-version = "0.7.0"
+version = "0.8.0"
 description = "A lightweight desktop editor for Typst with live preview, built with Tauri"
 license = "Apache-2.0"
 repository = "https://github.com/ZAL-Analytics/znote"

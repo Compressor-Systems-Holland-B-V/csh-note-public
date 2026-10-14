@@ -6,14 +6,14 @@
   import { templateOf, theme, withTemplate } from "$lib/state/theme.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import { t } from "$lib/i18n.svelte";
+
+  const label = $derived(`${t("editor.templateTitle")}: ${templateOf(doc.text, theme.templates)?.label ?? t("common.template")}`);
 </script>
 
 <DropdownMenu.Root>
   <DropdownMenu.Trigger>
     {#snippet child({ props })}
-      <Button {...props} variant="ghost" size="sm" class="max-w-48 min-w-0" title={t("editor.templateTitle")}>
-        <LayoutTemplate /> <span class="truncate">{templateOf(doc.text, theme.templates)?.label ?? t("common.template")}</span>
-      </Button>
+      <Button {...props} variant="ghost" size="icon-sm" aria-label={label} title={label}><LayoutTemplate /></Button>
     {/snippet}
   </DropdownMenu.Trigger>
   <DropdownMenu.Content align="start">

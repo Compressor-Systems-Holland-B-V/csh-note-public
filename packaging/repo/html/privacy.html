@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <title>znote privacy policy</title>
+    <meta
+      name="description"
+      content="znote collects nothing. Your documents leave your computer only when you use the assistant, and only to the provider you chose." />
+
+    <style>
+      :root {
+        --background: oklch(1 0 0);
+        --foreground: oklch(0.145 0 0);
+        --muted: oklch(0.97 0 0);
+        --muted-foreground: oklch(0.556 0 0);
+        --border: oklch(0.922 0 0);
+        --sans: "Inter Variable", Inter, ui-sans-serif, system-ui, -apple-system,
+          "Segoe UI", Roboto, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: oklch(0.145 0 0);
+          --foreground: oklch(0.985 0 0);
+          --muted: oklch(0.269 0 0);
+          --muted-foreground: oklch(0.708 0 0);
+          --border: oklch(1 0 0 / 10%);
+        }
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--foreground);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.625;
+      }
+
+      a {
+        color: inherit;
+        text-underline-offset: 2px;
+      }
+
+      .wrap {
+        max-width: 64rem;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+      }
+
+      nav {
+        border-bottom: 1px solid var(--border);
+      }
+
+      nav .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+      }
+
+      .wordmark {
+        font-family: var(--mono);
+        font-size: 1.125rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        text-decoration: none;
+      }
+
+      nav .back {
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+        text-decoration: none;
+      }
+
+      nav .back:hover {
+        color: var(--foreground);
+      }
+
+      main.wrap {
+        max-width: 44rem;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+      }
+
+      h1 {
+        margin: 0 0 0.5rem;
+        font-family: var(--mono);
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .updated {
+        margin: 0 0 2rem;
+        color: var(--muted-foreground);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 2rem 0 0.75rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      p,
+      li {
+        color: var(--muted-foreground);
+        font-size: 0.875rem;
+      }
+
+      b {
+        color: var(--foreground);
+        font-weight: 600;
+      }
+
+      ul {
+        padding-left: 1.25rem;
+      }
+
+      li {
+        margin: 0.375rem 0;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.8125rem;
+      }
+
+      .lede {
+        margin-top: 0;
+        padding: 1rem 1.25rem;
+        border: 1px solid var(--border);
+        background: var(--muted);
+        color: var(--foreground);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+      }
+
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        color: var(--muted-foreground);
+        font-size: 0.8125rem;
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 0.8125rem;
+      }
+
+      .made-by {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="wrap">
+        <a class="wordmark" href="https://zal-analytics.nl">ZAL</a>
+        <a class="back" href="./">Download znote</a>
+      </div>
+    </nav>
+
+    <main class="wrap">
+      <h1>Privacy policy</h1>
+      <p class="updated">znote &middot; last updated 14 October 2026</p>
+
+      <p class="lede">
+        znote itself collects nothing: no accounts, no analytics, no advertising, no
+        tracking and no crash reports. ZAL Analytics runs no server that the app talks
+        to. Your documents leave your computer only when you use the assistant, and
+        then only to the provider you chose.
+      </p>
+
+      <h2>What the app stores</h2>
+      <p>
+        Your projects, notebooks and pages, your settings, the themes you installed and
+        your assistant chats are saved in the app's own data folder on your computer.
+        A <code>.znote</code> file you save or open is written to or read from the place
+        you pick. None of this is uploaded by znote.
+      </p>
+      <p>
+        Keys for assistant providers, such as an OpenRouter key or the key of a server
+        you run yourself, are kept in your operating system's password store (Windows
+        Credential Manager, the macOS Keychain, or GNOME Keyring or KWallet on Linux).
+        They are only sent to the provider they belong to, and never written to a
+        settings file or a log.
+      </p>
+
+      <h2>What leaves your computer</h2>
+      <p>znote works offline. It goes online only in these cases:</p>
+      <ul>
+        <li>
+          <b>Typst packages.</b> When a document imports a package such as
+          <code>@preview/name:1.0.0</code> that is not on your computer yet, znote
+          downloads it from <code>packages.typst.org</code>, the official Typst package
+          registry.
+        </li>
+        <li>
+          <b>The theme store.</b> When you open the theme store, znote reads the list of
+          themes and downloads the ones you install from ZAL Analytics' public dataset
+          on Hugging Face
+          (<code>huggingface.co/datasets/zal-analytics-core/znote-data</code>).
+        </li>
+        <li>
+          <b>The assistant</b>, only if you set it up and use it. What you type, the chat
+          so far, and the pages and files you attach or let the assistant read are sent
+          to the provider you picked:
+          <ul>
+            <li>
+              <b>Claude</b>: znote runs Anthropic's own Claude Code program, which you
+              sign in to yourself. Claude Code sends your requests to Anthropic. If it is
+              not installed yet, znote downloads Anthropic's installer from
+              <code>claude.ai</code> when you press Connect. znote never reads or stores
+              your Claude sign-in.
+            </li>
+            <li><b>OpenRouter</b>: requests go to <code>openrouter.ai</code> with your own key.</li>
+            <li>
+              <b>Your own server</b>, such as Ollama: requests go only to the address you
+              entered.
+            </li>
+          </ul>
+          Each provider handles your data under its own privacy policy.
+        </li>
+        <li>
+          <b>Web pages for the assistant</b>, only if you allow internet use in a chat.
+          The assistant can then read public <code>https://</code> pages. With OpenRouter
+          or your own server, znote fetches the page itself and refuses addresses on
+          your local network. With Claude, Claude Code's own web tools are used.
+        </li>
+      </ul>
+      <p>
+        These requests carry nothing about you beyond what is listed above. Like any web
+        server, each service sees the IP address a request comes from.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        znote is a general purpose writing tool and collects no personal data from
+        anyone, children included.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this policy changes, the updated version is posted on this page with a new
+        date above. The app is open source, so any change to what it does with your
+        data is visible in its history.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about this policy, or about the app, can go to
+        <a href="mailto:info@zal-analytics.nl">info@zal-analytics.nl</a> or to the
+        <a href="https://github.com/ZAL-Analytics/znote/issues">issue tracker</a>.
+      </p>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>
+          <a href="./">Download znote</a> &middot;
+          <a href="https://github.com/ZAL-Analytics/znote">Source on GitHub</a> &middot;
+          Apache 2.0 licence
+        </p>
+        <p class="made-by">Made by <a href="https://zal-analytics.nl">ZAL Analytics</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
