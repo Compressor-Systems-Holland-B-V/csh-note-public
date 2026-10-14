@@ -16,13 +16,10 @@
     "prompt": "Mesajınız"
   },
   "start": {
-    "title": "Şirket adları asistandan gizlensin mi?",
     "text": "Adlar, tutarlar ve iletişim bilgileri gönderilmeden önce ⟦CUSTOMER_3⟧ gibi etiketlere dönüşür.",
     "create": "Bilgi dosyası oluştur",
     "import": "Bir bilgi dosyasını içe aktar",
-    "notNow": "Şimdi değil",
     "later": "Bunu daha sonra Ayarlar'dan değiştirebilirsiniz.",
-    "downloadsTitle": "İsteğe bağlı indirmeler",
     "downloadsText": "İkisi de yalnızca bu bilgisayarda çalışır.",
     "how": "Nasıl çalışır"
   },

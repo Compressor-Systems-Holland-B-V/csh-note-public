@@ -4,6 +4,30 @@ All notable changes to znote are written down here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-10-14
+
+### Added
+
+- Three layouts: Edit (as before), Assistant (a large chat with the preview and
+  editor in tabs) and Redact (chat, page search and a redaction panel). Pick one
+  on first start or in Settings.
+- A first start that asks for the layout, what the assistant may see, the
+  knowledge base and the Marketplace. Every answer can be changed in Settings.
+- Each page has its own filter level, set in the editor's filter view (eye icon)
+  or when a page is added to a chat. It travels inside the `.znote` file.
+- Attached PDF and Office files are read as structured text with headings,
+  lists and tables, and the filter view shows them formatted.
+- The Marketplace can be switched off in Settings.
+
+### Changed
+
+- The Themes page is now called Marketplace. It offers add-ons that can change
+  the look, add page templates, or both.
+- Add-on files use the `.znx` extension. znote no longer reads `.znote-theme`
+  files; the contents are the same, so renaming such a file to `.znx` is enough
+  to import it again.
+- Shorter labels and hints throughout the app.
+
 ## [0.8.0] - 2026-10-14
 
 ### Added
@@ -64,5 +88,3 @@ All notable changes to znote are written down here. The format follows
 
 - The first version: a Tauri and SvelteKit window with the basic interface and a
   Windows build in CI.
-
-[0.8.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v0.8.0

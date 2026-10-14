@@ -181,7 +181,7 @@ fn checked(target: &Path, expected: usize, fresh: &[String]) -> Result<(), Strin
 
 pub fn absent(themes: &[String]) -> String {
     format!(
-        "This file cannot be opened because it needs themes that are not installed:\n• {}\nInstall them on the Themes page, then open the file again.",
+        "This file cannot be opened because it needs themes that are not installed:\n• {}\nInstall them in the Marketplace, then open the file again.",
         themes.join("\n• ")
     )
 }

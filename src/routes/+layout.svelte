@@ -4,7 +4,7 @@
   import { connect } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { loadThemes, theme } from "$lib/state/theme.svelte";
-  import { inDesktopApp, knowledgeSync, privacyOptions, projectNote } from "$lib/ipc";
+  import { inDesktopApp, knowledgeSync, privacyOptions, privacyPages, projectNote } from "$lib/ipc";
   import { privacy } from "$lib/state/privacy.svelte";
   import { noteOf, projects, start } from "$lib/state/project.svelte";
   import { setLocale } from "$lib/i18n.svelte";
@@ -44,6 +44,10 @@
     privacyOptions(options)
       .then(() => (options.knowledge && options.autoAdd ? knowledgeSync() : undefined))
       .catch(() => {});
+  });
+
+  $effect(() => {
+    if (inDesktopApp() && settings.loaded) privacyPages($state.snapshot(settings.values.pageLevels)).catch(() => {});
   });
 
   connect();

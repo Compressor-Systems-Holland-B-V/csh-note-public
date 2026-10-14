@@ -1,12 +1,12 @@
 {
-  "placeholder": "Choose a page, or create one, to start writing.",
+  "placeholder": "Pick or create a page to start.",
   "pages": "Pages",
   "switchProject": "Switch project",
   "noProject": "No project yet",
-  "noNotebooks": "This project has no notebooks yet.",
+  "noNotebooks": "No notebooks yet.",
   "noProjects": "Create a project to get started.",
   "noTemplate": "No template",
-  "assistantChanged": "The assistant changed this page",
+  "assistantChanged": "Changed by the assistant",
   "new": {
     "project": "New project",
     "notebook": "New notebook",
@@ -19,28 +19,28 @@
     "page": "Rename page"
   },
   "remove": {
-    "project": "Delete the project “{name}”?",
-    "notebook": "Delete the notebook “{name}”?",
-    "page": "Delete the page “{name}”?",
-    "text": "It moves to the Recycle Bin, with everything inside it."
+    "project": "Delete project “{name}”?",
+    "notebook": "Delete notebook “{name}”?",
+    "page": "Delete page “{name}”?",
+    "text": "Moves to the Recycle Bin with everything inside."
   },
   "menu": {
     "newProject": "New project…",
-    "renameProject": "Rename this project…",
-    "deleteProject": "Delete this project…",
+    "renameProject": "Rename project…",
+    "deleteProject": "Delete project…",
     "newPage": "New page…",
-    "importPage": "Import a page from a file…",
+    "importPage": "Import page…",
     "rename": "Rename…",
     "delete": "Delete…",
     "moveTo": "Move to {notebook}"
   },
   "name": {
-    "missing": "Type a name first.",
-    "slash": "A name cannot contain a slash."
+    "missing": "Enter a name.",
+    "slash": "A name can't contain /."
   },
   "replacePage": {
-    "title": "Replace this page with “{name}”?",
-    "text": "The text on this page is replaced by the text of the file."
+    "title": "Replace page with “{name}”?",
+    "text": "The current text on this page will be replaced."
   },
   "sample": {
     "project": "Getting started",
@@ -52,32 +52,34 @@
     "plain": "Plain document",
     "slides": "Slides"
   },
-  "unsavedOnClose": "Your latest changes could not be saved. Close again to leave without them. {reason}",
+  "unsavedOnClose": "Latest changes not saved. Close again to discard them. {reason}",
   "file": {
     "welcome": "Welcome to znote",
     "title": "Your znote files",
-    "text": "All your notes are saved in one file you can copy to another computer.",
+    "text": "All your notes in one file you can copy.",
     "new": "New znote file…",
-    "open": "Open a znote file…",
-    "bringIn": "Bring in the notes I already have…",
-    "recent": "Opened before",
-    "forget": "Remove from this list",
-    "forgetFile": "Remove {name} from this list",
-    "copy": "Save a copy of this znote file",
-    "switch": "Open or make another znote file",
+    "open": "Open znote file…",
+    "bringIn": "Import existing notes…",
+    "recent": "Recent",
+    "forget": "Remove from list",
+    "forgetFile": "Remove {name} from list",
+    "copy": "Save a copy",
+    "switch": "Switch znote file",
     "savedAt": "Saved at {time}",
-    "themesTitle": "Install the themes in this file?",
-    "themesText": "This file needs themes that are not installed yet.",
+    "themesTitle": "Install this file's themes?",
+    "themesText": "It uses themes that aren't installed.",
     "themesInstall": "Install and open",
-    "fontsTitle": "Some fonts are not available",
-    "fontsFallback": "Other fonts are used instead, so lines and pages may break differently.",
+    "fontsTitle": "Missing fonts",
+    "fontsFallback": "Other fonts are used, so the layout may shift.",
     "fontsMissing": "Not on this computer:",
-    "fontsLeftOut": "These fonts cannot be saved in the file:",
+    "fontsLeftOut": "Can't be saved in the file:",
     "fontsSeen": "OK"
   },
   "start": {
     "start": "Start",
-    "empty": "Files you open will show up here.",
+    "empty": "Opened files show here.",
     "back": "Back to {name}"
-  }
+  },
+  "search": "Search pages",
+  "noHits": "Nothing found."
 }

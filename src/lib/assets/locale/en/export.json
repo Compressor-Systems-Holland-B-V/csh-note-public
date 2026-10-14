@@ -5,14 +5,14 @@
   "pptxHint": "One slide per page. Only text stays editable.",
   "blocked": {
     "noPage": "Choose a page to export.",
-    "problems": "Fix the problems on this page first.",
-    "empty": "This page has nothing to export yet."
+    "problems": "Fix the problems first.",
+    "empty": "Nothing to export yet."
   },
   "run": "Export…",
   "running": "Exporting…",
-  "runningPage": "Exporting your page…",
+  "runningPage": "Exporting page…",
   "savedTo": "Saved to {path}",
-  "missingFonts": "PowerPoint will substitute these fonts: {fonts}",
+  "missingFonts": "Fonts replaced in PowerPoint: {fonts}",
   "openFile": "Open file",
   "showInFolder": "Show in folder"
 }

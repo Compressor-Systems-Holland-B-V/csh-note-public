@@ -1,14 +1,14 @@
 {
-  "preview": "What is sent to the assistant",
+  "preview": "Sent to the assistant",
   "addToKnowledge": "Add to knowledge base",
-  "restored": "Hidden from the assistant as: {kind}",
-  "unknownToken": "The assistant wrote a token znote does not know, so it could not be put back",
-  "otherKnowledge": "This chat hid names with another knowledge file. Hidden names may show as tokens.",
+  "restored": "Hidden as {kind}",
+  "unknownToken": "Unknown token, could not be restored",
+  "otherKnowledge": "Hidden with another knowledge file. Names may show as tokens.",
   "panel": {
     "hidden": "Hidden from assistant",
     "hiddenTitle": "Names, amounts and contact details are sent as tokens",
     "notHidden": "Not hidden",
-    "notHiddenTitle": "The assistant sees your pages and files exactly as they are",
+    "notHiddenTitle": "Pages and files are sent as they are",
     "locked": "Locked",
     "lockedTitle": "Open your knowledge file in Settings first."
   },
@@ -16,18 +16,15 @@
     "prompt": "Your message"
   },
   "start": {
-    "title": "Hide company names from the assistant?",
     "text": "Names, amounts and contact details become tokens like ⟦CUSTOMER_3⟧ before anything is sent.",
-    "create": "Create a knowledge file",
-    "import": "Import a knowledge file",
-    "notNow": "Not now",
-    "later": "You can change this later in Settings.",
-    "downloadsTitle": "Optional downloads",
+    "create": "New knowledge file",
+    "import": "Import knowledge file",
+    "later": "Change this later in Settings.",
     "downloadsText": "Both run only on this computer.",
     "how": "How it works"
   },
   "unlock": {
-    "title": "Open your knowledge file",
+    "title": "Open knowledge file",
     "text": "Type the password of “{name}”."
   },
   "form": {
@@ -38,9 +35,9 @@
     "current": "Current password",
     "password": "Password",
     "newPassword": "New password",
-    "again": "Type the password again",
+    "again": "Confirm password",
     "tooShort": "Use at least {count} characters.",
-    "mismatch": "The passwords are not the same.",
+    "mismatch": "Passwords don't match.",
     "exportHint": "Anyone with the copy and this password can see what is hidden.",
     "remember": "Remember on this computer",
     "rememberHint": "Saved in this computer's password store.",
@@ -53,10 +50,10 @@
     },
     "title": {
       "create": "New knowledge file",
-      "import": "Import a knowledge file",
-      "unlock": "Open the knowledge file",
+      "import": "Import knowledge file",
+      "unlock": "Open knowledge file",
       "export": "Export a copy",
-      "password": "Change the password"
+      "password": "Change password"
     }
   },
   "files": {
@@ -71,30 +68,30 @@
     "unlock": "Open…",
     "export": "Export…",
     "password": "Change password…",
-    "exported": "The copy was saved.",
+    "exported": "Copy saved.",
     "removeTitle": "Delete the knowledge file “{name}”?",
-    "removeText": "Its knowledge base is deleted and chats that used it can no longer continue. Export a copy first if needed."
+    "removeText": "Its knowledge base is deleted and chats that used it can't continue. Export a copy first if needed."
   },
   "settings": {
     "title": "Privacy",
     "text": "What the assistant may see and look up.",
     "needsFile": "Create or import a knowledge file first.",
-    "privacyVeil": "Hide names from the assistant",
+    "privacyVeil": "Hide names",
     "privacyVeilHint": "Customers, people, projects and contact details become tokens.",
-    "privacyAmounts": "Hide amounts of money",
-    "privacyAmountsHint": "The assistant cannot calculate with hidden amounts.",
-    "privacyNames": "Use the name finder",
-    "privacyNamesHint": "Also hides names that are not in your glossary. It will miss some.",
+    "privacyAmounts": "Hide amounts",
+    "privacyAmountsHint": "The assistant can't calculate with them.",
+    "privacyNames": "Name finder",
+    "privacyNamesHint": "Also hides names not in your glossary. Misses some.",
     "knowledgeOn": "Knowledge base",
     "knowledgeOnHint": "The assistant gets matching notes from your pages and files.",
-    "knowledgeAutoAdd": "Add my pages automatically",
-    "knowledgeAutoAddHint": "Pages are added when you save them."
+    "knowledgeAutoAdd": "Add pages automatically",
+    "knowledgeAutoAddHint": "Added when you save."
   },
   "models": {
     "names": "Name finder (about 50 MB)",
-    "namesHint": "Finds names of people, companies and places that are not in your glossary.",
+    "namesHint": "Finds people, companies and places not in your glossary.",
     "search": "Smart search (about 30 MB)",
-    "searchHint": "Finds notes by meaning, not only by the words in them.",
+    "searchHint": "Finds notes by meaning, not just words.",
     "download": "Download",
     "downloading": "Downloading… {done} of {total} MB",
     "ready": "Downloaded"
@@ -103,7 +100,7 @@
     "title": "Glossary",
     "loaded_one": "{count} term loaded",
     "loaded_other": "{count} terms loaded",
-    "none": "Only the standard categories. Import your own glossary (SKOS).",
+    "none": "Standard categories only. Import your own (SKOS).",
     "import": "Import…"
   },
   "index": {
@@ -111,19 +108,20 @@
     "rebuild": "Rebuild",
     "counts": "{sources} sources, {chunks} pieces",
     "forget": "Forget",
-    "empty": "Nothing in the knowledge base yet.",
+    "empty": "Nothing added yet.",
     "attachments": "Attached files"
   },
   "view": {
     "title": "What the assistant sees",
     "open": "Show what the assistant sees",
-    "close": "Back to the page",
-    "hint": "Right-click a token to show it, or select text and right-click to hide it.",
+    "close": "Back to page",
+    "hint": "Right-click a token to show it, or selected text to hide it.",
     "isHidden": "“{text}” is hidden as: {kind}",
-    "dontHide": "Don’t hide this",
+    "dontHide": "Don’t hide",
     "alwaysHide": "Always hide this",
     "hideAs": "Hide “{text}” as",
-    "kind": "Kind"
+    "kind": "Kind",
+    "lines": "{count} lines"
   },
   "kinds": {
     "CUSTOMER": "Customer",
@@ -140,5 +138,18 @@
     "light": "Light: also names of people",
     "medium": "Medium: also organisations and places",
     "strict": "Strict: also products, projects, customers and suppliers"
+  },
+  "redact": {
+    "title": "Redaction",
+    "off": "Hiding is off.",
+    "turnOn": "Turn on",
+    "none": "Nothing to hide on this page.",
+    "undo": "Undo (Ctrl+Z)",
+    "redo": "Redo (Ctrl+Y)",
+    "reset": "Reset this page",
+    "filter": "Filter",
+    "count": "{hidden} of {total} hidden",
+    "hideGroup": "Hide all {kind}",
+    "other": "Other"
   }
 }

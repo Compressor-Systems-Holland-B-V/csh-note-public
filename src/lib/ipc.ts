@@ -55,6 +55,8 @@ export const moveEntry = (from: string, to: string) => invoke<void>("move_entry"
 export const deleteEntry = (path: string) => invoke<void>("delete_entry", { path });
 
 export const readPage = (path: string) => invoke<string>("read_page", { path });
+export type Hit = { page: string; line: number; text: string };
+export const searchPages = (query: string) => invoke<Hit[]>("search_pages", { query });
 
 export const writePage = (path: string, text: string) => invoke<void>("write_page", { path, text });
 
@@ -257,10 +259,14 @@ export type ModelId = "names" | "search";
 export type Progress = { done: number; total: number };
 
 export const privacyOptions = (options: PrivacyOptions) => invoke<void>("privacy_options", { options });
+export const privacyPages = (levels: Record<string, number>) => invoke<void>("privacy_pages", { levels });
 
 export const privacyView = (text: string, level?: number) => invoke<Piece[]>("privacy_view", { text, level });
 
 export const privacyOverride = (text: string, kind: string | null) => invoke<void>("privacy_override", { text, kind });
+export type Override = { text: string; kind: string | null };
+export const privacyOverrides = () => invoke<Override[]>("privacy_overrides");
+export const privacyForget = (text: string) => invoke<void>("privacy_forget", { text });
 
 export const knowledgeStatus = () => invoke<KnowledgeStatus>("knowledge_status");
 

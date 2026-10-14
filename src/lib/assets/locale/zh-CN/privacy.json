@@ -16,13 +16,10 @@
     "prompt": "您的消息"
   },
   "start": {
-    "title": "要对助手隐藏公司名称吗？",
     "text": "发送前，名称、金额和联系方式会变成 ⟦CUSTOMER_3⟧ 这样的代号。",
     "create": "创建知识文件",
     "import": "导入知识文件",
-    "notNow": "以后再说",
     "later": "您以后可以在设置中更改此选项。",
-    "downloadsTitle": "可选下载",
     "downloadsText": "两者都只在这台电脑上运行。",
     "how": "工作原理"
   },

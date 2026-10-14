@@ -11,7 +11,7 @@ import { t, translated } from "$lib/i18n.svelte";
 type Backend = Pick<typeof ipc, "projectOpen" | "projectNew" | "projectAsked">;
 
 const maxRecent = 8;
-const carried = ["theme", "hiddenTemplates", "hiddenLooks", "lastPage"] as const;
+const carried = ["theme", "hiddenTemplates", "hiddenLooks", "lastPage", "pageLevels"] as const;
 
 export const noteOf = (values: Settings): Record<string, unknown> => Object.fromEntries(carried.map((key) => [key, values[key]]));
 const refreshDelayMs = 200;
@@ -79,7 +79,7 @@ export class Projects {
   private adopt(sent: unknown) {
     if (typeof sent !== "object" || sent === null) return;
     const sound = merged(sent as Record<string, unknown>, this.settings.values.theme === "dark");
-    for (const key of carried) if (key in sent) this.settings.set(key, sound[key] as never);
+    for (const key of carried) if (key in sent || key === "pageLevels") this.settings.set(key, sound[key] as never);
   }
 
   open(file: string | null = null) {
@@ -211,7 +211,7 @@ if (import.meta.vitest) {
     expect(chosen.values.recentProjects).toEqual(["/home/me/Acme plan.znote"]);
     expect(chosen.values).toMatchObject({ theme: "dark", hiddenLooks: ["plain"], fontSize: 14, hiddenTemplates: [] });
     expect(projects.missingFonts).toEqual(["Fancy"]);
-    expect(noteOf(chosen.values)).toEqual({ theme: "dark", hiddenTemplates: [], hiddenLooks: ["plain"], lastPage: null });
+    expect(noteOf(chosen.values)).toEqual({ theme: "dark", hiddenTemplates: [], hiddenLooks: ["plain"], lastPage: null, pageLevels: {} });
   });
 
   test("a znote file the app was started with is opened instead of the last one", async () => {

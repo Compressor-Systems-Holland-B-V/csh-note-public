@@ -1,5 +1,6 @@
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import type { Piece } from "$lib/ipc";
 
 const allowed = {
   ALLOWED_TAGS: ["p", "br", "strong", "em", "del", "code", "pre", "ul", "ol", "li", "blockquote"],
@@ -40,6 +41,26 @@ export function withMarks(html: string, restored: Mark[], unknown: string) {
     .join("");
 }
 
+const documentAllowed = {
+  ALLOWED_TAGS: [...allowed.ALLOWED_TAGS, "h1", "h2", "h3", "h4", "h5", "h6", "hr", "table", "thead", "tbody", "tr", "th", "td"],
+  ALLOWED_ATTR: [],
+};
+
+export const structured = (path?: string) => path !== undefined && /\.(docx|pptx|xlsx|odt|odp|ods)\.txt$|\.(pdf|md)$/i.test(path);
+
+export type TokenLook = { className: string; title: string };
+
+export function piecesHtml(pieces: Piece[], look: (piece: Piece) => TokenLook, purify: Pick<typeof DOMPurify, "sanitize"> = DOMPurify) {
+  const source = pieces.map((piece, index) => (piece.token ? `\uE000${index}\uE001` : piece.text.replace(/[\uE000\uE001]/g, "\uFFFD"))).join("");
+  const html = purify.sanitize(marked.parse(source, { async: false, breaks: true }), documentAllowed);
+  return html.replace(/\uE000(\d+)\uE001/g, (found, index: string) => {
+    const piece = pieces[Number(index)];
+    if (!piece?.token) return "";
+    const { className, title } = look(piece);
+    return `<button type="button" data-piece="${index}" class="${escaped(className)}" title="${escaped(title)}">${escaped(piece.token)}</button>`;
+  });
+}
+
 if (import.meta.vitest) {
   const { test, expect } = import.meta.vitest;
 
@@ -72,5 +93,31 @@ if (import.meta.vitest) {
     expect(longReply("Short answer.")).toBe(false);
     expect(longReply("x".repeat(601))).toBe(true);
     expect(longReply("line\n".repeat(12))).toBe(true);
+  });
+
+  test("a document keeps its headings, lists and tables, and hidden names become buttons", async () => {
+    const { JSDOM } = await import("jsdom");
+    const purify = DOMPurify(new JSDOM("").window);
+    const pieces: Piece[] = [
+      { text: "## Slide 1\n\n- Call ", token: null, kind: null },
+      { text: "Tom", token: "⟦PERSON_1⟧", kind: "person" },
+      { text: " today\n\n| Name | Role |\n| --- | --- |\n| ", token: null, kind: null },
+      { text: "Ann", token: "⟦PERSON_2⟧", kind: "person" },
+      { text: ' | <img src=x onerror="alert(1)"> \uE0001\uE001 |', token: null, kind: null },
+    ];
+    const html = piecesHtml(pieces, (piece) => ({ className: `token ${piece.kind}`, title: `${piece.text} "x"` }), purify);
+    expect(html).toContain("<h2>Slide 1</h2>");
+    expect(html).toContain('<li>Call <button type="button" data-piece="1" class="token person" title="Tom &#34;x&#34;">⟦PERSON_1⟧</button> today</li>');
+    expect(html).toContain("<th>Name</th>");
+    expect(html).toContain('<td><button type="button" data-piece="3"');
+    expect(html.match(/<button/g)).toHaveLength(2);
+    for (const banned of ["<img", "onerror"]) expect(html).not.toContain(banned);
+  });
+
+  test("only extracted documents and markdown files are shown as documents", () => {
+    expect(structured("chat/1-plan.docx.txt")).toBe(true);
+    expect(structured("chat/2-report.PDF")).toBe(true);
+    expect(structured("chat/3-notes.txt")).toBe(false);
+    expect(structured(undefined)).toBe(false);
   });
 }

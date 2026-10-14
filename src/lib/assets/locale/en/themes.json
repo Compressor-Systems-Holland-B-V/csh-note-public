@@ -1,12 +1,12 @@
 {
-  "title": "Themes",
+  "title": "Marketplace",
   "look": "Look",
-  "import": "Import a theme file…",
-  "intro": "Themes change the look, add page templates, or both.",
-  "storeFailure": "{reason} Themes you already installed are shown below.",
-  "search": "Search themes",
+  "import": "Import .znx file…",
+  "intro": "Add-ons change the look, add page templates, or both.",
+  "storeFailure": "{reason} Showing installed add-ons only.",
+  "search": "Search add-ons",
   "installed": "Installed",
-  "none": "No theme matches.",
+  "none": "No matches.",
   "kind": {
     "look": "Look only",
     "both": "Look and templates",
@@ -14,18 +14,18 @@
   },
   "contents": {
     "look": "Changes the look",
-    "both": "Changes the look and adds page templates",
-    "templates": "Adds page templates"
+    "both": "Changes the look, adds templates",
+    "templates": "Adds templates"
   },
   "version": "Version {version}",
   "lookSwitch": "Look",
-  "lookSwitchTitle": "Show this theme in the list of looks",
+  "lookSwitchTitle": "Show in looks",
   "templatesSwitch": "Templates",
-  "templatesSwitchTitle": "Show this theme's templates when you pick a template",
+  "templatesSwitchTitle": "Show in template picker",
   "install": "Install",
   "installing": "Installing…",
   "update": "Update",
   "updating": "Updating…",
   "remove": "Remove",
-  "removeTheme": "Remove the theme {name}"
+  "removeTheme": "Remove {name}"
 }

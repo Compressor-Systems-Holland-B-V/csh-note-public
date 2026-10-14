@@ -16,13 +16,10 @@
     "prompt": "Meldingen din"
   },
   "start": {
-    "title": "Skjule firmanavn for assistenten?",
     "text": "Navn, beløp og kontaktopplysninger blir til plassholdere som ⟦CUSTOMER_3⟧ før noe sendes.",
     "create": "Opprett en kunnskapsfil",
     "import": "Importer en kunnskapsfil",
-    "notNow": "Ikke nå",
     "later": "Du kan endre dette senere i Innstillinger.",
-    "downloadsTitle": "Valgfrie nedlastinger",
     "downloadsText": "Begge kjører bare på denne datamaskinen.",
     "how": "Slik fungerer det"
   },

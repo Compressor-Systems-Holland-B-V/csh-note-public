@@ -16,13 +16,10 @@
     "prompt": "Il tuo messaggio"
   },
   "start": {
-    "title": "Nascondere i nomi delle aziende all'assistente?",
     "text": "Nomi, importi e recapiti diventano segnaposto come ⟦CUSTOMER_3⟧ prima di qualsiasi invio.",
     "create": "Crea un file di conoscenza",
     "import": "Importa un file di conoscenza",
-    "notNow": "Non ora",
     "later": "Puoi cambiare questa scelta più tardi nelle Impostazioni.",
-    "downloadsTitle": "Download facoltativi",
     "downloadsText": "Entrambi funzionano solo su questo computer.",
     "how": "Come funziona"
   },

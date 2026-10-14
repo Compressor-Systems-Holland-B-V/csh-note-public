@@ -1,11 +1,12 @@
-# The `.znote-theme` format
+# The `.znx` format
 
-A `.znote-theme` file rebrands znote: colours, logo, font and document templates. Users import it
-under Settings > Themes > Import. This page is for people who make one.
+A `.znx` file is a znote add-on. It can carry a UI look (colours, logo, font), Typst document
+templates, or both. Users get one from the Marketplace or import it there with "Import a .znx
+file". This page is for people who make one.
 
 ## Layout
 
-A `.znote-theme` is a zip archive with a different extension:
+A `.znx` is a zip archive with a different extension:
 
 ```
 theme.json     required
@@ -13,7 +14,7 @@ ui/            logos and fonts for the app itself
 typst/         a normal Typst package: typst.toml, lib.typ, assets/, fonts/ ...
 ```
 
-Both `ui` and `typst` are optional, so one file can be a UI theme, a set of templates, or both.
+Both `ui` and `typst` are optional, so one file can be a UI look, a set of templates, or both.
 Zip the three entries themselves, not a folder that contains them.
 
 ## `theme.json`
@@ -53,7 +54,7 @@ Zip the three entries themselves, not a folder that contains them.
 | `name` | Shown in Settings. Letters, digits, spaces and `- _ . &`, at most 60 characters. |
 | `version` | Three numbers, like `0.1.0`. |
 | `description` | Optional. One or two sentences shown on the theme card, at most 200 characters. |
-| `category` | Optional. One word or short name the Themes page can filter on, such as `Academic`, `Business`, `Technical`, `Education`, `Personal`, `Creative` or `Interface`. |
+| `category` | Optional. One word or short name the Marketplace can filter on, such as `Academic`, `Business`, `Technical`, `Education`, `Personal`, `Creative` or `Interface`. |
 | `tags` | Optional. Up to 10 short words that the search box also looks at. |
 | `ui.logo`, `ui.logoDark` | Shown in the title bar. `svg`, `png`, `jpg` or `jpeg`. The dark logo is used in dark mode and falls back to `logo`. |
 | `ui.font` | `family` is the name the app uses; `files` are `ttf` or `otf`. List one file per weight and style; the weight and style are read from each file. |
@@ -108,12 +109,12 @@ Picking another template replaces that block and leaves the rest of the page alo
 - Every entry must stay inside the theme folder; names with `..`, `\` or `:` are refused.
 - A theme that breaks any rule on this page is not imported, and the app says which rule.
 
-## The theme store
+## The Marketplace
 
-The Themes page also lists the themes published at
+The Marketplace also lists the add-ons published at
 <https://huggingface.co/datasets/zal-analytics-core/znote-data>. That list is `index.json`, an
-array with the `theme.json` of every published theme, and each theme is downloaded from
-`themes/<id>.znote-theme`. A downloaded theme goes through the same checks as an imported file.
+array with the `theme.json` of every published add-on, and each add-on is downloaded from
+`themes/<id>.znx`. A downloaded add-on goes through the same checks as an imported file.
 
 The sources live in the local `data/src/<id>/` folders, one folder per theme laid out like the
 archive. `scripts/sync_data --build` zips them and writes `index.json`, `--upload` also checks that

@@ -93,6 +93,7 @@ pub struct Open {
 pub struct Knowledge {
     open: Mutex<Option<Open>>,
     options: Mutex<Options>,
+    pages: Mutex<HashMap<String, u8>>,
     finder: Mutex<Option<Finder>>,
     embedder: Mutex<Option<StaticModel>>,
     picked: Mutex<Option<PathBuf>>,
@@ -532,6 +533,26 @@ impl Gate<'_> {
 
     pub fn veil(&self, text: &str) -> Result<Veiled, String> {
         self.veil_at(text, LIGHT)
+    }
+
+    pub fn page_level(&self, page: &str) -> u8 {
+        self.knowledge
+            .pages
+            .lock()
+            .ok()
+            .and_then(|pages| pages.get(page).copied())
+            .unwrap_or(LIGHT)
+            .min(STRICT)
+    }
+
+    pub fn strictest(&self) -> u8 {
+        self.knowledge
+            .pages
+            .lock()
+            .ok()
+            .and_then(|pages| pages.values().copied().max())
+            .unwrap_or(LIGHT)
+            .clamp(LIGHT, STRICT)
     }
 
     pub fn veil_at(&self, text: &str, level: u8) -> Result<Veiled, String> {
@@ -1023,6 +1044,12 @@ pub fn knowledge_rebuild(app: AppHandle) -> Result<Status, String> {
     status(&app)
 }
 
+#[tauri::command]
+pub fn privacy_pages(app: AppHandle, levels: HashMap<String, u8>) -> Result<(), String> {
+    *locked(&app.state::<Knowledge>().pages)? = levels;
+    Ok(())
+}
+
 #[tauri::command(async)]
 pub fn privacy_options(app: AppHandle, options: Options) -> Result<(), String> {
     *locked(&app.state::<Knowledge>().options)? = options;
@@ -1326,6 +1353,25 @@ pub fn privacy_override(app: AppHandle, text: String, kind: Option<String>) -> R
         .ok_or_else(|| LOCKED.to_string())
 }
 
+#[tauri::command(async)]
+pub fn privacy_overrides(app: AppHandle) -> Result<Vec<Override>, String> {
+    app.state::<Knowledge>()
+        .with(|open| read_overrides(&open.db))?
+        .ok_or_else(|| LOCKED.to_string())
+}
+
+#[tauri::command(async)]
+pub fn privacy_forget(app: AppHandle, text: String) -> Result<(), String> {
+    app.state::<Knowledge>()
+        .with(|open| {
+            open.db
+                .execute("DELETE FROM overrides WHERE text = ?1", [text.trim()])
+                .map_err(sql)?;
+            open.rebuild()
+        })?
+        .ok_or_else(|| LOCKED.to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1487,6 +1533,19 @@ mod tests {
             ..Options::default()
         };
         assert_eq!(knowledge.gate().err().as_deref(), Some(LOCKED));
+    }
+
+    #[test]
+    fn a_page_without_a_level_is_light_and_search_uses_the_strictest() {
+        let knowledge = Knowledge::default();
+        let gate = knowledge.gate().unwrap();
+        assert_eq!(gate.page_level("Work/Notes/Monday"), LIGHT);
+        assert_eq!(gate.strictest(), LIGHT);
+        *knowledge.pages.lock().unwrap() =
+            HashMap::from([("Work/Notes/Monday".into(), 9), ("Work/Notes/Tuesday".into(), 0)]);
+        assert_eq!(gate.page_level("Work/Notes/Monday"), STRICT);
+        assert_eq!(gate.page_level("Work/Notes/Tuesday"), 0);
+        assert_eq!(gate.strictest(), STRICT);
     }
 
     #[test]

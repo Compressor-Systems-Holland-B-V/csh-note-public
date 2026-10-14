@@ -400,23 +400,13 @@ fn page(input: &Value) -> String {
 }
 
 fn search(root: &Path, query: &str) -> Result<String, String> {
-    let query = query.trim().to_lowercase();
-    if query.is_empty() {
+    if query.trim().is_empty() {
         return Err("Give a text to look for.".into());
     }
-    let hits: Vec<String> = workspace::pages(root)
+    let hits: Vec<String> = workspace::find(root, query, MAX_HITS)
         .into_iter()
-        .flat_map(|page| {
-            let text = workspace::read_text(root, &page).unwrap_or_default();
-            let found: Vec<String> = text
-                .lines()
-                .enumerate()
-                .filter(|(_, line)| line.to_lowercase().contains(&query))
-                .map(|(number, line)| format!("{page}.typ:{}: {}", number + 1, line.trim()))
-                .collect();
-            found
-        })
-        .take(MAX_HITS)
+        .filter(|hit| hit.line > 0)
+        .map(|hit| format!("{}.typ:{}: {}", hit.page, hit.line, hit.text))
         .collect();
     Ok(if hits.is_empty() {
         "Nothing found.".into()
@@ -542,6 +532,8 @@ impl Tools<'_> {
                 .as_str()
                 .and_then(|name| Path::new(name).file_name())
                 .map_or(LIGHT, |name| level_of(self.folder, &name.to_string_lossy())),
+            "read_page" => self.gate.page_level(&page(&input)),
+            "search_pages" => self.gate.strictest(),
             _ => LIGHT,
         };
         match self.gate.veil_at(&output, level) {

@@ -32,9 +32,12 @@
   import ReferenceIcon from "./ReferenceIcon.svelte";
   import PresetDialog from "./PresetDialog.svelte";
   import VeiledView from "./VeiledView.svelte";
+  import { structured } from "$lib/markdown";
   import { t } from "$lib/i18n.svelte";
 
   const sizeIcons: Record<string, typeof Scale> = { quick: Zap, balanced: Scale, thorough: Microscope };
+
+  let { wide = false }: { wide?: boolean } = $props();
 
   let host: HTMLDivElement;
   let advanced = $state(false);
@@ -103,7 +106,7 @@
 </script>
 
 <form
-  class="grid shrink-0 grid-cols-[minmax(0,1fr)] gap-2 border-t px-4 py-3"
+  class="grid shrink-0 grid-cols-[minmax(0,1fr)] gap-2 py-3 {wide ? 'px-[max(1rem,calc(50%-24rem))]' : 'border-t px-4'}"
   onsubmit={(event) => {
     event.preventDefault();
     send();
@@ -139,7 +142,7 @@
   {/if}
   <div
     bind:this={host}
-    class="h-40 overflow-hidden rounded-md border border-input shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30"
+    class="{wide ? 'h-56 text-base' : 'h-40'} overflow-hidden rounded-md border border-input shadow-xs focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30"
   ></div>
   <div class="flex min-w-0 items-center gap-1">
     <div class="flex shrink-0 gap-0.5 rounded-md border p-0.5" role="radiogroup" aria-label={t("assistant.composer.presets")}>
@@ -227,11 +230,13 @@
 <PresetDialog bind:open={advanced} />
 {#if viewing}
   {@const reference = viewing}
+  {@const page = reference.path === undefined && referenceKind(reference.label) === "page"}
   <VeiledView
     load={() => textOf(reference)}
     editable
-    level={reference.path === undefined ? undefined : (reference.level ?? 1)}
-    onlevel={reference.path === undefined ? undefined : (level) => agent.setLevel(reference, level)}
+    markdown={structured(reference.path)}
+    level={reference.path !== undefined ? (reference.level ?? 1) : page ? privacy.pageLevel(reference.label) : undefined}
+    onlevel={reference.path !== undefined ? (level) => agent.setLevel(reference, level) : page ? (level) => privacy.setPageLevel(reference.label, level) : undefined}
     onclose={() => (viewing = null)}
   />
 {/if}

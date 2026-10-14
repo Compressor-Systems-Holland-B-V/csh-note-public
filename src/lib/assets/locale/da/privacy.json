@@ -16,13 +16,10 @@
     "prompt": "Din besked"
   },
   "start": {
-    "title": "Skjul firmanavne for assistenten?",
     "text": "Navne, beløb og kontaktoplysninger bliver til pladsholdere som ⟦CUSTOMER_3⟧, før noget sendes.",
     "create": "Opret en vidensfil",
     "import": "Importér en vidensfil",
-    "notNow": "Ikke nu",
     "later": "Du kan ændre det senere i Indstillinger.",
-    "downloadsTitle": "Valgfrie downloads",
     "downloadsText": "Begge kører kun på denne computer.",
     "how": "Sådan virker det"
   },

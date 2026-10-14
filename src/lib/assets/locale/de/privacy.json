@@ -16,13 +16,10 @@
     "prompt": "Ihre Nachricht"
   },
   "start": {
-    "title": "Firmennamen vor dem Assistenten verbergen?",
     "text": "Namen, Beträge und Kontaktdaten werden zu Kürzeln wie ⟦CUSTOMER_3⟧, bevor etwas gesendet wird.",
     "create": "Wissensdatei erstellen",
     "import": "Wissensdatei importieren",
-    "notNow": "Jetzt nicht",
     "later": "Sie können das später in den Einstellungen ändern.",
-    "downloadsTitle": "Optionale Downloads",
     "downloadsText": "Beide laufen nur auf diesem Computer.",
     "how": "So funktioniert es"
   },

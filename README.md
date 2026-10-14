@@ -20,7 +20,7 @@ Get znote for Windows, macOS or Linux from the
 - Works with your local files
 
 **Documentation**
-- [The `.znote-theme` format](docs/znote-theme.md): how to build a theme file with UI colours, logos, fonts and Typst templates
+- [The `.znx` format](docs/znx.md): how to build a Marketplace add-on with a UI look, Typst templates, or both
 - [The `.znote-knowledge` format](docs/znote-knowledge.md): the encrypted file that remembers what is hidden and holds the knowledge base
 - [SKOS glossaries](docs/skos-glossary.md): which terms to hide, for whoever builds a glossary
 

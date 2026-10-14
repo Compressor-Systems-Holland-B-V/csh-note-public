@@ -16,13 +16,10 @@
     "prompt": "您的訊息"
   },
   "start": {
-    "title": "要對助理隱藏公司名稱嗎？",
     "text": "傳送前，名稱、金額和聯絡資訊會換成 ⟦CUSTOMER_3⟧ 這樣的代號。",
     "create": "建立知識檔案",
     "import": "匯入知識檔案",
-    "notNow": "以後再說",
     "later": "您之後可以在設定中變更。",
-    "downloadsTitle": "選用的下載項目",
     "downloadsText": "兩者都只在這部電腦上執行。",
     "how": "運作方式"
   },

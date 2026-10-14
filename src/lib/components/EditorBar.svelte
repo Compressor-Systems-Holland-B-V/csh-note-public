@@ -2,11 +2,11 @@
   import AArrowDown from "@lucide/svelte/icons/a-arrow-down";
   import AArrowUp from "@lucide/svelte/icons/a-arrow-up";
   import CheckCheck from "@lucide/svelte/icons/check-check";
+  import Eye from "@lucide/svelte/icons/eye";
   import FolderOpen from "@lucide/svelte/icons/folder-open";
   import GitCompare from "@lucide/svelte/icons/git-compare";
   import Lock from "@lucide/svelte/icons/lock";
   import Save from "@lucide/svelte/icons/save";
-  import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import Undo2 from "@lucide/svelte/icons/undo-2";
   import TemplatePicker from "$lib/components/TemplatePicker.svelte";
   import { Button } from "$lib/components/ui/button";
@@ -44,7 +44,7 @@
       title={viewLabel}
       onclick={() => (privacy.viewing = !privacy.viewing)}
     >
-      <ShieldCheck />
+      <Eye />
     </Button>
   {/if}
   {#if agent.locked}

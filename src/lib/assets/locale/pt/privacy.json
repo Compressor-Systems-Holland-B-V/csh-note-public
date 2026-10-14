@@ -16,13 +16,10 @@
     "prompt": "A sua mensagem"
   },
   "start": {
-    "title": "Ocultar os nomes de empresas do assistente?",
     "text": "Nomes, montantes e contactos tornam-se códigos como ⟦CUSTOMER_3⟧ antes de qualquer envio.",
     "create": "Criar um ficheiro de conhecimento",
     "import": "Importar um ficheiro de conhecimento",
-    "notNow": "Agora não",
     "later": "Pode alterar isto mais tarde nas Definições.",
-    "downloadsTitle": "Transferências opcionais",
     "downloadsText": "Ambas funcionam apenas neste computador.",
     "how": "Como funciona"
   },

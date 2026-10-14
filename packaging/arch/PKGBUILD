@@ -1,5 +1,5 @@
 pkgname=znote
-pkgver=0.8.0
+pkgver=0.9.0
 pkgrel=1
 pkgdesc="A lightweight desktop editor for Typst with live preview"
 arch=('x86_64')

@@ -3,6 +3,9 @@ import type { Preset } from "$lib/assistant";
 import { readSettings, writeSetting } from "$lib/ipc";
 import { messageOf } from "$lib/utils";
 
+export const layouts = ["edit", "agent", "redaction"] as const;
+export type Layout = (typeof layouts)[number];
+
 export type Settings = {
   workspace: string | null;
   project: string | null;
@@ -27,6 +30,10 @@ export type Settings = {
   privacyNames: boolean;
   knowledgeOn: boolean;
   knowledgeAutoAdd: boolean;
+  pageLevels: Record<string, number>;
+  layout: Layout;
+  marketplace: boolean;
+  setupAsked: boolean;
 };
 
 type Persist = (key: string, value: unknown) => Promise<void>;
@@ -57,15 +64,24 @@ export const defaults: Settings = {
   privacyNames: false,
   knowledgeOn: false,
   knowledgeAutoAdd: true,
+  pageLevels: {},
+  layout: "edit",
+  marketplace: true,
+  setupAsked: false,
 };
 
 export function merged(stored: Record<string, unknown>, osPrefersDark: boolean): Settings {
   const text = (value: unknown) => (typeof value === "string" ? value : null);
   const flag = (value: unknown, fallback: boolean) => (typeof value === "boolean" ? value : fallback);
-  const { fontSize, zoom, theme } = stored;
+  const { fontSize, zoom, theme, layout } = stored;
   const ids = (value: unknown) => (Array.isArray(value) ? value.filter((id) => typeof id === "string") : []);
   const names = (value: unknown) =>
     Object.fromEntries(Object.entries(typeof value === "object" && value !== null ? value : {}).filter((entry): entry is [string, string] => typeof entry[1] === "string"));
+  const levels = Object.fromEntries(
+    Object.entries(typeof stored.pageLevels === "object" && stored.pageLevels !== null ? stored.pageLevels : {}).filter(
+      (entry): entry is [string, number] => Number.isInteger(entry[1]) && entry[1] >= 0 && entry[1] <= 3,
+    ),
+  );
   return {
     workspace: text(stored.workspace),
     project: text(stored.project),
@@ -93,6 +109,10 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     privacyNames: flag(stored.privacyNames, defaults.privacyNames),
     knowledgeOn: flag(stored.knowledgeOn, defaults.knowledgeOn),
     knowledgeAutoAdd: flag(stored.knowledgeAutoAdd, defaults.knowledgeAutoAdd),
+    pageLevels: levels,
+    layout: layouts.find((known) => known === layout) ?? defaults.layout,
+    marketplace: flag(stored.marketplace, defaults.marketplace),
+    setupAsked: flag(stored.setupAsked, defaults.setupAsked),
   };
 }
 
@@ -131,6 +151,8 @@ if (import.meta.vitest) {
     expect(merged(stored, true)).toEqual({ ...defaults, ...stored });
     expect(merged({ fontSize: "huge", wordWrap: 1, zoom: -1, theme: "pink", workspace: 7, uiTheme: 3, hiddenTemplates: "all", hiddenLooks: [7] }, false)).toEqual(defaults);
     expect(merged({ fontSize: 400 }, false).fontSize).toBe(defaults.fontSize);
+    expect(merged({ pageLevels: { "Work/A": 3, "Work/B": 7, "Work/C": "high" }, layout: "agent" }, false)).toMatchObject({ pageLevels: { "Work/A": 3 }, layout: "agent" });
+    expect(merged({ layout: "huge" }, false).layout).toBe("edit");
     expect(merged({ assistantModels: { custom: "llama", claude: 7 }, assistantProvider: "custom" }, false)).toMatchObject({ assistantModels: { custom: "llama" }, assistantProvider: "custom" });
   });
 

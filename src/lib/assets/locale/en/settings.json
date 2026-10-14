@@ -1,19 +1,42 @@
 {
   "general": "General",
   "editor": "Editor",
-  "fontSize": "Editor text size",
+  "fontSize": "Text size",
   "wrap": "Wrap long lines",
   "autosave": "Save automatically",
-  "autosaveHint": "When this is off, press Ctrl+S to save.",
-  "zoom": "Preview size at start",
+  "autosaveHint": "If off, press Ctrl+S to save.",
+  "zoom": "Preview zoom",
   "appearance": "Appearance",
   "light": "Light",
   "dark": "Dark",
   "look": "Look",
-  "lookHint": "Add more looks on the Themes page.",
+  "lookHint": "More in the Marketplace.",
   "language": "Language",
   "languageAuto": "Same as this computer",
   "assistant": "Assistant",
-  "file": "Your znote file",
-  "switch": "Switch…"
+  "file": "znote file",
+  "switch": "Switch…",
+  "layout": "Layout",
+  "layouts": {
+    "edit": "Typst with live preview.",
+    "agent": "Chat first, preview on the side.",
+    "redaction": "Find pages, control what is hidden."
+  },
+  "parts": {
+    "pages": "Pages",
+    "editor": "Editor",
+    "preview": "Preview",
+    "assistant": "Chat",
+    "search": "Search",
+    "filter": "Filter"
+  },
+  "marketplace": "Marketplace",
+  "marketplaceHint": "Install looks and templates.",
+  "start": {
+    "layout": "How do you want to work?",
+    "privacy": "What may the assistant see?",
+    "file": "Knowledge file",
+    "downloads": "Downloads",
+    "marketplace": "Marketplace"
+  }
 }

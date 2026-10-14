@@ -16,13 +16,10 @@
     "prompt": "Tu mensaje"
   },
   "start": {
-    "title": "¿Ocultar los nombres de empresas al asistente?",
     "text": "Los nombres, importes y datos de contacto se convierten en códigos como ⟦CUSTOMER_3⟧ antes de enviar nada.",
     "create": "Crear un archivo de conocimiento",
     "import": "Importar un archivo de conocimiento",
-    "notNow": "Ahora no",
     "later": "Puedes cambiarlo más tarde en Configuración.",
-    "downloadsTitle": "Descargas opcionales",
     "downloadsText": "Ambas funcionan solo en este equipo.",
     "how": "Cómo funciona"
   },

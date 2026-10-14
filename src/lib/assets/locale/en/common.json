@@ -17,22 +17,30 @@
   "mode": {
     "edit": "Edit",
     "export": "Export",
-    "themes": "Themes"
+    "themes": "Marketplace"
   },
   "appearance": {
     "toLight": "Switch to light mode",
     "toDark": "Switch to dark mode"
   },
   "assistant": {
-    "show": "Show the assistant",
-    "hide": "Hide the assistant"
+    "show": "Show assistant",
+    "hide": "Hide assistant"
   },
   "status": {
-    "more": "{problem} (and {count} more)",
+    "more": "{problem} (+{count} more)",
     "assistant": "Assistant: {activity}",
     "working": "Working…",
-    "downloading": "Downloading package {name}…",
-    "previewFailed": "The preview could not be updated: {reason}",
+    "downloading": "Downloading {name}…",
+    "previewFailed": "Preview not updated: {reason}",
     "desktopOnly": "it only works in the desktop app."
+  },
+  "preview": "Preview",
+  "back": "Back",
+  "finish": "Finish",
+  "layout": {
+    "edit": "Edit",
+    "agent": "Assistant",
+    "redaction": "Redact"
   }
 }

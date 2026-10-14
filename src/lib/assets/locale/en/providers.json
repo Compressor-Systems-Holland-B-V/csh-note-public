@@ -1,7 +1,7 @@
 {
   "connectTitle": "Connect the assistant",
   "connectText": "Choose what the assistant runs on.",
-  "chooseElse": "Choose something else",
+  "chooseElse": "Back",
   "nameConnected": "{name} · connected",
   "dialogText": "Connect one or more and pick a default.",
   "connected": "Connected",
@@ -11,25 +11,25 @@
   "checking": "Checking…",
   "list": {
     "claude": "Claude Code",
-    "claudeHint": "Your Claude subscription or API account",
+    "claudeHint": "Claude subscription or API account",
     "openrouter": "OpenRouter",
-    "openrouterHint": "One API key for models from many companies",
+    "openrouterHint": "Many models with one API key",
     "custom": "Your own server",
     "customHint": "Ollama, LM Studio or any OpenAI-compatible server"
   },
   "model": {
-    "type": "Type the name of a model",
+    "type": "Model name",
     "missing": "Choose a model that supports tools.",
-    "hint": "Used when a chat or preset does not pick another model."
+    "hint": "Used unless a chat or preset picks another."
   },
   "signIn": {
     "installing": "Downloading Claude Code…",
-    "finish": "Finish signing in in your browser…",
+    "finish": "Finish sign-in in your browser…",
     "noBrowser": "Browser didn't open? Open this link, then paste the code it shows.",
     "link": "Sign-in link",
-    "copyLink": "Copy the sign-in link",
+    "copyLink": "Copy link",
     "code": "Code from the browser",
-    "unfinished": "The sign-in did not finish. Press Connect to try again.",
+    "unfinished": "Sign-in did not finish. Press Connect to retry.",
     "note": "Sign in once in your browser with your own account.",
     "subscription": "Claude subscription",
     "subscriptionHint": "Pro, Max or Team plan",
@@ -41,7 +41,7 @@
   "key": {
     "server": "Server address",
     "label": "API key",
-    "labelOptional": "API key (if the server needs one)",
+    "labelOptional": "API key (optional)",
     "note": "Stored encrypted on this computer and never shown again."
   }
 }

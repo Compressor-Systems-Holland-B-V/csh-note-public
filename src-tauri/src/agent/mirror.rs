@@ -17,6 +17,8 @@ const CHAT_FILES: [&str; 4] = ["chat.json", "history.json", "system.txt", "veil.
 struct Copy {
     real: String,
     veiled: String,
+    #[serde(default)]
+    level: u8,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -91,20 +93,22 @@ impl Mirror {
             let Some(file) = page_path(&root, page) else {
                 continue;
             };
+            let level = gate.page_level(page);
             let known = state.pages.get(page);
-            let unchanged = known.is_some_and(|copy| copy.real == hash(&real))
+            let unchanged = known.is_some_and(|copy| copy.real == hash(&real) && copy.level == level)
                 && fs::read_to_string(&file)
                     .is_ok_and(|text| known.is_some_and(|copy| copy.veiled == hash(&text)));
             if unchanged {
                 continue;
             }
-            let veiled = gate.veil(&real)?.text;
+            let veiled = gate.veil_at(&real, level)?.text;
             write(&file, &veiled)?;
             state.pages.insert(
                 page.clone(),
                 Copy {
                     real: hash(&real),
                     veiled: hash(&veiled),
+                    level,
                 },
             );
         }
@@ -200,6 +204,7 @@ impl Mirror {
         let copy = Copy {
             real: hash(&theirs),
             veiled: hash(&veiled),
+            level: gate.page_level(page),
         };
         if theirs == now {
             self.state.pages.insert(page.into(), copy);

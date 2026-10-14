@@ -607,7 +607,7 @@ mod tests {
             let id = entry["id"].as_str().unwrap();
             theme::install(
                 &themes,
-                &data.join("themes").join(format!("{id}.znote-theme")),
+                &data.join("themes").join(format!("{id}.znx")),
             )
             .unwrap();
         }

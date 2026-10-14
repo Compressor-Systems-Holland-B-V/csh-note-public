@@ -13,14 +13,13 @@
   import { projects } from "$lib/state/project.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
+  import LayoutPicker from "./LayoutPicker.svelte";
   import Picker from "./Picker.svelte";
   import PrivacySettings from "./PrivacySettings.svelte";
   import ProviderList from "./ProviderList.svelte";
   import { languageOptions, t } from "$lib/i18n.svelte";
 
-  let { open = $bindable() }: { open: boolean } = $props();
-
-  let section = $state("general");
+  let { open = $bindable(), section = $bindable("general") }: { open: boolean; section?: string } = $props();
 
   const sections = $derived([
     { id: "general", icon: Settings, label: t("settings.general") },
@@ -90,6 +89,14 @@
           <div class={row}>
             {@render text("settings-language", t("settings.language"))}
             <Picker id="settings-language" value={settings.values.language} options={languageOptions()} onchange={(language) => settings.set("language", language)} />
+          </div>
+          <div class="grid gap-2 py-3">
+            <p class="text-sm font-medium">{t("settings.layout")}</p>
+            <LayoutPicker />
+          </div>
+          <div class={row}>
+            {@render text("settings-marketplace", t("settings.marketplace"), t("settings.marketplaceHint"))}
+            <Switch id="settings-marketplace" checked={settings.values.marketplace} onCheckedChange={(checked) => settings.set("marketplace", checked)} />
           </div>
           <div class={row}>
             {@render text("settings-autosave", t("settings.autosave"), t("settings.autosaveHint"))}

@@ -1,11 +1,11 @@
 {
   "title": "Assistant",
-  "checking": "Checking the connection…",
+  "checking": "Checking connection…",
   "timeSoFar": "Time so far",
   "seconds": "{seconds}s",
   "showMore": "Show more",
   "showLess": "Show less",
-  "chatSaveFailed": "Your chat could not be saved: {reason}",
+  "chatSaveFailed": "Could not save chat: {reason}",
   "empty": {
     "title": "What should I write?"
   },
@@ -18,47 +18,47 @@
     "message": "Message to the assistant",
     "references": "What the assistant will look at",
     "removeReference": "Remove {label}",
-    "add": "Add a page or a file",
-    "addTitle": "Point the assistant to a page, or attach a file",
-    "attach": "Attach files from this computer…",
-    "web": "Let the assistant use the internet in this chat",
-    "wholeProject": "The whole project",
-    "wholeNotebook": "The whole notebook",
-    "presets": "How the assistant should work",
-    "advanced": "Advanced assistant settings",
-    "advancedTitle": "Advanced: change these choices or make your own",
+    "add": "Add page or file",
+    "addTitle": "Add a page or file",
+    "attach": "Attach files…",
+    "web": "Allow internet in this chat",
+    "wholeProject": "Whole project",
+    "wholeNotebook": "Whole notebook",
+    "presets": "Preset",
+    "advanced": "Advanced settings",
+    "advancedTitle": "Advanced settings",
     "send": "Send",
     "sendTitle": "Send (Ctrl+Enter)",
     "stop": "Stop",
-    "busyElsewhere": "The assistant is busy in another chat"
+    "busyElsewhere": "Busy in another chat"
   },
   "history": {
     "title": "Earlier chats",
-    "back": "Back to the chat",
+    "back": "Back to chat",
     "newChat": "New chat",
-    "which": "Which chats to show",
+    "which": "Filter chats",
     "chats": "Chats",
     "archived": "Archived",
     "none": "No chats yet.",
-    "noneArchived": "Nothing is archived.",
-    "working": "The assistant is working in this chat",
+    "noneArchived": "Nothing archived.",
+    "working": "Assistant working",
     "archive": "Archive",
     "archiveChat": "Archive “{title}”",
-    "restore": "Move back to chats",
-    "restoreChat": "Move “{title}” back to chats",
+    "restore": "Restore",
+    "restoreChat": "Restore “{title}”",
     "deleteChat": "Delete “{title}”",
-    "deleteTitle": "Delete the chat “{title}”?",
-    "deleteText": "The chat is removed for good. Your pages are not changed.",
+    "deleteTitle": "Delete chat “{title}”?",
+    "deleteText": "Deleted for good. Your pages are not affected.",
     "archiveAll": "Archive all",
     "deleteAll": "Delete all",
     "archiveAllTitle": "Archive all chats?",
     "deleteAllTitle": "Delete all archived chats?",
-    "deleteAllText": "The chats are removed for good. Your pages are not changed."
+    "deleteAllText": "Deleted for good. Your pages are not affected."
   },
   "steps": {
     "thought": "Thought",
     "review": "Review",
-    "reviewTitle": "Open the page and see what changed"
+    "reviewTitle": "See what changed"
   },
   "summary": {
     "read_one": "read {count} page",
@@ -76,9 +76,9 @@
     "readingPage": "Reading {page}…",
     "writing": "Writing a page…",
     "writingPage": "Writing {page}…",
-    "looking": "Looking through your pages…",
-    "waiting": "Waiting for your answer…",
-    "checking": "Checking the page for problems…",
+    "looking": "Searching your pages…",
+    "waiting": "Waiting for you…",
+    "checking": "Checking the page…",
     "renaming": "Renaming {path}…",
     "creating": "Creating {path}…",
     "deleting": "Deleting {path}…"
@@ -92,24 +92,24 @@
     "notSaved": "Not saved {page}"
   },
   "preset": {
-    "title": "Advanced assistant settings",
-    "text": "Choose how fast and careful the assistant is with {provider}.",
+    "title": "Advanced settings",
+    "text": "Choose speed and care for {provider}.",
     "label": "Preset",
     "new": "New preset",
     "mine": "My preset",
     "model": "Model",
     "defaultModel": "Default model",
-    "effort": "How hard it thinks",
-    "effortHint": "More thinking is slower and uses more of your plan.",
+    "effort": "Thinking",
+    "effortHint": "More is slower and uses more of your plan.",
     "access": "What it may do",
     "web": "Internet",
-    "webAsk": "Choose in each chat",
-    "webOn": "Always allowed",
-    "webOff": "Never allowed",
+    "webAsk": "Choose per chat",
+    "webOn": "Always",
+    "webOff": "Never",
     "fast": "Fast mode",
-    "fastHint": "Quicker answers from the same model, at a higher price.",
-    "backToStandard": "Back to the standard “{name}”",
-    "delete": "Delete this preset"
+    "fastHint": "Quicker answers, higher price.",
+    "backToStandard": "Reset to “{name}”",
+    "delete": "Delete preset"
   },
   "effort": {
     "low": "Quick",
@@ -119,17 +119,17 @@
     "max": "Maximum"
   },
   "access": {
-    "read": "Only read my pages",
-    "edit": "Edit pages, ask before deleting",
+    "read": "Read only",
+    "edit": "Edit, ask before deleting",
     "full": "Edit and delete without asking"
   },
   "size": {
     "quick": "Quick",
-    "quickHint": "Short notes and small fixes. Fastest.",
+    "quickHint": "Small fixes. Fastest.",
     "balanced": "Balanced",
-    "balancedHint": "Everyday documents. A good default.",
+    "balancedHint": "Everyday use.",
     "thorough": "Thorough",
-    "thoroughHint": "Long reports and careful rewrites. Slowest.",
+    "thoroughHint": "Long, careful work. Slowest.",
     "custom": "Custom"
   }
 }

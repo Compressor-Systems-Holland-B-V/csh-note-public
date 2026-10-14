@@ -184,6 +184,9 @@ export class Workspace {
       this.settings.set("lastPage", page);
     }
     this.project = moved(this.project, from, to);
+    const levels = this.settings.values.pageLevels;
+    if (Object.keys(levels).some((path) => moved(path, from, to) !== path))
+      this.settings.set("pageLevels", Object.fromEntries(Object.entries(levels).map(([path, level]) => [moved(path, from, to) ?? path, level])));
     await this.refresh();
   }
 
@@ -328,6 +331,13 @@ if (import.meta.vitest) {
     expect(disk["Work/Old/A"]).toBe("more");
     expect(disk["Work/Notes/A"]).toBeUndefined();
     expect(document.text).toBe("more");
+  });
+
+  test("a renamed notebook keeps the filter level of its pages", async () => {
+    const { workspace, chosen } = setup();
+    chosen.set("pageLevels", { "Work/Notes/A": 3, "Work/Other/C": 0 });
+    await workspace.move("Work/Notes", "Work/Old");
+    expect(chosen.values.pageLevels).toEqual({ "Work/Old/A": 3, "Work/Other/C": 0 });
   });
 
   test("the first run makes a sample page, and a later start reopens the last page", async () => {

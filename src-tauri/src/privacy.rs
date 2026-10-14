@@ -93,7 +93,7 @@ pub struct Found {
     pub rank: u8,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize)]
 pub struct Override {
     pub text: String,
     pub kind: Option<String>,

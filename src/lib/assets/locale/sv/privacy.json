@@ -16,13 +16,10 @@
     "prompt": "Ditt meddelande"
   },
   "start": {
-    "title": "Dölja företagsnamn för assistenten?",
     "text": "Namn, belopp och kontaktuppgifter blir platshållare som ⟦CUSTOMER_3⟧ innan något skickas.",
     "create": "Skapa en kunskapsfil",
     "import": "Importera en kunskapsfil",
-    "notNow": "Inte nu",
     "later": "Du kan ändra detta senare i Inställningar.",
-    "downloadsTitle": "Valfria nedladdningar",
     "downloadsText": "Båda körs bara på den här datorn.",
     "how": "Så fungerar det"
   },

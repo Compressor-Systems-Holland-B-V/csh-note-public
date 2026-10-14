@@ -53,6 +53,8 @@ export function optionsOf(values: Settings, status: KnowledgeStatus | null): Pri
   };
 }
 
+export const linesToHide = (picked: string) => [...new Set(picked.split("\n").map((line) => line.trim()))].filter((line) => line !== "" && line.length <= 200).slice(0, 50);
+
 export const hiddenCount = (counted: Record<string, number>) => Object.values(counted).reduce((sum, count) => sum + count, 0);
 
 export class Privacy {
@@ -196,6 +198,14 @@ export class Privacy {
     return this.backend.modelsCancel(model);
   }
 
+  pageLevel(page: string) {
+    return this.settings.values.pageLevels[page] ?? 1;
+  }
+
+  setPageLevel(page: string, level: number) {
+    this.settings.set("pageLevels", { ...this.settings.values.pageLevels, [page]: level });
+  }
+
   view(text: string, level?: number) {
     return this.run(() => this.backend.privacyView(text, level));
   }
@@ -257,6 +267,22 @@ if (import.meta.vitest) {
     expect(chosen.values.privacyNames).toBe(true);
     expect(state.options.names).toBe(true);
     expect(state.progress).toEqual({});
+  });
+
+  test("a page without its own level is light, and a new level keeps the others", () => {
+    const chosen = new SettingsState(() => Promise.resolve());
+    const state = new Privacy({} as Backend, chosen);
+    expect(state.pageLevel("Work/Notes/A")).toBe(1);
+    state.setPageLevel("Work/Notes/A", 3);
+    state.setPageLevel("Work/Notes/B", 0);
+    expect(chosen.values.pageLevels).toEqual({ "Work/Notes/A": 3, "Work/Notes/B": 0 });
+    expect(state.pageLevel("Work/Notes/B")).toBe(0);
+  });
+
+  test("a selection is hidden line by line, without blanks, repeats or very long lines", () => {
+    expect(linesToHide("  Acme  ")).toEqual(["Acme"]);
+    expect(linesToHide("Acme\n\n Falcon \nAcme\n" + "x".repeat(201))).toEqual(["Acme", "Falcon"]);
+    expect(linesToHide("")).toEqual([]);
   });
 
   test("hidden counts add up and only bracketed tokens look like tokens", () => {

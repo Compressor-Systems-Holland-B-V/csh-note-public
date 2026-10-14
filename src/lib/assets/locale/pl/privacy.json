@@ -16,13 +16,10 @@
     "prompt": "Twoja wiadomość"
   },
   "start": {
-    "title": "Ukrywać nazwy firm przed asystentem?",
     "text": "Nazwy, kwoty i dane kontaktowe stają się znacznikami, np. ⟦CUSTOMER_3⟧, zanim cokolwiek zostanie wysłane.",
     "create": "Utwórz plik wiedzy",
     "import": "Importuj plik wiedzy",
-    "notNow": "Nie teraz",
     "later": "Możesz to zmienić później w Ustawieniach.",
-    "downloadsTitle": "Opcjonalne pobrania",
     "downloadsText": "Oba działają tylko na tym komputerze.",
     "how": "Jak to działa"
   },

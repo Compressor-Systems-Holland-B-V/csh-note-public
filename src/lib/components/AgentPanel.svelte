@@ -22,6 +22,8 @@
   import { connections } from "$lib/state/providers.svelte";
   import { t } from "$lib/i18n.svelte";
 
+  let { wide = false }: { wide?: boolean } = $props();
+
   let list = $state<HTMLDivElement>();
   let history = $state(false);
   let viewing = $state<Seen[] | null>(null);
@@ -91,7 +93,7 @@
   {:else if history}
     <AgentHistory onopen={() => (history = false)} />
   {:else}
-    <div bind:this={list} class="flex min-h-0 flex-1 flex-col gap-5 overflow-x-hidden overflow-y-auto px-5 py-5 leading-relaxed [scrollbar-gutter:stable]" aria-live="polite">
+    <div bind:this={list} class="flex min-h-0 flex-1 flex-col gap-5 overflow-x-hidden overflow-y-auto py-5 leading-relaxed [scrollbar-gutter:stable] {wide ? 'px-[max(1.25rem,calc(50%-24rem))] text-base' : 'px-5'}" aria-live="polite">
       {#each agent.messages as message, index (index)}
         {@const live = agent.here && index === agent.messages.length - 1}
         {#if message.from === "you"}
@@ -154,7 +156,7 @@
       {#if agent.otherKnowledge}<p class="shrink-0 rounded-md bg-muted p-2 text-xs" role="note">{t("privacy.otherKnowledge")}</p>{/if}
       {#if agent.failure}<p class="shrink-0 wrap-anywhere text-destructive" role="alert">{agent.failure}</p>{/if}
     </div>
-    <AgentComposer />
+    <AgentComposer {wide} />
   {/if}
 </aside>
 {#if viewing}{@const saw = viewing}<VeiledView load={async () => saw} onclose={() => (viewing = null)} />{/if}

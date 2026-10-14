@@ -16,13 +16,10 @@
     "prompt": "Votre message"
   },
   "start": {
-    "title": "Masquer les noms d’entreprises pour l’assistant ?",
     "text": "Les noms, montants et coordonnées deviennent des jetons comme ⟦CUSTOMER_3⟧ avant tout envoi.",
     "create": "Créer un fichier de connaissances",
     "import": "Importer un fichier de connaissances",
-    "notNow": "Pas maintenant",
     "later": "Vous pourrez modifier ce choix plus tard dans les Paramètres.",
-    "downloadsTitle": "Téléchargements facultatifs",
     "downloadsText": "Les deux fonctionnent uniquement sur cet ordinateur.",
     "how": "Comment ça marche"
   },

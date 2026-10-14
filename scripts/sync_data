@@ -12,12 +12,12 @@ stop() {
 
 build() {
   mkdir -p "$data/themes"
-  rm -f "$data"/themes/*.znote-theme
+  rm -f "$data"/themes/*
   for source in "$data"/src/*/; do
     id="$(basename "$source")"
     [ "$(jq -r .id "$source/theme.json")" = "$id" ] || stop "data/src/$id/theme.json must have the id \"$id\""
     [ ! -e "$root/.zed/themes/$id" ] || stop "\"$id\" is a private theme and must not be published"
-    (cd "$source" && zip -qrX "$data/themes/$id.znote-theme" . -x ".*")
+    (cd "$source" && zip -qrX "$data/themes/$id.znx" . -x ".*")
   done
   jq -s . "$data"/src/*/theme.json > "$data/index.json"
   echo "Built $(jq length "$data/index.json") themes into data/themes"

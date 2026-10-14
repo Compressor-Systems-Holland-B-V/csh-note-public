@@ -1,30 +1,30 @@
 {
   "source": "Typst source",
-  "saveTitle": "Save this page",
-  "loadTitle": "Replace this page with the text of a file",
-  "templateTitle": "Use a template for this page",
+  "saveTitle": "Save page",
+  "loadTitle": "Replace page from file",
+  "templateTitle": "Page template",
   "fontSmaller": "Smaller text",
   "fontBigger": "Bigger text",
-  "locked": "The assistant is editing this page.",
+  "locked": "The assistant is editing",
   "review": {
-    "show": "Review the assistant's changes",
-    "hide": "Hide what the assistant changed",
+    "show": "Review changes",
+    "hide": "Hide changes",
     "keep": "Keep",
-    "keepTitle": "Keep this change",
+    "keepTitle": "Keep change",
     "undo": "Undo",
-    "undoTitle": "Put back what was here before",
-    "keepAllTitle": "Keep all changes on this page",
-    "undoAllTitle": "Undo all changes on this page"
+    "undoTitle": "Undo change",
+    "keepAllTitle": "Keep all changes",
+    "undoAllTitle": "Undo all changes"
   },
   "problems": {
     "label": "Problems",
     "error": "Error: {message}",
     "warning": "Warning: {message}",
-    "none": "No problems on this page",
-    "count": "{errors} errors and {warnings} warnings on this page"
+    "none": "No problems",
+    "count": "{errors} errors, {warnings} warnings"
   },
   "preview": {
-    "refresh": "Refresh the preview",
+    "refresh": "Refresh preview",
     "updating": "Updating…",
     "fit": "Fit",
     "zoomOut": "Zoom out",

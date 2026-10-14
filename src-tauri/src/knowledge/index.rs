@@ -44,14 +44,7 @@ pub fn counts(db: &Connection) -> Result<Vec<Counted>, String> {
 fn heading(kind: &str, line: &str) -> bool {
     match kind {
         PAGE => line.starts_with('='),
-        ATTACHMENT => {
-            let mut words = line.trim().split(' ');
-            matches!(words.next(), Some("Page" | "Slide" | "Sheet"))
-                && words
-                    .next()
-                    .is_some_and(|number| number.parse::<u32>().is_ok())
-                && words.next().is_none()
-        }
+        ATTACHMENT => line.starts_with('#'),
         _ => false,
     }
 }
@@ -370,12 +363,18 @@ mod tests {
 
     #[test]
     fn attachments_split_at_the_sections_the_extractor_writes() {
-        let text = "Page 1\nhello\n\nPage 2\nworld\nPage two is not a heading";
+        let text = "## Page 1\n\nhello\n\n## Page 2\n\nworld\nPage 3 is not a heading";
         assert_eq!(
             chunks(text, ATTACHMENT),
-            ["Page 1\nhello", "Page 2\nworld\nPage two is not a heading"]
+            [
+                "## Page 1\n\nhello",
+                "## Page 2\n\nworld\nPage 3 is not a heading"
+            ]
         );
-        assert_eq!(chunks("Slide 3\nx", ATTACHMENT), ["Slide 3\nx"]);
+        assert_eq!(
+            chunks("## Slide 3: Intro\nx", ATTACHMENT),
+            ["## Slide 3: Intro\nx"]
+        );
         assert!(chunks(" \n ", PAGE).is_empty());
     }
 

@@ -148,7 +148,7 @@ pub struct Theme {
 }
 
 fn broken(error: impl Display) -> String {
-    format!("This theme file could not be read: {error}")
+    format!("This add-on file could not be read: {error}")
 }
 
 fn failed(action: &str, error: impl Display) -> String {
@@ -436,7 +436,7 @@ fn open(folder: &Path) -> Result<Theme, String> {
 pub fn install(themes: &Path, archive: &Path) -> Result<Theme, String> {
     let file = File::open(archive).map_err(broken)?;
     if file.metadata().map_err(broken)?.len() > MAX_ARCHIVE_BYTES {
-        return Err("This theme file is larger than 50 MB, so it was not imported.".into());
+        return Err("This add-on file is larger than 50 MB, so it was not imported.".into());
     }
     unpacked(themes, file, None)
 }
@@ -447,20 +447,20 @@ fn unpacked(
     wanted: Option<&str>,
 ) -> Result<Theme, String> {
     let mut archive =
-        ZipArchive::new(archive).map_err(|_| "This file is not a znote theme.".to_string())?;
+        ZipArchive::new(archive).map_err(|_| "This file is not a znote add-on.".to_string())?;
     if archive.len() > MAX_ENTRIES {
         return Err("This theme has too many files, so it was not imported.".into());
     }
     let mut json = Vec::new();
     archive
         .by_name("theme.json")
-        .map_err(|_| "This file is not a znote theme: it has no theme.json.".to_string())?
+        .map_err(|_| "This file is not a znote add-on: it has no theme.json.".to_string())?
         .take(MAX_MANIFEST_BYTES)
         .read_to_end(&mut json)
         .map_err(broken)?;
     let manifest = parse(&json)?;
     if wanted.is_some_and(|id| id != manifest.id) {
-        return Err("The theme store sent a different theme than the one asked for, so it was not installed.".into());
+        return Err("The marketplace sent a different add-on than the one asked for, so it was not installed.".into());
     }
 
     let staging = themes.join(format!(".incoming-{}", manifest.id));
@@ -590,7 +590,7 @@ pub fn remove(themes: &Path, id: &str) -> Result<(), String> {
 
 pub fn catalog(json: &[u8]) -> Result<Vec<Theme>, String> {
     let entries: Vec<serde_json::Value> = serde_json::from_slice(json)
-        .map_err(|_| "The theme store sent a list that znote cannot read.".to_string())?;
+        .map_err(|_| "The marketplace sent a list that znote cannot read.".to_string())?;
     let mut found: Vec<Theme> = entries
         .into_iter()
         .filter_map(|entry| {
@@ -605,7 +605,7 @@ pub fn catalog(json: &[u8]) -> Result<Vec<Theme>, String> {
 
 fn fetch(path: &str, limit: u64) -> Result<Vec<u8>, String> {
     let unreachable = |_| {
-        "The theme store could not be reached. Check your internet connection and try again."
+        "The marketplace could not be reached. Check your internet connection and try again."
             .to_string()
     };
     let downloader = SystemDownloader::new(concat!("znote/", env!("CARGO_PKG_VERSION")));
@@ -618,7 +618,7 @@ fn fetch(path: &str, limit: u64) -> Result<Vec<u8>, String> {
         .read_to_end(&mut data)
         .map_err(unreachable)?;
     if data.len() as u64 > limit {
-        return Err("The theme store sent more data than znote accepts.".into());
+        return Err("The marketplace sent more data than znote accepts.".into());
     }
     Ok(data)
 }
@@ -641,7 +641,7 @@ pub fn import_theme(app: AppHandle) -> Result<Option<Theme>, String> {
     let Some(file) = app
         .dialog()
         .file()
-        .add_filter("znote theme", &["znote-theme"])
+        .add_filter("znote add-on", &["znx"])
         .blocking_pick_file()
     else {
         return Ok(None);
@@ -662,7 +662,7 @@ pub fn install_store_theme(app: AppHandle, id: String) -> Result<Theme, String> 
     if !valid_id(&id) {
         return Err(format!("“{id}” is not a theme."));
     }
-    let data = fetch(&format!("themes/{id}.znote-theme"), MAX_ARCHIVE_BYTES)?;
+    let data = fetch(&format!("themes/{id}.znx"), MAX_ARCHIVE_BYTES)?;
     let theme = unpacked(&folder(&app)?, Cursor::new(data), Some(&id))?;
     app.state::<Compiler>().forget_themes()?;
     Ok(theme)
@@ -685,14 +685,14 @@ mod tests {
 
     fn scratch(name: &str) -> PathBuf {
         let folder =
-            std::env::temp_dir().join(format!("znote-theme-{name}-{}", std::process::id()));
+            std::env::temp_dir().join(format!("znote-znx-{name}-{}", std::process::id()));
         let _ = fs::remove_dir_all(&folder);
         fs::create_dir_all(&folder).unwrap();
         folder
     }
 
     fn archive(folder: &Path, entries: &[(&str, &[u8])]) -> PathBuf {
-        let file = folder.join("test.znote-theme");
+        let file = folder.join("test.znx");
         let mut writer = ZipWriter::new(File::create(&file).unwrap());
         for (name, data) in entries {
             writer
@@ -783,7 +783,7 @@ mod tests {
     #[test]
     fn a_theme_that_is_too_large_is_refused() {
         let folder = scratch("large");
-        let huge = folder.join("huge.znote-theme");
+        let huge = folder.join("huge.znx");
         File::create(&huge)
             .unwrap()
             .set_len(MAX_ARCHIVE_BYTES + 1)
@@ -915,7 +915,7 @@ mod tests {
         assert!(
             unpacked(&themes, Cursor::new(data.clone()), Some("paper"))
                 .unwrap_err()
-                .contains("different theme")
+                .contains("different add-on")
         );
         assert!(list(&themes).is_empty());
         assert_eq!(

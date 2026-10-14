@@ -16,13 +16,10 @@
     "prompt": "Je bericht"
   },
   "start": {
-    "title": "Bedrijfsnamen verbergen voor de assistent?",
     "text": "Namen, bedragen en contactgegevens worden codes zoals ⟦CUSTOMER_3⟧ voordat er iets wordt verzonden.",
     "create": "Kennisbestand maken",
     "import": "Kennisbestand importeren",
-    "notNow": "Niet nu",
     "later": "Je kunt dit later wijzigen in Instellingen.",
-    "downloadsTitle": "Optionele downloads",
     "downloadsText": "Beide draaien alleen op deze computer.",
     "how": "Zo werkt het"
   },

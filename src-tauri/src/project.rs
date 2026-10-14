@@ -790,7 +790,7 @@ mod tests {
             started(&["znote", "/notes/My trip.znote", "other.znote"]).as_deref(),
             Some("/notes/My trip.znote")
         );
-        assert_eq!(started(&["znote", "theme.znote-theme"]), None);
+        assert_eq!(started(&["znote", "theme.znx"]), None);
     }
 
     #[test]

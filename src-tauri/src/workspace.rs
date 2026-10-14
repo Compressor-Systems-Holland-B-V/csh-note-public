@@ -196,6 +196,44 @@ pub fn read_text(root: &Path, path: &str) -> Result<String, String> {
     fs::read_to_string(page_file(root, path)?).map_err(|error| failed("open", path, error))
 }
 
+#[derive(Debug, Serialize, PartialEq)]
+pub struct Hit {
+    pub page: String,
+    pub line: usize,
+    pub text: String,
+}
+
+pub fn find(root: &Path, query: &str, most: usize) -> Vec<Hit> {
+    let query = query.trim().to_lowercase();
+    if query.is_empty() {
+        return Vec::new();
+    }
+    pages(root)
+        .into_iter()
+        .flat_map(|page| {
+            let text = read_text(root, &page).unwrap_or_default();
+            let named = page.to_lowercase().contains(&query);
+            let lines: Vec<Hit> = text
+                .lines()
+                .enumerate()
+                .filter(|(_, line)| line.to_lowercase().contains(&query))
+                .map(|(number, line)| Hit {
+                    page: page.clone(),
+                    line: number + 1,
+                    text: line.trim().to_string(),
+                })
+                .collect();
+            let title = (named && lines.is_empty()).then(|| Hit {
+                page: page.clone(),
+                line: 0,
+                text: String::new(),
+            });
+            title.into_iter().chain(lines)
+        })
+        .take(most)
+        .collect()
+}
+
 pub fn page_exists(root: &Path, path: &str) -> bool {
     page_file(root, path).is_ok_and(|file| file.is_file())
 }
@@ -376,6 +414,11 @@ pub fn delete_entry(app: AppHandle, path: String) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command(async)]
+pub fn search_pages(workspace: State<Workspace>, query: String) -> Result<Vec<Hit>, String> {
+    Ok(find(&workspace.root()?, &query, 200))
+}
+
 #[tauri::command]
 pub fn read_page(workspace: State<Workspace>, path: String) -> Result<String, String> {
     read_text(&workspace.root()?, &path)
@@ -410,6 +453,31 @@ mod tests {
             create(&root, path).unwrap();
         }
         root
+    }
+
+    #[test]
+    fn search_finds_lines_in_any_case_and_pages_by_name() {
+        let root = filled("find");
+        create(&root, "Work/Notes/Budget").unwrap();
+        write_text(&root, "Work/Notes/Monday", "= Monday\nCall ACME about the budget\n").unwrap();
+        let hits = find(&root, " budget ", 10);
+        assert_eq!(
+            hits,
+            [
+                Hit {
+                    page: "Work/Notes/Budget".into(),
+                    line: 0,
+                    text: String::new()
+                },
+                Hit {
+                    page: "Work/Notes/Monday".into(),
+                    line: 2,
+                    text: "Call ACME about the budget".into()
+                },
+            ]
+        );
+        assert_eq!(find(&root, "budget", 1).len(), 1);
+        assert!(find(&root, "  ", 10).is_empty());
     }
 
     #[test]

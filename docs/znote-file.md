@@ -64,7 +64,7 @@ Pictures, PDFs and other files that are already compressed are stored as they ar
 ## Themes
 
 Themes travel in the file. When a file needs a theme that is not installed in that version, znote
-asks once, then checks the theme exactly like an imported `.znote-theme` and installs it next to
+asks once, then checks the theme exactly like an imported `.znx` and installs it next to
 any other version. A theme that fails the check is not installed and the file is not opened. A
 file made by an older znote that only lists a theme is refused with the names of what is missing.
 
@@ -79,7 +79,7 @@ Only pages that were shown in znote are known; a page that was never opened cont
 ## Opening
 
 The file is untrusted: entries that would land outside the working copy are refused, as with a
-`.znote-theme`.
+`.znx`.
 
 ## Growing the format
 
