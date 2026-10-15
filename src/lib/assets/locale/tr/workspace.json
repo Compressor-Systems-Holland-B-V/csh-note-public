@@ -79,5 +79,22 @@
     "start": "Başla",
     "empty": "Açtığınız dosyalar burada görünür.",
     "back": "{name} dosyasına dön"
+  },
+  "search": "Sayfalarda ara",
+  "noHits": "Hiçbir şey bulunamadı.",
+  "browser": {
+    "path": "Bulunduğunuz yer",
+    "projects": "Projeler",
+    "notebooks": "Not defterleri"
+  },
+  "password": {
+    "newTitle": "Yeni znote dosyanızı koruyun",
+    "newText": "Bu dosya için bir parola seçin. İçindeki notlar, ayarlar ve sohbetler bu parolayla şifrelenir. Parolayı her bilgisayarda bir kez yazarsınız; sonra bu bilgisayar onu hatırlar.",
+    "unlockTitle": "{name} dosyasını aç",
+    "unlockText": "Bu znote dosyası şifreli. Açmak için parolasını yazın. Sonra bu bilgisayar onu hatırlar.",
+    "password": "Parola",
+    "forgotten": "Bu parolayı güvenli bir yerde saklayın. Parolası kaybolan bir dosya bir daha açılamaz.",
+    "create": "Dosya oluştur",
+    "open": "Aç"
   }
 }

@@ -1,4 +1,4 @@
-import { forgetOldChats, readChats, readOldChats, writeChat } from "$lib/ipc";
+import { readChats, writeChat } from "$lib/ipc";
 import type { StoredChat } from "$lib/ipc";
 import { messageOf } from "$lib/utils";
 import { t } from "$lib/i18n.svelte";
@@ -24,9 +24,10 @@ export function stored(value: unknown): StoredChat[] {
         title: chat.title,
         messages: chat.messages,
         session: typeof chat.session === "string" ? chat.session : null,
-        provider: typeof chat.provider === "string" ? chat.provider : chat.session ? "claude" : null,
+        provider: typeof chat.provider === "string" ? chat.provider : null,
         archived: chat.archived === true,
         updated: typeof chat.updated === "number" ? chat.updated : 0,
+        knowledge: typeof chat.knowledge === "string" ? chat.knowledge : null,
       },
     ];
   });
@@ -38,13 +39,8 @@ export class Chats {
 
   constructor(private persist: Persist) {}
 
-  async load(read: () => Promise<unknown>, readOld: () => Promise<unknown>, moved: () => Promise<unknown>) {
-    const saved = stored(await read());
-    const old = stored([...saved, ...stored(await readOld())]).slice(saved.length);
-    this.list = [...saved, ...old].toSorted((first, second) => second.updated - first.updated);
-    if (old.length === 0) return;
-    await Promise.all(old.map((chat) => this.persist(chat)));
-    await moved();
+  async load(read: () => Promise<unknown>) {
+    this.list = stored(await read()).toSorted((first, second) => second.updated - first.updated);
   }
 
   private keep(list: StoredChat[], changed: StoredChat | undefined) {
@@ -72,12 +68,12 @@ export class Chats {
 
 export const chats = new Chats(writeChat);
 
-export const loadChats = () => chats.load(readChats, readOldChats, forgetOldChats).catch((error: unknown) => (chats.failure = messageOf(error)));
+export const loadChats = () => chats.load(readChats).catch((error: unknown) => (chats.failure = messageOf(error)));
 
 if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;
 
-  const chat = (id: string, updated: number): StoredChat => ({ id, title: id, session: null, provider: null, messages: [], archived: false, updated });
+  const chat = (id: string, updated: number): StoredChat => ({ id, title: id, session: null, provider: null, messages: [], archived: false, updated, knowledge: null });
 
   test("chats are kept newest first, and only the chat that changed is written", () => {
     const persist = vi.fn<Persist>(() => Promise.resolve());
@@ -98,19 +94,8 @@ if (import.meta.vitest) {
     expect(stored(null)).toEqual([]);
     expect(stored("chats")).toEqual([]);
     expect(stored([chat("a", 1), { id: 7 }, null, undefined, { id: "b", title: "b", messages: [{ from: "you" }] }, chat("a", 9)])).toEqual([chat("a", 1)]);
-    expect(stored([{ id: "old", title: "old", messages: [], session: "s-1" }])).toEqual([{ ...chat("old", 0), session: "s-1", provider: "claude" }]);
+    expect(stored([{ id: "old", title: "old", messages: [], session: "s-1" }])).toEqual([{ ...chat("old", 0), session: "s-1", provider: null }]);
+    expect(stored([{ ...chat("hidden", 1), knowledge: "file-1" }])[0].knowledge).toBe("file-1");
   });
 
-  test("chats from the old single file are moved to their own files once", async () => {
-    const persist = vi.fn<Persist>(() => Promise.resolve());
-    const moved = vi.fn(() => Promise.resolve());
-    const chats = new Chats(persist);
-    await chats.load(async () => [chat("new", 5)], async () => [chat("old", 2), chat("new", 1)], moved);
-    expect(chats.list.map(({ id }) => id)).toEqual(["new", "old"]);
-    expect(persist.mock.calls.map(([saved]) => saved.id)).toEqual(["old"]);
-    expect(moved).toHaveBeenCalledTimes(1);
-    await chats.load(async () => [chat("new", 5), chat("old", 2)], async () => null, moved);
-    expect(persist).toHaveBeenCalledTimes(1);
-    expect(moved).toHaveBeenCalledTimes(1);
-  });
 }

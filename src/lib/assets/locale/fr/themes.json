@@ -1,31 +1,35 @@
 {
-  "title": "Thèmes",
-  "look": "Apparence",
-  "import": "Importer un fichier de thème…",
-  "intro": "Un thème modifie l'apparence, ajoute des modèles de page, ou les deux.",
-  "storeFailure": "{reason} Les thèmes que vous avez déjà installés sont affichés ci-dessous.",
-  "search": "Rechercher des thèmes",
+  "title": "Boutique",
+  "import": "Importer",
+  "intro": "Les apparences (.zth) changent l’aspect de znote. Les modèles (.znx) ajoutent des mises en page.",
+  "storeFailure": "{reason} Seules les extensions installées sont affichées.",
+  "search": "Rechercher des extensions",
   "installed": "Installés",
-  "none": "Aucun thème ne correspond.",
+  "none": "Aucun résultat.",
   "kind": {
-    "look": "Apparence uniquement",
-    "both": "Apparence et modèles",
-    "templates": "Modèles uniquement"
+    "look": "Thèmes",
+    "templates": "Modèles"
   },
   "contents": {
     "look": "Modifie l'apparence",
-    "both": "Modifie l'apparence et ajoute des modèles de page",
-    "templates": "Ajoute des modèles de page"
+    "templates": "Ajoute des modèles"
   },
   "version": "Version {version}",
-  "lookSwitch": "Apparence",
-  "lookSwitchTitle": "Afficher ce thème dans la liste des apparences",
-  "templatesSwitch": "Modèles",
-  "templatesSwitchTitle": "Afficher les modèles de ce thème lors de la sélection d'un modèle",
+  "lookSwitchTitle": "Afficher dans les thèmes",
+  "templatesSwitchTitle": "Afficher dans le choix de modèle",
   "install": "Installer",
   "installing": "Installation…",
   "update": "Mettre à jour",
   "updating": "Mise à jour…",
   "remove": "Supprimer",
-  "removeTheme": "Supprimer le thème {name}"
+  "importTitle": "Importer un fichier .zth / .znx",
+  "filters": "Filtres",
+  "browse": "Toutes les extensions",
+  "type": "Type",
+  "category": "Catégorie",
+  "all": "Tout",
+  "use": "Utiliser",
+  "inUse": "Utilisé",
+  "more": "Plus d’options pour {name}",
+  "templatesList": "Modèles : {names}"
 }

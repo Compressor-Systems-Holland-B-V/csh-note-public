@@ -1,31 +1,35 @@
 {
-  "title": "السمات",
-  "look": "المظهر",
-  "import": "استيراد ملف سمة…",
-  "intro": "تغيّر السمات المظهر، أو تضيف قوالب صفحات، أو كليهما.",
-  "storeFailure": "{reason} السمات التي قمت بتثبيتها بالفعل تظهر أدناه.",
-  "search": "البحث عن سمات",
+  "title": "المتجر",
+  "import": "استيراد",
+  "intro": "تغيّر المظاهر (‎.zth‎) شكل znote، وتضيف القوالب (‎.znx‎) تخطيطات للصفحات.",
+  "storeFailure": "{reason} يتم عرض الإضافات المثبّتة فقط.",
+  "search": "البحث في الإضافات",
   "installed": "مثبّتة",
-  "none": "لا توجد سمة مطابقة.",
+  "none": "لا توجد نتائج.",
   "kind": {
-    "look": "المظهر فقط",
-    "both": "المظهر والقوالب",
-    "templates": "القوالب فقط"
+    "look": "الأنماط",
+    "templates": "القوالب"
   },
   "contents": {
     "look": "يغير المظهر",
-    "both": "يغير المظهر ويضيف قوالب صفحات",
-    "templates": "يضيف قوالب صفحات"
+    "templates": "يضيف قوالب"
   },
   "version": "الإصدار {version}",
-  "lookSwitch": "المظهر",
-  "lookSwitchTitle": "عرض هذه السمة في قائمة المظاهر",
-  "templatesSwitch": "القوالب",
-  "templatesSwitchTitle": "عرض قوالب هذه السمة عند اختيار قالب",
+  "lookSwitchTitle": "العرض ضمن الأنماط",
+  "templatesSwitchTitle": "العرض في منتقي القوالب",
   "install": "تثبيت",
   "installing": "جاري التثبيت…",
   "update": "تحديث",
   "updating": "جاري التحديث…",
   "remove": "إزالة",
-  "removeTheme": "إزالة السمة {name}"
+  "importTitle": "استيراد ملف .zth / .znx",
+  "filters": "عوامل التصفية",
+  "browse": "كل الإضافات",
+  "type": "النوع",
+  "category": "الفئة",
+  "all": "الكل",
+  "use": "استخدام",
+  "inUse": "قيد الاستخدام",
+  "more": "مزيد من الخيارات لـ {name}",
+  "templatesList": "القوالب: {names}"
 }

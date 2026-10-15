@@ -79,5 +79,22 @@
     "start": "開始",
     "empty": "你開啟過的檔案會顯示在這裡。",
     "back": "返回 {name}"
+  },
+  "search": "搜尋頁面",
+  "noHits": "找不到任何內容。",
+  "browser": {
+    "path": "目前位置",
+    "projects": "專案",
+    "notebooks": "筆記本"
+  },
+  "password": {
+    "newTitle": "保護您的新 znote 檔案",
+    "newText": "為這個檔案選擇一組密碼。其中的筆記、設定和聊天都會以它加密。您在每部電腦上只需輸入一次；之後這部電腦會記住它。",
+    "unlockTitle": "開啟 {name}",
+    "unlockText": "這個 znote 檔案已加密。請輸入密碼以開啟它。之後這部電腦會記住它。",
+    "password": "密碼",
+    "forgotten": "請妥善保管這組密碼。密碼遺失的檔案將無法再開啟。",
+    "create": "建立檔案",
+    "open": "開啟"
   }
 }

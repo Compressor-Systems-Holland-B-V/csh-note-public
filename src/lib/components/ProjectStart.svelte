@@ -8,8 +8,8 @@
   import Moon from "@lucide/svelte/icons/moon";
   import Sun from "@lucide/svelte/icons/sun";
   import X from "@lucide/svelte/icons/x";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
+  import { Button } from "@zsuite/ui/button";
+  import * as Dialog from "@zsuite/ui/dialog";
   import { appVersion } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { projects, titleOf } from "$lib/state/project.svelte";

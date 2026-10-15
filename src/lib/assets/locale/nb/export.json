@@ -2,7 +2,8 @@
   "title": "Eksporter",
   "format": "Format",
   "pdfHint": "Ser nøyaktig ut som forhåndsvisningen.",
-  "pptxHint": "Ett lysbilde per side. Bare tekst forblir redigerbar.",
+  "pptxHint": "Ett lysbilde per side. Tekst, bilder og formler kan fortsatt redigeres.",
+  "docxHint": "Redigerbar tekst som ser ut som siden, med Words egne overskrifter, lister, tabeller og formler.",
   "blocked": {
     "noPage": "Velg en side som skal eksporteres.",
     "problems": "Fiks problemene på denne siden først.",
@@ -12,7 +13,6 @@
   "running": "Eksporterer…",
   "runningPage": "Eksporterer siden din…",
   "savedTo": "Lagret til {path}",
-  "missingFonts": "PowerPoint vil erstatte disse skriftene: {fonts}",
   "openFile": "Åpne fil",
   "showInFolder": "Vis i mappe"
 }

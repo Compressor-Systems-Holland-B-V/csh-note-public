@@ -10,10 +10,15 @@
     "notHidden": "Ikke skjult",
     "notHiddenTitle": "Assistenten ser sidene og filene dine akkurat slik de er",
     "locked": "Låst",
-    "lockedTitle": "Åpne kunnskapsfilen din i Innstillinger først."
+    "lockedTitle": "Åpne kunnskapsfilen din i Innstillinger først.",
+    "toggle": "Skjul navn i denne chatten",
+    "offInSettings": "Skjuling er av i Innstillinger",
+    "fixed": "Låst når chatten har startet",
+    "required": "Organisasjonen din krever skjuling, så det kan ikke slås av."
   },
   "saw": {
-    "prompt": "Meldingen din"
+    "prompt": "Meldingen din",
+    "system": "Instruksjoner til assistenten"
   },
   "start": {
     "text": "Navn, beløp og kontaktopplysninger blir til plassholdere som ⟦CUSTOMER_3⟧ før noe sendes.",
@@ -120,7 +125,8 @@
     "dontHide": "Ikke skjul dette",
     "alwaysHide": "Skjul dette alltid",
     "hideAs": "Skjul «{text}» som",
-    "kind": "Type"
+    "kind": "Type",
+    "lines": "Linjer: {count}"
   },
   "kinds": {
     "CUSTOMER": "Kunde",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Leverandør",
     "PROJECT": "Prosjekt",
     "PRODUCT": "Produkt",
-    "LOCATION": "Sted"
+    "LOCATION": "Sted",
+    "AMOUNT": "Beløp",
+    "EMAIL": "E-postadresse",
+    "PHONE": "Telefonnummer",
+    "URL": "Nettadresse",
+    "IBAN": "IBAN",
+    "CARD": "Kortnummer",
+    "IP": "IP-adresse"
   },
   "level": {
     "label": "Hvor mye som skjules",
     "own": "Bare din egen liste og kontaktinformasjon",
     "light": "Lett: også navn på personer",
     "medium": "Middels: også organisasjoner og steder",
-    "strict": "Streng: også produkter, prosjekter, kunder og leverandører"
-  }
+    "strict": "Streng: også produkter, prosjekter, kunder og leverandører",
+    "short": {
+      "own": "Egen liste",
+      "light": "Lett",
+      "medium": "Middels",
+      "strict": "Streng"
+    }
+  },
+  "redact": {
+    "title": "Skjuling",
+    "off": "Skjuling er av.",
+    "turnOn": "Slå på",
+    "none": "Ingenting å skjule på denne siden.",
+    "undo": "Angre (Ctrl+Z)",
+    "redo": "Gjør om (Ctrl+Y)",
+    "reset": "Tilbakestill denne siden",
+    "filter": "Filter",
+    "count": "{hidden} av {total} skjult",
+    "hideGroup": "Skjul alle {kind}",
+    "other": "Annet",
+    "removeUnhidden": "Fjern ord som ikke er skjult, fra listen"
+  },
+  "blocked": {
+    "noFile": "Skjuling er på, men ingen kunnskapsfil er valgt. Ingenting sendes før du oppretter eller velger en i Innstillinger, eller slår av skjuling.",
+    "locked": "Skjuling er på, men kunnskapsfilen din er låst. Ingenting sendes før du åpner den i Innstillinger.",
+    "noFinder": "Navnesøk er på, men navnefinneren er ikke lastet ned. Ingenting sendes før du laster den ned i Innstillinger, eller slår av navnesøk."
+  },
+  "previewBefore": "Vis hva denne meldingen ville sende"
 }

@@ -1,3 +1,4 @@
+use std::cell::RefCell;
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::path::{Path, PathBuf};
@@ -9,7 +10,8 @@ use tauri::{AppHandle, Manager};
 
 use super::mirror::Mirror;
 use super::{
-    Agent, Event, Running, Send, Status, Turn, keep, label, last_line, mirror_root, plain, seen,
+    Agent, Check, Event, Running, Send, Status, Turn, in_scope, keep, label, last_line,
+    mirror_root, plain, seen,
 };
 use crate::knowledge::Gate;
 
@@ -17,6 +19,7 @@ pub const ID: &str = "claude";
 
 const MODELS: [&str; 4] = ["fable", "opus", "sonnet", "haiku"];
 const EFFORTS: [&str; 5] = ["low", "medium", "high", "xhigh", "max"];
+const MAX_FIXES: usize = 2;
 const SIGN_INS: [&str; 2] = ["console", "sso"];
 const WEB: [&str; 2] = ["WebFetch", "WebSearch"];
 const BLOCKED: &str = "On a work computer the installer may be blocked. Ask your IT team to install Claude Code, then press Connect again.";
@@ -185,7 +188,9 @@ fn claude(app: &AppHandle) -> Result<Command, String> {
     fs::create_dir_all(&account)
         .map_err(|error| format!("The assistant’s folder could not be created: {error}"))?;
     let mut command = quiet(Command::new(file));
-    command.env("CLAUDE_CONFIG_DIR", account);
+    command
+        .env("CLAUDE_CONFIG_DIR", account)
+        .env("CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC", "1");
     Ok(command)
 }
 
@@ -372,10 +377,17 @@ fn relay(
                 Some(event) => event,
                 None => continue,
             },
-            (Some(mirror), Event::Read { page }) => {
-                send(seen(&page, &mirror.text(&page)))?;
+            (Some(mirror), Event::Read { page: name }) => {
+                let page = mirror.real(&name, gate);
+                if gate.on() {
+                    send(seen(&page, &mirror.text(&name)))?;
+                }
                 Event::Read { page }
             }
+            (Some(mirror), Event::Step { tool, page }) => Event::Step {
+                page: mirror.real(&page, gate),
+                tool,
+            },
             (_, event @ Event::Done { .. }) => {
                 done = Some(event);
                 continue;
@@ -387,46 +399,45 @@ fn relay(
     Ok(done)
 }
 
-pub fn run(
+// Which of the pages Claude Code changed do not compile, written for it, hidden as the pages are.
+fn broken(
+    pages: &[String],
+    mirror: &Mirror,
+    gate: &Gate,
+    check: Check,
+) -> Result<Option<String>, String> {
+    let mut report = String::new();
+    for (at, page) in pages.iter().enumerate() {
+        let problems = check(page);
+        if problems.is_empty() || pages[..at].contains(page) {
+            continue;
+        }
+        let errors = gate
+            .veil_at(&problems.join("\n"), gate.page_level(page))?
+            .text;
+        let name = mirror.name(page).unwrap_or(page);
+        report.push_str(&format!("{name}.typ does not compile:\n{errors}\n\n"));
+    }
+    Ok((!report.is_empty()).then_some(report))
+}
+
+// One run of Claude Code in the mirror, until it ends.
+#[allow(clippy::too_many_arguments)]
+fn pass(
     app: &AppHandle,
     running: &Running,
     root: &Path,
-    folder: &Path,
     turn: &Turn,
+    system: &Path,
+    prompt: &str,
+    mirror: &mut Mirror,
     gate: &Gate,
     send: Send,
-) -> Result<(), String> {
-    let system = folder.join("system.txt");
-    keep(&system, turn.system.as_bytes())
-        .map_err(|error| format!("The assistant could not be prepared: {error}"))?;
-    let mut mirror = match gate.on() {
-        true => Some(Mirror::build(
-            mirror_root(app, root)?,
-            root,
-            folder,
-            &turn.chat,
-            gate,
-        )?),
-        false => None,
-    };
-    let (place, attachments, prompt) = match &mirror {
-        Some(mirror) => {
-            let veiled = gate.veil(&mirror.rewrite(&turn.prompt))?;
-            send(Event::Veiled {
-                kinds: veiled.kinds,
-            })?;
-            send(seen("prompt", &veiled.text))?;
-            (mirror.root.clone(), mirror.attachments.clone(), veiled.text)
-        }
-        None => (
-            root.to_path_buf(),
-            folder.to_path_buf(),
-            turn.prompt.clone(),
-        ),
-    };
+) -> Result<Option<Event>, String> {
+    let (place, attachments) = (mirror.root.clone(), mirror.attachments.clone());
     let mut command = claude(app)?;
     command
-        .args(arguments(turn, &attachments, &system)?)
+        .args(arguments(turn, &attachments, system)?)
         .current_dir(&place)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -441,20 +452,98 @@ pub fn run(
     let _ = input.write_all(prompt.as_bytes());
     drop(input);
     let lines = BufReader::new(output).lines().map_while(Result::ok);
-    let done = relay(lines, &place, root, mirror.as_mut(), gate, send)?;
+    let done = relay(lines, &place, root, Some(mirror), gate, send)?;
     running.wait()?;
-    if let Some(mirror) = mirror.as_mut() {
-        for event in mirror.finish(root, gate)? {
-            send(event)?;
+    for event in mirror.finish(root, gate)? {
+        send(event)?;
+    }
+    if done.is_none() && !running.stopped() {
+        return Err(run_failure(&said()));
+    }
+    Ok(done)
+}
+
+pub fn run(
+    app: &AppHandle,
+    running: &Running,
+    root: &Path,
+    folder: &Path,
+    turn: &Turn,
+    gate: &Gate,
+    (send, check): (Send, Check),
+) -> Result<(), String> {
+    let system = folder.join("system.txt");
+    keep(&system, turn.system.as_bytes())
+        .map_err(|error| format!("The assistant could not be prepared: {error}"))?;
+    // Claude Code works in a mirror that holds only this chat's pages and files, hidden when
+    // hiding is on, so it cannot read the rest of the workspace.
+    let mut mirror = Mirror::build(
+        mirror_root(app, root, &turn.chat)?,
+        root,
+        folder,
+        &turn.chat,
+        gate,
+        &|page| in_scope(folder, turn.page.as_deref(), page),
+    )?;
+    let veiled = gate.veil(&mirror.rewrite(&turn.prompt))?;
+    let mut prompt = veiled.text;
+    // Errors already on the chat's pages, which Claude Code would not see by reading them.
+    if let Some(report) = broken(&mirror.pages(), &mirror, gate, check)? {
+        prompt = format!("{prompt}\n\nFor reference, as znote compiles them now:\n{report}");
+    }
+    if gate.on() {
+        send(Event::Veiled {
+            kinds: veiled.kinds,
+        })?;
+        send(seen("prompt", &prompt))?;
+        send(seen("system", &turn.system))?;
+    }
+    let mut turn = turn.clone();
+    // Claude Code cannot compile Typst, so a page it leaves broken is sent back to it with the
+    // errors, in the same session, a few times at most.
+    for fix in 0.. {
+        let edited = RefCell::new(Vec::new());
+        let noted = |event: Event| {
+            if let Event::Edited { page, .. } = &event {
+                edited.borrow_mut().push(page.clone());
+            }
+            send(event)
+        };
+        let done = pass(
+            app,
+            running,
+            root,
+            &turn,
+            &system,
+            &prompt,
+            &mut mirror,
+            gate,
+            &noted,
+        )?;
+        let Some(done) = done else {
+            return Ok(());
+        };
+        let session = match &done {
+            Event::Done {
+                session,
+                failure: None,
+            } if fix < MAX_FIXES && !session.is_empty() && !running.stopped() => session.clone(),
+            _ => return send(done),
+        };
+        let Some(report) = broken(&edited.into_inner(), &mirror, gate, check)? else {
+            return send(done);
+        };
+        let report = format!("{report}Fix these errors.");
+        if gate.on() {
+            send(seen("prompt", &report))?;
         }
+        send(Event::Text {
+            text: "\n\n".into(),
+        })?;
+        turn.session = Some(session);
+        prompt = report;
     }
-    if let Some(done) = done {
-        return send(done);
-    }
-    if running.stopped() {
-        return Ok(());
-    }
-    Err(run_failure(&said()))
+    Ok(())
 }
 
 #[cfg(test)]
@@ -490,6 +579,9 @@ not json at all"#;
             read_only: false,
             fast: false,
             web: false,
+            veil: true,
+            pages: Vec::new(),
+            page: None,
         }
     }
 
@@ -561,7 +653,8 @@ not json at all"#;
             },
         );
         let gate = knowledge.gate().unwrap();
-        let mut mirror = Mirror::build(place.clone(), &real, &chat, "chat-1", &gate).unwrap();
+        let mut mirror =
+            Mirror::build(place.clone(), &real, &chat, "chat-1", &gate, &|_| true).unwrap();
         assert_eq!(mirror.text("Work/Notes/Monday"), "= Monday\n⟦CUSTOMER_1⟧\n");
         let recorded = |edited: &str| {
             fs::write(place.join("Work/Notes/Monday.typ"), edited).unwrap();
@@ -616,6 +709,20 @@ not json at all"#;
             page: "Work/Notes/Monday".into(),
             theirs: "= Monday\nAcme only\n".into()
         }));
+
+        let pages = [
+            "Work/Notes/Monday".to_string(),
+            "Work/Notes/Monday".to_string(),
+        ];
+        assert_eq!(
+            broken(&pages, &mirror, &gate, &|_| Vec::new()).unwrap(),
+            None
+        );
+        let errors = |_: &str| vec!["line 2: unknown variable: Acme".to_string()];
+        assert_eq!(
+            broken(&pages, &mirror, &gate, &errors).unwrap().unwrap(),
+            "Work/Notes/Monday.typ does not compile:\nline 2: unknown variable: ⟦CUSTOMER_1⟧\n\n"
+        );
     }
 
     #[test]

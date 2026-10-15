@@ -1,3 +1,4 @@
+import { direction } from "@zsuite/ui/direction";
 type Dict = { [key: string]: string | Dict };
 
 export type Params = Record<string, string | number>;
@@ -58,6 +59,7 @@ export function setLocale(wanted: string | null) {
   i18n.locale = resolveLocale(wanted);
   document.documentElement.lang = i18n.locale;
   document.documentElement.dir = i18n.dir;
+  direction.value = i18n.dir;
 }
 
 function nodeAt(locale: string, key: string) {
@@ -167,7 +169,10 @@ if (import.meta.vitest) {
 
   test("every backend message znote translates is still one the backend can send", async () => {
     const { readFileSync, readdirSync } = await import("node:fs");
-    const sources = (readdirSync("src-tauri/src", { recursive: true }) as string[]).filter((file) => file.endsWith(".rs")).map((file) => readFileSync(`src-tauri/src/${file}`, "utf8"));
+    const folders = ["src-tauri/src", "vendor/zsuite/crates"];
+    const sources = folders.flatMap((folder) =>
+      (readdirSync(folder, { recursive: true }) as string[]).filter((file) => file.endsWith(".rs")).map((file) => readFileSync(`${folder}/${file}`, "utf8")),
+    );
     const literals = sources.flatMap((source) => [...source.matchAll(/"((?:[^"\\\n]|\\.)*)"/g)].map((match) => match[1].replaceAll("\\n", "\n")));
     const shapes = literals
       .map((literal) => literal.split(/\{[^{}]*\}/))

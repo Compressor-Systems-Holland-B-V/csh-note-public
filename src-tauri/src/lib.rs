@@ -4,8 +4,10 @@ mod export;
 mod extract;
 mod knowledge;
 mod models;
+mod policy;
 mod privacy;
 mod project;
+mod sealed;
 mod snapshot;
 mod theme;
 mod workspace;
@@ -13,6 +15,19 @@ mod workspace;
 use std::path::Path;
 
 use tauri::{Emitter, Manager};
+
+pub async fn blocking<T: Send + 'static>(
+    work: impl FnOnce() -> Result<T, String> + Send + 'static,
+) -> Result<T, String> {
+    tauri::async_runtime::spawn_blocking(work)
+        .await
+        .map_err(|_| "This could not be finished. Try again.".to_string())?
+}
+
+pub fn guarded<T>(failure: &str, work: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
+    std::panic::catch_unwind(std::panic::AssertUnwindSafe(work))
+        .unwrap_or_else(|_| Err(failure.to_string()))
+}
 
 #[tauri::command]
 fn app_version() -> Result<String, String> {
@@ -63,6 +78,7 @@ pub fn run() {
             project::project_asked,
             project::project_open,
             project::project_new,
+            project::project_unlock,
             project::project_note,
             export::export_page,
             export::open_export,
@@ -75,13 +91,17 @@ pub fn run() {
             agent::agent_cancel,
             agent::agent_run,
             agent::agent_attach,
+            agent::agent_preview,
+            agent::agent_files,
             agent::agent_level,
+            agent::agent_in_scope,
             agent::agent_forget,
             agent::provider_connect,
             agent::provider_models,
             agent::chats_list,
             agent::chat_save,
             knowledge::privacy_options,
+            policy::privacy_policy,
             knowledge::privacy_pages,
             knowledge::privacy_view,
             knowledge::privacy_override,
@@ -116,7 +136,18 @@ pub fn run() {
         .run(|app, event| {
             if let tauri::RunEvent::Exit = event {
                 app.state::<agent::Agent>().cancel_all();
-                project::save(app);
+                project::close(app);
+                agent::clear_mirrors(app);
             }
         });
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn a_panic_in_guarded_work_becomes_a_message() {
+        let failed: Result<(), String> = super::guarded("It broke.", || panic!("bad input"));
+        assert_eq!(failed, Err("It broke.".into()));
+        assert_eq!(super::guarded("It broke.", || Ok(7)), Ok(7));
+    }
 }

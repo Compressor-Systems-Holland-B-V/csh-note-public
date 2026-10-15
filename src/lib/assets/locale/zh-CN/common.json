@@ -17,7 +17,7 @@
   "mode": {
     "edit": "编辑",
     "export": "导出",
-    "themes": "主题"
+    "marketplace": "市场"
   },
   "appearance": {
     "toLight": "切换到浅色模式",
@@ -34,5 +34,13 @@
     "downloading": "正在下载软件包 {name}…",
     "previewFailed": "无法更新预览：{reason}",
     "desktopOnly": "它仅在桌面应用中可用。"
+  },
+  "preview": "预览",
+  "back": "返回",
+  "finish": "完成",
+  "layout": {
+    "edit": "编辑",
+    "agent": "助手",
+    "redaction": "脱敏"
   }
 }

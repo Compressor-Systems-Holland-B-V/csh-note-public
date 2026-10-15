@@ -79,5 +79,22 @@
     "start": "Inizia",
     "empty": "I file che apri compariranno qui.",
     "back": "Torna a {name}"
+  },
+  "search": "Cerca pagine",
+  "noHits": "Nessun risultato.",
+  "browser": {
+    "path": "Posizione attuale",
+    "projects": "Progetti",
+    "notebooks": "Quaderni"
+  },
+  "password": {
+    "newTitle": "Proteggi il tuo nuovo file znote",
+    "newText": "Scegli una password per questo file. Le note, le impostazioni e le chat al suo interno vengono cifrate con essa. La digiti una volta su ogni computer; dopo, questo computer la ricorda.",
+    "unlockTitle": "Apri {name}",
+    "unlockText": "Questo file znote è cifrato. Digita la sua password per aprirlo. Dopo, questo computer la ricorda.",
+    "password": "Password",
+    "forgotten": "Conserva bene questa password. Un file di cui si è persa la password non può più essere aperto.",
+    "create": "Crea file",
+    "open": "Apri"
   }
 }

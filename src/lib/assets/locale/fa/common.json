@@ -17,7 +17,7 @@
   "mode": {
     "edit": "ویرایش",
     "export": "خروجی گرفتن",
-    "themes": "تم‌ها"
+    "marketplace": "بازارچه"
   },
   "appearance": {
     "toLight": "تغییر به حالت روشن",
@@ -34,5 +34,13 @@
     "downloading": "در حال دانلود بسته {name}…",
     "previewFailed": "پیش‌نمایش به‌روزرسانی نشد: {reason}",
     "desktopOnly": "فقط در نسخه دسکتاپ برنامه کار می‌کند."
+  },
+  "preview": "پیش‌نمایش",
+  "back": "بازگشت",
+  "finish": "پایان",
+  "layout": {
+    "edit": "ویرایش",
+    "agent": "دستیار",
+    "redaction": "پنهان‌سازی"
   }
 }

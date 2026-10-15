@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use model2vec_rs::model::StaticModel;
 use rusqlite::{Connection, OptionalExtension, Transaction, params};
 use serde::Serialize;
@@ -113,18 +111,11 @@ pub fn values(bytes: &[u8]) -> Vec<f32> {
 }
 
 pub fn mentioned(open: &Open, text: &str) -> Vec<usize> {
-    let index: HashMap<&str, usize> = open
-        .glossary
-        .concepts
-        .iter()
-        .enumerate()
-        .map(|(at, concept)| (concept.iri.as_str(), at))
-        .collect();
     let mut found: Vec<usize> = open
         .detector
         .terms(text)
         .into_iter()
-        .filter_map(|hit| index.get(hit.entity.strip_prefix("concept:")?).copied())
+        .filter_map(|hit| open.concept_at(hit.entity.strip_prefix("concept:")?))
         .collect();
     found.sort_unstable();
     found.dedup();
@@ -195,51 +186,39 @@ pub fn put(
         Some((id, _)) => {
             clear(&transaction, id)?;
             transaction
-                .execute(
-                    "UPDATE sources SET hash = ?1, time = ?2 WHERE id = ?3",
-                    params![digest, now(), id],
-                )
+                .prepare_cached("UPDATE sources SET hash = ?1, time = ?2 WHERE id = ?3")
+                .and_then(|mut statement| statement.execute(params![digest, now(), id]))
                 .map_err(sql)?;
             id
         }
         None => {
             transaction
-                .execute(
-                    "INSERT INTO sources (kind, project, path, hash, time) VALUES (?1, ?2, ?3, ?4, ?5)",
-                    params![kind, project, path, digest, now()],
-                )
+                .prepare_cached("INSERT INTO sources (kind, project, path, hash, time) VALUES (?1, ?2, ?3, ?4, ?5)")
+                .and_then(|mut statement| statement.execute(params![kind, project, path, digest, now()]))
                 .map_err(sql)?;
             transaction.last_insert_rowid()
         }
     };
     for (position, (piece, concepts, vector)) in pieces.iter().enumerate() {
         transaction
-            .execute(
-                "INSERT INTO chunks (source, position, text) VALUES (?1, ?2, ?3)",
-                params![source, position as i64, piece],
-            )
+            .prepare_cached("INSERT INTO chunks (source, position, text) VALUES (?1, ?2, ?3)")
+            .and_then(|mut statement| statement.execute(params![source, position as i64, piece]))
             .map_err(sql)?;
         let chunk = transaction.last_insert_rowid();
         transaction
-            .execute(
-                "INSERT INTO chunks_fts (rowid, text) VALUES (?1, ?2)",
-                params![chunk, piece],
-            )
+            .prepare_cached("INSERT INTO chunks_fts (rowid, text) VALUES (?1, ?2)")
+            .and_then(|mut statement| statement.execute(params![chunk, piece]))
             .map_err(sql)?;
         if let Some(vector) = vector {
             transaction
-                .execute(
-                    "INSERT INTO vectors (chunk, vector) VALUES (?1, ?2)",
-                    params![chunk, vector],
-                )
+                .prepare_cached("INSERT INTO vectors (chunk, vector) VALUES (?1, ?2)")
+                .and_then(|mut statement| statement.execute(params![chunk, vector]))
                 .map_err(sql)?;
         }
         for concept in concepts {
             transaction
-                .execute(
-                    "INSERT INTO mentions (chunk, concept) VALUES (?1, ?2)",
-                    params![chunk, *concept as i64],
-                )
+                .prepare_cached("INSERT INTO mentions (chunk, concept) VALUES (?1, ?2)")
+                .and_then(|mut statement| statement.execute(params![chunk, *concept as i64]))
                 .map_err(sql)?;
         }
     }
@@ -322,18 +301,14 @@ pub fn refresh(open: &mut Open, embedder: Option<&StaticModel>) -> Result<(), St
     for (chunk, concepts, vector) in computed {
         for concept in concepts {
             transaction
-                .execute(
-                    "INSERT INTO mentions (chunk, concept) VALUES (?1, ?2)",
-                    params![chunk, concept as i64],
-                )
+                .prepare_cached("INSERT INTO mentions (chunk, concept) VALUES (?1, ?2)")
+                .and_then(|mut statement| statement.execute(params![chunk, concept as i64]))
                 .map_err(sql)?;
         }
         if let Some(vector) = vector {
             transaction
-                .execute(
-                    "INSERT INTO vectors (chunk, vector) VALUES (?1, ?2)",
-                    params![chunk, vector],
-                )
+                .prepare_cached("INSERT INTO vectors (chunk, vector) VALUES (?1, ?2)")
+                .and_then(|mut statement| statement.execute(params![chunk, vector]))
                 .map_err(sql)?;
         }
     }

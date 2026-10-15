@@ -131,5 +131,10 @@
     "thorough": "Dokładny",
     "thoroughHint": "Długie raporty i staranne przeredagowania. Najwolniejszy.",
     "custom": "Własne"
+  },
+  "files": {
+    "title": "Co widzi asystent",
+    "text": "Wybierz stronę lub plik, aby zobaczyć go tak jak asystent, i zdecyduj, ile ukryć.",
+    "none": "W tym czacie nie ma jeszcze stron ani plików."
   }
 }

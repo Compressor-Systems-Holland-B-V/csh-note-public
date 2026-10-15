@@ -15,5 +15,28 @@
   "languageAuto": "O mesmo que este computador",
   "assistant": "Assistente",
   "file": "O seu ficheiro znote",
-  "switch": "Mudar…"
+  "switch": "Mudar…",
+  "layout": "Disposição",
+  "layouts": {
+    "edit": "Typst com pré-visualização em direto.",
+    "agent": "Conversa primeiro, pré-visualização ao lado.",
+    "redaction": "Encontre páginas, controle o que fica oculto."
+  },
+  "parts": {
+    "pages": "Páginas",
+    "editor": "Editor",
+    "preview": "Pré-visualização",
+    "assistant": "Conversa",
+    "search": "Pesquisa",
+    "filter": "Filtro"
+  },
+  "marketplace": "Loja",
+  "marketplaceHint": "Instale aspetos e modelos.",
+  "start": {
+    "layout": "Como quer trabalhar?",
+    "privacy": "O que pode o assistente ver?",
+    "file": "Ficheiro de conhecimento",
+    "downloads": "Transferências",
+    "marketplace": "Loja"
+  }
 }

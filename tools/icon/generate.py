@@ -18,7 +18,7 @@ avoided because the vectorizer turns them into bands.
     uv run tools/icon/generate.py --dry-run       # print the request, send nothing
 
 scripts/generate_icon does the same with the key pulled from Bitwarden. Then rebuild the icon set
-with `pnpm tauri icon packaging/icon.png` and the msix tiles with tools/icon/msix-tiles.py.
+with `pnpm tauri icon packaging/icon.png`.
 """
 
 import argparse

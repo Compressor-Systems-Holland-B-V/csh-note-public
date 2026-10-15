@@ -10,10 +10,15 @@
     "notHidden": "Nicht verborgen",
     "notHiddenTitle": "Der Assistent sieht Ihre Seiten und Dateien genau so, wie sie sind",
     "locked": "Gesperrt",
-    "lockedTitle": "Öffnen Sie zuerst Ihre Wissensdatei in den Einstellungen."
+    "lockedTitle": "Öffnen Sie zuerst Ihre Wissensdatei in den Einstellungen.",
+    "toggle": "Namen in diesem Chat verbergen",
+    "offInSettings": "Verbergen ist in den Einstellungen aus",
+    "fixed": "Nach Beginn des Chats festgelegt",
+    "required": "Ihre Organisation verlangt das Verbergen, daher kann es nicht ausgeschaltet werden."
   },
   "saw": {
-    "prompt": "Ihre Nachricht"
+    "prompt": "Ihre Nachricht",
+    "system": "Anweisungen für den Assistenten"
   },
   "start": {
     "text": "Namen, Beträge und Kontaktdaten werden zu Kürzeln wie ⟦CUSTOMER_3⟧, bevor etwas gesendet wird.",
@@ -120,7 +125,8 @@
     "dontHide": "Nicht verbergen",
     "alwaysHide": "Immer verbergen",
     "hideAs": "„{text}“ verbergen als",
-    "kind": "Art"
+    "kind": "Art",
+    "lines": "{count} Zeilen"
   },
   "kinds": {
     "CUSTOMER": "Kunde",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Lieferant",
     "PROJECT": "Projekt",
     "PRODUCT": "Produkt",
-    "LOCATION": "Ort"
+    "LOCATION": "Ort",
+    "AMOUNT": "Betrag",
+    "EMAIL": "E-Mail-Adresse",
+    "PHONE": "Telefonnummer",
+    "URL": "Webadresse",
+    "IBAN": "IBAN",
+    "CARD": "Kartennummer",
+    "IP": "IP-Adresse"
   },
   "level": {
     "label": "Wie viel verborgen wird",
     "own": "Nur deine Liste und Kontaktdaten",
     "light": "Leicht: auch Namen von Personen",
     "medium": "Mittel: auch Organisationen und Orte",
-    "strict": "Streng: auch Produkte, Projekte, Kunden und Lieferanten"
-  }
+    "strict": "Streng: auch Produkte, Projekte, Kunden und Lieferanten",
+    "short": {
+      "own": "Eigene Liste",
+      "light": "Leicht",
+      "medium": "Mittel",
+      "strict": "Streng"
+    }
+  },
+  "redact": {
+    "title": "Schwärzen",
+    "off": "Verbergen ist aus.",
+    "turnOn": "Einschalten",
+    "none": "Auf dieser Seite gibt es nichts zu verbergen.",
+    "undo": "Rückgängig (Ctrl+Z)",
+    "redo": "Wiederholen (Ctrl+Y)",
+    "reset": "Diese Seite zurücksetzen",
+    "filter": "Filter",
+    "count": "{hidden} von {total} verborgen",
+    "hideGroup": "Alle verbergen: {kind}",
+    "other": "Sonstiges",
+    "removeUnhidden": "Nicht verborgene Wörter aus der Liste entfernen"
+  },
+  "blocked": {
+    "noFile": "Verbergen ist an, aber es ist keine Wissensdatei gewählt. Es wird nichts gesendet, bis Sie in den Einstellungen eine erstellen oder wählen oder das Verbergen ausschalten.",
+    "locked": "Verbergen ist an, aber Ihre Wissensdatei ist gesperrt. Es wird nichts gesendet, bis Sie sie in den Einstellungen öffnen.",
+    "noFinder": "Namenssuche ist an, aber die Namenserkennung ist nicht heruntergeladen. Es wird nichts gesendet, bis Sie sie in den Einstellungen herunterladen oder die Namenssuche ausschalten."
+  },
+  "previewBefore": "Zeigen, was diese Nachricht senden würde"
 }

@@ -10,10 +10,15 @@
     "notHidden": "未隐藏",
     "notHiddenTitle": "助手会看到您的页面和文件的原本内容",
     "locked": "已锁定",
-    "lockedTitle": "请先在设置中打开您的知识文件。"
+    "lockedTitle": "请先在设置中打开您的知识文件。",
+    "toggle": "在此聊天中隐藏名称",
+    "offInSettings": "已在设置中关闭隐藏",
+    "fixed": "聊天开始后即固定",
+    "required": "您的组织要求开启隐藏，因此无法关闭。"
   },
   "saw": {
-    "prompt": "您的消息"
+    "prompt": "您的消息",
+    "system": "给助手的说明"
   },
   "start": {
     "text": "发送前，名称、金额和联系方式会变成 ⟦CUSTOMER_3⟧ 这样的代号。",
@@ -120,7 +125,8 @@
     "dontHide": "不要隐藏",
     "alwaysHide": "始终隐藏",
     "hideAs": "将“{text}”隐藏为",
-    "kind": "类型"
+    "kind": "类型",
+    "lines": "行数：{count}"
   },
   "kinds": {
     "CUSTOMER": "客户",
@@ -129,13 +135,46 @@
     "SUPPLIER": "供应商",
     "PROJECT": "项目",
     "PRODUCT": "产品",
-    "LOCATION": "地点"
+    "LOCATION": "地点",
+    "AMOUNT": "金额",
+    "EMAIL": "电子邮件地址",
+    "PHONE": "电话号码",
+    "URL": "网址",
+    "IBAN": "IBAN",
+    "CARD": "卡号",
+    "IP": "IP 地址"
   },
   "level": {
     "label": "隐藏程度",
     "own": "仅限你的列表和联系方式",
     "light": "轻度：也包括人名",
     "medium": "中度：也包括组织和地点",
-    "strict": "严格：也包括产品、项目、客户和供应商"
-  }
+    "strict": "严格：也包括产品、项目、客户和供应商",
+    "short": {
+      "own": "自定义列表",
+      "light": "轻度",
+      "medium": "中度",
+      "strict": "严格"
+    }
+  },
+  "redact": {
+    "title": "脱敏",
+    "off": "隐藏已关闭。",
+    "turnOn": "开启",
+    "none": "此页面上没有需要隐藏的内容。",
+    "undo": "撤销 (Ctrl+Z)",
+    "redo": "重做 (Ctrl+Y)",
+    "reset": "重置此页面",
+    "filter": "筛选",
+    "count": "已隐藏 {hidden}/{total}",
+    "hideGroup": "隐藏所有{kind}",
+    "other": "其他",
+    "removeUnhidden": "从列表中移除未隐藏的词"
+  },
+  "blocked": {
+    "noFile": "隐藏已开启，但尚未选择知识文件。在您于设置中创建或选择一个知识文件，或关闭隐藏之前，不会发送任何内容。",
+    "locked": "隐藏已开启，但您的知识文件已锁定。在您于设置中打开它之前，不会发送任何内容。",
+    "noFinder": "名称查找已开启，但名称识别尚未下载。在您于设置中下载它，或关闭名称查找之前，不会发送任何内容。"
+  },
+  "previewBefore": "显示此消息将发送的内容"
 }

@@ -1,5 +1,6 @@
 use std::fs;
 use std::io::{BufRead, BufReader, Read};
+use std::net::ToSocketAddrs;
 use std::path::Path;
 use std::sync::Arc;
 use std::sync::mpsc::{RecvTimeoutError, channel};
@@ -9,8 +10,12 @@ use std::time::Duration;
 use serde_json::{Value, json};
 
 use super::secrets::{self, Secret};
-use super::{Event, POLL, Running, Send, Status, Turn, keep, level_of, seen, web};
+use super::{
+    Check, Event, POLL, Running, Send, Status, Turn, attachment_file, in_scope, keep, level_of,
+    seen, web,
+};
 use crate::knowledge::{Gate, LIGHT};
+use crate::policy::{self, Collection, Policy};
 use crate::{extract, workspace};
 
 const OPENROUTER: &str = "https://openrouter.ai/api/v1";
@@ -65,6 +70,25 @@ pub fn hosted(provider: &str) -> Result<&'static Hosted, String> {
         .ok_or_else(|| format!("“{provider}” is not a provider znote knows."))
 }
 
+fn nearby(url: &str) -> bool {
+    let Some(rest) = url.strip_prefix("http://") else {
+        return true;
+    };
+    let authority = rest.split('/').next().unwrap_or_default();
+    let ported = authority
+        .rsplit_once(':')
+        .is_some_and(|(_, port)| port.parse::<u16>().is_ok() && !authority.ends_with(']'));
+    let address = if ported {
+        authority.to_string()
+    } else {
+        format!("{authority}:80")
+    };
+    address.to_socket_addrs().is_ok_and(|found| {
+        let found: Vec<_> = found.collect();
+        !found.is_empty() && found.iter().all(|address| !web::public(address.ip()))
+    })
+}
+
 fn typed(url: Option<&str>) -> Result<String, String> {
     let url = url
         .unwrap_or_default()
@@ -80,6 +104,9 @@ fn typed(url: Option<&str>) -> Result<String, String> {
         || url.chars().any(|c| c.is_whitespace() || c.is_control())
     {
         return Err("Type the address of the server, for example http://localhost:11434/v1".into());
+    }
+    if !nearby(url) {
+        return Err("Plain http:// is only used for a server on this computer or your own network. Use https:// for this address.".into());
     }
     Ok(url.into())
 }
@@ -145,10 +172,22 @@ impl Hosted {
         folder: &Path,
         turn: &Turn,
         gate: &Gate,
-        send: Send,
+        (send, check): (Send, Check),
     ) -> Result<(), String> {
         let secret = secrets::read(self.id)?.ok_or("Connect the assistant in Settings first.")?;
-        run(running, root, folder, turn, &secret, gate, send)
+        let routing = match self.address {
+            Some(OPENROUTER) => routing(policy::get()),
+            _ => Value::Null,
+        };
+        run(
+            running,
+            root,
+            folder,
+            turn,
+            (&secret, &routing),
+            gate,
+            (send, check),
+        )
     }
 }
 
@@ -229,18 +268,18 @@ fn tools(read_only: bool, web: bool, knows: bool) -> Value {
     };
     let path = ("path", "Project/Notebook/Page, without .typ");
     let mut tools = vec![
-        tool("list_pages", "List every page in the workspace.", &[]),
+        tool("list_pages", "List the pages this chat may use.", &[]),
         tool("read_page", "Read the Typst source of a page.", &[path]),
         tool(
             "search_pages",
-            "Find lines that contain a text, in every page.",
+            "Find lines that contain a text, in the pages this chat may use.",
             &[("query", "The text to look for")],
         ),
         tool(
             "read_file",
             "Read the text of a file the user attached to this chat: plain text, PDF, Word, PowerPoint, Excel or OpenDocument.",
             &[
-                ("name", "The file name"),
+                ("name", "The file as the user named it, such as 1.pdf"),
                 ("start", "The character to start at. Use 0 first."),
             ],
         ),
@@ -261,10 +300,10 @@ fn tools(read_only: bool, web: bool, knows: bool) -> Value {
         tools.push(tool("fetch_url", "Read the text of a public web page. Use it only for an address the user gave or asked for.", &[("url", "The https:// address")]));
     }
     if !read_only {
-        tools.push(tool("write_page", "Write a whole page. Makes the page, its notebook and its project when they are missing.", &[path, ("text", "The full Typst source")]));
+        tools.push(tool("write_page", "Write a whole page. Makes the page, its notebook and its project when they are missing. Answers with the compile errors, if any.", &[path, ("text", "The full Typst source")]));
         tools.push(tool(
             "edit_page",
-            "Replace one piece of text in a page. The old text must appear exactly once.",
+            "Replace one piece of text in a page. The old text must appear exactly once. Answers with the compile errors, if any.",
             &[
                 path,
                 ("old", "Text to replace"),
@@ -399,15 +438,40 @@ fn page(input: &Value) -> String {
     path.strip_suffix(".typ").unwrap_or(path).to_string()
 }
 
-fn search(root: &Path, query: &str) -> Result<String, String> {
+// With hiding on the pages are searched as the assistant sees them, hidden, so a guess at part of a
+// name ("Jan de V") finds nothing and cannot tell the assistant what a token stands for.
+fn search(
+    root: &Path,
+    query: &str,
+    gate: &Gate,
+    seen: impl Fn(&str) -> bool,
+) -> Result<String, String> {
     if query.trim().is_empty() {
         return Err("Give a text to look for.".into());
     }
-    let hits: Vec<String> = workspace::find(root, query, MAX_HITS)
-        .into_iter()
-        .filter(|hit| hit.line > 0)
-        .map(|hit| format!("{}.typ:{}: {}", hit.page, hit.line, hit.text))
-        .collect();
+    let wanted = query.to_lowercase();
+    let mut hits = Vec::new();
+    for page in workspace::pages(root).into_iter().filter(|page| seen(page)) {
+        let real = workspace::read_text(root, &page)?;
+        // Hiding keeps every line where it was, so a hidden line that matches gives the real line,
+        // which `answer` hides again with the rest of the output.
+        let shown = match gate.on() {
+            true => gate.veil_at(&real, gate.page_level(&page))?.text,
+            false => real.clone(),
+        };
+        hits.extend(
+            shown
+                .lines()
+                .zip(real.lines())
+                .enumerate()
+                .filter(|(_, (line, _))| line.to_lowercase().contains(&wanted))
+                .map(|(at, (_, line))| format!("{page}.typ:{}: {}", at + 1, line.trim())),
+        );
+        if hits.len() >= MAX_HITS {
+            hits.truncate(MAX_HITS);
+            break;
+        }
+    }
     Ok(if hits.is_empty() {
         "Nothing found.".into()
     } else {
@@ -421,9 +485,57 @@ struct Tools<'a> {
     turn: &'a Turn,
     gate: &'a Gate<'a>,
     send: Send<'a>,
+    check: Check<'a>,
 }
 
-const LOCAL: [&str; 6] = ["path", "name", "text", "old", "new", "query"];
+// A page of a long text, ended before a token rather than inside one.
+fn piece(text: &str, start: usize) -> String {
+    let mut piece: String = text.chars().skip(start).take(MAX_PIECE).collect();
+    let end = start + piece.chars().count();
+    if text.chars().nth(end).is_none() {
+        return piece;
+    }
+    whole_tokens(&mut piece);
+    let end = start + piece.chars().count();
+    format!("{piece}\n… there is more. Call read_file again with start {end}.")
+}
+
+pub(super) fn whole_tokens(text: &mut String) {
+    if let Some(open) = text.rfind('⟦').filter(|&open| !text[open..].contains('⟧')) {
+        text.truncate(open);
+    }
+}
+
+fn cut(output: String) -> String {
+    if output.len() <= MAX_OUTPUT {
+        return output;
+    }
+    let mut cut: String = output.chars().take(MAX_OUTPUT / 4).collect();
+    whole_tokens(&mut cut);
+    format!("{cut}\n… the rest was left out because it is too long.")
+}
+
+// The page is checked as the preview compiles it, so the assistant sees the errors the user would.
+fn saved(problems: Vec<String>) -> String {
+    if problems.is_empty() {
+        return "Saved.".into();
+    }
+    format!(
+        "Saved, but the page does not compile. Fix these errors:\n{}",
+        problems.join("\n")
+    )
+}
+
+// Errors already on the page come after it, marked so they are not copied into an edit.
+fn read(source: String, problems: Vec<String>) -> String {
+    if problems.is_empty() {
+        return source;
+    }
+    format!(
+        "{source}\n\n[znote: the page above does not compile. These lines are not part of it:]\n{}",
+        problems.join("\n")
+    )
+}
 
 impl Tools<'_> {
     fn call(&self, name: &str, input: &Value) -> Result<String, String> {
@@ -433,6 +545,7 @@ impl Tools<'_> {
             turn,
             gate,
             send,
+            check,
         } = self;
         let text = |field: &str| {
             input[field]
@@ -445,26 +558,34 @@ impl Tools<'_> {
                 page: page.into(),
             })
         };
+        let seen = |page: &str| in_scope(folder, turn.page.as_deref(), page);
+        let hidden = |page: &str| -> Result<(), String> {
+            if seen(page) {
+                Ok(())
+            } else {
+                Err(format!(
+                    "{page} is not part of this chat. Ask the user to add it with @."
+                ))
+            }
+        };
         match name {
             "list_pages" => {
-                let pages = workspace::pages(root);
-                Ok(if pages.is_empty() { "The workspace has no pages yet.".into() } else { pages.join("\n") })
+                let pages: Vec<String> = workspace::pages(root).into_iter().filter(|page| seen(page)).collect();
+                Ok(if pages.is_empty() { "This chat has no pages yet. The user can add one with @.".into() } else { pages.join("\n") })
             }
             "read_page" => {
                 let page = page(input);
+                hidden(&page)?;
                 step("Read", &page)?;
                 let source = workspace::read_text(root, &page)?;
-                send(Event::Read { page })?;
-                Ok(source)
+                send(Event::Read { page: page.clone() })?;
+                Ok(read(source, check(&page)))
             }
-            "search_pages" => search(root, text("query")?),
+            "search_pages" => search(root, text("query")?, gate, seen),
+            // The whole file: `answer` hides it first and only then takes the piece asked for.
             "read_file" => {
-                let file = Path::new(text("name")?).file_name().ok_or("Give the name of an attached file.")?;
-                let start = input["start"].as_str().and_then(|start| start.trim().parse().ok()).or(input["start"].as_u64()).unwrap_or(0) as usize;
-                let read = extract::text(&folder.join(file))?;
-                let piece: String = read.chars().skip(start).take(MAX_PIECE).collect();
-                let end = start + MAX_PIECE;
-                Ok(if read.chars().nth(end).is_some() { format!("{piece}\n… there is more. Call read_file again with start {end}.") } else { piece })
+                let file = attachment_file(folder, text("name")?).ok_or("There is no attached file by that name. Use the name the user gave, such as 1.pdf.")?;
+                extract::text(&folder.join(file))
             }
             "search_knowledge" => gate.search(text("query")?),
             "knowledge_entity" => gate.entity(text("token")?),
@@ -473,25 +594,35 @@ impl Tools<'_> {
             "write_page" | "edit_page" if turn.read_only => Err("You may only read pages in this chat. Tell the user what you would change.".into()),
             "write_page" => {
                 let page = page(input);
+                if workspace::page_exists(root, &page) {
+                    hidden(&page)?;
+                }
                 let source = &gate.unveil_typst(text("text")?);
                 step("Write", &page)?;
                 workspace::ensure(root, &page)?;
                 let before = workspace::read_text(root, &page)?;
                 workspace::write_text(root, &page, source)?;
-                send(Event::Edited { page, before: Some(before) })?;
-                Ok("Saved.".into())
+                send(Event::Edited { page: page.clone(), before: Some(before) })?;
+                Ok(saved(check(&page)))
             }
             "edit_page" => {
                 let page = page(input);
+                hidden(&page)?;
                 let (old, new) = (text("old")?, text("new")?);
                 step("Edit", &page)?;
                 let before = workspace::read_text(root, &page)?;
-                match before.matches(old).count() {
+                // The edit is made on the page as the assistant read it, hidden, so the old text
+                // must match what it saw and not a guess at the names behind the tokens.
+                let shown = match gate.on() {
+                    true => gate.veil_at(&before, gate.page_level(&page))?.text,
+                    false => before.clone(),
+                };
+                match shown.matches(old).count() {
                     0 => Err("The old text is not on the page. Read the page again and copy it exactly.".into()),
                     1 => {
-                        workspace::write_text(root, &page, &gate.unveil_typst(&before.replacen(old, new, 1)))?;
-                        send(Event::Edited { page, before: Some(before) })?;
-                        Ok("Saved.".into())
+                        workspace::write_text(root, &page, &gate.unveil_typst(&shown.replacen(old, new, 1)))?;
+                        send(Event::Edited { page: page.clone(), before: Some(before) })?;
+                        Ok(saved(check(&page)))
                     }
                     _ => Err("The old text appears more than once. Include more of the text around it.".into()),
                 }
@@ -502,42 +633,49 @@ impl Tools<'_> {
 
     fn answer(&self, call: &Call) -> String {
         let mut input: Value = serde_json::from_str(&call.arguments).unwrap_or_default();
-        // Page text is unveiled once it is whole, so the real text can be escaped for where it lands.
-        let typst = match call.name.as_str() {
-            "write_page" => "text",
-            "edit_page" => "new",
+        let local = match call.name.as_str() {
+            "read_page" | "write_page" | "edit_page" => "path",
+            "search_knowledge" => "query",
             _ => "",
         };
-        if call.name != "fetch_url" {
-            for field in LOCAL.into_iter().filter(|field| *field != typst) {
-                if let Some(text) = input[field].as_str() {
-                    input[field] = Value::String(self.gate.unveil(text).0);
-                }
-            }
+        if let Some(text) = input[local].as_str() {
+            let real = match local {
+                "query" => self.gate.searchable(text),
+                _ => Ok(self.gate.unveil(text).0),
+            };
+            input[local] = Value::String(real.unwrap_or_default());
         }
         let output = self
             .call(&call.name, &input)
             .unwrap_or_else(|error| format!("Error: {error}"));
-        let output = if output.len() <= MAX_OUTPUT {
-            output
-        } else {
-            let cut: String = output.chars().take(MAX_OUTPUT / 4).collect();
-            format!("{cut}\n… the rest was left out because it is too long.")
+        // Text is cut only once it is hidden, so a name is never split into pieces hiding misses.
+        let paged = |output: String| match call.name.as_str() {
+            "read_file" if !output.starts_with("Error: ") => {
+                let start = input["start"]
+                    .as_str()
+                    .and_then(|start| start.trim().parse().ok())
+                    .or(input["start"].as_u64())
+                    .unwrap_or(0);
+                piece(&output, start as usize)
+            }
+            _ => cut(output),
         };
         if !self.gate.on() {
-            return output;
+            return paged(output);
         }
         let level = match call.name.as_str() {
             "read_file" => input["name"]
                 .as_str()
-                .and_then(|name| Path::new(name).file_name())
-                .map_or(LIGHT, |name| level_of(self.folder, &name.to_string_lossy())),
-            "read_page" => self.gate.page_level(&page(&input)),
-            "search_pages" => self.gate.strictest(),
+                .and_then(|name| attachment_file(self.folder, name))
+                .map_or(LIGHT, |file| level_of(self.folder, &file)),
+            // A compile error can quote the page, so it is hidden as the page is.
+            "read_page" | "write_page" | "edit_page" => self.gate.page_level(&page(&input)),
+            "search_pages" | "search_knowledge" | "knowledge_entity" => self.gate.strictest(),
             _ => LIGHT,
         };
         match self.gate.veil_at(&output, level) {
             Ok(veiled) => {
+                let veiled = paged(veiled.text);
                 if matches!(
                     call.name.as_str(),
                     "read_page"
@@ -551,9 +689,9 @@ impl Tools<'_> {
                         .iter()
                         .find_map(|field| input[field].as_str())
                         .unwrap_or_default();
-                    let _ = (self.send)(seen(&format!("{} {about}", call.name), &veiled.text));
+                    let _ = (self.send)(seen(&format!("{} {about}", call.name), &veiled));
                 }
-                veiled.text
+                veiled
             }
             Err(error) => format!("Error: {error}"),
         }
@@ -572,10 +710,21 @@ fn trim(history: &mut Vec<Value>) {
     }
 }
 
-fn body(turn: &Turn, model: &str, history: &[Value], knows: bool) -> Value {
+fn routing(policy: &Policy) -> Value {
+    let collection = match policy.data_collection {
+        Collection::Allow => "allow",
+        Collection::Deny => "deny",
+    };
+    json!({ "data_collection": collection, "zdr": policy.zero_retention })
+}
+
+fn body(turn: &Turn, model: &str, history: &[Value], knows: bool, routing: &Value) -> Value {
     let mut messages = vec![json!({ "role": "system", "content": turn.system })];
     messages.extend_from_slice(history);
     let mut body = json!({ "model": model, "messages": messages, "stream": true, "tools": tools(turn.read_only, turn.web, knows) });
+    if !routing.is_null() {
+        body["provider"] = routing.clone();
+    }
     if let Some(effort) = turn.effort.as_deref() {
         body["reasoning_effort"] = json!(if matches!(effort, "low" | "medium") {
             effort
@@ -591,9 +740,9 @@ pub fn run(
     root: &Path,
     folder: &Path,
     turn: &Turn,
-    secret: &Secret,
+    (secret, routing): (&Secret, &Value),
     gate: &Gate,
-    send: Send,
+    (send, check): (Send, Check),
 ) -> Result<(), String> {
     let model = turn
         .model
@@ -607,6 +756,7 @@ pub fn run(
         turn,
         gate,
         send,
+        check,
     };
     let file = folder.join("history.json");
     let mut history: Vec<Value> = fs::read(&file)
@@ -619,6 +769,7 @@ pub fn run(
             kinds: prompt.kinds,
         })?;
         send(seen("prompt", &prompt.text))?;
+        send(seen("system", &turn.system))?;
     }
     history.push(json!({ "role": "user", "content": prompt.text }));
     let mut failure = None;
@@ -631,7 +782,7 @@ pub fn run(
         let reply = match stream(
             running,
             secret,
-            body(turn, model, &history, gate.knows()).to_string(),
+            body(turn, model, &history, gate.knows(), routing).to_string(),
             send,
         ) {
             Ok(reply) => reply,
@@ -701,6 +852,9 @@ mod tests {
             read_only: false,
             fast: false,
             web: false,
+            veil: true,
+            pages: Vec::new(),
+            page: Some("Work/Notes/Monday".into()),
         }
     }
 
@@ -805,7 +959,156 @@ mod tests {
             assert!(secret("custom", Some(bad), "").is_err(), "{bad:?}");
         }
         assert!(secret("custom", Some("http://localhost"), "two words").is_err());
+        for near in [
+            "http://127.0.0.1:11434/v1",
+            "http://192.168.1.20/v1",
+            "http://[::1]:8080/v1",
+            "https://1.1.1.1/v1",
+        ] {
+            assert!(secret("custom", Some(near), "").is_ok(), "{near}");
+        }
+        assert!(
+            secret("custom", Some("http://1.1.1.1/v1"), "")
+                .is_err_and(|error| error.contains("Use https://"))
+        );
         assert!(secret("claude", None, "key").is_err());
+    }
+
+    #[test]
+    fn with_hiding_on_a_guess_at_a_name_finds_nothing_and_a_literal_token_stays() {
+        let root = scratch("guess");
+        let folder = root.join("chat");
+        workspace::write_text(
+            &root,
+            "Work/Notes/Monday",
+            "= Monday\n- call Acme Corporation\n- see ⟦PERSON_1⟧\n",
+        )
+        .unwrap();
+        let ttl = "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+<urn:c> skos:prefLabel \"Customer\" ; skos:topConceptOf <urn:s> .
+<urn:a> skos:prefLabel \"Acme Corporation\" ; skos:broader <urn:c> .";
+        let glossary = glossary::parse(ttl.as_bytes(), oxrdfio::RdfFormat::Turtle).unwrap();
+        let knowledge = Knowledge::in_memory(
+            &glossary,
+            Options {
+                veil: true,
+                ..Options::default()
+            },
+        );
+        let gate = knowledge.gate().unwrap();
+        let send = |_| Ok(());
+        let turn = turn();
+        let tools = Tools {
+            root: &root,
+            folder: &folder,
+            turn: &turn,
+            gate: &gate,
+            send: &send,
+            check: &|_| Vec::new(),
+        };
+        let answer = |name: &str, arguments: Value| {
+            tools.answer(&Call {
+                id: "call".into(),
+                name: name.into(),
+                arguments: arguments.to_string(),
+            })
+        };
+        assert_eq!(
+            answer("search_pages", json!({ "query": "Acme Corp" })),
+            "Nothing found."
+        );
+        assert_eq!(
+            answer("search_pages", json!({ "query": "⟦CUSTOMER_1⟧" })),
+            "Work/Notes/Monday.typ:2: - call ⟦CUSTOMER_1⟧"
+        );
+        assert!(
+            answer(
+                "edit_page",
+                json!({ "path": "Work/Notes/Monday", "old": "Acme", "new": "x" })
+            )
+            .starts_with("Error: The old text is not")
+        );
+        assert_eq!(
+            answer(
+                "edit_page",
+                json!({ "path": "Work/Notes/Monday", "old": "- call", "new": "- mail" })
+            ),
+            "Saved."
+        );
+        assert_eq!(
+            workspace::read_text(&root, "Work/Notes/Monday").unwrap(),
+            "= Monday\n- mail Acme Corporation\n- see ⟦PERSON_1⟧\n"
+        );
+    }
+
+    #[test]
+    fn a_chat_sees_only_the_open_page_the_pages_it_was_given_and_the_pages_it_wrote() {
+        let root = scratch("scope");
+        let folder = root.join("chat");
+        workspace::ensure(&root, "Home/Lists/Shopping").unwrap();
+        workspace::write_text(&root, "Home/Lists/Shopping", "- milk\n").unwrap();
+        let knowledge = Knowledge::default();
+        let gate = knowledge.gate().unwrap();
+        let send = |_| Ok(());
+        let isolated = Turn {
+            page: None,
+            ..turn()
+        };
+        let call = |name: &str, input: Value| {
+            Tools {
+                root: &root,
+                folder: &folder,
+                turn: &isolated,
+                gate: &gate,
+                send: &send,
+                check: &|_| Vec::new(),
+            }
+            .call(name, &input)
+        };
+        assert!(
+            call("list_pages", json!({}))
+                .unwrap()
+                .starts_with("This chat has no pages")
+        );
+        assert!(
+            call("read_page", json!({ "path": "Work/Notes/Monday" }))
+                .unwrap_err()
+                .contains("not part of this chat")
+        );
+        assert_eq!(
+            call("search_pages", json!({ "query": "milk" })).unwrap(),
+            "Nothing found."
+        );
+        let edit = json!({ "path": "Work/Notes/Monday", "old": "- milk", "new": "- eggs" });
+        assert!(call("edit_page", edit.clone()).is_err());
+        assert!(
+            call(
+                "write_page",
+                json!({ "path": "Work/Notes/Monday", "text": "gone" })
+            )
+            .is_err()
+        );
+        assert_eq!(
+            workspace::read_text(&root, "Work/Notes/Monday").unwrap(),
+            "= Monday\n- milk\n"
+        );
+        call(
+            "write_page",
+            json!({ "path": "Work/Notes/New", "text": "= New\n" }),
+        )
+        .unwrap();
+
+        super::super::add_to_scope(&folder, &["Home".into(), "Work/Notes/New".into()]).unwrap();
+        assert_eq!(
+            call("list_pages", json!({})).unwrap(),
+            "Home/Lists/Shopping\nWork/Notes/New"
+        );
+        assert_eq!(
+            call("search_pages", json!({ "query": "milk" })).unwrap(),
+            "Home/Lists/Shopping.typ:1: - milk"
+        );
+        assert!(call("read_page", json!({ "path": "Work/Notes/Monday" })).is_err());
+        assert!(call("read_page", json!({ "path": "Work/Notes/New" })).is_ok());
     }
 
     #[test]
@@ -829,6 +1132,7 @@ mod tests {
                 },
                 gate: &gate,
                 send: &send,
+                check: &|_| Vec::new(),
             }
             .call(name, &input)
         };
@@ -912,23 +1216,28 @@ mod tests {
             )
             .is_err()
         );
-        fs::write(folder.join("2-long.txt"), "é".repeat(MAX_PIECE + 5)).unwrap();
-        let first = call("read_file", json!({ "name": "2-long.txt" }), false).unwrap();
+        let long = "é".repeat(MAX_PIECE + 5);
+        let first = piece(&long, 0);
         assert!(first.len() <= MAX_OUTPUT && first.ends_with(&format!("start {MAX_PIECE}.")));
-        assert_eq!(
-            call(
-                "read_file",
-                json!({ "name": "2-long.txt", "start": MAX_PIECE.to_string() }),
-                false
-            )
-            .unwrap(),
-            "ééééé"
-        );
+        assert_eq!(piece(&long, MAX_PIECE), "ééééé");
+        let split = format!("{}⟦PERSON_1⟧ rest", "a".repeat(MAX_PIECE - 3));
+        let first = piece(&split, 0);
+        let start = MAX_PIECE - 3;
+        assert!(first.ends_with(&format!(
+            "{}\n… there is more. Call read_file again with start {start}.",
+            "a".repeat(3)
+        )));
+        assert_eq!(piece(&split, start), "⟦PERSON_1⟧ rest");
         assert!(
             call("fetch_url", json!({ "url": "https://example.com" }), false)
                 .unwrap_err()
                 .starts_with("This chat may not use the internet")
         );
+        assert_eq!(
+            call("read_file", json!({ "name": "1.txt" }), false).unwrap(),
+            "attached"
+        );
+        assert!(call("read_file", json!({ "name": "3.pdf" }), false).is_err());
         let named = |web: bool| tools(true, web, false).to_string().contains("fetch_url");
         assert!(named(true) && !named(false));
         assert!(
@@ -995,12 +1304,17 @@ mod tests {
             &root,
             &folder,
             &turn(),
-            &Secret {
-                url,
-                key: "secret-key".into(),
-            },
+            (
+                &Secret {
+                    url,
+                    key: "secret-key".into(),
+                },
+                &routing(policy::get()),
+            ),
             &knowledge.gate().unwrap(),
-            &send,
+            (&send, &|page: &str| {
+                vec![format!("line 3: unknown variable: eggs in {page}")]
+            }),
         )
         .unwrap();
 
@@ -1036,10 +1350,14 @@ mod tests {
         let asked = asked.lock().unwrap();
         let again: Value = serde_json::from_str(&asked[1]).unwrap();
         assert_eq!(again["model"], "llama");
+        assert_eq!(
+            again["provider"],
+            json!({ "data_collection": "deny", "zdr": false })
+        );
         assert_eq!(again["messages"][0]["content"], "write Typst");
         assert_eq!(
             again["messages"][3],
-            json!({ "role": "tool", "tool_call_id": "call_a", "content": "Saved." })
+            json!({ "role": "tool", "tool_call_id": "call_a", "content": "Saved, but the page does not compile. Fix these errors:\nline 3: unknown variable: eggs in Work/Notes/Monday" })
         );
         assert_eq!(again["messages"][4]["tool_call_id"], "call_b");
         let history: Vec<Value> =
@@ -1074,9 +1392,9 @@ mod tests {
             &root,
             &root.join("chat"),
             &turn(),
-            &nowhere,
+            (&nowhere, &Value::Null),
             &gate,
-            &send,
+            (&send, &|_| Vec::new()),
         )
         .unwrap();
         match seen.lock().unwrap().last() {
@@ -1098,9 +1416,9 @@ mod tests {
                     model: None,
                     ..turn()
                 },
-                &nowhere,
+                (&nowhere, &Value::Null),
                 &gate,
-                &send
+                (&send, &|_| Vec::new())
             )
             .is_err()
         );
@@ -1136,7 +1454,7 @@ mod tests {
             call("call_a", "read_page", json!({ "path": "Work/Notes/Monday" })),
             call("call_b", "edit_page", json!({ "path": "Work/Notes/Monday", "old": "- call ⟦CUSTOMER_1⟧", "new": "- call ⟦CUSTOMER_1⟧ and ⟦CUSTOMER_1~1⟧ again at ⟦EMAIL_1⟧" })),
             call("call_c", "search_pages", json!({ "query": "⟦CUSTOMER_1~1⟧" })),
-            "data: {\"choices\":[{\"delta\":{\"content\":\"Done with ⟦CUST\"}}]}\n\ndata: {\"choices\":[{\"delta\":{\"content\":\"OMER_1⟧ and ⟦NOPE_2⟧.\"}}]}\n\ndata: [DONE]\n\n".into(),
+            "data: {\"choices\":[{\"delta\":{\"reasoning\":\"Tell ⟦CUSTOMER_1⟧ it is done.\"}}]}\n\ndata: {\"choices\":[{\"delta\":{\"content\":\"Done with ⟦CUST\"}}]}\n\ndata: {\"choices\":[{\"delta\":{\"content\":\"OMER_1⟧ and ⟦NOPE_2⟧.\"}}]}\n\ndata: [DONE]\n\n".into(),
         ];
         let (url, asked) = serve(answers);
         let agent = Agent::default();
@@ -1157,12 +1475,16 @@ mod tests {
             &root,
             &folder,
             &veiled_turn,
-            &Secret {
-                url,
-                key: String::new(),
-            },
+            (
+                &Secret {
+                    url,
+                    key: String::new(),
+                },
+                &Value::Null,
+            ),
             &gate,
-            &send,
+            // The error quotes the real name, as Typst would, and must reach the provider hidden.
+            (&send, &|_| vec!["line 2: unknown variable: Acme".into()]),
         )
         .unwrap();
 
@@ -1179,6 +1501,11 @@ mod tests {
         assert_eq!(
             first["messages"][1]["content"],
             "Tell ⟦CUSTOMER_1⟧ about ⟦CUSTOMER_1~1⟧, mail ⟦EMAIL_1⟧"
+        );
+        let read: Value = serde_json::from_str(&asked[1]).unwrap();
+        assert_eq!(
+            read["messages"][3]["content"],
+            "= Monday\n- call ⟦CUSTOMER_1⟧\n\n\n[znote: the page above does not compile. These lines are not part of it:]\nline 2: unknown variable: ⟦CUSTOMER_1~1⟧"
         );
         let last: Value = serde_json::from_str(&asked[3]).unwrap();
         assert!(
@@ -1197,6 +1524,14 @@ mod tests {
             })
             .collect();
         assert_eq!(said, "Done with Acme Corporation and ⟦NOPE_2⟧.");
+        let thought: String = events
+            .iter()
+            .filter_map(|event| match event {
+                Event::Thought { text } => Some(text.as_str()),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(thought, "Tell ⟦CUSTOMER_1⟧ it is done.");
         assert!(events.iter().any(|event| matches!(event, Event::Restored { texts } if texts[0].text == "Acme Corporation" && texts[0].kind == "CUSTOMER")));
         assert!(
             events
@@ -1205,5 +1540,16 @@ mod tests {
         );
         assert!(events.iter().any(|event| matches!(event, Event::Edited { before: Some(before), .. } if before.contains("Acme Corporation"))));
         assert!(events.iter().any(|event| matches!(event, Event::Saw { label, text } if label == "read_page Work/Notes/Monday" && text.contains("⟦CUSTOMER_1⟧"))));
+    }
+
+    #[test]
+    fn a_long_tool_answer_is_cut_before_a_token_and_not_inside_it() {
+        let kept = "a".repeat(MAX_OUTPUT / 4 - 3);
+        let long = format!("{kept}⟦PERSON_1⟧{}", "b".repeat(MAX_OUTPUT));
+        assert_eq!(
+            cut(long),
+            format!("{kept}\n… the rest was left out because it is too long.")
+        );
+        assert_eq!(cut("short".into()), "short");
     }
 }

@@ -10,10 +10,15 @@
     "notHidden": "Gizlenmedi",
     "notHiddenTitle": "Asistan sayfalarınızı ve dosyalarınızı tam olarak oldukları gibi görür",
     "locked": "Kilitli",
-    "lockedTitle": "Önce bilgi dosyanızı Ayarlar'da açın."
+    "lockedTitle": "Önce bilgi dosyanızı Ayarlar'da açın.",
+    "toggle": "Bu sohbette adları gizle",
+    "offInSettings": "Gizleme Ayarlar'da kapalı",
+    "fixed": "Sohbet başladıktan sonra değiştirilemez",
+    "required": "Kuruluşunuz gizlemeyi zorunlu kılıyor, bu yüzden kapatılamaz."
   },
   "saw": {
-    "prompt": "Mesajınız"
+    "prompt": "Mesajınız",
+    "system": "Asistan için talimatlar"
   },
   "start": {
     "text": "Adlar, tutarlar ve iletişim bilgileri gönderilmeden önce ⟦CUSTOMER_3⟧ gibi etiketlere dönüşür.",
@@ -120,7 +125,8 @@
     "dontHide": "Bunu gizleme",
     "alwaysHide": "Bunu her zaman gizle",
     "hideAs": "“{text}” metnini şu olarak gizle",
-    "kind": "Tür"
+    "kind": "Tür",
+    "lines": "Satır: {count}"
   },
   "kinds": {
     "CUSTOMER": "Müşteri",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Tedarikçi",
     "PROJECT": "Proje",
     "PRODUCT": "Ürün",
-    "LOCATION": "Konum"
+    "LOCATION": "Konum",
+    "AMOUNT": "Tutar",
+    "EMAIL": "E-posta adresi",
+    "PHONE": "Telefon numarası",
+    "URL": "Web adresi",
+    "IBAN": "IBAN",
+    "CARD": "Kart numarası",
+    "IP": "IP adresi"
   },
   "level": {
     "label": "Ne kadar gizlenecek",
     "own": "Yalnızca kendi listeniz ve iletişim bilgileri",
     "light": "Hafif: kişi adları da",
     "medium": "Orta: kuruluşlar ve yerler de",
-    "strict": "Sıkı: ürünler, projeler, müşteriler ve tedarikçiler de"
-  }
+    "strict": "Sıkı: ürünler, projeler, müşteriler ve tedarikçiler de",
+    "short": {
+      "own": "Kendi listem",
+      "light": "Hafif",
+      "medium": "Orta",
+      "strict": "Sıkı"
+    }
+  },
+  "redact": {
+    "title": "Karartma",
+    "off": "Gizleme kapalı.",
+    "turnOn": "Aç",
+    "none": "Bu sayfada gizlenecek bir şey yok.",
+    "undo": "Geri al (Ctrl+Z)",
+    "redo": "Yinele (Ctrl+Y)",
+    "reset": "Bu sayfayı sıfırla",
+    "filter": "Filtre",
+    "count": "{hidden} / {total} gizli",
+    "hideGroup": "Tüm {kind} öğelerini gizle",
+    "other": "Diğer",
+    "removeUnhidden": "Gizlenmeyen kelimeleri listeden kaldır"
+  },
+  "blocked": {
+    "noFile": "Gizleme açık, ancak bir bilgi dosyası seçilmedi. Ayarlar'da bir tane oluşturana veya seçene ya da gizlemeyi kapatana kadar hiçbir şey gönderilmez.",
+    "locked": "Gizleme açık, ancak bilgi dosyanız kilitli. Onu Ayarlar'da açana kadar hiçbir şey gönderilmez.",
+    "noFinder": "Ad bulma açık, ancak ad bulucu indirilmedi. Onu Ayarlar'da indirene ya da ad bulmayı kapatana kadar hiçbir şey gönderilmez."
+  },
+  "previewBefore": "Bu mesajın ne göndereceğini göster"
 }

@@ -3,10 +3,10 @@
 </script>
 
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { Switch } from "$lib/components/ui/switch";
+  import { Button } from "@zsuite/ui/button";
+  import { Input } from "@zsuite/ui/input";
+  import { Label } from "@zsuite/ui/label";
+  import { Switch } from "@zsuite/ui/switch";
   import { privacy } from "$lib/state/privacy.svelte";
   import { messageOf } from "$lib/utils";
   import { t } from "$lib/i18n.svelte";

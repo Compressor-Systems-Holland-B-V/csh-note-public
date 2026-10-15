@@ -7,13 +7,14 @@ use std::sync::{Arc, LazyLock, Mutex};
 use serde::Serialize;
 use tauri::{AppHandle, Emitter, Manager, State};
 use typst::diag::{FileResult, PackageError, Severity, SourceDiagnostic, SourceResult, Warned};
-use typst::foundations::{Bytes, Datetime, Duration};
+use typst::foundations::{Bytes, Datetime, Duration, Output};
 use typst::layout::{Frame, FrameItem};
 use typst::syntax::package::PackageSpec;
 use typst::syntax::{FileId, RootedPath, Source, VirtualPath, VirtualRoot};
 use typst::text::{Font, FontBook};
 use typst::utils::{LazyHash, hash128};
-use typst::{Library, LibraryExt, World, WorldExt};
+use typst::{Feature, Library, LibraryExt, World, WorldExt};
+use typst_html::HtmlDocument;
 use typst_kit::datetime::Time;
 use typst_kit::downloader::{Downloader, SystemDownloader};
 use typst_kit::files::{FileLoader, FileStore, FsRoot};
@@ -25,7 +26,15 @@ use typst_svg::SvgOptions;
 use crate::theme;
 use crate::workspace::Workspace;
 
-static LIBRARY: LazyLock<LazyHash<Library>> = LazyLock::new(|| LazyHash::new(Library::default()));
+const MAX_PROBLEMS: usize = 10;
+
+static LIBRARY: LazyLock<LazyHash<Library>> = LazyLock::new(|| {
+    LazyHash::new(
+        Library::builder()
+            .with_features([Feature::Html].into_iter().collect())
+            .build(),
+    )
+});
 
 pub fn font_store(themes: &Path) -> FontStore {
     let mut store = FontStore::new();
@@ -61,6 +70,12 @@ pub struct Diagnostic {
     message: String,
     from: usize,
     to: usize,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct Problem {
+    pub line: Option<usize>,
+    pub message: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -106,6 +121,7 @@ impl<F: Fn(&str) + Send + Sync + 'static> Downloader for Announcing<F> {
 struct Loader {
     main: FileId,
     text: String,
+    wrapper: Option<(FileId, String)>,
     project: FsRoot,
     themes: PathBuf,
     packages: SystemPackages,
@@ -115,6 +131,11 @@ impl FileLoader for Loader {
     fn load(&self, id: FileId) -> FileResult<Bytes> {
         if id == self.main {
             return Ok(Bytes::from_string(self.text.clone()));
+        }
+        if let Some((wrapper, text)) = &self.wrapper
+            && id == *wrapper
+        {
+            return Ok(Bytes::from_string(text.clone()));
         }
         match id.root() {
             VirtualRoot::Package(spec) if spec.namespace == "themes" => {
@@ -141,6 +162,8 @@ pub struct PageWorld {
     time: Time,
     hashes: Vec<u128>,
     used: Vec<UsedFont>,
+    // Folders a message may name: the project, the themes and the user's home, longest first.
+    folders: Vec<String>,
 }
 
 impl World for PageWorld {
@@ -153,7 +176,11 @@ impl World for PageWorld {
     }
 
     fn main(&self) -> FileId {
-        self.main
+        self.files
+            .loader()
+            .wrapper
+            .as_ref()
+            .map_or(self.main, |(wrapper, _)| *wrapper)
     }
 
     fn source(&self, id: FileId) -> FileResult<Source> {
@@ -182,7 +209,7 @@ impl PageWorld {
         announce_download: impl Fn(&str) + Send + Sync + 'static,
     ) -> Result<Self, String> {
         let path = VirtualPath::new(main).map_err(|error| error.to_string())?;
-        let main = FileId::unique(RootedPath::new(VirtualRoot::Project, path));
+        let main = FileId::new(RootedPath::new(VirtualRoot::Project, path));
         let downloader = Announcing {
             inner: SystemDownloader::new(concat!("znote/", env!("CARGO_PKG_VERSION"))),
             announce: announce_download,
@@ -190,6 +217,7 @@ impl PageWorld {
         let loader = Loader {
             main,
             text: String::new(),
+            wrapper: None,
             project: FsRoot::new(project.to_path_buf()),
             themes: themes.to_path_buf(),
             packages: SystemPackages::new(downloader),
@@ -201,6 +229,16 @@ impl PageWorld {
             time: Time::system(),
             hashes: Vec::new(),
             used: Vec::new(),
+            folders: [project, themes]
+                .map(|folder| folder.to_string_lossy().into_owned())
+                .into_iter()
+                .chain(
+                    std::env::var("USERPROFILE")
+                        .or_else(|_| std::env::var("HOME"))
+                        .ok(),
+                )
+                .filter(|folder| folder.len() > 1)
+                .collect(),
         })
     }
 
@@ -208,11 +246,11 @@ impl PageWorld {
         self.hashes.clear();
     }
 
-    fn typeset(&mut self, text: String) -> Warned<SourceResult<PagedDocument>> {
+    fn typeset<T: Output>(&mut self, text: String) -> Warned<SourceResult<T>> {
         self.files.loader_mut().text = text;
         self.files.reset();
         self.time.reset();
-        typst::compile::<PagedDocument>(self)
+        typst::compile::<T>(self)
     }
 
     pub fn document(&mut self, text: String) -> Result<PagedDocument, String> {
@@ -221,8 +259,40 @@ impl PageWorld {
             .map_err(|_| "Fix the problems on this page before you export it.".to_string())
     }
 
+    /// Compiles the page for Typst's HTML target, behind `prelude` (show rules only). The page is
+    /// included by a wrapper file rather than prefixed, so its spans and file id stay those of the
+    /// paged compile. Returns the warnings with the document.
+    pub fn html(
+        &mut self,
+        text: String,
+        prelude: &str,
+    ) -> Result<(HtmlDocument, Vec<String>), String> {
+        let path = self.main.vpath().get_with_slash();
+        let quoted = path.replace('\\', "\\\\").replace('"', "\\\"");
+        let wrapper = FileId::unique(RootedPath::new(
+            VirtualRoot::Project,
+            VirtualPath::new("/.znote-export.typ").map_err(|error| error.to_string())?,
+        ));
+        self.files.loader_mut().wrapper =
+            Some((wrapper, format!("{prelude}\n#include \"{quoted}\"\n")));
+        let warned = self.typeset::<HtmlDocument>(text);
+        self.files.loader_mut().wrapper = None;
+        let warnings = warned
+            .warnings
+            .iter()
+            .map(|warning| warning.message.to_string())
+            .collect();
+        match warned.output {
+            Ok(document) => Ok((document, warnings)),
+            Err(errors) => Err(errors
+                .first()
+                .map(|error| error.message.to_string())
+                .unwrap_or_default()),
+        }
+    }
+
     pub fn compile(&mut self, text: String) -> Compiled {
-        let warned = self.typeset(text);
+        let warned = self.typeset::<PagedDocument>(text);
         let mut diagnostics: Vec<Diagnostic> = warned
             .warnings
             .iter()
@@ -271,6 +341,40 @@ impl PageWorld {
             pages,
             diagnostics,
         }
+    }
+
+    /// The errors on the page, with their line when they are on the page itself. Nothing is
+    /// rendered and the preview's sent pages are left alone.
+    pub fn problems(&mut self, text: String) -> Vec<Problem> {
+        let Err(errors) = self.typeset::<PagedDocument>(text).output else {
+            return Vec::new();
+        };
+        errors
+            .iter()
+            .take(MAX_PROBLEMS)
+            .map(|error| {
+                // A message can quote a file's full path, which names the user and the
+                // workspace folder; only the part inside them is kept.
+                let message = self
+                    .folders
+                    .iter()
+                    .fold(self.diagnostic(error).message, |message, folder| {
+                        message.replace(folder.as_str(), "")
+                    });
+                Problem {
+                    line: self.line(error),
+                    message,
+                }
+            })
+            .collect()
+    }
+
+    fn line(&self, diagnostic: &SourceDiagnostic) -> Option<usize> {
+        if diagnostic.span.id()? != self.main {
+            return None;
+        }
+        let start = self.range(diagnostic.span)?.start;
+        Some(self.source(self.main).ok()?.lines().byte_to_line(start)? + 1)
     }
 
     fn used_font(&self, font: &Font) -> Option<UsedFont> {
@@ -344,6 +448,38 @@ impl Compiler {
     }
 }
 
+fn new_world(app: &AppHandle, project: &Path, main: &str) -> Result<PageWorld, String> {
+    let announcer = app.clone();
+    let themes = theme::folder(app)?;
+    let fonts = app
+        .state::<Compiler>()
+        .fonts
+        .lock()
+        .map_err(|error| error.to_string())?
+        .get_or_insert_with(|| {
+            let mut store = font_store(&themes);
+            if let Some(carried) = crate::project::fonts(app) {
+                store.extend(fonts::scan(&carried));
+            }
+            Arc::new(store)
+        })
+        .clone();
+    PageWorld::new(project, main, &themes, fonts, move |package| {
+        let _ = announcer.emit("downloading", package);
+    })
+}
+
+/// The errors on a page the assistant changed, from a world of its own so the preview's is left
+/// alone. A page that cannot be checked counts as one without errors.
+pub fn problems(app: &AppHandle, page: &str, text: String) -> Vec<Problem> {
+    let check = || {
+        let (project, main) = app.state::<Workspace>().typst_source(page)?;
+        let mut world = new_world(app, &project, &main)?;
+        crate::guarded("", || Ok(world.problems(text)))
+    };
+    check().unwrap_or_default()
+}
+
 type OpenWorld = Option<(PathBuf, PageWorld)>;
 
 fn open_world<'a>(
@@ -354,35 +490,26 @@ fn open_world<'a>(
     let (project, main) = app.state::<Workspace>().typst_source(page)?;
     let file = project.join(&main);
     if open.as_ref().is_none_or(|(current, _)| *current != file) {
-        let announcer = app.clone();
-        let themes = theme::folder(app)?;
-        let fonts = app
-            .state::<Compiler>()
-            .fonts
-            .lock()
-            .map_err(|error| error.to_string())?
-            .get_or_insert_with(|| {
-                let mut store = font_store(&themes);
-                if let Some(carried) = crate::project::fonts(app) {
-                    store.extend(fonts::scan(&carried));
-                }
-                Arc::new(store)
-            })
-            .clone();
-        let world = PageWorld::new(&project, &main, &themes, fonts, move |package| {
-            let _ = announcer.emit("downloading", package);
-        })?;
-        *open = Some((file, world));
+        *open = Some((file, new_world(app, &project, &main)?));
     }
     open.as_mut()
         .map(|(_, world)| world)
         .ok_or_else(|| "The page could not be opened.".to_string())
 }
 
-pub fn document(app: &AppHandle, page: &str, text: String) -> Result<PagedDocument, String> {
+/// Runs `work` on the page's world, which stays locked for the whole call.
+pub fn with_page<T>(
+    app: &AppHandle,
+    page: &str,
+    work: impl FnOnce(&mut PageWorld) -> Result<T, String>,
+) -> Result<T, String> {
     let compiler = app.state::<Compiler>();
     let mut open = compiler.world.lock().map_err(|error| error.to_string())?;
-    open_world(app, &mut open, page)?.document(text)
+    let world = open_world(app, &mut open, page)?;
+    crate::guarded(
+        "This page could not be read. Undo your last change and try again.",
+        || work(world),
+    )
 }
 
 fn compile_page(
@@ -407,7 +534,10 @@ fn compile_page(
     if fresh {
         world.forget_sent_pages();
     }
-    let result = world.compile(text);
+    let result = crate::guarded(
+        "This page could not be read. Undo your last change and try again.",
+        || Ok(world.compile(text)),
+    )?;
     if result.page_count.is_some() {
         crate::project::fonts_used(app, page, world.used_fonts());
     }
@@ -466,6 +596,26 @@ mod tests {
             |_| {},
         )
         .unwrap()
+    }
+
+    #[test]
+    fn problems_name_the_line_of_each_error_and_a_good_page_has_none() {
+        let mut world = world();
+        assert!(world.problems("= Fine\n".into()).is_empty());
+        assert_eq!(
+            world.problems("#image(\"missing.png\")\n".into()),
+            [Problem {
+                line: Some(1),
+                message: "file not found (searched at /missing.png)".into()
+            }]
+        );
+        let found = world.problems("= Title\n\n#foo\n".into());
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].line, Some(3));
+        assert!(
+            found[0].message.starts_with("unknown variable: foo"),
+            "{found:?}"
+        );
     }
 
     #[test]
@@ -605,13 +755,21 @@ mod tests {
         let themes = folder.join("themes");
         for entry in &entries {
             let id = entry["id"].as_str().unwrap();
-            theme::install(
-                &themes,
-                &data.join("themes").join(format!("{id}.znx")),
+            theme::install(&themes, &data.join("themes").join(format!("{id}.znx"))).unwrap();
+        }
+        assert_eq!(theme::list(&themes).len(), entries.len());
+        let looks = Path::new(env!("CARGO_MANIFEST_DIR")).join("../data-looks");
+        let index = std::fs::read(looks.join("index.json")).unwrap();
+        let offered = zsuite_theme::catalog(&index).unwrap();
+        let listed: Vec<serde_json::Value> = serde_json::from_slice(&index).unwrap();
+        assert_eq!(offered.len(), listed.len());
+        for look in &offered {
+            zsuite_theme::install(
+                &theme::looks_of(&themes),
+                &looks.join("themes").join(format!("{}.zth", look.id)),
             )
             .unwrap();
         }
-        assert_eq!(theme::list(&themes).len(), entries.len());
 
         let fonts = Arc::new(font_store(&themes));
         for template in entries

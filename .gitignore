@@ -22,9 +22,11 @@ vite.config.ts.timestamp-*
 AGENTS.md
 GUIDELINES.md
 .xprarc
+.demo
 
 # Planning notes
 /roadmap
 
 # Data folder
 data/
+data-looks/

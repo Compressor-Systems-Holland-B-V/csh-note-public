@@ -15,5 +15,28 @@
   "languageAuto": "Zelfde als deze computer",
   "assistant": "Assistent",
   "file": "Je znote-bestand",
-  "switch": "Wisselen…"
+  "switch": "Wisselen…",
+  "layout": "Indeling",
+  "layouts": {
+    "edit": "Typst met live voorbeeld.",
+    "agent": "Eerst chatten, voorbeeld ernaast.",
+    "redaction": "Pagina's zoeken, bepalen wat verborgen wordt."
+  },
+  "parts": {
+    "pages": "Pagina's",
+    "editor": "Editor",
+    "preview": "Voorbeeld",
+    "assistant": "Chat",
+    "search": "Zoeken",
+    "filter": "Filter"
+  },
+  "marketplace": "Marktplaats",
+  "marketplaceHint": "Uiterlijken en sjablonen installeren.",
+  "start": {
+    "layout": "Hoe wil je werken?",
+    "privacy": "Wat mag de assistent zien?",
+    "file": "Kennisbestand",
+    "downloads": "Downloads",
+    "marketplace": "Marktplaats"
+  }
 }

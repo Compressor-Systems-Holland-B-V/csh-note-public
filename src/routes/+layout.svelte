@@ -1,6 +1,5 @@
 <script lang="ts">
   import "../app.css";
-  import { loadChats } from "$lib/state/chats.svelte";
   import { connect } from "$lib/state/document.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { loadThemes, theme } from "$lib/state/theme.svelte";
@@ -38,7 +37,7 @@
   $effect(() => setLocale(settings.loaded ? settings.values.language : null));
 
   $effect(() => {
-    if (!inDesktopApp() || !settings.loaded || privacy.status === null) return;
+    if (!inDesktopApp() || !settings.loaded) return;
     const options = privacy.options;
     void projects.file;
     privacyOptions(options)
@@ -53,7 +52,6 @@
   connect();
   start();
   loadThemes();
-  loadChats();
   if (inDesktopApp()) privacy.load();
 </script>
 

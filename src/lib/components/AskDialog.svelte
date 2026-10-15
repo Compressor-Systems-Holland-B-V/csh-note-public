@@ -12,9 +12,9 @@
 
 <script lang="ts">
   import { untrack } from "svelte";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Input } from "$lib/components/ui/input";
+  import { Button } from "@zsuite/ui/button";
+  import * as Dialog from "@zsuite/ui/dialog";
+  import { Input } from "@zsuite/ui/input";
   import { messageOf } from "$lib/utils";
   import Picker from "./Picker.svelte";
   import { t } from "$lib/i18n.svelte";

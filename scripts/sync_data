@@ -1,26 +1,40 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Two stores on Hugging Face:
+#   znote-data     data         .znx templates
+#   zsuite-themes  data-looks   .zth looks
 root="$(cd "$(dirname "$0")/.." && pwd)"
-data="$root/data"
-repo="zal-analytics-core/znote-data"
+templates="$root/data"
+looks="$root/data-looks"
+templates_repo="zal-analytics-core/znote-data"
+looks_repo="zal-analytics-core/zsuite-themes"
 
 stop() {
   echo "sync_data: $1" >&2
   exit 1
 }
 
-build() {
-  mkdir -p "$data/themes"
-  rm -f "$data"/themes/*
-  for source in "$data"/src/*/; do
+# pack <folder> <extension>: zip every source in <folder>/src into <folder>/themes and write
+# <folder>/index.json
+pack() {
+  local folder="$1" extension="$2"
+  mkdir -p "$folder/themes"
+  rm -f "$folder"/themes/*
+  for source in "$folder"/src/*/; do
     id="$(basename "$source")"
-    [ "$(jq -r .id "$source/theme.json")" = "$id" ] || stop "data/src/$id/theme.json must have the id \"$id\""
+    [ "$(jq -r .id "$source/theme.json")" = "$id" ] || stop "${source#"$root/"}theme.json must have the id \"$id\""
     [ ! -e "$root/.zed/themes/$id" ] || stop "\"$id\" is a private theme and must not be published"
-    (cd "$source" && zip -qrX "$data/themes/$id.znx" . -x ".*")
+    [ "$extension" != znx ] || [ -s "$source/guide.md" ] || stop "${source#"$root/"} needs a guide.md for the assistant"
+    (cd "$source" && zip -qrX "$folder/themes/$id.$extension" . -x ".*")
   done
-  jq -s . "$data"/src/*/theme.json > "$data/index.json"
-  echo "Built $(jq length "$data/index.json") themes into data/themes"
+  jq -s . "$folder"/src/*/theme.json > "$folder/index.json"
+  echo "Built $(jq length "$folder/index.json") into ${folder#"$root/"}/themes"
+}
+
+build() {
+  pack "$templates" znx
+  pack "$looks" zth
 }
 
 check() {
@@ -34,19 +48,22 @@ case "${1:-}" in
   --upload)
     build
     check
-    hf upload "$repo" "$data" . --type dataset --exclude ".cache/*" --delete "themes/*" --delete "src/*" \
-      --commit-message "Sync themes from znote"
+    hf upload "$templates_repo" "$templates" . --type dataset --exclude ".cache/*" \
+      --delete "themes/*" --delete "src/*" --commit-message "Sync templates from znote"
+    hf upload "$looks_repo" "$looks" . --type dataset --exclude ".cache/*" \
+      --delete "themes/*" --delete "src/*" --commit-message "Sync looks from znote"
     ;;
   --download)
-    hf download "$repo" --type dataset --local-dir "$data"
+    hf download "$templates_repo" --type dataset --local-dir "$root/data"
+    hf download "$looks_repo" --type dataset --local-dir "$looks"
     ;;
   *)
     cat >&2 <<'USAGE'
 Usage: scripts/sync_data --build | --upload | --download
 
-  --build     zip every theme in data/src into data/themes and write data/index.json
-  --upload    build, check that every theme installs and compiles, then publish data/ to Hugging Face
-  --download  fetch the published data from Hugging Face into data/
+  --build     zip the sources in data/src (.znx) and data-looks/src (.zth) and write their index.json
+  --upload    build, check that every theme installs and compiles, then publish both to Hugging Face
+  --download  fetch the published data from Hugging Face into data/ and data-looks/
 USAGE
     exit 2
     ;;

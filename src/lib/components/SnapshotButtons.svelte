@@ -1,7 +1,7 @@
 <script lang="ts">
   import Copy from "@lucide/svelte/icons/copy";
   import FolderOpen from "@lucide/svelte/icons/folder-open";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { saveSnapshot } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { projects } from "$lib/state/project.svelte";

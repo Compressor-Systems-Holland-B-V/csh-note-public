@@ -15,5 +15,28 @@
   "languageAuto": "مثل هذا الحاسوب",
   "assistant": "المساعد",
   "file": "ملف znote الخاص بك",
-  "switch": "تبديل…"
+  "switch": "تبديل…",
+  "layout": "التخطيط",
+  "layouts": {
+    "edit": "Typst مع معاينة مباشرة.",
+    "agent": "المحادثة أولاً، والمعاينة بجانبها.",
+    "redaction": "ابحث عن الصفحات وتحكّم في ما يُخفى."
+  },
+  "parts": {
+    "pages": "الصفحات",
+    "editor": "المحرر",
+    "preview": "المعاينة",
+    "assistant": "المحادثة",
+    "search": "البحث",
+    "filter": "التصفية"
+  },
+  "marketplace": "المتجر",
+  "marketplaceHint": "ثبّت الأنماط والقوالب.",
+  "start": {
+    "layout": "كيف تريد أن تعمل؟",
+    "privacy": "ما الذي يمكن للمساعد أن يراه؟",
+    "file": "ملف المعرفة",
+    "downloads": "التنزيلات",
+    "marketplace": "المتجر"
+  }
 }

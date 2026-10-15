@@ -2,7 +2,8 @@
   "title": "Exporter",
   "format": "Format",
   "pdfHint": "Ressemble exactement à l'aperçu.",
-  "pptxHint": "Une diapositive par page. Seul le texte reste modifiable.",
+  "pptxHint": "Une diapositive par page. Le texte, les images et les formules restent modifiables.",
+  "docxHint": "Texte modifiable qui ressemble à la page, avec les titres, listes, tableaux et formules propres à Word.",
   "blocked": {
     "noPage": "Choisissez une page à exporter.",
     "problems": "Corrigez d'abord les erreurs de cette page.",
@@ -12,7 +13,6 @@
   "running": "Exportation en cours…",
   "runningPage": "Exportation de votre page en cours…",
   "savedTo": "Enregistré dans {path}",
-  "missingFonts": "PowerPoint remplacera ces polices : {fonts}",
   "openFile": "Ouvrir le fichier",
   "showInFolder": "Afficher dans le dossier"
 }

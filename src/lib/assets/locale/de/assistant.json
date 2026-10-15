@@ -131,5 +131,10 @@
     "thorough": "Gründlich",
     "thoroughHint": "Lange Berichte und sorgfältige Überarbeitungen. Am langsamsten.",
     "custom": "Eigene"
+  },
+  "files": {
+    "title": "Was der Assistent sieht",
+    "text": "Wählen Sie eine Seite oder Datei, um sie so zu sehen wie der Assistent, und legen Sie fest, wie viel verborgen wird.",
+    "none": "In diesem Chat gibt es noch keine Seiten oder Dateien."
   }
 }

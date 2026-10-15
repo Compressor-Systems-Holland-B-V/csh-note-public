@@ -6,6 +6,7 @@ use oxrdfio::{RdfFormat, RdfParser, RdfSyntaxError};
 use super::kind_name;
 
 pub const MAX_BYTES: u64 = 20 * 1024 * 1024;
+const MAX_XML_BYTES: usize = 4 * 1024 * 1024;
 const MAX_TRIPLES: usize = 200_000;
 const MAX_LABEL: usize = 200;
 const SKOS: &str = "http://www.w3.org/2004/02/skos/core#";
@@ -107,6 +108,9 @@ pub fn parse(bytes: &[u8], format: RdfFormat) -> Result<Glossary, String> {
     if bytes.len() as u64 > MAX_BYTES {
         return Err("The glossary is larger than 20 MB.".into());
     }
+    if format == RdfFormat::RdfXml && bytes.len() > MAX_XML_BYTES {
+        return Err("An RDF/XML glossary can be at most 4 MB. Save it as Turtle (.ttl) to use a larger one.".into());
+    }
     let mut nodes: HashMap<String, Node> = HashMap::new();
     let mut order: Vec<String> = Vec::new();
     let mut node = |name: &str, nodes: &mut HashMap<String, Node>| {
@@ -184,9 +188,16 @@ pub fn parse(bytes: &[u8], format: RdfFormat) -> Result<Glossary, String> {
 }
 
 fn preferred(node: &Node) -> Option<&str> {
-    node.pref
+    let languages = super::rules()
+        .map(|rules| rules.languages.as_slice())
+        .unwrap_or_default();
+    languages
         .iter()
-        .find(|(_, language)| language.starts_with("en"))
+        .find_map(|known| {
+            node.pref
+                .iter()
+                .find(|(_, language)| language.split('-').next() == Some(known.code.as_str()))
+        })
         .or(node.pref.first())
         .map(|(text, _)| text.as_str())
 }
@@ -427,6 +438,11 @@ ex:project skos:prefLabel "Project" ; skos:narrower ex:phoenix .
             parse(&huge, RdfFormat::Turtle)
                 .unwrap_err()
                 .contains("20 MB")
+        );
+        assert!(
+            parse(&vec![b' '; MAX_XML_BYTES + 1], RdfFormat::RdfXml)
+                .unwrap_err()
+                .contains("4 MB")
         );
         assert!(format_of("glossary.json").is_err());
     }

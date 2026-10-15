@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Bearbeiten",
     "export": "Exportieren",
-    "themes": "Designs"
+    "marketplace": "Marktplatz"
   },
   "appearance": {
     "toLight": "In den hellen Modus wechseln",
@@ -34,5 +34,13 @@
     "downloading": "Paket {name} wird heruntergeladen…",
     "previewFailed": "Die Vorschau konnte nicht aktualisiert werden: {reason}",
     "desktopOnly": "Dies funktioniert nur in der Desktop-App."
+  },
+  "preview": "Vorschau",
+  "back": "Zurück",
+  "finish": "Fertigstellen",
+  "layout": {
+    "edit": "Bearbeiten",
+    "agent": "Assistent",
+    "redaction": "Verbergen"
   }
 }

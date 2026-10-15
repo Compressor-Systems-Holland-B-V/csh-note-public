@@ -131,5 +131,10 @@
     "thorough": "Noggrann",
     "thoroughHint": "Långa rapporter och noggranna omskrivningar. Långsammast.",
     "custom": "Anpassad"
+  },
+  "files": {
+    "title": "Det assistenten ser",
+    "text": "Välj en sida eller fil för att se den som assistenten gör, och välj hur mycket som döljs.",
+    "none": "Inga sidor eller filer i den här chatten än."
   }
 }

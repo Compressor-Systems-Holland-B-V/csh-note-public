@@ -2,7 +2,8 @@
   "title": "Exportar",
   "format": "Formato",
   "pdfHint": "Parece-se exatamente com a pré-visualização.",
-  "pptxHint": "Um diapositivo por página. Só o texto permanece editável.",
+  "pptxHint": "Um diapositivo por página. Texto, imagens e fórmulas continuam editáveis.",
+  "docxHint": "Texto editável com o aspeto da página, com títulos, listas, tabelas e fórmulas próprios do Word.",
   "blocked": {
     "noPage": "Escolha uma página para exportar.",
     "problems": "Corrija primeiro os problemas desta página.",
@@ -12,7 +13,6 @@
   "running": "A exportar…",
   "runningPage": "A exportar a sua página…",
   "savedTo": "Guardado em {path}",
-  "missingFonts": "O PowerPoint substituirá estes tipos de letra: {fonts}",
   "openFile": "Abrir ficheiro",
   "showInFolder": "Mostrar na pasta"
 }

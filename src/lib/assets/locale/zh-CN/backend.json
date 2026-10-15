@@ -35,7 +35,9 @@
     "cutOff": "回答被截断：{error}",
     "modelFirst": "请先为助手选择一个模型。",
     "tooManySteps": "助手执行的步骤过多，已被停止。",
-    "passwordStore": "无法使用这台电脑的密码存储：{error}"
+    "passwordStore": "无法使用这台电脑的密码存储：{error}",
+    "notAllowed": "您的组织不允许使用此助手。",
+    "plainHttp": "普通 http:// 仅用于这台电脑或您自己网络中的服务器。此地址请使用 https://。"
   },
   "chat": {
     "busy": "助手仍在工作中。请等待其完成，或将其停止。",
@@ -52,8 +54,11 @@
     "fixFirst": "请先修复此页面上的问题，然后再导出。",
     "pageNotOpened": "无法打开页面。",
     "slideNotDrawn": "无法绘制幻灯片：{error}",
+    "pictureNotDrawn": "无法绘制图像：{error}",
     "pdfFailed": "无法生成 PDF：{reason}",
     "pptxFailed": "无法生成演示文稿：{error}",
+    "docxFailed": "无法创建 Word 文件：{error}",
+    "notWord": "此页面无法转换为 Word 文档：{error}",
     "nothing": "此页面没有可导出的内容。",
     "nothingYet": "尚未导出任何内容。",
     "notSaved": "无法保存文件：{error}",
@@ -74,7 +79,8 @@
     "missingThemes": "无法打开此文件，因为它需要未安装的主题：\n• {themes}\n请在“主题”页面上安装它们，然后重新打开该文件。",
     "outside": "此 znote 文件试图将“{name}”放到其自身文件夹之外，因此未导入。",
     "tooLarge": "此 znote 文件解压后过大，因此未导入。",
-    "openFirst": "请先打开一个 znote 文件。"
+    "openFirst": "请先打开一个 znote 文件。",
+    "wrongPassword": "密码错误，或者这不是 znote 文件。"
   },
   "theme": {
     "fileNotRead": "无法读取此主题文件：{error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}”不是页面。",
     "badMove": "页面只能移动到笔记本，笔记本只能移动到项目。",
     "folderFirst": "请先选择一个工作区文件夹。",
-    "fileNotRead": "无法读取文件:{error}",
-    "notFullPath": "“{folder}”不是完整的文件夹路径。"
+    "fileNotRead": "无法读取文件:{error}"
   }
 }

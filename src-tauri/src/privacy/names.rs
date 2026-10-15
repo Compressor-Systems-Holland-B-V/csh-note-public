@@ -4,17 +4,10 @@ use ndarray::Array2;
 use ort::session::Session;
 use tokenizers::{InputSequence, Tokenizer};
 
+use super::rules::rules;
+
 pub const MODEL: &str = "model.onnx";
 pub const TOKENIZER: &str = "tokenizer.json";
-pub const KINDS: [(&str, &str); 5] = [
-    ("person", "PERSON"),
-    ("organisation", "ORGANISATION"),
-    ("product", "PRODUCT"),
-    ("project", "PROJECT"),
-    ("location", "LOCATION"),
-];
-
-const THRESHOLD: f32 = 0.3;
 const MAX_WIDTH: usize = 12;
 const MAX_WORDS: usize = 200;
 const BATCH: usize = 16;
@@ -62,6 +55,79 @@ fn trimmed(line: &str, start: usize, end: usize) -> Option<(usize, usize)> {
     Some((from, from + inner.len()))
 }
 
+// Narrows a hit of the finder to what can be a name: it is split where a sentence ends, loses the
+// lower-case words at either end ("het Microsoft account", "340 uur") and is dropped when nothing
+// is left or only a common word is. Scripts without capitals keep every word.
+fn sentences<'a>(text: &'a str, ends: &[String]) -> Vec<(usize, &'a str)> {
+    let mut found = Vec::new();
+    let mut from = 0;
+    let mut at = 0;
+    while at < text.len() {
+        match ends.iter().find(|end| text[at..].starts_with(end.as_str())) {
+            Some(end) => {
+                found.push((from, &text[from..at]));
+                at += end.len();
+                from = at;
+            }
+            None => at += text[at..].chars().next().map_or(1, char::len_utf8),
+        }
+    }
+    found.push((from, &text[from..]));
+    found
+}
+
+pub fn cleaned(line: &str, start: usize, end: usize) -> Vec<(usize, usize)> {
+    let Ok(rules) = rules() else {
+        return vec![(start, end)];
+    };
+    let named = |(from, to): (usize, usize)| {
+        line[from..to]
+            .chars()
+            .find(|c| c.is_alphabetic())
+            .is_some_and(|c| !c.is_lowercase())
+    };
+    let mut kept = Vec::new();
+    for (offset, sentence) in sentences(&line[start..end], &rules.sentence_ends) {
+        let at = start + offset;
+        let spans: Vec<(usize, usize)> = words(sentence)
+            .into_iter()
+            .map(|(from, to)| (at + from, at + to))
+            .collect();
+        let (Some(first), Some(last)) = (
+            spans.iter().position(|&span| named(span)),
+            spans.iter().rposition(|&span| named(span)),
+        ) else {
+            continue;
+        };
+        let Some((from, to)) = trimmed(line, spans[first].0, spans[last].1) else {
+            continue;
+        };
+        if first == last && rules.stopword(&line[from..to]) {
+            continue;
+        }
+        kept.push((from, to));
+    }
+    kept
+}
+
+// The finder reads at most MAX_WORDS words at once, so a long line is read in windows that overlap
+// by MAX_WIDTH words: a name late in a long paragraph is found, and one across a seam is whole in
+// the next window.
+fn windows(line: &str) -> Vec<(usize, usize)> {
+    let spans = words(line);
+    let mut found = Vec::new();
+    let mut first = 0;
+    while first < spans.len() {
+        let last = (first + MAX_WORDS).min(spans.len());
+        found.push((spans[first].0, spans[last - 1].1));
+        if last == spans.len() {
+            break;
+        }
+        first = last - MAX_WIDTH;
+    }
+    found
+}
+
 impl Finder {
     pub fn load(folder: &Path) -> Result<Self, String> {
         let session = Session::builder()
@@ -77,19 +143,33 @@ impl Finder {
         labels: &[(String, String)],
     ) -> Result<Vec<Vec<Hit>>, String> {
         let mut found = vec![Vec::new(); lines.len()];
-        let worded: Vec<usize> = (0..lines.len())
-            .filter(|&at| !words(lines[at]).is_empty())
+        let pieces: Vec<(usize, usize, &str)> = lines
+            .iter()
+            .enumerate()
+            .flat_map(|(at, line)| {
+                windows(line)
+                    .into_iter()
+                    .map(move |(from, to)| (at, from, &line[from..to]))
+            })
             .collect();
-        for batch in worded.chunks(BATCH) {
-            let texts: Vec<&str> = batch.iter().map(|&at| lines[at]).collect();
-            for (&at, hits) in batch.iter().zip(self.batch(&texts, labels)?) {
-                found[at] = hits;
+        for batch in pieces.chunks(BATCH) {
+            let texts: Vec<&str> = batch.iter().map(|&(_, _, text)| text).collect();
+            for (&(at, from, _), hits) in batch.iter().zip(self.batch(&texts, labels)?) {
+                found[at].extend(
+                    hits.into_iter()
+                        .map(|(start, end, kind)| (from + start, from + end, kind)),
+                );
             }
+        }
+        for hits in &mut found {
+            hits.sort_unstable();
+            hits.dedup();
         }
         Ok(found)
     }
 
     fn batch(&self, lines: &[&str], labels: &[(String, String)]) -> Result<Vec<Vec<Hit>>, String> {
+        let threshold = rules()?.threshold;
         let mut prompt: Vec<&str> = labels
             .iter()
             .flat_map(|(label, _)| [ENTITY, label.as_str()])
@@ -170,13 +250,13 @@ impl Finder {
                         .map(sigmoid)
                         .unwrap_or(0.0)
                 };
-                for start in (0..spans.len()).filter(|&start| score(start, 0) >= THRESHOLD) {
+                for start in (0..spans.len()).filter(|&start| score(start, 0) >= threshold) {
                     for end in start..spans.len().min(start + MAX_WIDTH) {
-                        if score(end, 1) < THRESHOLD {
+                        if score(end, 1) < threshold {
                             continue;
                         }
                         let inside: Vec<f32> = (start..=end).map(|word| score(word, 2)).collect();
-                        if inside.iter().all(|&value| value >= THRESHOLD) {
+                        if inside.iter().all(|&value| value >= threshold) {
                             hits.push((
                                 inside.iter().sum::<f32>() / inside.len() as f32,
                                 start,
@@ -231,14 +311,60 @@ mod tests {
     }
 
     #[test]
+    fn a_long_line_is_read_in_overlapping_windows_to_its_end() {
+        assert!(windows("  ").is_empty());
+        assert_eq!(windows("one two"), [(0, 7)]);
+        let line = (0..450)
+            .map(|word| format!("w{word}"))
+            .collect::<Vec<_>>()
+            .join(" ");
+        let found = windows(&line);
+        assert_eq!(found.len(), 3);
+        assert!(line[found[0].0..found[0].1].ends_with("w199"));
+        assert!(line[found[1].0..found[1].1].starts_with(&format!("w{}", MAX_WORDS - MAX_WIDTH)));
+        assert_eq!(found[2].1, line.len());
+    }
+
+    #[test]
+    fn a_hit_keeps_only_what_can_be_a_name() {
+        let named = |line: &str, piece: &str| -> Vec<String> {
+            let start = line.find(piece).unwrap();
+            cleaned(line, start, start + piece.len())
+                .into_iter()
+                .map(|(from, to)| line[from..to].to_string())
+                .collect()
+        };
+        let line = "zijn. Als de proef in Rotterdam uitloopt, ten name van Brouwer & Smit ICT.";
+        assert!(named(line, "Als de proef").is_empty());
+        assert_eq!(named(line, "van Brouwer & Smit"), ["Brouwer & Smit"]);
+        let line = "het adres in het beheernetwerk van Hendriks. Monteurs gebruiken het";
+        for ordinary in ["adres", "beheernetwerk", "het adres"] {
+            assert!(named(line, ordinary).is_empty(), "{ordinary}");
+        }
+        assert_eq!(named(line, "Hendriks. Monteurs"), ["Hendriks", "Monteurs"]);
+        assert!(named("Inrichting, 340 uur à € 95", "340 uur").is_empty());
+        assert!(named("De meetdata", "De").is_empty());
+        assert_eq!(
+            named("met het Microsoft account van", "het Microsoft account"),
+            ["Microsoft"]
+        );
+        assert_eq!(
+            named("Proef in regio Rotterdam", "regio Rotterdam"),
+            ["Rotterdam"]
+        );
+        assert_eq!(
+            named("Fatima El Amrani is de enige", "Fatima El Amrani"),
+            ["Fatima El Amrani"]
+        );
+        assert_eq!(named("التقى أحمد بسارة", "أحمد"), ["أحمد"]);
+    }
+
+    #[test]
     #[ignore = "needs the downloaded model in ZNOTE_NAME_FINDER"]
     fn the_downloaded_model_finds_people_and_places() {
         let folder = std::env::var("ZNOTE_NAME_FINDER").unwrap();
         let finder = Finder::load(Path::new(&folder)).unwrap();
-        let labels: Vec<(String, String)> = KINDS
-            .iter()
-            .map(|(label, kind)| (label.to_string(), kind.to_string()))
-            .collect();
+        let labels = rules().unwrap().labels.clone();
         let lines = [
             "Jan de Vries met Maria Lopez in Rotterdam.",
             "",

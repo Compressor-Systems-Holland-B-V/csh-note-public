@@ -21,14 +21,22 @@ export function remember(known: Known, pieces: Piece[], choiceOf: (text: string)
   }
 }
 
+const escaped = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export function itemsOf(known: Known, pieces: Piece[], overrides: Override[], text: string): Item[] {
-  const hidden = new Set(pieces.filter((piece) => piece.token).map((piece) => piece.text));
+  const tokened = new Set(pieces.filter((piece) => piece.token).map((piece) => piece.text));
+  const plain = pieces.filter((piece) => !piece.token).map((piece) => piece.text);
+  // A name counts as hidden only when no place on the page still shows it.
+  const hidden = (name: string) => {
+    const word = new RegExp(`(?<![\\p{L}\\p{N}])${escaped(name)}(?![\\p{L}\\p{N}])`, "iu");
+    return tokened.has(name) && !plain.some((piece) => word.test(piece));
+  };
   const items = new Map<string, Item>();
-  for (const [name, { kind, auto }] of known) if (text.includes(name)) items.set(name, { text: name, kind, hidden: hidden.has(name), auto });
+  for (const [name, { kind, auto }] of known) if (text.includes(name)) items.set(name, { text: name, kind, hidden: hidden(name), auto });
   for (const piece of pieces)
-    if (piece.token && !items.has(piece.text)) items.set(piece.text, { text: piece.text, kind: piece.kind ?? other, hidden: true, auto: false });
+    if (piece.token && !items.has(piece.text)) items.set(piece.text, { text: piece.text, kind: piece.kind ?? other, hidden: hidden(piece.text), auto: false });
   for (const { text: name, kind } of overrides)
-    if (!items.has(name) && text.includes(name)) items.set(name, { text: name, kind: kind ?? other, hidden: hidden.has(name), auto: false });
+    if (!items.has(name) && text.includes(name)) items.set(name, { text: name, kind: kind ?? other, hidden: hidden(name), auto: false });
   return [...items.values()];
 }
 
@@ -39,6 +47,8 @@ export function groupsOf(items: Item[], order: string[]): Group[] {
     .sort(([a], [b]) => rank(a) - rank(b) || a.localeCompare(b))
     .map(([kind, list]) => ({ kind, items: list.sort((a, b) => a.text.localeCompare(b.text)) }));
 }
+
+export const unwanted = (items: Item[]) => items.filter((item) => !item.hidden && !item.auto);
 
 export const hideChoice = (item: Item): Choice => (item.auto ? undefined : item.kind === other ? "ORGANISATION" : item.kind);
 
@@ -158,7 +168,18 @@ if (import.meta.vitest) {
       { text: "Falcon", kind: "OTHER", hidden: false, auto: false },
     ]);
     expect(groupsOf(items, ["CUSTOMER", "PERSON"]).map(({ kind }) => kind)).toEqual(["CUSTOMER", "PERSON", "EMAIL", "OTHER"]);
+    expect(unwanted(items).map(({ text }) => text)).toEqual(["Falcon"]);
     expect(hideChoice(items[0])).toBeUndefined();
     expect(hideChoice(items[3])).toBe("ORGANISATION");
+  });
+
+  test("a name hidden in one place but shown in another is not listed as hidden", () => {
+    const piece = (text: string, kind: string | null = null) => ({ text, token: kind ? `⟦${kind}_1⟧` : null, kind });
+    const now = [piece("Marloes", "PERSON"), piece(" van den Berg. Bij Hendriks wil MARLOES, niet Marloesje; "), piece("Fatima", "PERSON")];
+    const items = itemsOf(new Map(), now, [], "Marloes van den Berg. Bij Hendriks wil MARLOES, niet Marloesje; Fatima");
+    expect(items.map(({ text, hidden }) => [text, hidden])).toEqual([
+      ["Marloes", false],
+      ["Fatima", true],
+    ]);
   });
 }

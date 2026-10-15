@@ -1,31 +1,35 @@
 {
-  "title": "佈景主題",
-  "look": "外觀",
-  "import": "匯入佈景主題檔…",
-  "intro": "佈景主題可以改變外觀、新增頁面範本，或兩者兼具。",
-  "storeFailure": "{reason} 您已安裝的佈景主題顯示在下方。",
-  "search": "搜尋佈景主題",
+  "title": "市集",
+  "import": "匯入",
+  "intro": "外觀 (.zth) 改變 znote 的樣子，範本 (.znx) 新增頁面版面。",
+  "storeFailure": "{reason} 僅顯示已安裝的附加元件。",
+  "search": "搜尋附加元件",
   "installed": "已安裝",
-  "none": "沒有符合的佈景主題。",
+  "none": "沒有符合的項目。",
   "kind": {
-    "look": "僅外觀",
-    "both": "外觀與範本",
-    "templates": "僅範本"
+    "look": "外觀樣式",
+    "templates": "範本"
   },
   "contents": {
     "look": "變更外觀",
-    "both": "變更外觀並新增頁面範本",
-    "templates": "新增頁面範本"
+    "templates": "新增範本"
   },
   "version": "版本 {version}",
-  "lookSwitch": "外觀",
-  "lookSwitchTitle": "在外觀清單中顯示此佈景主題",
-  "templatesSwitch": "範本",
-  "templatesSwitchTitle": "選擇範本時顯示此佈景主題的範本",
+  "lookSwitchTitle": "在外觀樣式中顯示",
+  "templatesSwitchTitle": "在範本選擇器中顯示",
   "install": "安裝",
   "installing": "安裝中…",
   "update": "更新",
   "updating": "更新中…",
   "remove": "移除",
-  "removeTheme": "移除佈景主題 {name}"
+  "importTitle": "匯入 .zth / .znx 檔案",
+  "filters": "篩選",
+  "browse": "所有附加元件",
+  "type": "類型",
+  "category": "類別",
+  "all": "全部",
+  "use": "使用",
+  "inUse": "使用中",
+  "more": "{name} 的更多內容",
+  "templatesList": "範本：{names}"
 }

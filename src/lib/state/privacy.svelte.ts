@@ -1,5 +1,6 @@
 import * as ipc from "$lib/ipc";
-import type { KnowledgeStatus, ModelId, PrivacyOptions, Progress } from "$lib/ipc";
+import type { KnowledgeStatus, ModelId, PrivacyOptions, PrivacyPolicy, Progress } from "$lib/ipc";
+import { tokens } from "$lib/markdown";
 import { messageOf } from "$lib/utils";
 import { SettingsState, settings } from "./settings.svelte";
 import type { Settings } from "./settings.svelte";
@@ -24,33 +25,55 @@ type Backend = Pick<
   | "modelsCancel"
   | "privacyView"
   | "privacyOverride"
+  | "privacyPolicy"
 >;
 
-export const kinds = ["CUSTOMER", "PERSON", "ORGANISATION", "SUPPLIER", "PROJECT", "PRODUCT", "LOCATION"];
+// Glossary categories, then the pattern kinds in detection.json; a test keeps them in step.
+export const kinds = ["CUSTOMER", "PERSON", "ORGANISATION", "SUPPLIER", "PROJECT", "PRODUCT", "LOCATION", "AMOUNT", "EMAIL", "PHONE", "URL", "IBAN", "CARD", "IP"];
 
+// Fixed hues, one per kind, spread around the colour wheel so kinds tell apart at a glance in
+// every theme. The 30% fill keeps the text readable on light and dark backgrounds.
 const kindColours: Record<string, string> = {
-  PERSON: "bg-chart-1/30",
-  CUSTOMER: "bg-chart-2/30",
-  ORGANISATION: "bg-chart-3/30",
-  SUPPLIER: "bg-chart-3/30",
-  PROJECT: "bg-chart-4/30",
-  PRODUCT: "bg-chart-4/30",
-  LOCATION: "bg-chart-5/30",
+  PERSON: "bg-blue-500/30",
+  ORGANISATION: "bg-violet-500/30",
+  CUSTOMER: "bg-green-500/30",
+  SUPPLIER: "bg-yellow-400/40",
+  PROJECT: "bg-fuchsia-500/30",
+  PRODUCT: "bg-cyan-400/40",
+  LOCATION: "bg-lime-400/40",
+  AMOUNT: "bg-red-500/30",
+  EMAIL: "bg-orange-500/30",
+  PHONE: "bg-teal-600/30",
+  URL: "bg-indigo-700/30",
+  IBAN: "bg-pink-400/40",
+  CARD: "bg-amber-700/30",
+  IP: "bg-stone-500/30",
 };
 
 export const kindColour = (kind: string | null) => (kind !== null ? kindColours[kind] : undefined) ?? "bg-muted-foreground/20";
 
-export const unknownToken = /⟦[^⟦⟧\n]{1,38}⟧/g;
 
-export function optionsOf(values: Settings, status: KnowledgeStatus | null): PrivacyOptions {
+type Ruled = "hideNames" | "findNames" | "hideAmounts";
+
+export function optionsOf(values: Settings, status: KnowledgeStatus | null, policy: PrivacyPolicy | null = null): PrivacyOptions {
   const usable = status?.active != null;
+  const required = (rule: Ruled) => policy?.[rule] === "required";
   return {
-    veil: values.privacyVeil && usable,
-    amounts: values.privacyAmounts,
-    names: values.privacyNames && (status?.names ?? false),
+    veil: values.privacyVeil || required("hideNames"),
+    amounts: values.privacyAmounts || required("hideAmounts"),
+    names: values.privacyNames || required("findNames"),
     knowledge: values.knowledgeOn && usable,
     autoAdd: values.knowledgeAutoAdd,
   };
+}
+
+export type Blocked = "noFile" | "locked" | "noFinder";
+
+export function blockedBy(options: PrivacyOptions, status: KnowledgeStatus | null): Blocked | null {
+  if (!options.veil) return null;
+  if (status?.active == null) return "noFile";
+  if (!status.open) return "locked";
+  return options.names && !status.names ? "noFinder" : null;
 }
 
 export const linesToHide = (picked: string) => [...new Set(picked.split("\n").map((line) => line.trim()))].filter((line) => line !== "" && line.length <= 200).slice(0, 50);
@@ -59,6 +82,7 @@ export const hiddenCount = (counted: Record<string, number>) => Object.values(co
 
 export class Privacy {
   status = $state<KnowledgeStatus | null>(null);
+  policy = $state<PrivacyPolicy | null>(null);
   failure = $state<string | null>(null);
   busy = $state(false);
   progress = $state<Partial<Record<ModelId, Progress>>>({});
@@ -72,7 +96,15 @@ export class Privacy {
   ) {}
 
   get options() {
-    return optionsOf(this.settings.values, this.status);
+    return optionsOf(this.settings.values, this.status, this.policy);
+  }
+
+  get blocked() {
+    return blockedBy(this.options, this.status);
+  }
+
+  required(rule: Ruled) {
+    return this.policy?.[rule] === "required";
   }
 
   get usable() {
@@ -114,7 +146,8 @@ export class Privacy {
     return this.run(task).catch(() => null);
   }
 
-  load() {
+  async load() {
+    this.policy ??= await this.backend.privacyPolicy().catch(() => null);
     return this.quietly(() => this.backend.knowledgeStatus());
   }
 
@@ -199,7 +232,7 @@ export class Privacy {
   }
 
   pageLevel(page: string) {
-    return this.settings.values.pageLevels[page] ?? 1;
+    return Math.max(this.settings.values.pageLevels[page] ?? 1, this.policy?.minimumLevel ?? 0);
   }
 
   setPageLevel(page: string, level: number) {
@@ -221,6 +254,17 @@ export const privacy = new Privacy(ipc, settings);
 if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;
   const { defaults } = await import("./settings.svelte");
+  const detection = (await import("../../../src-tauri/resources/detection.json")).default;
+
+  test("every kind znote can find can also be chosen by hand", () => {
+    const found = [...detection.patterns.map((pattern) => pattern.kind), ...detection.finder.labels.map(([, kind]) => kind)];
+    expect(found.filter((kind) => !kinds.includes(kind))).toEqual([]);
+  });
+
+  test("every kind has a colour of its own", () => {
+    expect(new Set(kinds.map(kindColour)).size).toBe(kinds.length);
+    expect(kinds.map(kindColour)).not.toContain(kindColour(null));
+  });
 
   const status = (changes: Partial<KnowledgeStatus> = {}): KnowledgeStatus => ({
     files: [{ id: "0123456789abcdef", name: "Work" }],
@@ -236,13 +280,19 @@ if (import.meta.vitest) {
     ...changes,
   });
 
-  test("hiding and the knowledge base need a knowledge file, and the name finder needs its download", () => {
+  test("hiding follows the wish and the policy, and says what still stops it", () => {
     const wanted = { ...defaults, privacyVeil: true, knowledgeOn: true, privacyNames: true };
-    expect(optionsOf(wanted, null)).toEqual({ veil: false, amounts: true, names: false, knowledge: false, autoAdd: true });
-    expect(optionsOf(wanted, status({ active: null }))).toMatchObject({ veil: false, knowledge: false });
-    expect(optionsOf(wanted, status({ open: false }))).toMatchObject({ veil: true, knowledge: true, names: false });
-    expect(optionsOf(wanted, status({ names: true }))).toMatchObject({ veil: true, names: true });
+    expect(optionsOf(wanted, null)).toEqual({ veil: true, amounts: true, names: true, knowledge: false, autoAdd: true });
+    expect(optionsOf(wanted, status({ active: null }))).toMatchObject({ veil: true, knowledge: false });
+    expect(optionsOf(wanted, status({ open: false }))).toMatchObject({ veil: true, knowledge: true, names: true });
     expect(optionsOf(defaults, status())).toMatchObject({ veil: false, knowledge: false });
+    expect(blockedBy(optionsOf(wanted, null), null)).toBe("noFile");
+    expect(blockedBy(optionsOf(wanted, status({ open: false })), status({ open: false }))).toBe("locked");
+    expect(blockedBy(optionsOf(wanted, status()), status())).toBe("noFinder");
+    expect(blockedBy(optionsOf(wanted, status({ names: true })), status({ names: true }))).toBe(null);
+    expect(blockedBy(optionsOf(defaults, null), null)).toBe(null);
+    const policy: PrivacyPolicy = { hideNames: "required", findNames: "optional", hideAmounts: "required", minimumLevel: 2, web: "blocked", providers: ["custom"], dataCollection: "deny", zeroRetention: true };
+    expect(optionsOf({ ...defaults, privacyAmounts: false }, status(), policy)).toMatchObject({ veil: true, amounts: true, names: false });
   });
 
   test("a new knowledge file turns hiding on, and a failure is shown without losing the state", async () => {
@@ -287,7 +337,7 @@ if (import.meta.vitest) {
 
   test("hidden counts add up and only bracketed tokens look like tokens", () => {
     expect(hiddenCount({ CUSTOMER: 3, EMAIL: 2 })).toBe(5);
-    expect("⟦CUSTOMER_1⟧ and ⟦X⟧ but not [CUSTOMER_1]".match(unknownToken)).toEqual(["⟦CUSTOMER_1⟧", "⟦X⟧"]);
+    expect("⟦CUSTOMER_1⟧ and ⟦X⟧ but not [CUSTOMER_1]".match(tokens())).toEqual(["⟦CUSTOMER_1⟧", "⟦X⟧"]);
   });
 
   test("a saved choice tells every open view to refresh, and a failed one does not", async () => {

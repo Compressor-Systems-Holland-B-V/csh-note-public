@@ -5,9 +5,9 @@
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
   import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import UserRound from "@lucide/svelte/icons/user-round";
-  import { Button } from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
+  import { Button } from "@zsuite/ui/button";
+  import { Input } from "@zsuite/ui/input";
+  import { Label } from "@zsuite/ui/label";
   import type { Provider } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
   import { connections } from "$lib/state/providers.svelte";

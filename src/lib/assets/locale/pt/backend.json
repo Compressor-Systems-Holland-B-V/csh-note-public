@@ -35,7 +35,9 @@
     "cutOff": "A resposta foi cortada: {error}",
     "modelFirst": "Escolha primeiro um modelo para o assistente.",
     "tooManySteps": "O assistente deu demasiados passos e foi parado.",
-    "passwordStore": "Não foi possível utilizar o arquivo de palavras-passe deste computador: {error}"
+    "passwordStore": "Não foi possível utilizar o arquivo de palavras-passe deste computador: {error}",
+    "notAllowed": "A sua organização não permite este assistente.",
+    "plainHttp": "O http:// simples só é usado para um servidor neste computador ou na sua própria rede. Use https:// para este endereço."
   },
   "chat": {
     "busy": "O assistente ainda está ocupado. Aguarde que termine ou pare-o.",
@@ -52,8 +54,11 @@
     "fixFirst": "Corrija os problemas nesta página antes de a exportar.",
     "pageNotOpened": "Não foi possível abrir a página.",
     "slideNotDrawn": "Não foi possível desenhar um diapositivo: {error}",
+    "pictureNotDrawn": "Não foi possível desenhar uma imagem: {error}",
     "pdfFailed": "Não foi possível criar o PDF: {reason}",
     "pptxFailed": "Não foi possível criar a apresentação: {error}",
+    "docxFailed": "Não foi possível criar o ficheiro Word: {error}",
+    "notWord": "Esta página não pode tornar-se um documento Word: {error}",
     "nothing": "Esta página não tem nada para exportar.",
     "nothingYet": "Ainda nada foi exportado.",
     "notSaved": "Não foi possível guardar o ficheiro: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Este ficheiro não pode ser aberto porque necessita de temas que não estão instalados:\n• {themes}\nInstale-os na página Temas e, em seguida, abra o ficheiro novamente.",
     "outside": "Este ficheiro znote tenta colocar “{name}” fora da sua própria pasta, pelo que não foi importado.",
     "tooLarge": "Este ficheiro znote é demasiado grande após a descompactação, pelo que não foi importado.",
-    "openFirst": "Abra primeiro um ficheiro znote."
+    "openFirst": "Abra primeiro um ficheiro znote.",
+    "wrongPassword": "A palavra-passe está errada, ou este não é um ficheiro znote."
   },
   "theme": {
     "fileNotRead": "Não foi possível ler este ficheiro de tema: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” não é uma página.",
     "badMove": "Uma página só pode ser movida para um caderno, e um caderno para um projeto.",
     "folderFirst": "Escolha primeiro uma pasta da área de trabalho.",
-    "fileNotRead": "Não foi possível ler o ficheiro: {error}",
-    "notFullPath": "“{folder}” não é um caminho de pasta completo."
+    "fileNotRead": "Não foi possível ler o ficheiro: {error}"
   }
 }

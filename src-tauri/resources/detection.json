@@ -1,0 +1,140 @@
+{
+  "$schema": "./detection.schema.json",
+  "ignorable": [
+    "00AD",
+    "034F",
+    "061C",
+    "115F-1160",
+    "17B4-17B5",
+    "180B-180F",
+    "200B-200F",
+    "202A-202E",
+    "2060-206F",
+    "3164",
+    "FE00-FE0F",
+    "FEFF",
+    "FFA0",
+    "1BCA0-1BCA3",
+    "E0000-E0FFF"
+  ],
+  "spaces": [
+    "~"
+  ],
+  "currencyCodes": [
+    "EUR",
+    "USD",
+    "GBP",
+    "CHF",
+    "JPY",
+    "CNY",
+    "SEK",
+    "NOK",
+    "DKK",
+    "PLN",
+    "CZK",
+    "HUF",
+    "INR",
+    "AUD",
+    "CAD",
+    "NZD",
+    "ZAR",
+    "BRL",
+    "MXN",
+    "TRY",
+    "RUB",
+    "AED",
+    "SAR",
+    "SGD",
+    "HKD",
+    "KRW"
+  ],
+  "currencySymbols": [
+    "€",
+    "$",
+    "£",
+    "¥",
+    "₹"
+  ],
+  "number": "\\d(?:[\\d.,'\\x{a0}]|[ ]\\d)*",
+  "patterns": [
+    {
+      "kind": "EMAIL",
+      "regex": "[A-Za-z0-9._%+\\-\\\\]+@[A-Za-z0-9\\-]+(?:\\.[A-Za-z0-9\\-]+)*\\.[A-Za-z]{2,}"
+    },
+    {
+      "kind": "URL",
+      "regex": "(?:https?|ftp)://[^\\s<>\"'`\\]\\)]+",
+      "trim": ".,;:!?"
+    },
+    {
+      "kind": "IBAN",
+      "regex": "\\b[A-Z]{2}\\d{2}(?:[ ]?[A-Z0-9]){11,30}\\b",
+      "check": "iban"
+    },
+    {
+      "kind": "CARD",
+      "regex": "\\b\\d(?:[ \\-]?\\d){12,18}\\b",
+      "check": "luhn"
+    },
+    {
+      "kind": "IP",
+      "regex": "\\b\\d{1,3}(?:\\.\\d{1,3}){3}\\b",
+      "check": "ipv4"
+    },
+    {
+      "kind": "IP",
+      "regex": "(?i)[0-9a-f]{0,4}(?::[0-9a-f]{0,4}){2,7}",
+      "check": "ipv6"
+    },
+    {
+      "kind": "PHONE",
+      "regex": "(?:\\+|\\b(?:{trunk}))\\(?\\d[\\d \\-/().]{6,}\\d\\b",
+      "check": "phone"
+    },
+    {
+      "kind": "AMOUNT",
+      "regex": "(?:\\\\?(?:{symbols})|\\b(?:{codes})\\b)[ \\x{a0}]?{number}{scale}",
+      "check": "amount",
+      "trim": ".,'  ",
+      "amounts": true
+    },
+    {
+      "kind": "AMOUNT",
+      "regex": "\\b{number}{scale}[ \\x{a0}]?(?:(?:{symbols})|\\b(?:{codes})\\b)",
+      "check": "amount",
+      "trim": ".,'  ",
+      "amounts": true
+    }
+  ],
+  "finder": {
+    "threshold": 0.3,
+    "labels": [
+      [
+        "person",
+        "PERSON"
+      ],
+      [
+        "organisation",
+        "ORGANISATION"
+      ],
+      [
+        "product",
+        "PRODUCT"
+      ],
+      [
+        "project",
+        "PROJECT"
+      ],
+      [
+        "location",
+        "LOCATION"
+      ]
+    ]
+  },
+  "levels": {
+    "PERSON": 1,
+    "ORGANISATION": 2,
+    "LOCATION": 2
+  },
+  "defaultLevel": 3
+}

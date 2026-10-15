@@ -2,7 +2,8 @@
   "title": "匯出",
   "format": "格式",
   "pdfHint": "外觀與預覽完全相同。",
-  "pptxHint": "每頁一張投影片。只有文字仍可編輯。",
+  "pptxHint": "每頁一張投影片。文字、圖片和公式仍可編輯。",
+  "docxHint": "外觀與頁面一致的可編輯文字，標題、清單、表格和公式皆為 Word 原生格式。",
   "blocked": {
     "noPage": "請選擇要匯出的頁面。",
     "problems": "請先修正此頁面上的問題。",
@@ -12,7 +13,6 @@
   "running": "正在匯出…",
   "runningPage": "正在匯出您的頁面…",
   "savedTo": "已儲存至 {path}",
-  "missingFonts": "PowerPoint 將以下列字型替代:{fonts}",
   "openFile": "開啟檔案",
   "showInFolder": "顯示於資料夾"
 }

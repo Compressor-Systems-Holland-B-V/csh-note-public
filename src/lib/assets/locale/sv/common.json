@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Redigera",
     "export": "Exportera",
-    "themes": "Teman"
+    "marketplace": "Marknadsplats"
   },
   "appearance": {
     "toLight": "Växla till ljust läge",
@@ -34,5 +34,13 @@
     "downloading": "Hämtar paketet {name}…",
     "previewFailed": "Förhandsgranskningen kunde inte uppdateras: {reason}",
     "desktopOnly": "det fungerar bara i skrivbordsappen."
+  },
+  "preview": "Förhandsgranskning",
+  "back": "Tillbaka",
+  "finish": "Slutför",
+  "layout": {
+    "edit": "Redigera",
+    "agent": "Assistent",
+    "redaction": "Maskera"
   }
 }

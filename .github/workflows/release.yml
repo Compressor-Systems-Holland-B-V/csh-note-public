@@ -12,23 +12,30 @@
 #   <package>.asc     detached OpenPGP signature, proves who published it
 #   <package>.sha256  its checksum, proves it arrived intact
 #
-# The signing key is a signing subkey of Arsalan Anwari's key, primary
-# fingerprint $SIGNING_KEY below. Export only the subkey into the secret, so
-# the primary key never leaves the maintainer's machine:
+# The signing key is the signing subkey 8FF8C58AFB01414B44665A75766F98D6FFDE4523
+# (expires 2028-09-26) of Arsalan Anwari's key, primary fingerprint
+# $SIGNING_KEY below. Export only the subkey into the secret, so the primary
+# key never leaves the maintainer's machine:
 #
-#   gpg --quick-add-key 88A9AE5871B9A36EE3305977829EFCCDE81402E6 ed25519 sign 2y
-#   gpg --armor --export-secret-subkeys <subkey fingerprint>! > signing-subkey.asc
-#   gh secret set GPG_PRIVATE_KEY < signing-subkey.asc
-#   gh secret set GPG_PASSPHRASE
+#   gpg --armor --export-secret-subkeys 8FF8C58AFB01414B44665A75766F98D6FFDE4523! > signing-subkey.asc
+#   gh secret set GPG_PRIVATE_KEY --repo ZAL-Analytics/znote < signing-subkey.asc
+#   gh secret set GPG_PASSPHRASE --repo ZAL-Analytics/znote
 #   shred -u signing-subkey.asc
 #
-# and publish the public key again so it carries the new subkey:
+# The public key must be where the README tells users to fetch it. After any
+# change to the key (new subkey, new expiry, new user id) publish it again:
 #
 #   gpg --armor --export 88A9AE5871B9A36EE3305977829EFCCDE81402E6    # paste into github, settings, SSH and GPG keys
 #   gpg --keyserver hkps://keys.openpgp.org --send-keys 88A9AE5871B9A36EE3305977829EFCCDE81402E6
 #
-# Other secrets: CARGO_REGISTRY_TOKEN publishes the crate. The msix is not part
-# of a release, build it with a build-pkg-msix tag and upload it to Partner Center.
+# keys.openpgp.org serves a key without its user ids until the email address
+# is confirmed, and gpg refuses to import such a key. A new address has to be
+# confirmed once through https://keys.openpgp.org/upload.
+#
+# Other secrets: CARGO_REGISTRY_TOKEN publishes the crate.
+#
+# There is no Microsoft Store package. Releases are the github release and the
+# download page only; anyone who wants a store listing builds it from a fork.
 
 name: release
 
@@ -75,6 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          submodules: recursive
           ref: ${{ env.VERSION }}
 
       - name: Check the tag matches the version the packages carry
@@ -183,6 +191,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          submodules: recursive
           ref: ${{ env.VERSION }}
 
       - uses: pnpm/action-setup@v4
@@ -214,6 +223,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          submodules: recursive
           ref: main
 
       - name: Rebuild the download page from the release assets

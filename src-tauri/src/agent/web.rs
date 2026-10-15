@@ -8,7 +8,7 @@ const MAX_PAGE_BYTES: u64 = 2 * 1024 * 1024;
 const MAX_ADDRESS: usize = 2000;
 const PRIVATE: &str = "This address is not on the public internet.";
 
-fn public(address: IpAddr) -> bool {
+pub fn public(address: IpAddr) -> bool {
     match address.to_canonical() {
         IpAddr::V4(v4) => {
             let [first, second, ..] = v4.octets();
@@ -22,7 +22,9 @@ fn public(address: IpAddr) -> bool {
                 || v4.is_multicast())
         }
         IpAddr::V6(v6) => {
-            !(v6.is_loopback()
+            let [first, second, ..] = v6.segments();
+            !((first, second) == (0x64, 0xff9b)
+                || v6.is_loopback()
                 || v6.is_unspecified()
                 || v6.is_multicast()
                 || v6.is_unique_local()
@@ -40,6 +42,34 @@ fn outside(host: &str) -> std::io::Result<Vec<SocketAddr>> {
         return Err(Error::new(ErrorKind::PermissionDenied, PRIVATE));
     }
     Ok(found)
+}
+
+fn numbered(text: &str) -> String {
+    let mut out = String::with_capacity(text.len());
+    let mut rest = text;
+    while let Some(at) = rest.find("&#") {
+        out.push_str(&rest[..at]);
+        let after = &rest[at + 2..];
+        let decoded = after.find(';').filter(|end| *end <= 8).and_then(|end| {
+            let code = match after[..end].strip_prefix(['x', 'X']) {
+                Some(hex) => u32::from_str_radix(hex, 16).ok()?,
+                None => after[..end].parse().ok()?,
+            };
+            Some((char::from_u32(code)?, end))
+        });
+        match decoded {
+            Some((c, end)) => {
+                out.push(c);
+                rest = &after[end + 1..];
+            }
+            None => {
+                out.push_str("&#");
+                rest = after;
+            }
+        }
+    }
+    out.push_str(rest);
+    out
 }
 
 fn readable(html: &str) -> String {
@@ -79,6 +109,7 @@ fn readable(html: &str) -> String {
     ]
     .iter()
     .fold(text, |text, (entity, said)| text.replace(entity, said));
+    let text = numbered(&text);
     let lines: Vec<String> = text
         .lines()
         .map(|line| line.split_whitespace().collect::<Vec<_>>().join(" "))
@@ -144,6 +175,7 @@ mod tests {
             "fe80::1",
             "fd00::1",
             "::",
+            "64:ff9b::7f00:1",
         ] {
             assert!(!public(private.parse().unwrap()), "{private}");
         }
@@ -185,6 +217,10 @@ mod tests {
             "T\nPrices\nTea & milk cost <2\none\ntwo\ntail"
         );
         assert_eq!(readable("no tags é"), "no tags é");
+        assert_eq!(
+            readable("Caf&#233; &#x2014; &#38;amp; &#99999999; &#;"),
+            "Café — &amp; &#99999999; &#;"
+        );
         assert_eq!(readable("cut <script>never closed"), "cut");
     }
 }

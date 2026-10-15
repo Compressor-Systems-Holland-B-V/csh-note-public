@@ -1,31 +1,35 @@
 {
-  "title": "ערכות נושא",
-  "look": "מראה",
-  "import": "ייבוא קובץ ערכת נושא…",
-  "intro": "ערכות נושא משנות את המראה, מוסיפות תבניות עמודים, או את שניהם.",
-  "storeFailure": "{reason} ערכות הנושא שכבר התקנת מוצגות להלן.",
-  "search": "חיפוש ערכות נושא",
+  "title": "חנות",
+  "import": "ייבוא",
+  "intro": "מראות (‎.zth‎) משנים את מראה znote. תבניות (‎.znx‎) מוסיפות פריסות עמוד.",
+  "storeFailure": "{reason} מוצגים רק תוספים מותקנים.",
+  "search": "חיפוש תוספים",
   "installed": "מותקן",
-  "none": "לא נמצאה ערכת נושא תואמת.",
+  "none": "אין התאמות.",
   "kind": {
-    "look": "מראה בלבד",
-    "both": "מראה ותבניות",
-    "templates": "תבניות בלבד"
+    "look": "ערכות נושא",
+    "templates": "תבניות"
   },
   "contents": {
     "look": "משנה את המראה",
-    "both": "משנה את המראה ומוסיף תבניות עמודים",
-    "templates": "מוסיף תבניות עמודים"
+    "templates": "מוסיף תבניות"
   },
   "version": "גרסה {version}",
-  "lookSwitch": "מראה",
-  "lookSwitchTitle": "הצג ערכת נושא זו ברשימת המראות",
-  "templatesSwitch": "תבניות",
-  "templatesSwitchTitle": "הצג את התבניות של ערכת נושא זו בעת בחירת תבנית",
+  "lookSwitchTitle": "הצג בערכות הנושא",
+  "templatesSwitchTitle": "הצג בבורר התבניות",
   "install": "התקן",
   "installing": "מתקין…",
   "update": "עדכן",
   "updating": "מעדכן…",
   "remove": "הסר",
-  "removeTheme": "הסר את ערכת הנושא {name}"
+  "importTitle": "ייבוא קובץ .zth / .znx",
+  "filters": "מסננים",
+  "browse": "כל התוספים",
+  "type": "סוג",
+  "category": "קטגוריה",
+  "all": "הכול",
+  "use": "שימוש",
+  "inUse": "בשימוש",
+  "more": "אפשרויות נוספות עבור {name}",
+  "templatesList": "תבניות: {names}"
 }

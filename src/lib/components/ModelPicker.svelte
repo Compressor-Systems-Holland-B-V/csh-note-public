@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as Select from "$lib/components/ui/select";
+  import * as Select from "@zsuite/ui/select";
   import { listsModels, providerName, providers } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
   import { connections } from "$lib/state/providers.svelte";

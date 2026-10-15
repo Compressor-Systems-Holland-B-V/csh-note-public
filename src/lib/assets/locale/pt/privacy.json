@@ -10,10 +10,15 @@
     "notHidden": "Não oculto",
     "notHiddenTitle": "O assistente vê as suas páginas e ficheiros exatamente como são",
     "locked": "Bloqueado",
-    "lockedTitle": "Abra primeiro o seu ficheiro de conhecimento nas Definições."
+    "lockedTitle": "Abra primeiro o seu ficheiro de conhecimento nas Definições.",
+    "toggle": "Ocultar nomes nesta conversa",
+    "offInSettings": "A ocultação está desativada nas Definições",
+    "fixed": "Fixo depois de a conversa começar",
+    "required": "A sua organização exige a ocultação, por isso não pode ser desativada."
   },
   "saw": {
-    "prompt": "A sua mensagem"
+    "prompt": "A sua mensagem",
+    "system": "Instruções para o assistente"
   },
   "start": {
     "text": "Nomes, montantes e contactos tornam-se códigos como ⟦CUSTOMER_3⟧ antes de qualquer envio.",
@@ -120,7 +125,8 @@
     "dontHide": "Não ocultar isto",
     "alwaysHide": "Ocultar isto sempre",
     "hideAs": "Ocultar “{text}” como",
-    "kind": "Tipo"
+    "kind": "Tipo",
+    "lines": "{count} linhas"
   },
   "kinds": {
     "CUSTOMER": "Cliente",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Fornecedor",
     "PROJECT": "Projeto",
     "PRODUCT": "Produto",
-    "LOCATION": "Local"
+    "LOCATION": "Local",
+    "AMOUNT": "Valor",
+    "EMAIL": "Endereço de e-mail",
+    "PHONE": "Número de telefone",
+    "URL": "Endereço web",
+    "IBAN": "IBAN",
+    "CARD": "Número do cartão",
+    "IP": "Endereço IP"
   },
   "level": {
     "label": "Quanto é ocultado",
     "own": "Apenas a sua lista e dados de contacto",
     "light": "Leve: também nomes de pessoas",
     "medium": "Médio: também organizações e locais",
-    "strict": "Rigoroso: também produtos, projetos, clientes e fornecedores"
-  }
+    "strict": "Rigoroso: também produtos, projetos, clientes e fornecedores",
+    "short": {
+      "own": "Lista própria",
+      "light": "Leve",
+      "medium": "Médio",
+      "strict": "Rigoroso"
+    }
+  },
+  "redact": {
+    "title": "Ocultação",
+    "off": "A ocultação está desativada.",
+    "turnOn": "Ativar",
+    "none": "Nada a ocultar nesta página.",
+    "undo": "Anular (Ctrl+Z)",
+    "redo": "Refazer (Ctrl+Y)",
+    "reset": "Repor esta página",
+    "filter": "Filtro",
+    "count": "{hidden} de {total} ocultos",
+    "hideGroup": "Ocultar todos: {kind}",
+    "other": "Outros",
+    "removeUnhidden": "Remover da lista as palavras não ocultas"
+  },
+  "blocked": {
+    "noFile": "A ocultação está ativada, mas nenhum ficheiro de conhecimento foi escolhido. Nada é enviado até criar ou escolher um nas Definições, ou desativar a ocultação.",
+    "locked": "A ocultação está ativada, mas o seu ficheiro de conhecimento está bloqueado. Nada é enviado até o abrir nas Definições.",
+    "noFinder": "A procura de nomes está ativada, mas o detetor de nomes não foi transferido. Nada é enviado até o transferir nas Definições, ou desativar a procura de nomes."
+  },
+  "previewBefore": "Mostrar o que esta mensagem enviaria"
 }

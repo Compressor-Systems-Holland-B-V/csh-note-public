@@ -1,7 +1,7 @@
 <script lang="ts">
   import LayoutTemplate from "@lucide/svelte/icons/layout-template";
-  import { Button } from "$lib/components/ui/button";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+  import { Button } from "@zsuite/ui/button";
+  import * as DropdownMenu from "@zsuite/ui/dropdown-menu";
   import { doc } from "$lib/state/document.svelte";
   import { templateOf, theme, withTemplate } from "$lib/state/theme.svelte";
   import { workspace } from "$lib/state/workspace.svelte";

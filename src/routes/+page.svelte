@@ -19,16 +19,17 @@
   import PageSearch from "$lib/components/PageSearch.svelte";
   import RedactionPanel from "$lib/components/RedactionPanel.svelte";
   import ProjectNotices from "$lib/components/ProjectNotices.svelte";
+  import ProjectPassword from "$lib/components/ProjectPassword.svelte";
   import ProjectStart from "$lib/components/ProjectStart.svelte";
   import Picker from "$lib/components/Picker.svelte";
   import SettingsDialog from "$lib/components/SettingsDialog.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SnapshotButtons from "$lib/components/SnapshotButtons.svelte";
   import ThemeGallery from "$lib/components/ThemeGallery.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import * as Resizable from "$lib/components/ui/resizable";
-  import * as Tabs from "$lib/components/ui/tabs";
-  import { Separator } from "$lib/components/ui/separator";
+  import { Button } from "@zsuite/ui/button";
+  import * as Resizable from "@zsuite/ui/resizable";
+  import * as Tabs from "@zsuite/ui/tabs";
+  import { Separator } from "@zsuite/ui/separator";
   import { appVersion } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";
   import { chats } from "$lib/state/chats.svelte";
@@ -51,7 +52,7 @@
   const modes = $derived([
     { id: "edit" as const, icon: layoutIcons[layout], label: t(`common.layout.${layout}`) },
     { id: "export" as const, icon: FileOutput, label: t("common.mode.export") },
-    ...(settings.values.marketplace ? [{ id: "themes" as const, icon: Store, label: t("common.mode.themes") }] : []),
+    ...(settings.values.marketplace ? [{ id: "themes" as const, icon: Store, label: t("common.mode.marketplace") }] : []),
   ]);
   const mode = $derived(modes.some(({ id }) => id === chosen) ? chosen : "edit");
 
@@ -224,3 +225,4 @@
 {/if}
 
 <ProjectNotices />
+{#if projects.locked !== null || projects.creating !== null}<ProjectPassword />{/if}

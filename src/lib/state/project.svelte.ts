@@ -2,13 +2,14 @@ import * as ipc from "$lib/ipc";
 import type { OpenedProject } from "$lib/ipc";
 import { messageOf } from "$lib/utils";
 import { agent } from "./agent.svelte";
+import { loadChats } from "./chats.svelte";
 import { Document } from "./document.svelte";
 import { SettingsState, loadSettings, merged, settings } from "./settings.svelte";
 import type { Settings } from "./settings.svelte";
 import { Workspace, nameOf, workspace } from "./workspace.svelte";
 import { t, translated } from "$lib/i18n.svelte";
 
-type Backend = Pick<typeof ipc, "projectOpen" | "projectNew" | "projectAsked">;
+type Backend = Pick<typeof ipc, "projectOpen" | "projectNew" | "projectUnlock" | "projectAsked">;
 
 const maxRecent = 8;
 const carried = ["theme", "hiddenTemplates", "hiddenLooks", "lastPage", "pageLevels"] as const;
@@ -25,6 +26,8 @@ export class Projects {
   failure = $state<string | null>(null);
   savedAt = $state<number | null>(null);
   offer = $state<{ file: string; themes: string[] } | null>(null);
+  locked = $state<string | null>(null);
+  creating = $state<{ from: string | null } | null>(null);
   missingFonts = $state<string[]>([]);
   leftOutFonts = $state<string[]>([]);
 
@@ -32,6 +35,7 @@ export class Projects {
     private backend: Backend,
     private workspace: Workspace,
     private settings: SettingsState,
+    private opened: () => void = () => {},
   ) {}
 
   get title() {
@@ -53,7 +57,13 @@ export class Projects {
     try {
       await this.workspace.flush();
       const opened = await pick();
+      this.creating = null;
       if (opened === null) return;
+      if (opened.kind === "locked") {
+        this.locked = opened.file;
+        return;
+      }
+      this.locked = null;
       if (opened.kind === "asks") {
         this.offer = opened;
         return;
@@ -68,9 +78,10 @@ export class Projects {
       this.settings.set("recentProjects", [opened.file, ...this.settings.values.recentProjects.filter((file) => file !== opened.file)].slice(0, maxRecent));
       this.settings.set("uiTheme", opened.look);
       this.choosing = false;
+      this.opened();
     } catch (error) {
       this.failure = messageOf(error);
-      this.choosing = true;
+      if (this.locked === null && this.creating === null) this.choosing = true;
     } finally {
       this.busy = false;
     }
@@ -98,7 +109,25 @@ export class Projects {
   }
 
   create(from: string | null = null) {
-    return this.switch(() => this.backend.projectNew(from), from === null);
+    this.failure = null;
+    this.creating = { from };
+  }
+
+  createWith(password: string) {
+    const from = this.creating?.from ?? null;
+    return this.switch(() => this.backend.projectNew(from, password), from === null);
+  }
+
+  unlock(password: string) {
+    const file = this.locked;
+    return file === null ? Promise.resolve() : this.switch(() => this.backend.projectUnlock(file, password, false), false);
+  }
+
+  cancelPassword() {
+    this.locked = null;
+    this.creating = null;
+    this.failure = null;
+    this.choosing = this.choosing || this.file === null;
   }
 
   forget(file: string) {
@@ -112,7 +141,10 @@ export class Projects {
   }
 }
 
-export const projects = new Projects(ipc, workspace, settings);
+export const projects = new Projects(ipc, workspace, settings, () => {
+  agent.newChat();
+  loadChats();
+});
 
 export async function start() {
   if (!ipc.inDesktopApp()) return;
@@ -185,12 +217,17 @@ if (import.meta.vitest) {
     const backend = {
       projectOpen: vi.fn(async (file: string | null, accept: boolean): Promise<OpenedProject | null> => {
         if (file?.includes("Themed") && !accept) return { kind: "asks", file, themes: ["House style 1.0.0"] };
+        if (file?.includes("Locked")) return { kind: "locked", file };
         order.push(`open ${file}`);
         if (file?.includes("Missing")) throw new Error("“Missing.znote” could not be found.");
         return file === null ? null : opened(file);
       }),
       projectAsked: vi.fn(async () => asked.file),
-      projectNew: vi.fn(async (_from: string | null) => opened("C:\\Users\\me\\Documents\\My notes.znote")),
+      projectNew: vi.fn(async (_from: string | null, _password: string) => opened("C:\\Users\\me\\Documents\\My notes.znote")),
+      projectUnlock: vi.fn(async (file: string, password: string): Promise<OpenedProject> => {
+        if (password !== "right password") throw new Error("The password is wrong, or this is not a znote file.");
+        return opened(file);
+      }),
     };
     const space = new Workspace(files, new Document(async () => {}), chosen);
     return { projects: new Projects(backend, space, chosen), backend, chosen, space, files, order, disk, asked };
@@ -245,7 +282,10 @@ if (import.meta.vitest) {
   test("a new znote file starts with the welcome page and becomes the one opened next time", async () => {
     const { projects, chosen, disk } = setup();
     projects.choosing = true;
-    await projects.create();
+    projects.create();
+    expect(projects.creating).toEqual({ from: null });
+    await projects.createWith("right password");
+    expect(projects.creating).toBe(null);
     expect(projects.title).toBe("My notes");
     expect(chosen.values.project).toBe("C:\\Users\\me\\Documents\\My notes.znote");
     expect(Object.keys(disk)).toEqual(["Getting started/Notes/Welcome"]);
@@ -254,7 +294,8 @@ if (import.meta.vitest) {
 
   test("what was typed is saved before another file is opened, and the list of recent files stays short and current", async () => {
     const { projects, space, order, chosen, disk } = setup();
-    await projects.create();
+    projects.create();
+    await projects.createWith("right password");
     space.edit("typed just now");
     order.length = 0;
     await projects.open("/notes/B.znote");
@@ -279,5 +320,22 @@ if (import.meta.vitest) {
     expect(chosen.values.project).toBe("/notes/Missing.znote");
     expect(projects.oldFolder).toBe(null);
     expect(setup({ workspace: "C:\\old notes" }).projects.oldFolder).toBe("C:\\old notes");
+  });
+
+  test("a locked file asks for its password once, and a wrong one is said without closing the question", async () => {
+    const { projects, backend } = setup();
+    projects.choosing = true;
+    await projects.open("/notes/Locked.znote");
+    expect(projects.locked).toBe("/notes/Locked.znote");
+    expect(projects.file).toBe(null);
+    await projects.unlock("wrong");
+    expect(projects.failure).toContain("password is wrong");
+    expect(projects.locked).toBe("/notes/Locked.znote");
+    await projects.unlock("right password");
+    expect(backend.projectUnlock).toHaveBeenLastCalledWith("/notes/Locked.znote", "right password", false);
+    expect([projects.locked, projects.file, projects.failure]).toEqual([null, "/notes/Locked.znote", null]);
+    await projects.open("/notes/Locked again.znote");
+    projects.cancelPassword();
+    expect([projects.locked, projects.choosing]).toEqual([null, false]);
   });
 }

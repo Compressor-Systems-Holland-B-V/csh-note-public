@@ -10,10 +10,15 @@
     "notHidden": "Non masqué",
     "notHiddenTitle": "L’assistant voit vos pages et vos fichiers tels quels",
     "locked": "Verrouillé",
-    "lockedTitle": "Ouvrez d’abord votre fichier de connaissances dans les Paramètres."
+    "lockedTitle": "Ouvrez d’abord votre fichier de connaissances dans les Paramètres.",
+    "toggle": "Masquer les noms dans cette discussion",
+    "offInSettings": "Le masquage est désactivé dans les Paramètres",
+    "fixed": "Fixé une fois la discussion commencée",
+    "required": "Votre organisation exige le masquage, il ne peut donc pas être désactivé."
   },
   "saw": {
-    "prompt": "Votre message"
+    "prompt": "Votre message",
+    "system": "Instructions pour l’assistant"
   },
   "start": {
     "text": "Les noms, montants et coordonnées deviennent des jetons comme ⟦CUSTOMER_3⟧ avant tout envoi.",
@@ -120,7 +125,8 @@
     "dontHide": "Ne pas masquer",
     "alwaysHide": "Toujours masquer",
     "hideAs": "Masquer « {text} » en tant que",
-    "kind": "Type"
+    "kind": "Type",
+    "lines": "{count} lignes"
   },
   "kinds": {
     "CUSTOMER": "Client",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Fournisseur",
     "PROJECT": "Projet",
     "PRODUCT": "Produit",
-    "LOCATION": "Lieu"
+    "LOCATION": "Lieu",
+    "AMOUNT": "Montant",
+    "EMAIL": "Adresse e-mail",
+    "PHONE": "Numéro de téléphone",
+    "URL": "Adresse web",
+    "IBAN": "IBAN",
+    "CARD": "Numéro de carte",
+    "IP": "Adresse IP"
   },
   "level": {
     "label": "Niveau de masquage",
     "own": "Seulement votre liste et les coordonnées",
     "light": "Léger : aussi les noms de personnes",
     "medium": "Moyen : aussi les organisations et lieux",
-    "strict": "Strict : aussi les produits, projets, clients et fournisseurs"
-  }
+    "strict": "Strict : aussi les produits, projets, clients et fournisseurs",
+    "short": {
+      "own": "Ma liste",
+      "light": "Léger",
+      "medium": "Moyen",
+      "strict": "Strict"
+    }
+  },
+  "redact": {
+    "title": "Masquage",
+    "off": "Le masquage est désactivé.",
+    "turnOn": "Activer",
+    "none": "Rien à masquer sur cette page.",
+    "undo": "Annuler (Ctrl+Z)",
+    "redo": "Rétablir (Ctrl+Y)",
+    "reset": "Réinitialiser cette page",
+    "filter": "Filtre",
+    "count": "{hidden} masqués sur {total}",
+    "hideGroup": "Tout masquer : {kind}",
+    "other": "Autre",
+    "removeUnhidden": "Retirer de la liste les mots non masqués"
+  },
+  "blocked": {
+    "noFile": "Le masquage est activé, mais aucun fichier de connaissances n’est choisi. Rien n’est envoyé tant que vous n’en créez ou n’en choisissez pas un dans les Paramètres, ou que vous ne désactivez pas le masquage.",
+    "locked": "Le masquage est activé, mais votre fichier de connaissances est verrouillé. Rien n’est envoyé tant que vous ne l’ouvrez pas dans les Paramètres.",
+    "noFinder": "La recherche de noms est activée, mais le détecteur de noms n’est pas téléchargé. Rien n’est envoyé tant que vous ne le téléchargez pas dans les Paramètres, ou que vous ne désactivez pas la recherche de noms."
+  },
+  "previewBefore": "Afficher ce que ce message enverrait"
 }

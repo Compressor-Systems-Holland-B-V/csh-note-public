@@ -1,7 +1,7 @@
 <script lang="ts">
   import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import { untrack } from "svelte";
-  import * as Dialog from "$lib/components/ui/dialog";
+  import * as Dialog from "@zsuite/ui/dialog";
   import type { Seen } from "$lib/ipc";
   import { messageOf } from "$lib/utils";
   import LevelSlider from "./LevelSlider.svelte";
@@ -20,7 +20,7 @@
   let shown = $state<Seen[]>([]);
   let failure = $state<string | null>(null);
 
-  const named = (label: string) => (label === "prompt" ? t("privacy.saw.prompt") : label);
+  const named = (label: string) => (label === "prompt" || label === "system" ? t(`privacy.saw.${label}`) : label);
 
   $effect(() => {
     untrack(load).then(

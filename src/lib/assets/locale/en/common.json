@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Edit",
     "export": "Export",
-    "themes": "Marketplace"
+    "marketplace": "Marketplace"
   },
   "appearance": {
     "toLight": "Switch to light mode",

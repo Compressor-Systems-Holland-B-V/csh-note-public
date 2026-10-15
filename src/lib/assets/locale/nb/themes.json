@@ -1,31 +1,35 @@
 {
-  "title": "Temaer",
-  "look": "Utseende",
-  "import": "Importer en temafil…",
-  "intro": "Temaer endrer utseendet, legger til sidetemplater, eller begge deler.",
-  "storeFailure": "{reason} Temaer du allerede har installert, vises nedenfor.",
-  "search": "Søk etter temaer",
+  "title": "Markedsplass",
+  "import": "Importer",
+  "intro": "Utseender (.zth) endrer hvordan znote ser ut. Maler (.znx) legger til sideoppsett.",
+  "storeFailure": "{reason} Viser bare installerte tillegg.",
+  "search": "Søk etter tillegg",
   "installed": "Installert",
-  "none": "Ingen temaer samsvarer.",
+  "none": "Ingen treff.",
   "kind": {
-    "look": "Kun utseende",
-    "both": "Utseende og templater",
-    "templates": "Kun templater"
+    "look": "Utseender",
+    "templates": "Templater"
   },
   "contents": {
     "look": "Endrer utseendet",
-    "both": "Endrer utseendet og legger til sidetemplater",
-    "templates": "Legger til sidetemplater"
+    "templates": "Legger til templater"
   },
   "version": "Versjon {version}",
-  "lookSwitch": "Utseende",
-  "lookSwitchTitle": "Vis dette temaet i listen over utseender",
-  "templatesSwitch": "Templater",
-  "templatesSwitchTitle": "Vis dette temaets templater når du velger en template",
+  "lookSwitchTitle": "Vis blant utseender",
+  "templatesSwitchTitle": "Vis i templatevelgeren",
   "install": "Installer",
   "installing": "Installerer…",
   "update": "Oppdater",
   "updating": "Oppdaterer…",
   "remove": "Fjern",
-  "removeTheme": "Fjern temaet {name}"
+  "importTitle": "Importer en .zth / .znx-fil",
+  "filters": "Filtre",
+  "browse": "Alle tillegg",
+  "type": "Type",
+  "category": "Kategori",
+  "all": "Alle",
+  "use": "Bruk",
+  "inUse": "I bruk",
+  "more": "Mer for {name}",
+  "templatesList": "Templater: {names}"
 }

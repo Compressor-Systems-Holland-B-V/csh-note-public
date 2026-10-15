@@ -7,6 +7,10 @@ const allowed = {
   ALLOWED_ATTR: [],
 };
 
+export const tokenShape = "⟦[^⟦⟧\n<>]{1,38}⟧";
+
+export const tokens = () => new RegExp(tokenShape, "g");
+
 export const longReply = (text: string) => text.length > 600 || text.split("\n").length > 12;
 
 export function render(text: string, purify: Pick<typeof DOMPurify, "sanitize"> = DOMPurify) {
@@ -23,7 +27,7 @@ export function withMarks(html: string, restored: Mark[], unknown: string) {
   const texts = [...new Map(restored.filter(({ text }) => text.trim() !== "").map((mark) => [asHtml(mark.text), mark.title])).entries()].sort(
     ([first], [second]) => second.length - first.length,
   );
-  const shapes = [...texts.map(([text]) => literal(text)), "⟦[^⟦⟧\n<>]{1,38}⟧"];
+  const shapes = [...texts.map(([text]) => literal(text)), tokenShape];
   const pattern = new RegExp(shapes.join("|"), "g");
   const titles = new Map(texts);
   return html

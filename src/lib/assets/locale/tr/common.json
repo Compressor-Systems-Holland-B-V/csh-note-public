@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Düzenle",
     "export": "Dışa aktar",
-    "themes": "Temalar"
+    "marketplace": "Pazar yeri"
   },
   "appearance": {
     "toLight": "Açık moda geç",
@@ -34,5 +34,13 @@
     "downloading": "{name} paketi indiriliyor…",
     "previewFailed": "Önizleme güncellenemedi: {reason}",
     "desktopOnly": "yalnızca masaüstü uygulamasında çalışır."
+  },
+  "preview": "Önizleme",
+  "back": "Geri",
+  "finish": "Bitir",
+  "layout": {
+    "edit": "Düzenle",
+    "agent": "Asistan",
+    "redaction": "Karart"
   }
 }

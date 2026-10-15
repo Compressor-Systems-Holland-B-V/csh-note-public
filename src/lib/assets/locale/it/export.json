@@ -2,7 +2,8 @@
   "title": "Esporta",
   "format": "Formato",
   "pdfHint": "Identico all'anteprima.",
-  "pptxHint": "Una diapositiva per pagina. Solo il testo resta modificabile.",
+  "pptxHint": "Una diapositiva per pagina. Testo, immagini e formule restano modificabili.",
+  "docxHint": "Testo modificabile con l'aspetto della pagina, con titoli, elenchi, tabelle e formule di Word.",
   "blocked": {
     "noPage": "Scegli una pagina da esportare.",
     "problems": "Prima risolvi i problemi in questa pagina.",
@@ -12,7 +13,6 @@
   "running": "Esportazione in corso…",
   "runningPage": "Esportazione della pagina in corso…",
   "savedTo": "Salvato in {path}",
-  "missingFonts": "PowerPoint sostituirà questi tipi di carattere: {fonts}",
   "openFile": "Apri file",
   "showInFolder": "Mostra nella cartella"
 }

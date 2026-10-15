@@ -1,31 +1,35 @@
 {
-  "title": "Teman",
-  "look": "Utseende",
-  "import": "Importera temafil…",
-  "intro": "Teman ändrar utseendet, lägger till sidmallar eller båda.",
-  "storeFailure": "{reason} Teman du redan har installerat visas nedan.",
-  "search": "Sök teman",
+  "title": "Marknadsplats",
+  "import": "Importera",
+  "intro": "Utseenden (.zth) ändrar hur znote ser ut. Mallar (.znx) lägger till sidlayouter.",
+  "storeFailure": "{reason} Visar bara installerade tillägg.",
+  "search": "Sök tillägg",
   "installed": "Installerade",
-  "none": "Inga teman matchar.",
+  "none": "Inga träffar.",
   "kind": {
-    "look": "Endast utseende",
-    "both": "Utseende och mallar",
-    "templates": "Endast mallar"
+    "look": "Utseenden",
+    "templates": "Mallar"
   },
   "contents": {
     "look": "Ändrar utseendet",
-    "both": "Ändrar utseendet och lägger till sidmallar",
-    "templates": "Lägger till sidmallar"
+    "templates": "Lägger till mallar"
   },
   "version": "Version {version}",
-  "lookSwitch": "Utseende",
-  "lookSwitchTitle": "Visa detta tema i listan över utseenden",
-  "templatesSwitch": "Mallar",
-  "templatesSwitchTitle": "Visa detta temas mallar när du väljer en mall",
+  "lookSwitchTitle": "Visa bland utseenden",
+  "templatesSwitchTitle": "Visa i mallväljaren",
   "install": "Installera",
   "installing": "Installerar…",
   "update": "Uppdatera",
   "updating": "Uppdaterar…",
   "remove": "Ta bort",
-  "removeTheme": "Ta bort temat {name}"
+  "importTitle": "Importera en .zth / .znx-fil",
+  "filters": "Filter",
+  "browse": "Alla tillägg",
+  "type": "Typ",
+  "category": "Kategori",
+  "all": "Alla",
+  "use": "Använd",
+  "inUse": "Används",
+  "more": "Mer för {name}",
+  "templatesList": "Mallar: {names}"
 }

@@ -118,6 +118,17 @@ impl Model {
         })
     }
 
+    pub fn verified(&self, models: &Path) -> bool {
+        let folder = self.path(models);
+        self.pieces.iter().all(|piece| {
+            File::open(folder.join(piece.local)).is_ok_and(|mut file| {
+                let mut hasher = Sha256::new();
+                std::io::copy(&mut file, &mut hasher).is_ok()
+                    && hex(&hasher.finalize()) == piece.sha256
+            })
+        })
+    }
+
     fn total(&self) -> u64 {
         self.pieces.iter().map(|piece| piece.size).sum()
     }
@@ -201,8 +212,16 @@ fn web(address: &str) -> Result<Box<dyn Read>, String> {
     Ok(Box::new(response.into_reader()))
 }
 
-#[tauri::command(async)]
-pub fn models_download(
+#[tauri::command]
+pub async fn models_download(
+    app: AppHandle,
+    model: String,
+    progress: Channel<Progress>,
+) -> Result<(), String> {
+    crate::blocking(move || models_download_now(app, model, progress)).await
+}
+
+fn models_download_now(
     app: AppHandle,
     model: String,
     progress: Channel<Progress>,
@@ -222,7 +241,9 @@ pub fn models_download(
 
 #[tauri::command]
 pub fn models_cancel(model: String) {
-    stop(&model).store(true, Ordering::Relaxed);
+    if matches!(model.as_str(), "names" | "search") {
+        stop(&model).store(true, Ordering::Relaxed);
+    }
 }
 
 #[cfg(test)]
@@ -271,8 +292,10 @@ mod tests {
         let seen = Mutex::new(Vec::new());
         TINY.fetch(&models, &good, &|step| seen.lock().unwrap().push(step.done))
             .unwrap();
-        assert!(TINY.present(&models));
+        assert!(TINY.present(&models) && TINY.verified(&models));
         assert_eq!(*seen.lock().unwrap(), [5]);
+        fs::write(TINY.path(&models).join("weights.bin"), "jello").unwrap();
+        assert!(TINY.present(&models) && !TINY.verified(&models));
         let long = |_: &str| -> Result<Box<dyn Read>, String> {
             Ok(Box::new(Cursor::new(b"hello world".to_vec())))
         };

@@ -14,25 +14,21 @@
   import PencilRuler from "@lucide/svelte/icons/pencil-ruler";
   import Scale from "@lucide/svelte/icons/scale";
   import Send from "@lucide/svelte/icons/send";
-  import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import SlidersHorizontal from "@lucide/svelte/icons/sliders-horizontal";
   import Square from "@lucide/svelte/icons/square";
   import X from "@lucide/svelte/icons/x";
   import Zap from "@lucide/svelte/icons/zap";
-  import { Button } from "$lib/components/ui/button";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import { presetHint, presetName, presetsFor, referenceKind, standard } from "$lib/assistant";
-  import type { Reference } from "$lib/assistant";
-  import type { Seen } from "$lib/ipc";
+  import { Button } from "@zsuite/ui/button";
+  import * as DropdownMenu from "@zsuite/ui/dropdown-menu";
+  import { presetHint, presetName, presetsFor, standard } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
   import { privacy } from "$lib/state/privacy.svelte";
   import { settings } from "$lib/state/settings.svelte";
-  import { pagesOf, workspace } from "$lib/state/workspace.svelte";
+  import { workspace } from "$lib/state/workspace.svelte";
   import ModelPicker from "./ModelPicker.svelte";
   import ReferenceIcon from "./ReferenceIcon.svelte";
-  import PresetDialog from "./PresetDialog.svelte";
   import VeiledView from "./VeiledView.svelte";
-  import { structured } from "$lib/markdown";
+  import PresetDialog from "./PresetDialog.svelte";
   import { t } from "$lib/i18n.svelte";
 
   const sizeIcons: Record<string, typeof Scale> = { quick: Zap, balanced: Scale, thorough: Microscope };
@@ -41,15 +37,6 @@
 
   let host: HTMLDivElement;
   let advanced = $state(false);
-  let viewing = $state<Reference | null>(null);
-
-  const viewable = ({ path, text }: Reference) => text != null || path === undefined;
-
-  function textOf({ label, text }: Reference): Promise<Seen[]> {
-    if (text != null) return Promise.resolve([{ label, text }]);
-    const pages = referenceKind(label) === "page" ? [label] : pagesOf(workspace.tree).filter((page) => page.startsWith(`${label}/`));
-    return Promise.all(pages.map(async (page) => ({ label: page, text: await workspace.read(page) })));
-  }
 
   const provider = $derived(agent.providerOrDefault);
   const presets = $derived(presetsFor(provider, settings.values.assistantPresets[provider] ?? []));
@@ -76,6 +63,8 @@
       backgroundColor: "var(--accent)",
     },
   });
+
+  let previewing = $state<string | null>(null);
 
   function send() {
     const text = view?.state.doc.toString() ?? "";
@@ -114,19 +103,10 @@
 >
   {#if agent.references.length > 0}
     <ul class="flex flex-wrap gap-1" aria-label={t("assistant.composer.references")}>
-      {#each agent.references as reference, index (reference.label)}
-        {@const { label, path } = reference}
+      {#each agent.references as { label, path }, index (label)}
         <li class="flex items-center gap-1 rounded-md bg-accent py-0.5 pe-0.5 ps-1.5 text-xs">
           <ReferenceIcon {label} />
           <span class="max-w-40 truncate" title={label}>{label}</span>
-          {#if privacy.hiding}
-            <ShieldCheck class="size-3 shrink-0 text-chart-2" role="img" aria-label={t("privacy.panel.hidden")} />
-            {#if viewable(reference)}
-              <Button variant="ghost" size="icon-xs" aria-label={t("privacy.preview")} title={t("privacy.preview")} onclick={() => (viewing = reference)}>
-                <Eye />
-              </Button>
-            {/if}
-          {/if}
           {#if path !== undefined && privacy.options.knowledge && agent.chatId !== null}
             {@const chat = agent.chatId}
             <Button variant="ghost" size="icon-xs" aria-label={t("privacy.addToKnowledge")} title={t("privacy.addToKnowledge")} onclick={() => privacy.attach(chat, path)}>
@@ -208,7 +188,7 @@
         {/each}
       </DropdownMenu.Content>
     </DropdownMenu.Root>
-    {#if agent.preset.web === null}
+    {#if agent.preset.web === null && privacy.policy?.web !== "blocked"}
       <Button variant={agent.web ? "secondary" : "ghost"} size="icon-sm" aria-pressed={agent.web} aria-label={t("assistant.composer.web")} title={t("assistant.composer.web")} onclick={() => (agent.web = !agent.web)}>
         {#if agent.web}<Globe />{:else}<GlobeOff />{/if}
       </Button>
@@ -217,26 +197,18 @@
       <SlidersHorizontal />
     </Button>
     <span class="flex-1"></span>
+    <Button variant="ghost" size="icon-sm" aria-label={t("privacy.previewBefore")} title={t("privacy.previewBefore")} disabled={empty || agent.running} onclick={() => (previewing = view?.state.doc.toString() ?? null)}>
+      <Eye />
+    </Button>
     {#if agent.here}
       <Button variant="destructive" size="icon-sm" class="shrink-0" aria-label={t("assistant.composer.stop")} title={t("assistant.composer.stop")} onclick={() => agent.stop()}><Square /></Button>
     {:else}
-      <Button type="submit" size="icon-sm" class="shrink-0" disabled={empty || agent.running} aria-label={t("assistant.composer.send")} title={t(agent.running ? "assistant.composer.busyElsewhere" : "assistant.composer.sendTitle")}>
-        <Send />
+      <Button type="submit" size="sm" class="shrink-0" disabled={empty || agent.running} title={t(agent.running ? "assistant.composer.busyElsewhere" : "assistant.composer.sendTitle")}>
+        <Send /> {t("assistant.composer.send")}
       </Button>
     {/if}
   </div>
 </form>
 
 <PresetDialog bind:open={advanced} />
-{#if viewing}
-  {@const reference = viewing}
-  {@const page = reference.path === undefined && referenceKind(reference.label) === "page"}
-  <VeiledView
-    load={() => textOf(reference)}
-    editable
-    markdown={structured(reference.path)}
-    level={reference.path !== undefined ? (reference.level ?? 1) : page ? privacy.pageLevel(reference.label) : undefined}
-    onlevel={reference.path !== undefined ? (level) => agent.setLevel(reference, level) : page ? (level) => privacy.setPageLevel(reference.label, level) : undefined}
-    onclose={() => (viewing = null)}
-  />
-{/if}
+{#if previewing !== null}{@const text = previewing}<VeiledView load={() => agent.preview(text)} onclose={() => (previewing = null)} />{/if}

@@ -2,7 +2,8 @@
   "title": "Exportera",
   "format": "Format",
   "pdfHint": "Ser exakt ut som förhandsgranskningen.",
-  "pptxHint": "En bild per sida. Bara texten förblir redigerbar.",
+  "pptxHint": "En bild per sida. Text, bilder och formler går att redigera.",
+  "docxHint": "Redigerbar text som ser ut som sidan, med Words egna rubriker, listor, tabeller och formler.",
   "blocked": {
     "noPage": "Välj en sida att exportera.",
     "problems": "Åtgärda problemen på den här sidan först.",
@@ -12,7 +13,6 @@
   "running": "Exporterar…",
   "runningPage": "Exporterar din sida…",
   "savedTo": "Sparad i {path}",
-  "missingFonts": "PowerPoint kommer att ersätta dessa typsnitt: {fonts}",
   "openFile": "Öppna fil",
   "showInFolder": "Visa i mapp"
 }

@@ -15,5 +15,28 @@
   "languageAuto": "זהה לשפת המחשב הזה",
   "assistant": "עוזר אישי",
   "file": "קובץ ה-znote שלך",
-  "switch": "החלפה…"
+  "switch": "החלפה…",
+  "layout": "פריסה",
+  "layouts": {
+    "edit": "Typst עם תצוגה מקדימה חיה.",
+    "agent": "קודם הצ'אט, התצוגה המקדימה בצד.",
+    "redaction": "מציאת דפים ושליטה במה שמוסתר."
+  },
+  "parts": {
+    "pages": "דפים",
+    "editor": "עורך",
+    "preview": "תצוגה מקדימה",
+    "assistant": "צ'אט",
+    "search": "חיפוש",
+    "filter": "סינון"
+  },
+  "marketplace": "חנות",
+  "marketplaceHint": "התקנת ערכות נושא ותבניות.",
+  "start": {
+    "layout": "איך תרצה לעבוד?",
+    "privacy": "מה העוזר רשאי לראות?",
+    "file": "קובץ ידע",
+    "downloads": "הורדות",
+    "marketplace": "חנות"
+  }
 }

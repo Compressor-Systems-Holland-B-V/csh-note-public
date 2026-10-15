@@ -35,7 +35,9 @@
     "cutOff": "Odpowiedź została ucięta: {error}",
     "modelFirst": "Najpierw wybierz model dla asystenta.",
     "tooManySteps": "Asystent wykonał zbyt wiele kroków i został zatrzymany.",
-    "passwordStore": "Nie udało się użyć magazynu haseł tego komputera: {error}"
+    "passwordStore": "Nie udało się użyć magazynu haseł tego komputera: {error}",
+    "notAllowed": "Twoja organizacja nie zezwala na tego asystenta.",
+    "plainHttp": "Zwykłe http:// jest używane tylko dla serwera na tym komputerze lub w Twojej własnej sieci. Dla tego adresu użyj https://."
   },
   "chat": {
     "busy": "Asystent jest nadal zajęty. Poczekaj, aż skończy, lub zatrzymaj go.",
@@ -52,8 +54,11 @@
     "fixFirst": "Przed eksportem strony napraw występujące na niej problemy.",
     "pageNotOpened": "Nie udało się otworzyć strony.",
     "slideNotDrawn": "Nie udało się wygenerować slajdu: {error}",
+    "pictureNotDrawn": "Nie udało się narysować obrazu: {error}",
     "pdfFailed": "Nie udało się utworzyć pliku PDF: {reason}",
     "pptxFailed": "Nie udało się utworzyć prezentacji: {error}",
+    "docxFailed": "Nie udało się utworzyć pliku Word: {error}",
+    "notWord": "Z tej strony nie można utworzyć dokumentu Word: {error}",
     "nothing": "Ta strona nie zawiera niczego do wyeksportowania.",
     "nothingYet": "Nic nie zostało jeszcze wyeksportowane.",
     "notSaved": "Nie udało się zapisać pliku: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Nie można otworzyć tego pliku, ponieważ wymaga on motywów, które nie są zainstalowane:\n• {themes}\nZainstaluj je na stronie Motywy, a następnie otwórz plik ponownie.",
     "outside": "Ten plik znote próbuje umieścić „{name}” poza własnym folderem, dlatego nie został zaimportowany.",
     "tooLarge": "Ten plik znote jest zbyt duży po rozpakowaniu, dlatego nie został zaimportowany.",
-    "openFirst": "Najpierw otwórz plik znote."
+    "openFirst": "Najpierw otwórz plik znote.",
+    "wrongPassword": "Hasło jest nieprawidłowe albo to nie jest plik znote."
   },
   "theme": {
     "fileNotRead": "Nie udało się odczytać pliku motywu: {error}",
@@ -121,7 +127,6 @@
     "notPage": "„{path}” nie jest stroną.",
     "badMove": "Stronę można przenieść tylko do notatnika, a notatnik do projektu.",
     "folderFirst": "Najpierw wybierz folder obszaru roboczego.",
-    "fileNotRead": "Nie można odczytać pliku: {error}",
-    "notFullPath": "„{folder}” nie jest pełną ścieżką do folderu."
+    "fileNotRead": "Nie można odczytać pliku: {error}"
   }
 }

@@ -485,6 +485,12 @@ fn pdf(file: &Path) -> Result<String, String> {
 }
 
 pub fn text(file: &Path) -> Result<String, String> {
+    crate::guarded("This file could not be read: it may be damaged.", || {
+        read(file)
+    })
+}
+
+fn read(file: &Path) -> Result<String, String> {
     let kind = file
         .extension()
         .and_then(|kind| kind.to_str())

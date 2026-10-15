@@ -79,5 +79,22 @@
     "start": "Commencer",
     "empty": "Les fichiers que vous ouvrez apparaîtront ici.",
     "back": "Retour à {name}"
+  },
+  "search": "Rechercher des pages",
+  "noHits": "Aucun résultat.",
+  "browser": {
+    "path": "Emplacement actuel",
+    "projects": "Projets",
+    "notebooks": "Carnets"
+  },
+  "password": {
+    "newTitle": "Protégez votre nouveau fichier znote",
+    "newText": "Choisissez un mot de passe pour ce fichier. Les notes, paramètres et discussions qu’il contient sont chiffrés avec ce mot de passe. Vous le saisissez une fois sur chaque ordinateur ; ensuite, cet ordinateur s’en souvient.",
+    "unlockTitle": "Ouvrir {name}",
+    "unlockText": "Ce fichier znote est chiffré. Saisissez son mot de passe pour l’ouvrir. Ensuite, cet ordinateur s’en souvient.",
+    "password": "Mot de passe",
+    "forgotten": "Conservez ce mot de passe en lieu sûr. Un fichier dont le mot de passe est perdu ne peut plus être ouvert.",
+    "create": "Créer le fichier",
+    "open": "Ouvrir"
   }
 }

@@ -79,5 +79,22 @@
     "start": "Começar",
     "empty": "Os ficheiros que abrir aparecem aqui.",
     "back": "Voltar a {name}"
+  },
+  "search": "Pesquisar páginas",
+  "noHits": "Nada encontrado.",
+  "browser": {
+    "path": "Onde está",
+    "projects": "Projetos",
+    "notebooks": "Blocos de notas"
+  },
+  "password": {
+    "newTitle": "Proteja o seu novo ficheiro znote",
+    "newText": "Escolha uma palavra-passe para este ficheiro. As notas, definições e conversas que contém são encriptadas com ela. Escreve-a uma vez em cada computador; depois disso, este computador lembra-se dela.",
+    "unlockTitle": "Abrir {name}",
+    "unlockText": "Este ficheiro znote está encriptado. Escreva a palavra-passe para o abrir. Depois disso, este computador lembra-se dela.",
+    "password": "Palavra-passe",
+    "forgotten": "Guarde bem esta palavra-passe. Um ficheiro cuja palavra-passe se perdeu não pode voltar a ser aberto.",
+    "create": "Criar ficheiro",
+    "open": "Abrir"
   }
 }

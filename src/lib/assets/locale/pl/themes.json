@@ -1,31 +1,35 @@
 {
-  "title": "Motywy",
-  "look": "Wygląd",
-  "import": "Importuj plik motywu…",
-  "intro": "Motywy zmieniają wygląd, dodają szablony stron albo jedno i drugie.",
-  "storeFailure": "{reason} Zainstalowane motywy znajdują się poniżej.",
-  "search": "Szukaj motywów",
+  "title": "Sklep",
+  "import": "Importuj",
+  "intro": "Wyglądy (.zth) zmieniają wygląd znote. Szablony (.znx) dodają układy stron.",
+  "storeFailure": "{reason} Wyświetlane są tylko zainstalowane dodatki.",
+  "search": "Szukaj dodatków",
   "installed": "Zainstalowane",
-  "none": "Brak pasujących motywów.",
+  "none": "Brak wyników.",
   "kind": {
-    "look": "Tylko wygląd",
-    "both": "Wygląd i szablony",
-    "templates": "Tylko szablony"
+    "look": "Wyglądy",
+    "templates": "Szablony"
   },
   "contents": {
     "look": "Zmienia wygląd",
-    "both": "Zmienia wygląd i dodaje szablony stron",
-    "templates": "Dodaje szablony stron"
+    "templates": "Dodaje szablony"
   },
   "version": "Wersja {version}",
-  "lookSwitch": "Wygląd",
-  "lookSwitchTitle": "Pokaż ten motyw na liście wyglądów",
-  "templatesSwitch": "Szablony",
-  "templatesSwitchTitle": "Pokaż szablony tego motywu podczas wyboru szablonu",
+  "lookSwitchTitle": "Pokaż na liście wyglądów",
+  "templatesSwitchTitle": "Pokaż w wyborze szablonu",
   "install": "Zainstaluj",
   "installing": "Instalowanie…",
   "update": "Aktualizuj",
   "updating": "Aktualizowanie…",
   "remove": "Usuń",
-  "removeTheme": "Usuń motyw {name}"
+  "importTitle": "Importuj plik .zth / .znx",
+  "filters": "Filtry",
+  "browse": "Wszystkie dodatki",
+  "type": "Typ",
+  "category": "Kategoria",
+  "all": "Wszystkie",
+  "use": "Użyj",
+  "inUse": "W użyciu",
+  "more": "Więcej dla {name}",
+  "templatesList": "Szablony: {names}"
 }

@@ -9,7 +9,6 @@ use std::sync::{Mutex, MutexGuard};
 use std::thread::spawn;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
-use keyring::{Entry as Keyring, Error as KeyringError};
 use model2vec_rs::model::StaticModel;
 use rusqlite::{Connection, OpenFlags, OptionalExtension, params};
 use serde::{Deserialize, Serialize};
@@ -18,11 +17,14 @@ use tauri::{AppHandle, Manager};
 use tauri_plugin_dialog::DialogExt;
 
 use crate::models;
+use crate::policy::{self, Rule};
 use crate::privacy::glossary::{self, Concept, Edge, Label};
 use crate::privacy::names::{self, Finder};
 use crate::privacy::{
-    Detector, Entry, Found, Glossary, NAMES, Override, Restored, Vault, Veiled, folded,
+    self, Detector, Entry, Found, Glossary, LITERAL, NAMES, Override, Restored, Vault, Veiled,
+    folded,
 };
+use crate::sealed::{self, check_password};
 use crate::workspace::{self, Workspace};
 use crate::{agent, extract};
 
@@ -30,9 +32,10 @@ const VERSION: i64 = 1;
 const EXTENSION: &str = "znote-knowledge";
 const SERVICE: &str = "znote knowledge";
 const MAX_NAME: usize = 80;
-const MIN_PASSWORD: usize = 8;
 const DEBOUNCE: Duration = Duration::from_secs(2);
 const LOCKED: &str = "Names are hidden from the assistant, but your knowledge file is locked. Open it in Settings first.";
+const NO_FINDER: &str = "Names are hidden from the assistant, but the name finder could not be loaded. Download it again in Settings, or stop finding names.";
+const NOT_READY: &str = "Names are hidden from the assistant, but the hiding settings have not been loaded yet. Try again in a moment.";
 
 const SCHEMA: &str = "
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -57,6 +60,10 @@ CREATE INDEX IF NOT EXISTS mentions_by_concept ON mentions (concept);
 /// patterns hide at every level.
 pub const LIGHT: u8 = 1;
 pub const STRICT: u8 = 3;
+
+fn lowest_allowed(level: u8) -> u8 {
+    level.clamp(policy::get().minimum_level, STRICT)
+}
 
 #[derive(Debug, Clone, Copy, Default, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase", default)]
@@ -86,14 +93,15 @@ pub struct Open {
     vault: Vault,
     detector: Detector,
     pub glossary: Glossary,
+    concepts: HashMap<String, usize>,
     imported: bool,
 }
 
 #[derive(Default)]
 pub struct Knowledge {
     open: Mutex<Option<Open>>,
-    options: Mutex<Options>,
-    pages: Mutex<HashMap<String, u8>>,
+    options: Mutex<Option<Options>>,
+    pages: Mutex<Option<HashMap<String, u8>>>,
     finder: Mutex<Option<Finder>>,
     embedder: Mutex<Option<StaticModel>>,
     picked: Mutex<Option<PathBuf>>,
@@ -128,14 +136,12 @@ fn plain_id(id: &str) -> bool {
 }
 
 fn connect(file: &Path, password: &str, flags: OpenFlags) -> Result<Connection, String> {
-    let db = Connection::open_with_flags(file, flags).map_err(sql)?;
-    let _ = db.pragma_update(None, "cipher_log_level", "NONE");
-    db.pragma_update(None, "key", password).map_err(sql)?;
-    db.query_row("SELECT count(*) FROM sqlite_master", [], |row| {
-        row.get::<_, i64>(0)
-    })
-    .map_err(|_| "The password is wrong, or this is not a knowledge file.".to_string())?;
-    Ok(db)
+    sealed::open(
+        file,
+        password,
+        flags,
+        "The password is wrong, or this is not a knowledge file.",
+    )
 }
 
 fn checked(db: &Connection) -> Result<(String, String), String> {
@@ -327,6 +333,15 @@ fn read_vault(db: &Connection) -> Result<Vault, String> {
     Ok(vault)
 }
 
+fn positions(glossary: &Glossary) -> HashMap<String, usize> {
+    glossary
+        .concepts
+        .iter()
+        .enumerate()
+        .map(|(at, concept)| (concept.iri.clone(), at))
+        .collect()
+}
+
 impl Open {
     fn load(id: String, db: Connection) -> Result<Self, String> {
         let stored = read_glossary(&db)?;
@@ -336,27 +351,32 @@ impl Open {
         } else {
             glossary::default()
         };
-        let detector = Detector::new(&glossary, &read_overrides(&db)?);
+        let detector = Detector::new(&glossary, &read_overrides(&db)?)?;
         Ok(Self {
             id,
             vault: read_vault(&db)?,
             db,
             detector,
+            concepts: positions(&glossary),
             glossary,
             imported,
         })
     }
 
     fn rebuild(&mut self) -> Result<(), String> {
-        self.detector = Detector::new(&self.glossary, &read_overrides(&self.db)?);
+        self.detector = Detector::new(&self.glossary, &read_overrides(&self.db)?)?;
+        self.concepts = positions(&self.glossary);
         Ok(())
     }
 
+    pub fn concept_at(&self, iri: &str) -> Option<usize> {
+        self.concepts.get(iri).copied()
+    }
+
     fn name_labels(&self) -> Vec<(String, String)> {
-        let mut labels: Vec<(String, String)> = names::KINDS
-            .iter()
-            .map(|(label, kind)| (label.to_string(), kind.to_string()))
-            .collect();
+        let mut labels: Vec<(String, String)> = privacy::rules()
+            .map(|rules| rules.labels.clone())
+            .unwrap_or_default();
         for concept in self.glossary.concepts.iter().filter(|concept| concept.top) {
             if !labels.iter().any(|(_, kind)| *kind == concept.kind) {
                 labels.push((concept.pref().to_lowercase(), concept.kind.clone()));
@@ -423,16 +443,18 @@ impl Open {
                     .into_iter()
                     .flatten()
                     .filter(move |(_, _, kind)| shown(kind, level))
-                    .filter_map(move |(start, end, kind)| {
-                        let piece = line.get(*start..*end)?;
-                        Some(Found {
-                            start: offset + start,
-                            end: offset + end,
-                            kind: kind.clone(),
-                            entity: format!("{kind}:{}", folded(piece).0),
-                            pref: None,
-                            rank: NAMES,
-                        })
+                    .filter(move |(start, end, _)| line.get(*start..*end).is_some())
+                    .flat_map(move |(start, end, kind)| {
+                        names::cleaned(line, *start, *end)
+                            .into_iter()
+                            .map(move |(start, end)| Found {
+                                start: offset + start,
+                                end: offset + end,
+                                kind: kind.clone(),
+                                entity: format!("{kind}:{}", folded(&line[start..end]).0),
+                                pref: None,
+                                rank: NAMES,
+                            })
                     })
             })
             .collect())
@@ -449,8 +471,17 @@ impl Open {
             Some(finder) => self.names(text, finder, level)?,
             None => Vec::new(),
         };
-        let found = self.detector.find(text, options.amounts, names);
-        let (veiled, fresh) = self.vault.veil(text, &found);
+        let pass = |vault: &mut Vault| {
+            let found = [names.clone(), vault.known(text)].concat();
+            vault.veil(text, &self.detector.find(text, options.amounts, found))
+        };
+        let (mut veiled, mut fresh) = pass(&mut self.vault);
+        if !fresh.is_empty() {
+            // A name first found further down is hidden at its earlier places too.
+            let (again, more) = pass(&mut self.vault);
+            veiled = again;
+            fresh.extend(more);
+        }
         if !fresh.is_empty()
             && let Err(error) = self.keep(&fresh)
         {
@@ -465,7 +496,9 @@ impl Open {
         for entry in fresh {
             transaction
                 .execute(
-                    "INSERT INTO vault (token, kind, number, variant, entity, text) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+                    // ponytail: a retagged text replaces its old row, so the old token restores only
+                    // until the file is reopened; keep both rows if old chats must keep restoring.
+                    "INSERT OR REPLACE INTO vault (token, kind, number, variant, entity, text) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
                     params![entry.token, entry.kind, entry.number, entry.variant, entry.entity, entry.text],
                 )
                 .map_err(sql)?;
@@ -490,11 +523,7 @@ impl Open {
 // left on ordinary words. The level only decides which of its answers are hidden. Broad kinds
 // such as the glossary's customer and supplier catch many ordinary words, so only Strict hides them.
 fn shown(kind: &str, level: u8) -> bool {
-    match kind {
-        "PERSON" => level >= LIGHT,
-        "ORGANISATION" | "LOCATION" => level > LIGHT,
-        _ => level >= STRICT,
-    }
+    privacy::rules().map_or(true, |rules| level >= rules.level_of(kind))
 }
 
 pub struct Gate<'a> {
@@ -531,28 +560,54 @@ impl Gate<'_> {
             .map(|open| open.id.clone())
     }
 
+    // A prompt can carry notes from any page in the knowledge base, so it is hidden as strictly as
+    // the strictest page.
     pub fn veil(&self, text: &str) -> Result<Veiled, String> {
-        self.veil_at(text, LIGHT)
+        self.veil_at(
+            text,
+            if self.knows() {
+                self.strictest()
+            } else {
+                LIGHT
+            },
+        )
     }
 
     pub fn page_level(&self, page: &str) -> u8 {
-        self.knowledge
-            .pages
-            .lock()
-            .ok()
-            .and_then(|pages| pages.get(page).copied())
-            .unwrap_or(LIGHT)
-            .min(STRICT)
+        self.knowledge.page_level(page)
+    }
+
+    pub fn searchable(&self, query: &str) -> Result<String, String> {
+        if !self.on {
+            return Ok(query.into());
+        }
+        let veiled = self.veil(query)?;
+        let given = |token: &str| {
+            self.knowledge
+                .with(|open| Ok(open.real(token).is_some_and(|(_, kind)| kind == LITERAL)))
+                .ok()
+                .flatten()
+                .unwrap_or(false)
+        };
+        let mut kept = String::with_capacity(query.len());
+        let mut at = 0;
+        for (start, end, token) in &veiled.marks {
+            kept.push_str(&query[at..*start]);
+            if given(token) {
+                kept.push_str(&query[*start..*end]);
+            }
+            at = *end;
+        }
+        kept.push_str(&query[at..]);
+        Ok(self.unveil(&kept).0)
     }
 
     pub fn strictest(&self) -> u8 {
-        self.knowledge
-            .pages
-            .lock()
-            .ok()
-            .and_then(|pages| pages.values().copied().max())
-            .unwrap_or(LIGHT)
-            .clamp(LIGHT, STRICT)
+        let most = match self.knowledge.pages.lock().as_deref() {
+            Ok(Some(pages)) => pages.values().copied().max().unwrap_or(LIGHT),
+            _ => STRICT,
+        };
+        lowest_allowed(most.max(LIGHT))
     }
 
     pub fn veil_at(&self, text: &str, level: u8) -> Result<Veiled, String> {
@@ -592,11 +647,17 @@ impl Gate<'_> {
 }
 
 impl Knowledge {
+    fn chosen(&self) -> Option<Options> {
+        let mut options = (*self.options.lock().ok()?)?;
+        let policy = policy::get();
+        options.veil |= policy.hide_names == Rule::Required;
+        options.names |= policy.find_names == Rule::Required;
+        options.amounts |= policy.hide_amounts == Rule::Required;
+        Some(options)
+    }
+
     pub fn options(&self) -> Options {
-        self.options
-            .lock()
-            .map(|options| *options)
-            .unwrap_or_default()
+        self.chosen().unwrap_or_default()
     }
 
     pub fn with<T>(
@@ -607,12 +668,32 @@ impl Knowledge {
         open.as_mut().map(work).transpose()
     }
 
+    pub fn page_level(&self, page: &str) -> u8 {
+        let level = match self.pages.lock().as_deref() {
+            Ok(Some(pages)) => pages.get(page).copied().unwrap_or(LIGHT),
+            _ => STRICT,
+        };
+        lowest_allowed(level)
+    }
+
     pub fn is_open(&self) -> bool {
         self.open.lock().is_ok_and(|open| open.is_some())
     }
 
     pub fn gate(&self) -> Result<Gate<'_>, String> {
-        let on = self.options().veil;
+        self.gated(self.options().veil)
+    }
+
+    pub fn gate_if(&self, wanted: bool) -> Result<Gate<'_>, String> {
+        let options = self.chosen().ok_or(NOT_READY)?;
+        let wanted = wanted || policy::get().hide_names == Rule::Required;
+        if wanted && !options.veil {
+            return Err(NOT_READY.into());
+        }
+        self.gated(wanted)
+    }
+
+    fn gated(&self, on: bool) -> Result<Gate<'_>, String> {
         if on && !self.is_open() {
             return Err(LOCKED.into());
         }
@@ -625,7 +706,11 @@ impl Knowledge {
     pub fn veil(&self, text: &str, level: u8) -> Result<Veiled, String> {
         let options = self.options();
         let finder = locked(&self.finder)?;
-        self.with(|open| open.veil(text, &options, finder.as_ref(), level.min(STRICT)))?
+        let level = lowest_allowed(level);
+        if options.names && level > 0 && finder.is_none() {
+            return Err(NO_FINDER.into());
+        }
+        self.with(|open| open.veil(text, &options, finder.as_ref(), level))?
             .ok_or_else(|| LOCKED.to_string())
     }
 
@@ -679,7 +764,8 @@ impl Knowledge {
         db.execute_batch(SCHEMA).unwrap();
         store_glossary(&mut db, glossary).unwrap();
         knowledge.use_file("0000000000000000".into(), db).unwrap();
-        *knowledge.options.lock().unwrap() = options;
+        *knowledge.options.lock().unwrap() = Some(options);
+        *knowledge.pages.lock().unwrap() = Some(HashMap::new());
         knowledge
     }
 }
@@ -727,30 +813,11 @@ fn put_shelf(folder: &Path, shelf: &Shelf) -> Result<(), String> {
 }
 
 fn remembered(id: &str) -> Option<String> {
-    Keyring::new(SERVICE, id).ok()?.get_password().ok()
+    sealed::remembered(SERVICE, id)
 }
 
 fn remember(id: &str, password: Option<&str>) -> Result<(), String> {
-    let store = |error: KeyringError| {
-        format!("The password store of this computer could not be used: {error}")
-    };
-    let entry = Keyring::new(SERVICE, id).map_err(store)?;
-    match password {
-        Some(password) => entry.set_password(password).map_err(store),
-        None => match entry.delete_credential() {
-            Ok(()) | Err(KeyringError::NoEntry) => Ok(()),
-            Err(error) => Err(store(error)),
-        },
-    }
-}
-
-fn check_password(password: &str) -> Result<(), String> {
-    if password.chars().count() < MIN_PASSWORD {
-        return Err(format!(
-            "Choose a password of at least {MIN_PASSWORD} characters."
-        ));
-    }
-    Ok(())
+    sealed::remember(SERVICE, id, password)
 }
 
 fn check_name(name: &str) -> Result<String, String> {
@@ -872,7 +939,7 @@ fn load_finder(app: &AppHandle) {
     };
     if finder.is_none()
         && let Ok(models) = models::folder(app)
-        && models::NAME_FINDER.present(&models)
+        && models::NAME_FINDER.verified(&models)
     {
         *finder = Finder::load(&models::NAME_FINDER.path(&models)).ok();
     }
@@ -892,7 +959,7 @@ fn load_embedder(app: &AppHandle) {
     };
     if embedder.is_none()
         && let Ok(models) = models::folder(app)
-        && models::SMART_SEARCH.present(&models)
+        && models::SMART_SEARCH.verified(&models)
     {
         *embedder =
             StaticModel::from_pretrained(models::SMART_SEARCH.path(&models), None, None, None).ok();
@@ -919,7 +986,7 @@ fn refresh_page(app: &AppHandle, page: &str, by_hand: bool) -> Result<(), String
         }
     };
     if options.veil {
-        knowledge.veil(&text, LIGHT)?;
+        knowledge.veil(&text, knowledge.page_level(page))?;
     }
     if !options.knowledge {
         return Ok(());
@@ -972,8 +1039,12 @@ fn every_page(app: &AppHandle) {
     }
 }
 
-#[tauri::command(async)]
-pub fn knowledge_sync(app: AppHandle) -> Result<(), String> {
+#[tauri::command]
+pub async fn knowledge_sync(app: AppHandle) -> Result<(), String> {
+    crate::blocking(move || knowledge_sync_now(app)).await
+}
+
+fn knowledge_sync_now(app: AppHandle) -> Result<(), String> {
     let options = app.state::<Knowledge>().options();
     if options.knowledge && options.auto_add {
         every_page(&app);
@@ -981,8 +1052,12 @@ pub fn knowledge_sync(app: AppHandle) -> Result<(), String> {
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn knowledge_add(app: AppHandle, path: String) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_add(app: AppHandle, path: String) -> Result<Status, String> {
+    crate::blocking(move || knowledge_add_now(app, path)).await
+}
+
+fn knowledge_add_now(app: AppHandle, path: String) -> Result<Status, String> {
     let root = app.state::<Workspace>().root()?;
     let inside = format!("{path}/");
     for page in workspace::pages(&root)
@@ -994,8 +1069,12 @@ pub fn knowledge_add(app: AppHandle, path: String) -> Result<Status, String> {
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_attach(app: AppHandle, chat: String, path: String) -> Result<(), String> {
+#[tauri::command]
+pub async fn knowledge_attach(app: AppHandle, chat: String, path: String) -> Result<(), String> {
+    crate::blocking(move || knowledge_attach_now(app, chat, path)).await
+}
+
+fn knowledge_attach_now(app: AppHandle, chat: String, path: String) -> Result<(), String> {
     let folder = agent::chat_path(&app, &chat)?;
     let file = folder.join(
         Path::new(&path)
@@ -1009,6 +1088,11 @@ pub fn knowledge_attach(app: AppHandle, chat: String, path: String) -> Result<()
         .to_string_lossy()
         .into_owned();
     let knowledge = app.state::<Knowledge>();
+    // Names found at the file's level go into the vault now, so they stay hidden when its text
+    // comes back from a search, whatever the level of the page or chat asking.
+    if knowledge.options().veil {
+        knowledge.veil(&text, agent::level_of(&folder, &name))?;
+    }
     let embedder = locked(&knowledge.embedder)?;
     knowledge
         .with(|open| {
@@ -1025,15 +1109,23 @@ pub fn knowledge_attach(app: AppHandle, chat: String, path: String) -> Result<()
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn knowledge_forget(app: AppHandle, project: String) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_forget(app: AppHandle, project: String) -> Result<Status, String> {
+    crate::blocking(move || knowledge_forget_now(app, project)).await
+}
+
+fn knowledge_forget_now(app: AppHandle, project: String) -> Result<Status, String> {
     app.state::<Knowledge>()
         .with(|open| index::forget(open, &project))?;
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_rebuild(app: AppHandle) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_rebuild(app: AppHandle) -> Result<Status, String> {
+    crate::blocking(move || knowledge_rebuild_now(app)).await
+}
+
+fn knowledge_rebuild_now(app: AppHandle) -> Result<Status, String> {
     load_embedder(&app);
     let knowledge = app.state::<Knowledge>();
     {
@@ -1046,13 +1138,17 @@ pub fn knowledge_rebuild(app: AppHandle) -> Result<Status, String> {
 
 #[tauri::command]
 pub fn privacy_pages(app: AppHandle, levels: HashMap<String, u8>) -> Result<(), String> {
-    *locked(&app.state::<Knowledge>().pages)? = levels;
+    *locked(&app.state::<Knowledge>().pages)? = Some(levels);
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn privacy_options(app: AppHandle, options: Options) -> Result<(), String> {
-    *locked(&app.state::<Knowledge>().options)? = options;
+#[tauri::command]
+pub async fn privacy_options(app: AppHandle, options: Options) -> Result<(), String> {
+    crate::blocking(move || privacy_options_now(app, options)).await
+}
+
+fn privacy_options_now(app: AppHandle, options: Options) -> Result<(), String> {
+    *locked(&app.state::<Knowledge>().options)? = Some(options);
     if options.names {
         load_finder(&app);
     }
@@ -1062,8 +1158,12 @@ pub fn privacy_options(app: AppHandle, options: Options) -> Result<(), String> {
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn knowledge_status(app: AppHandle) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_status(app: AppHandle) -> Result<Status, String> {
+    crate::blocking(move || knowledge_status_now(app)).await
+}
+
+fn knowledge_status_now(app: AppHandle) -> Result<Status, String> {
     let knowledge = app.state::<Knowledge>();
     let folder = folder(&app)?;
     let shelf = shelf(&folder);
@@ -1078,8 +1178,17 @@ pub fn knowledge_status(app: AppHandle) -> Result<Status, String> {
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_create(
+#[tauri::command]
+pub async fn knowledge_create(
+    app: AppHandle,
+    name: String,
+    password: String,
+    remember_it: bool,
+) -> Result<Status, String> {
+    crate::blocking(move || knowledge_create_now(app, name, password, remember_it)).await
+}
+
+fn knowledge_create_now(
     app: AppHandle,
     name: String,
     password: String,
@@ -1104,8 +1213,12 @@ pub fn knowledge_create(
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_pick(app: AppHandle) -> Result<Option<String>, String> {
+#[tauri::command]
+pub async fn knowledge_pick(app: AppHandle) -> Result<Option<String>, String> {
+    crate::blocking(move || knowledge_pick_now(app)).await
+}
+
+fn knowledge_pick_now(app: AppHandle) -> Result<Option<String>, String> {
     let Some(file) = app
         .dialog()
         .file()
@@ -1124,8 +1237,16 @@ pub fn knowledge_pick(app: AppHandle) -> Result<Option<String>, String> {
     Ok(Some(name))
 }
 
-#[tauri::command(async)]
-pub fn knowledge_import(
+#[tauri::command]
+pub async fn knowledge_import(
+    app: AppHandle,
+    password: String,
+    remember_it: bool,
+) -> Result<Status, String> {
+    crate::blocking(move || knowledge_import_now(app, password, remember_it)).await
+}
+
+fn knowledge_import_now(
     app: AppHandle,
     password: String,
     remember_it: bool,
@@ -1149,8 +1270,17 @@ pub fn knowledge_import(
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_unlock(
+#[tauri::command]
+pub async fn knowledge_unlock(
+    app: AppHandle,
+    id: String,
+    password: String,
+    remember_it: bool,
+) -> Result<Status, String> {
+    crate::blocking(move || knowledge_unlock_now(app, id, password, remember_it)).await
+}
+
+fn knowledge_unlock_now(
     app: AppHandle,
     id: String,
     password: String,
@@ -1164,8 +1294,12 @@ pub fn knowledge_unlock(
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_activate(app: AppHandle, id: Option<String>) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_activate(app: AppHandle, id: Option<String>) -> Result<Status, String> {
+    crate::blocking(move || knowledge_activate_now(app, id)).await
+}
+
+fn knowledge_activate_now(app: AppHandle, id: Option<String>) -> Result<Status, String> {
     let knowledge = app.state::<Knowledge>();
     let folder = folder(&app)?;
     knowledge.close()?;
@@ -1185,8 +1319,12 @@ pub fn knowledge_activate(app: AppHandle, id: Option<String>) -> Result<Status, 
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_export(app: AppHandle, password: String) -> Result<bool, String> {
+#[tauri::command]
+pub async fn knowledge_export(app: AppHandle, password: String) -> Result<bool, String> {
+    crate::blocking(move || knowledge_export_now(app, password)).await
+}
+
+fn knowledge_export_now(app: AppHandle, password: String) -> Result<bool, String> {
     check_password(&password)?;
     let Some(target) = app
         .dialog()
@@ -1210,8 +1348,17 @@ pub fn knowledge_export(app: AppHandle, password: String) -> Result<bool, String
     Ok(true)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_password(
+#[tauri::command]
+pub async fn knowledge_password(
+    app: AppHandle,
+    current: String,
+    password: String,
+    remember_it: bool,
+) -> Result<Status, String> {
+    crate::blocking(move || knowledge_password_now(app, current, password, remember_it)).await
+}
+
+fn knowledge_password_now(
     app: AppHandle,
     current: String,
     password: String,
@@ -1234,8 +1381,12 @@ pub fn knowledge_password(
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn knowledge_remove(app: AppHandle, id: String) -> Result<Status, String> {
+#[tauri::command]
+pub async fn knowledge_remove(app: AppHandle, id: String) -> Result<Status, String> {
+    crate::blocking(move || knowledge_remove_now(app, id)).await
+}
+
+fn knowledge_remove_now(app: AppHandle, id: String) -> Result<Status, String> {
     let folder = folder(&app)?;
     let file = file_of(&folder, &id)?;
     let knowledge = app.state::<Knowledge>();
@@ -1251,8 +1402,12 @@ pub fn knowledge_remove(app: AppHandle, id: String) -> Result<Status, String> {
     status(&app)
 }
 
-#[tauri::command(async)]
-pub fn glossary_import(app: AppHandle) -> Result<Option<Status>, String> {
+#[tauri::command]
+pub async fn glossary_import(app: AppHandle) -> Result<Option<Status>, String> {
+    crate::blocking(move || glossary_import_now(app)).await
+}
+
+fn glossary_import_now(app: AppHandle) -> Result<Option<Status>, String> {
     let Some(file) = app
         .dialog()
         .file()
@@ -1320,8 +1475,16 @@ fn pieces(text: &str, veiled: &Veiled, kinds: impl Fn(&str) -> Option<String>) -
     pieces
 }
 
-#[tauri::command(async)]
-pub fn privacy_view(app: AppHandle, text: String, level: Option<u8>) -> Result<Vec<Piece>, String> {
+#[tauri::command]
+pub async fn privacy_view(
+    app: AppHandle,
+    text: String,
+    level: Option<u8>,
+) -> Result<Vec<Piece>, String> {
+    crate::blocking(move || privacy_view_now(app, text, level)).await
+}
+
+fn privacy_view_now(app: AppHandle, text: String, level: Option<u8>) -> Result<Vec<Piece>, String> {
     let knowledge = app.state::<Knowledge>();
     let veiled = knowledge.veil(&text, level.unwrap_or(LIGHT))?;
     knowledge
@@ -1333,8 +1496,16 @@ pub fn privacy_view(app: AppHandle, text: String, level: Option<u8>) -> Result<V
         .ok_or_else(|| LOCKED.to_string())
 }
 
-#[tauri::command(async)]
-pub fn privacy_override(app: AppHandle, text: String, kind: Option<String>) -> Result<(), String> {
+#[tauri::command]
+pub async fn privacy_override(
+    app: AppHandle,
+    text: String,
+    kind: Option<String>,
+) -> Result<(), String> {
+    crate::blocking(move || privacy_override_now(app, text, kind)).await
+}
+
+fn privacy_override_now(app: AppHandle, text: String, kind: Option<String>) -> Result<(), String> {
     let text = text.trim().to_string();
     if text.is_empty() || text.contains('\n') || text.chars().count() > 200 {
         return Err("Choose a short piece of text on one line.".into());
@@ -1353,15 +1524,23 @@ pub fn privacy_override(app: AppHandle, text: String, kind: Option<String>) -> R
         .ok_or_else(|| LOCKED.to_string())
 }
 
-#[tauri::command(async)]
-pub fn privacy_overrides(app: AppHandle) -> Result<Vec<Override>, String> {
+#[tauri::command]
+pub async fn privacy_overrides(app: AppHandle) -> Result<Vec<Override>, String> {
+    crate::blocking(move || privacy_overrides_now(app)).await
+}
+
+fn privacy_overrides_now(app: AppHandle) -> Result<Vec<Override>, String> {
     app.state::<Knowledge>()
         .with(|open| read_overrides(&open.db))?
         .ok_or_else(|| LOCKED.to_string())
 }
 
-#[tauri::command(async)]
-pub fn privacy_forget(app: AppHandle, text: String) -> Result<(), String> {
+#[tauri::command]
+pub async fn privacy_forget(app: AppHandle, text: String) -> Result<(), String> {
+    crate::blocking(move || privacy_forget_now(app, text)).await
+}
+
+fn privacy_forget_now(app: AppHandle, text: String) -> Result<(), String> {
     app.state::<Knowledge>()
         .with(|open| {
             open.db
@@ -1375,6 +1554,7 @@ pub fn privacy_forget(app: AppHandle, text: String) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rusqlite::config::DbConfig;
 
     fn scratch(test: &str) -> PathBuf {
         let base =
@@ -1388,6 +1568,22 @@ mod tests {
         let file = base.join("mine.znote-knowledge");
         let id = create(&file, "Mine", password).unwrap();
         (file, id)
+    }
+
+    #[test]
+    fn a_file_with_a_trigger_is_refused() {
+        let base = scratch("trigger");
+        let (file, _) = made(&base, "a fine password");
+        let db = connect(&file, "a fine password", OpenFlags::default()).unwrap();
+        db.set_db_config(DbConfig::SQLITE_DBCONFIG_DEFENSIVE, false)
+            .unwrap();
+        db.execute_batch("CREATE TRIGGER t AFTER INSERT ON vault BEGIN INSERT INTO overrides (text, kind) VALUES (NEW.text, NULL); END;")
+            .unwrap();
+        drop(db);
+        assert!(
+            connect(&file, "a fine password", OpenFlags::default())
+                .is_err_and(|error| error.contains("holds more than znote puts in one"))
+        );
     }
 
     #[test]
@@ -1525,27 +1721,109 @@ mod tests {
     }
 
     #[test]
-    fn veiling_off_lets_text_through_and_on_without_a_file_refuses() {
-        let knowledge = Knowledge::default();
-        assert_eq!(knowledge.gate().unwrap().veil("Acme").unwrap().text, "Acme");
-        *knowledge.options.lock().unwrap() = Options {
+    fn a_name_hidden_once_stays_hidden_after_the_file_is_reopened() {
+        let base = scratch("known");
+        let (file, id) = made(&base, "a fine password");
+        let db = connect(&file, "a fine password", OpenFlags::default()).unwrap();
+        db.execute(
+            "INSERT INTO overrides (text, kind) VALUES ('Fatima El Amrani', 'PERSON')",
+            [],
+        )
+        .unwrap();
+        let mut open = Open::load(id.clone(), db).unwrap();
+        let options = Options {
             veil: true,
             ..Options::default()
         };
-        assert_eq!(knowledge.gate().err().as_deref(), Some(LOCKED));
+        let table = open
+            .veil("Fatima El Amrani, ontwikkelaar", &options, None, LIGHT)
+            .unwrap();
+        assert_eq!(table.text, "⟦PERSON_1⟧, ontwikkelaar");
+        open.db.execute("DELETE FROM overrides", []).unwrap();
+        let mut open = Open::load(id, open.db).unwrap();
+        let risk = "met kennis van de oude koppeling: Fatima\nEl Amrani.";
+        let veiled = open.veil(risk, &options, None, 0).unwrap();
+        assert_eq!(
+            veiled.text,
+            "met kennis van de oude koppeling: ⟦PERSON_1~1⟧\n⟦PERSON_1~2⟧."
+        );
+        assert_eq!(open.unveil(&veiled.text).0, risk);
     }
 
     #[test]
-    fn a_page_without_a_level_is_light_and_search_uses_the_strictest() {
+    fn veiling_off_lets_text_through_and_on_without_a_file_refuses() {
+        let knowledge = Knowledge::default();
+        assert_eq!(knowledge.gate().unwrap().veil("Acme").unwrap().text, "Acme");
+        assert_eq!(knowledge.gate_if(true).err().as_deref(), Some(NOT_READY));
+        assert_eq!(knowledge.gate_if(false).err().as_deref(), Some(NOT_READY));
+        *knowledge.options.lock().unwrap() = Some(Options {
+            veil: true,
+            ..Options::default()
+        });
+        assert_eq!(knowledge.gate_if(true).err().as_deref(), Some(LOCKED));
+        assert_eq!(knowledge.gate().err().as_deref(), Some(LOCKED));
+        let unveiled = knowledge.gate_if(false).unwrap();
+        assert!(!unveiled.on());
+        assert_eq!(unveiled.veil("Acme").unwrap().text, "Acme");
+        let finderless = Knowledge::in_memory(
+            &Glossary::default(),
+            Options {
+                veil: true,
+                names: true,
+                ..Options::default()
+            },
+        );
+        let gate = finderless.gate().unwrap();
+        assert_eq!(
+            gate.veil_at("Acme", LIGHT).err().as_deref(),
+            Some(NO_FINDER)
+        );
+        assert_eq!(gate.veil_at("Acme", 0).unwrap().text, "Acme");
+    }
+
+    #[test]
+    fn a_page_is_strict_until_levels_arrive_then_light_without_one() {
         let knowledge = Knowledge::default();
         let gate = knowledge.gate().unwrap();
+        assert_eq!(gate.page_level("Work/Notes/Monday"), STRICT);
+        assert_eq!(gate.strictest(), STRICT);
+        *knowledge.pages.lock().unwrap() = Some(HashMap::new());
         assert_eq!(gate.page_level("Work/Notes/Monday"), LIGHT);
         assert_eq!(gate.strictest(), LIGHT);
-        *knowledge.pages.lock().unwrap() =
-            HashMap::from([("Work/Notes/Monday".into(), 9), ("Work/Notes/Tuesday".into(), 0)]);
+        *knowledge.pages.lock().unwrap() = Some(HashMap::from([
+            ("Work/Notes/Monday".into(), 9),
+            ("Work/Notes/Tuesday".into(), 0),
+        ]));
         assert_eq!(gate.page_level("Work/Notes/Monday"), STRICT);
         assert_eq!(gate.page_level("Work/Notes/Tuesday"), 0);
         assert_eq!(gate.strictest(), STRICT);
+    }
+
+    #[test]
+    fn a_knowledge_search_finds_by_token_but_not_by_a_name_guessed_in_clear() {
+        let ttl = "@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+<urn:c> skos:prefLabel \"Customer\" ; skos:topConceptOf <urn:s> .
+<urn:a> skos:prefLabel \"Acme Corporation\" ; skos:broader <urn:c> .";
+        let glossary = glossary::parse(ttl.as_bytes(), oxrdfio::RdfFormat::Turtle).unwrap();
+        let knowledge = Knowledge::in_memory(
+            &glossary,
+            Options {
+                veil: true,
+                ..Options::default()
+            },
+        );
+        let gate = knowledge.gate().unwrap();
+        let token = gate.veil("Acme Corporation").unwrap().text;
+        assert_eq!(
+            gate.searchable(&format!("contract with {token}")).unwrap(),
+            "contract with Acme Corporation"
+        );
+        assert_eq!(
+            gate.searchable("contract with Acme Corporation").unwrap(),
+            "contract with "
+        );
+        let off = Knowledge::default();
+        assert_eq!(off.gate().unwrap().searchable("Acme").unwrap(), "Acme");
     }
 
     #[test]

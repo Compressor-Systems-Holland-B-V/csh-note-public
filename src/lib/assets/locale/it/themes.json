@@ -1,31 +1,35 @@
 {
-  "title": "Temi",
-  "look": "Aspetto",
-  "import": "Importa un file tema…",
-  "intro": "I temi cambiano l'aspetto, aggiungono modelli di pagina, o entrambi.",
-  "storeFailure": "{reason} I temi già installati sono mostrati di seguito.",
-  "search": "Cerca temi",
+  "title": "Negozio",
+  "import": "Importa",
+  "intro": "Gli aspetti (.zth) cambiano l'aspetto di znote. I modelli (.znx) aggiungono layout di pagina.",
+  "storeFailure": "{reason} Vengono mostrati solo i componenti aggiuntivi installati.",
+  "search": "Cerca componenti aggiuntivi",
   "installed": "Installati",
-  "none": "Nessun tema corrisponde.",
+  "none": "Nessun risultato.",
   "kind": {
-    "look": "Solo aspetto",
-    "both": "Aspetto e modelli",
-    "templates": "Solo modelli"
+    "look": "Temi",
+    "templates": "Modelli"
   },
   "contents": {
     "look": "Modifica l'aspetto",
-    "both": "Modifica l'aspetto e aggiunge modelli di pagina",
-    "templates": "Aggiunge modelli di pagina"
+    "templates": "Aggiunge modelli"
   },
   "version": "Versione {version}",
-  "lookSwitch": "Aspetto",
-  "lookSwitchTitle": "Mostra questo tema nell'elenco degli aspetti",
-  "templatesSwitch": "Modelli",
-  "templatesSwitchTitle": "Mostra i modelli di questo tema quando ne scegli uno",
+  "lookSwitchTitle": "Mostra tra i temi",
+  "templatesSwitchTitle": "Mostra nella scelta dei modelli",
   "install": "Installa",
   "installing": "Installazione in corso…",
   "update": "Aggiorna",
   "updating": "Aggiornamento in corso…",
   "remove": "Rimuovi",
-  "removeTheme": "Rimuovi il tema {name}"
+  "importTitle": "Importa un file .zth / .znx",
+  "filters": "Filtri",
+  "browse": "Tutti i componenti aggiuntivi",
+  "type": "Tipo",
+  "category": "Categoria",
+  "all": "Tutti",
+  "use": "Usa",
+  "inUse": "In uso",
+  "more": "Altre opzioni per {name}",
+  "templatesList": "Modelli: {names}"
 }

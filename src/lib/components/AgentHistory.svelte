@@ -5,7 +5,7 @@
   import ArchiveRestore from "@lucide/svelte/icons/archive-restore";
   import Trash2 from "@lucide/svelte/icons/trash-2";
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { agent } from "$lib/state/agent.svelte";
   import { chats } from "$lib/state/chats.svelte";
   import { i18n, t } from "$lib/i18n.svelte";

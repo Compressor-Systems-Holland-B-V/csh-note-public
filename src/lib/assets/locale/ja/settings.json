@@ -15,5 +15,28 @@
   "languageAuto": "このコンピューターに合わせる",
   "assistant": "アシスタント",
   "file": "あなたの znote ファイル",
-  "switch": "切り替え…"
+  "switch": "切り替え…",
+  "layout": "レイアウト",
+  "layouts": {
+    "edit": "Typst とライブプレビュー。",
+    "agent": "チャット中心、プレビューは横に。",
+    "redaction": "ページを探して、隠す内容を管理します。"
+  },
+  "parts": {
+    "pages": "ページ",
+    "editor": "エディター",
+    "preview": "プレビュー",
+    "assistant": "チャット",
+    "search": "検索",
+    "filter": "フィルター"
+  },
+  "marketplace": "マーケット",
+  "marketplaceHint": "デザインとテンプレートをインストールします。",
+  "start": {
+    "layout": "どのように作業しますか？",
+    "privacy": "アシスタントに何を見せますか？",
+    "file": "ナレッジファイル",
+    "downloads": "ダウンロード",
+    "marketplace": "マーケット"
+  }
 }

@@ -35,7 +35,9 @@
     "cutOff": "Die Antwort wurde abgeschnitten: {error}",
     "modelFirst": "Wählen Sie zuerst ein Modell für den Assistenten aus.",
     "tooManySteps": "Der Assistent hat zu viele Schritte unternommen und wurde gestoppt.",
-    "passwordStore": "Der Passwortspeicher dieses Computers konnte nicht verwendet werden: {error}"
+    "passwordStore": "Der Passwortspeicher dieses Computers konnte nicht verwendet werden: {error}",
+    "notAllowed": "Ihre Organisation erlaubt diesen Assistenten nicht.",
+    "plainHttp": "Einfaches http:// wird nur für einen Server auf diesem Computer oder in Ihrem eigenen Netzwerk verwendet. Verwenden Sie https:// für diese Adresse."
   },
   "chat": {
     "busy": "Der Assistent ist noch beschäftigt. Warten Sie, bis er fertig ist, oder stoppen Sie ihn.",
@@ -52,8 +54,11 @@
     "fixFirst": "Beheben Sie die Probleme auf dieser Seite, bevor Sie sie exportieren.",
     "pageNotOpened": "Die Seite konnte nicht geöffnet werden.",
     "slideNotDrawn": "Eine Folie konnte nicht gezeichnet werden: {error}",
+    "pictureNotDrawn": "Ein Bild konnte nicht gezeichnet werden: {error}",
     "pdfFailed": "Das PDF konnte nicht erstellt werden: {reason}",
     "pptxFailed": "Die Präsentation konnte nicht erstellt werden: {error}",
+    "docxFailed": "Die Word-Datei konnte nicht erstellt werden: {error}",
+    "notWord": "Aus dieser Seite kann kein Word-Dokument werden: {error}",
     "nothing": "Diese Seite hat nichts zu exportieren.",
     "nothingYet": "Es wurde noch nichts exportiert.",
     "notSaved": "Die Datei konnte nicht gespeichert werden: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Diese Datei kann nicht geöffnet werden, da sie Themes benötigt, die nicht installiert sind:\n• {themes}\nInstallieren Sie diese auf der Themes-Seite und öffnen Sie die Datei dann erneut.",
     "outside": "Diese znote-Datei versucht, „{name}“ außerhalb ihres eigenen Ordners abzulegen, daher wurde sie nicht importiert.",
     "tooLarge": "Diese znote-Datei ist nach dem Entpacken zu groß und wurde daher nicht importiert.",
-    "openFirst": "Öffnen Sie zuerst eine znote-Datei."
+    "openFirst": "Öffnen Sie zuerst eine znote-Datei.",
+    "wrongPassword": "Das Passwort ist falsch, oder dies ist keine znote-Datei."
   },
   "theme": {
     "fileNotRead": "Diese Theme-Datei konnte nicht gelesen werden: {error}",
@@ -121,7 +127,6 @@
     "notPage": "„{path}“ ist keine Seite.",
     "badMove": "Eine Seite kann nur in ein Notizbuch verschoben werden, und ein Notizbuch nur in ein Projekt.",
     "folderFirst": "Wählen Sie zuerst einen Arbeitsbereichsordner aus.",
-    "fileNotRead": "Die Datei konnte nicht gelesen werden: {error}",
-    "notFullPath": "„{folder}“ ist kein vollständiger Ordnerpfad."
+    "fileNotRead": "Die Datei konnte nicht gelesen werden: {error}"
   }
 }

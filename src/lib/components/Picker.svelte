@@ -1,5 +1,5 @@
 <script lang="ts" generics="Value">
-  import * as Select from "$lib/components/ui/select";
+  import * as Select from "@zsuite/ui/select";
 
   let {
     value,

@@ -35,7 +35,9 @@
     "cutOff": "回覆被截斷：{error}",
     "modelFirst": "請先為助理選擇一個模型。",
     "tooManySteps": "助理執行了太多步驟，已被停止。",
-    "passwordStore": "無法使用這部電腦的密碼儲存區：{error}"
+    "passwordStore": "無法使用這部電腦的密碼儲存區：{error}",
+    "notAllowed": "您的組織不允許使用這個助理。",
+    "plainHttp": "一般的 http:// 只用於這部電腦或您自己網路中的伺服器。這個位址請使用 https://。"
   },
   "chat": {
     "busy": "助理仍在處理中。請等它完成，或將它停止。",
@@ -52,8 +54,11 @@
     "fixFirst": "請先修正這一頁的問題，再進行匯出。",
     "pageNotOpened": "無法開啟頁面。",
     "slideNotDrawn": "無法繪製投影片：{error}",
+    "pictureNotDrawn": "無法繪製圖片：{error}",
     "pdfFailed": "無法產生 PDF：{reason}",
     "pptxFailed": "無法產生簡報：{error}",
+    "docxFailed": "無法建立 Word 檔案：{error}",
+    "notWord": "此頁面無法轉換為 Word 文件：{error}",
     "nothing": "這一頁沒有可匯出的內容。",
     "nothingYet": "尚未匯出任何內容。",
     "notSaved": "無法儲存檔案：{error}",
@@ -74,7 +79,8 @@
     "missingThemes": "無法開啟這個檔案，因為它需要未安裝的主題：\n• {themes}\n請在主題頁面安裝它們，然後再開啟檔案。",
     "outside": "這個 znote 檔案試圖將「{name}」放到它自己的資料夾之外，因此未匯入。",
     "tooLarge": "這個 znote 檔案解壓縮後太大，因此未匯入。",
-    "openFirst": "請先開啟一個 znote 檔案。"
+    "openFirst": "請先開啟一個 znote 檔案。",
+    "wrongPassword": "密碼錯誤，或者這不是 znote 檔案。"
   },
   "theme": {
     "fileNotRead": "無法讀取這個主題檔案：{error}",
@@ -121,7 +127,6 @@
     "notPage": "「{path}」不是頁面。",
     "badMove": "頁面只能移到筆記本,筆記本只能移到專案。",
     "folderFirst": "請先選擇工作區資料夾。",
-    "fileNotRead": "無法讀取檔案:{error}",
-    "notFullPath": "「{folder}」不是完整的資料夾路徑。"
+    "fileNotRead": "無法讀取檔案:{error}"
   }
 }

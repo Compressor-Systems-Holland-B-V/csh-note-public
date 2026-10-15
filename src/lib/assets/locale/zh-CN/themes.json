@@ -1,31 +1,35 @@
 {
-  "title": "主题",
-  "look": "外观",
-  "import": "导入主题文件…",
-  "intro": "主题可以改变外观、添加页面模板，或两者兼有。",
-  "storeFailure": "{reason} 您已安装的主题显示在下方。",
-  "search": "搜索主题",
+  "title": "市场",
+  "import": "导入",
+  "intro": "外观 (.zth) 改变 znote 的样子，模板 (.znx) 添加页面布局。",
+  "storeFailure": "{reason} 仅显示已安装的附加组件。",
+  "search": "搜索附加组件",
   "installed": "已安装",
-  "none": "没有匹配的主题。",
+  "none": "没有匹配项。",
   "kind": {
-    "look": "仅外观",
-    "both": "外观和模板",
-    "templates": "仅模板"
+    "look": "样式",
+    "templates": "模板"
   },
   "contents": {
     "look": "更改外观",
-    "both": "更改外观并添加页面模板",
-    "templates": "添加页面模板"
+    "templates": "添加模板"
   },
   "version": "版本 {version}",
-  "lookSwitch": "外观",
-  "lookSwitchTitle": "在外观列表中显示此主题",
-  "templatesSwitch": "模板",
-  "templatesSwitchTitle": "选择模板时显示此主题的模板",
+  "lookSwitchTitle": "在样式中显示",
+  "templatesSwitchTitle": "在模板选择器中显示",
   "install": "安装",
   "installing": "正在安装…",
   "update": "更新",
   "updating": "正在更新…",
   "remove": "移除",
-  "removeTheme": "移除主题 {name}"
+  "importTitle": "导入 .zth / .znx 文件",
+  "filters": "筛选",
+  "browse": "所有附加组件",
+  "type": "类型",
+  "category": "类别",
+  "all": "全部",
+  "use": "使用",
+  "inUse": "使用中",
+  "more": "{name} 的更多内容",
+  "templatesList": "模板：{names}"
 }

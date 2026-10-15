@@ -1,31 +1,35 @@
 {
-  "title": "Temas",
-  "look": "Aspeto",
-  "import": "Importar um ficheiro de tema…",
-  "intro": "Os temas alteram o aspeto, adicionam modelos de página, ou ambos.",
-  "storeFailure": "{reason} Os temas que já instalou são apresentados abaixo.",
-  "search": "Pesquisar temas",
+  "title": "Loja",
+  "import": "Importar",
+  "intro": "Os aspetos (.zth) mudam a aparência do znote. Os modelos (.znx) adicionam esquemas de página.",
+  "storeFailure": "{reason} A mostrar apenas os suplementos instalados.",
+  "search": "Pesquisar suplementos",
   "installed": "Instalados",
-  "none": "Nenhum tema corresponde.",
+  "none": "Sem resultados.",
   "kind": {
-    "look": "Apenas aspeto",
-    "both": "Aspeto e modelos",
-    "templates": "Apenas modelos"
+    "look": "Aspetos",
+    "templates": "Modelos"
   },
   "contents": {
     "look": "Altera o aspeto",
-    "both": "Altera o aspeto e adiciona modelos de página",
-    "templates": "Adiciona modelos de página"
+    "templates": "Adiciona modelos"
   },
   "version": "Versão {version}",
-  "lookSwitch": "Aspeto",
-  "lookSwitchTitle": "Mostrar este tema na lista de aspetos",
-  "templatesSwitch": "Modelos",
-  "templatesSwitchTitle": "Mostrar os modelos deste tema quando escolher um modelo",
+  "lookSwitchTitle": "Mostrar nos aspetos",
+  "templatesSwitchTitle": "Mostrar no seletor de modelos",
   "install": "Instalar",
   "installing": "A instalar…",
   "update": "Atualizar",
   "updating": "A atualizar…",
   "remove": "Remover",
-  "removeTheme": "Remover o tema {name}"
+  "importTitle": "Importar um ficheiro .zth / .znx",
+  "filters": "Filtros",
+  "browse": "Todos os suplementos",
+  "type": "Tipo",
+  "category": "Categoria",
+  "all": "Todos",
+  "use": "Usar",
+  "inUse": "Em uso",
+  "more": "Mais para {name}",
+  "templatesList": "Modelos: {names}"
 }

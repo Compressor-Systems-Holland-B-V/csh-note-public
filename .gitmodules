@@ -1,0 +1,3 @@
+[submodule "vendor/zsuite"]
+	path = vendor/zsuite
+	url = https://github.com/ZAL-Analytics/zsuite.git

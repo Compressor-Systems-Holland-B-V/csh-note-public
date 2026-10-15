@@ -8,7 +8,7 @@ the part of SKOS znote reads, for whoever builds a tool that writes these files.
 ## Files
 
 - Turtle (`.ttl`) or RDF/XML (`.rdf`, `.xml`, `.owl`).
-- At most 20 MB and 200 000 statements. Every label is at most 200 characters and on one line.
+- At most 20 MB (4 MB for RDF/XML) and 200 000 statements. Every label is at most 200 characters and on one line.
 - Anything else is refused with the reason, and for a syntax error the line it failed on.
 - A new import replaces the previous one. Choices made in znote ("Don't hide this", "Always hide
   this") are kept apart and survive a new import.
@@ -18,7 +18,7 @@ the part of SKOS znote reads, for whoever builds a tool that writes these files.
 | SKOS | Used as |
 |---|---|
 | `skos:Concept` | A term. Anything with a `skos:prefLabel` that is in the hierarchy counts as well. |
-| `skos:prefLabel` | The main spelling. English is preferred when there are several languages. |
+| `skos:prefLabel` | The main spelling. With several languages, the first built-in language that has one wins (English, then Dutch; see [`languages/`](privacy-policy.md)), else the first label. |
 | `skos:altLabel` | Another spelling, matched and hidden too. |
 | `skos:hiddenLabel` | A spelling that is matched but never shown (typos, internal codes). |
 | `skos:topConceptOf`, `skos:hasTopConcept` | Marks a category. |

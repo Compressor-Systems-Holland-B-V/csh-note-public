@@ -2,7 +2,8 @@
   "title": "导出",
   "format": "格式",
   "pdfHint": "与预览完全一致。",
-  "pptxHint": "每页一张幻灯片。只有文本保持可编辑。",
+  "pptxHint": "每页一张幻灯片。文本、图像和公式仍可编辑。",
+  "docxHint": "外观与页面一致的可编辑文本，标题、列表、表格和公式均为 Word 原生格式。",
   "blocked": {
     "noPage": "请选择要导出的页面。",
     "problems": "请先修复此页上的问题。",
@@ -12,7 +13,6 @@
   "running": "正在导出…",
   "runningPage": "正在导出您的页面…",
   "savedTo": "已保存到 {path}",
-  "missingFonts": "PowerPoint 将替换以下字体：{fonts}",
   "openFile": "打开文件",
   "showInFolder": "在文件夹中显示"
 }

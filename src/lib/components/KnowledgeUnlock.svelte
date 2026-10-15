@@ -1,6 +1,6 @@
 <script lang="ts">
   import LockKeyhole from "@lucide/svelte/icons/lock-keyhole";
-  import * as Dialog from "$lib/components/ui/dialog";
+  import * as Dialog from "@zsuite/ui/dialog";
   import { privacy } from "$lib/state/privacy.svelte";
   import KnowledgeForm from "./KnowledgeForm.svelte";
   import { t } from "$lib/i18n.svelte";

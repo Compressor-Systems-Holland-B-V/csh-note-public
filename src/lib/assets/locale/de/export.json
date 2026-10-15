@@ -2,7 +2,8 @@
   "title": "Exportieren",
   "format": "Format",
   "pdfHint": "Sieht genauso aus wie die Vorschau.",
-  "pptxHint": "Eine Folie pro Seite. Nur Text bleibt bearbeitbar.",
+  "pptxHint": "Eine Folie pro Seite. Text, Bilder und Formeln bleiben bearbeitbar.",
+  "docxHint": "Bearbeitbarer Text, der wie die Seite aussieht, mit Words eigenen Überschriften, Listen, Tabellen und Formeln.",
   "blocked": {
     "noPage": "Wählen Sie eine Seite zum Exportieren aus.",
     "problems": "Beheben Sie zuerst die Fehler auf dieser Seite.",
@@ -12,7 +13,6 @@
   "running": "Exportiere…",
   "runningPage": "Exportiere Ihre Seite…",
   "savedTo": "Gespeichert unter {path}",
-  "missingFonts": "PowerPoint wird diese Schriftarten ersetzen: {fonts}",
   "openFile": "Datei öffnen",
   "showInFolder": "Im Ordner anzeigen"
 }

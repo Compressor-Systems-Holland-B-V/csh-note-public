@@ -15,5 +15,28 @@
   "languageAuto": "Samme som denne datamaskinen",
   "assistant": "Assistent",
   "file": "Din znote-fil",
-  "switch": "Bytt…"
+  "switch": "Bytt…",
+  "layout": "Oppsett",
+  "layouts": {
+    "edit": "Typst med direkte forhåndsvisning.",
+    "agent": "Chat først, forhåndsvisning ved siden av.",
+    "redaction": "Finn sider, styr hva som skjules."
+  },
+  "parts": {
+    "pages": "Sider",
+    "editor": "Redigering",
+    "preview": "Forhåndsvisning",
+    "assistant": "Chat",
+    "search": "Søk",
+    "filter": "Filter"
+  },
+  "marketplace": "Markedsplass",
+  "marketplaceHint": "Installer stiler og maler.",
+  "start": {
+    "layout": "Hvordan vil du jobbe?",
+    "privacy": "Hva kan assistenten se?",
+    "file": "Kunnskapsfil",
+    "downloads": "Nedlastinger",
+    "marketplace": "Markedsplass"
+  }
 }

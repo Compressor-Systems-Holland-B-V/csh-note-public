@@ -2,7 +2,8 @@
   "title": "Export",
   "format": "Format",
   "pdfHint": "Looks exactly like the preview.",
-  "pptxHint": "One slide per page. Only text stays editable.",
+  "pptxHint": "One slide per page. Text, images and formulas stay editable.",
+  "docxHint": "Editable text that looks like the page, with Word's own headings, lists, tables and formulas.",
   "blocked": {
     "noPage": "Choose a page to export.",
     "problems": "Fix the problems first.",
@@ -12,7 +13,6 @@
   "running": "Exporting…",
   "runningPage": "Exporting page…",
   "savedTo": "Saved to {path}",
-  "missingFonts": "Fonts replaced in PowerPoint: {fonts}",
   "openFile": "Open file",
   "showInFolder": "Show in folder"
 }

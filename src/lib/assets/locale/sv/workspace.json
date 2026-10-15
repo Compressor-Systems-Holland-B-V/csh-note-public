@@ -79,5 +79,22 @@
     "start": "Kom igång",
     "empty": "Filer du öppnar visas här.",
     "back": "Tillbaka till {name}"
+  },
+  "search": "Sök sidor",
+  "noHits": "Inget hittades.",
+  "browser": {
+    "path": "Var du är",
+    "projects": "Projekt",
+    "notebooks": "Anteckningsböcker"
+  },
+  "password": {
+    "newTitle": "Skydda din nya znote-fil",
+    "newText": "Välj ett lösenord för den här filen. Anteckningar, inställningar och chattar i den krypteras med det. Du skriver det en gång på varje dator; sedan kommer den här datorn ihåg det.",
+    "unlockTitle": "Öppna {name}",
+    "unlockText": "Den här znote-filen är krypterad. Skriv dess lösenord för att öppna den. Sedan kommer den här datorn ihåg det.",
+    "password": "Lösenord",
+    "forgotten": "Förvara lösenordet säkert. En fil vars lösenord har tappats bort kan inte öppnas igen.",
+    "create": "Skapa fil",
+    "open": "Öppna"
   }
 }

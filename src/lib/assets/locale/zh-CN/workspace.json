@@ -79,5 +79,22 @@
     "start": "开始",
     "empty": "你打开过的文件会显示在这里。",
     "back": "返回 {name}"
+  },
+  "search": "搜索页面",
+  "noHits": "未找到任何内容。",
+  "browser": {
+    "path": "当前位置",
+    "projects": "项目",
+    "notebooks": "笔记本"
+  },
+  "password": {
+    "newTitle": "保护您的新 znote 文件",
+    "newText": "为此文件选择一个密码。其中的笔记、设置和聊天都会用它加密。您在每台电脑上只需输入一次；之后这台电脑会记住它。",
+    "unlockTitle": "打开 {name}",
+    "unlockText": "此 znote 文件已加密。请输入密码以打开它。之后这台电脑会记住它。",
+    "password": "密码",
+    "forgotten": "请妥善保管此密码。密码丢失的文件将无法再打开。",
+    "create": "创建文件",
+    "open": "打开"
   }
 }

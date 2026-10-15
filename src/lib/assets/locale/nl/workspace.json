@@ -79,5 +79,22 @@
     "start": "Beginnen",
     "empty": "Bestanden die je opent, verschijnen hier.",
     "back": "Terug naar {name}"
+  },
+  "search": "Pagina's zoeken",
+  "noHits": "Niets gevonden.",
+  "browser": {
+    "path": "Waar je bent",
+    "projects": "Projecten",
+    "notebooks": "Notitieblokken"
+  },
+  "password": {
+    "newTitle": "Beveilig je nieuwe znote-bestand",
+    "newText": "Kies een wachtwoord voor dit bestand. Notities, instellingen en chats erin worden ermee versleuteld. Je typt het één keer per computer; daarna onthoudt deze computer het.",
+    "unlockTitle": "{name} openen",
+    "unlockText": "Dit znote-bestand is versleuteld. Typ het wachtwoord om het te openen. Daarna onthoudt deze computer het.",
+    "password": "Wachtwoord",
+    "forgotten": "Bewaar dit wachtwoord goed. Een bestand waarvan het wachtwoord kwijt is, kan niet meer worden geopend.",
+    "create": "Bestand maken",
+    "open": "Openen"
   }
 }

@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Rediger",
     "export": "Eksporter",
-    "themes": "Temaer"
+    "marketplace": "Markedsplads"
   },
   "appearance": {
     "toLight": "Skift til lyst tema",
@@ -34,5 +34,13 @@
     "downloading": "Downloader pakke {name}…",
     "previewFailed": "Eksempelvisningen kunne ikke opdateres: {reason}",
     "desktopOnly": "det virker kun i desktop-appen."
+  },
+  "preview": "Forhåndsvisning",
+  "back": "Tilbage",
+  "finish": "Afslut",
+  "layout": {
+    "edit": "Rediger",
+    "agent": "Assistent",
+    "redaction": "Skjul"
   }
 }

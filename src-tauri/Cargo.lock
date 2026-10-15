@@ -8600,7 +8600,7 @@ checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[package]]
 name = "znote"
-version = "0.9.0"
+version = "1.0.0"
 dependencies = [
  "aho-corasick",
  "keyring",
@@ -8627,13 +8627,16 @@ dependencies = [
  "tokenizers",
  "trash",
  "typst",
+ "typst-html",
  "typst-kit",
  "typst-layout",
  "typst-pdf",
  "typst-render",
  "typst-svg",
+ "unicode-normalization",
  "ureq",
  "zip",
+ "zsuite-theme",
 ]
 
 [[package]]
@@ -8646,6 +8649,16 @@ dependencies = [
  "crc32fast",
  "log",
  "simd-adler32",
+]
+
+[[package]]
+name = "zsuite-theme"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "ttf-parser",
+ "zip",
 ]
 
 [[package]]

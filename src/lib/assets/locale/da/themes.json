@@ -1,31 +1,35 @@
 {
-  "title": "Temaer",
-  "look": "Udseende",
-  "import": "Importér en temafil…",
-  "intro": "Temaer ændrer udseendet, tilføjer sideskabeloner eller begge dele.",
-  "storeFailure": "{reason} Temaer, du allerede har installeret, vises nedenfor.",
-  "search": "Søg efter temaer",
+  "title": "Markedsplads",
+  "import": "Importér",
+  "intro": "Udseender (.zth) ændrer, hvordan znote ser ud. Skabeloner (.znx) tilføjer sidelayouts.",
+  "storeFailure": "{reason} Viser kun installerede tilføjelser.",
+  "search": "Søg i tilføjelser",
   "installed": "Installeret",
-  "none": "Ingen temaer matcher.",
+  "none": "Ingen resultater.",
   "kind": {
-    "look": "Kun udseende",
-    "both": "Udseende og skabeloner",
-    "templates": "Kun skabeloner"
+    "look": "Udseende",
+    "templates": "Skabeloner"
   },
   "contents": {
     "look": "Ændrer udseendet",
-    "both": "Ændrer udseendet og tilføjer sidetabeler",
-    "templates": "Tilføjer sidetabeler"
+    "templates": "Tilføjer skabeloner"
   },
   "version": "Version {version}",
-  "lookSwitch": "Udseende",
-  "lookSwitchTitle": "Vis dette tema på listen over udseender",
-  "templatesSwitch": "Skabeloner",
-  "templatesSwitchTitle": "Vis dette temas skabeloner, når du vælger en skabelon",
+  "lookSwitchTitle": "Vis blandt temaer",
+  "templatesSwitchTitle": "Vis i skabelonvælgeren",
   "install": "Installér",
   "installing": "Installerer…",
   "update": "Opdatér",
   "updating": "Opdaterer…",
   "remove": "Fjern",
-  "removeTheme": "Fjern temaet {name}"
+  "importTitle": "Importér en .zth / .znx-fil",
+  "filters": "Filtre",
+  "browse": "Alle tilføjelser",
+  "type": "Type",
+  "category": "Kategori",
+  "all": "Alle",
+  "use": "Brug",
+  "inUse": "I brug",
+  "more": "Flere valg for {name}",
+  "templatesList": "Skabeloner: {names}"
 }

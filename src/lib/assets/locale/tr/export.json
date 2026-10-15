@@ -2,7 +2,8 @@
   "title": "Dışa Aktar",
   "format": "Biçim",
   "pdfHint": "Önizlemeyle birebir aynı görünür.",
-  "pptxHint": "Sayfa başına bir slayt. Yalnızca metin düzenlenebilir kalır.",
+  "pptxHint": "Sayfa başına bir slayt. Metin, görseller ve formüller düzenlenebilir kalır.",
+  "docxHint": "Sayfaya benzeyen, Word'ün kendi başlıkları, listeleri, tabloları ve formülleriyle düzenlenebilir metin.",
   "blocked": {
     "noPage": "Dışa aktarmak için bir sayfa seçin.",
     "problems": "Önce bu sayfadaki sorunları düzeltin.",
@@ -12,7 +13,6 @@
   "running": "Dışa aktarılıyor…",
   "runningPage": "Sayfanız dışa aktarılıyor…",
   "savedTo": "{path} konumuna kaydedildi",
-  "missingFonts": "PowerPoint şu yazı tiplerini değiştirecek: {fonts}",
   "openFile": "Dosyayı aç",
   "showInFolder": "Klasörde göster"
 }

@@ -15,5 +15,28 @@
   "languageAuto": "Taki sam jak w systemie",
   "assistant": "Asystent",
   "file": "Twój plik znote",
-  "switch": "Przełącz…"
+  "switch": "Przełącz…",
+  "layout": "Układ",
+  "layouts": {
+    "edit": "Typst z podglądem na żywo.",
+    "agent": "Najpierw czat, podgląd z boku.",
+    "redaction": "Znajdź strony, decyduj, co jest ukrywane."
+  },
+  "parts": {
+    "pages": "Strony",
+    "editor": "Edytor",
+    "preview": "Podgląd",
+    "assistant": "Czat",
+    "search": "Szukaj",
+    "filter": "Filtr"
+  },
+  "marketplace": "Sklep",
+  "marketplaceHint": "Instaluj wyglądy i szablony.",
+  "start": {
+    "layout": "Jak chcesz pracować?",
+    "privacy": "Co może widzieć asystent?",
+    "file": "Plik wiedzy",
+    "downloads": "Pobrane",
+    "marketplace": "Sklep"
+  }
 }

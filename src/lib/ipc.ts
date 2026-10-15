@@ -2,6 +2,7 @@ import { Channel, convertFileSrc, invoke, isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { LazyStore } from "@tauri-apps/plugin-store";
+import type { Look } from "@zsuite/ui/look";
 
 export type Diagnostic = {
   severity: "error" | "warning";
@@ -72,22 +73,24 @@ export type TemplateKind = "document" | "slides" | "poster";
 
 export type Template = { label: string; kind: TemplateKind; snippet: string };
 
-export type FontFile = { path: string; weight: number; italic: boolean };
+export type { FontFile } from "@zsuite/ui/look";
 
-export type Theme = {
+// A look is a .zth file and changes the interface; templates come in a .znx file.
+export type Part = "look" | "templates";
+
+export type Theme = Look & {
+  part: Part;
   id: string;
   name: string;
   version: string;
   description: string;
   category: string;
   tags: string[];
-  logo: string | null;
-  logoDark: string | null;
-  fontFamily: string | null;
-  fonts: FontFile[];
-  light: Record<string, string>;
-  dark: Record<string, string>;
   templates: Template[];
+  // The top-level `#let` lines of the add-on's Typst package, shown to the assistant.
+  outline: string;
+  // The add-on's guide.md: how to write pages with its templates, shown to the assistant.
+  guide: string;
 };
 
 export const listThemes = () => invoke<Theme[]>("list_themes");
@@ -96,9 +99,9 @@ export const importTheme = () => invoke<Theme | null>("import_theme");
 
 export const storeThemes = () => invoke<Theme[]>("store_themes");
 
-export const installStoreTheme = (id: string) => invoke<Theme>("install_store_theme", { id });
+export const installStoreTheme = (id: string, part: Part) => invoke<Theme>("install_store_theme", { id, part });
 
-export const removeTheme = (id: string) => invoke<void>("remove_theme", { id });
+export const removeTheme = (id: string, part: Part) => invoke<void>("remove_theme", { id, part });
 
 export const themeFileUrl = (path: string) => convertFileSrc(path);
 
@@ -106,7 +109,8 @@ export const saveSnapshot = () => invoke<string | null>("save_snapshot");
 
 export type OpenedProject =
   | { kind: "opened"; file: string; folder: string; look: string | null; settings: unknown; missingFonts: string[] }
-  | { kind: "asks"; file: string; themes: string[] };
+  | { kind: "asks"; file: string; themes: string[] }
+  | { kind: "locked"; file: string };
 
 export const projectOpen = (file: string | null, accept: boolean) => invoke<OpenedProject | null>("project_open", { file, accept });
 
@@ -114,7 +118,9 @@ export const projectAsked = () => invoke<string | null>("project_asked");
 
 export const onProjectAsked = (handler: (file: string) => void) => listen<string>("project-asked", (event) => handler(event.payload));
 
-export const projectNew = (from: string | null) => invoke<OpenedProject | null>("project_new", { from });
+export const projectNew = (from: string | null, password: string) => invoke<OpenedProject | null>("project_new", { from, password });
+
+export const projectUnlock = (file: string, password: string, accept: boolean) => invoke<OpenedProject>("project_unlock", { file, password, accept });
 
 export const projectNote = (look: string | null, settings: Record<string, unknown>) => invoke<void>("project_note", { look, settings });
 
@@ -126,9 +132,9 @@ export const onProjectSaveFailed = (handler: (message: string) => void) =>
 
 export const onProjectSaved = (handler: () => void) => listen("project-saved", handler);
 
-export type ExportFormat = "pdf" | "pptx";
+export type ExportFormat = "pdf" | "pptx" | "docx";
 
-export type Exported = { path: string; missingFonts: string[] };
+export type Exported = { path: string };
 
 export const exportPage = (page: string, text: string, format: ExportFormat) =>
   invoke<Exported | null>("export_page", { page, text, format });
@@ -162,9 +168,12 @@ export type AgentTurn = {
   readOnly: boolean;
   fast: boolean;
   web: boolean;
+  veil: boolean;
+  pages: string[];
+  page: string | null;
 };
 
-export type Attachment = { name: string; path: string; text: string | null; level: number };
+export type Attachment = { name: string; id: string; path: string; text: string | null; level: number };
 
 export const agentStatus = (provider: string) => invoke<AgentStatus>("agent_status", { provider });
 
@@ -194,7 +203,12 @@ export function agentRun(turn: AgentTurn, handler: (event: AgentEvent) => void) 
 }
 
 export const agentAttach = (chat: string) => invoke<Attachment[]>("agent_attach", { chat });
+export const agentFiles = (chat: string) => invoke<Attachment[]>("agent_files", { chat });
 export const agentLevel = (chat: string, path: string, level: number) => invoke<void>("agent_level", { chat, path, level });
+
+export const agentPreview = (turn: AgentTurn) => invoke<AgentEvent[]>("agent_preview", { turn });
+
+export const agentInScope = (chat: string, path: string, open: string | null) => invoke<boolean>("agent_in_scope", { chat, path, open });
 
 export const agentForget = (chat: string) => invoke<void>("agent_forget", { chat });
 
@@ -217,13 +231,7 @@ export type StoredChat = {
   knowledge?: string | null;
 };
 
-const oldChatStore = new LazyStore("chats.json");
-
 export const readChats = () => invoke<unknown[]>("chats_list");
-
-export const readOldChats = () => oldChatStore.get<unknown>("chats");
-
-export const forgetOldChats = () => oldChatStore.delete("chats");
 
 export const writeChat = (chat: StoredChat) => invoke<void>("chat_save", { chat });
 
@@ -234,6 +242,21 @@ export const readSettings = async () => Object.fromEntries(await settingsStore.e
 export const writeSetting = (key: string, value: unknown) => settingsStore.set(key, value);
 
 export type PrivacyOptions = { veil: boolean; amounts: boolean; names: boolean; knowledge: boolean; autoAdd: boolean };
+
+export type Rule = "optional" | "required";
+
+export type PrivacyPolicy = {
+  hideNames: Rule;
+  findNames: Rule;
+  hideAmounts: Rule;
+  minimumLevel: number;
+  web: "allowed" | "blocked";
+  providers: string[];
+  dataCollection: "allow" | "deny";
+  zeroRetention: boolean;
+};
+
+export const privacyPolicy = () => invoke<PrivacyPolicy>("privacy_policy");
 
 export type KnowledgeFile = { id: string; name: string };
 

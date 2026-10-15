@@ -15,5 +15,28 @@
   "languageAuto": "Samma som på den här datorn",
   "assistant": "Assistent",
   "file": "Din znote-fil",
-  "switch": "Växla…"
+  "switch": "Växla…",
+  "layout": "Layout",
+  "layouts": {
+    "edit": "Typst med direkt förhandsgranskning.",
+    "agent": "Chatten först, förhandsgranskning vid sidan.",
+    "redaction": "Hitta sidor, styr vad som döljs."
+  },
+  "parts": {
+    "pages": "Sidor",
+    "editor": "Redigerare",
+    "preview": "Förhandsgranskning",
+    "assistant": "Chatt",
+    "search": "Sök",
+    "filter": "Filter"
+  },
+  "marketplace": "Marknadsplats",
+  "marketplaceHint": "Installera utseenden och mallar.",
+  "start": {
+    "layout": "Hur vill du arbeta?",
+    "privacy": "Vad får assistenten se?",
+    "file": "Kunskapsfil",
+    "downloads": "Nedladdningar",
+    "marketplace": "Marknadsplats"
+  }
 }

@@ -15,5 +15,28 @@
   "languageAuto": "Come quella del computer",
   "assistant": "Assistente",
   "file": "Il tuo file znote",
-  "switch": "Cambia…"
+  "switch": "Cambia…",
+  "layout": "Layout",
+  "layouts": {
+    "edit": "Typst con anteprima dal vivo.",
+    "agent": "Prima la chat, anteprima a lato.",
+    "redaction": "Trova pagine, controlla cosa viene nascosto."
+  },
+  "parts": {
+    "pages": "Pagine",
+    "editor": "Editor",
+    "preview": "Anteprima",
+    "assistant": "Chat",
+    "search": "Cerca",
+    "filter": "Filtro"
+  },
+  "marketplace": "Negozio",
+  "marketplaceHint": "Installa temi e modelli.",
+  "start": {
+    "layout": "Come vuoi lavorare?",
+    "privacy": "Cosa può vedere l'assistente?",
+    "file": "File di conoscenza",
+    "downloads": "Download",
+    "marketplace": "Negozio"
+  }
 }

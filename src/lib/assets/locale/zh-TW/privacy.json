@@ -10,10 +10,15 @@
     "notHidden": "未隱藏",
     "notHiddenTitle": "助理會看到您的頁面和檔案的原始內容",
     "locked": "已鎖定",
-    "lockedTitle": "請先在設定中開啟您的知識檔案。"
+    "lockedTitle": "請先在設定中開啟您的知識檔案。",
+    "toggle": "在這個聊天中隱藏名稱",
+    "offInSettings": "已在設定中關閉隱藏",
+    "fixed": "聊天開始後即固定",
+    "required": "您的組織要求開啟隱藏，因此無法關閉。"
   },
   "saw": {
-    "prompt": "您的訊息"
+    "prompt": "您的訊息",
+    "system": "給助理的指示"
   },
   "start": {
     "text": "傳送前，名稱、金額和聯絡資訊會換成 ⟦CUSTOMER_3⟧ 這樣的代號。",
@@ -120,7 +125,8 @@
     "dontHide": "不要隱藏",
     "alwaysHide": "一律隱藏",
     "hideAs": "將「{text}」隱藏為",
-    "kind": "類型"
+    "kind": "類型",
+    "lines": "行數：{count}"
   },
   "kinds": {
     "CUSTOMER": "客戶",
@@ -129,13 +135,46 @@
     "SUPPLIER": "供應商",
     "PROJECT": "專案",
     "PRODUCT": "產品",
-    "LOCATION": "地點"
+    "LOCATION": "地點",
+    "AMOUNT": "金額",
+    "EMAIL": "電子郵件地址",
+    "PHONE": "電話號碼",
+    "URL": "網址",
+    "IBAN": "IBAN",
+    "CARD": "卡號",
+    "IP": "IP 位址"
   },
   "level": {
     "label": "隱藏程度",
     "own": "僅限你的清單和聯絡方式",
     "light": "輕度：也包括人名",
     "medium": "中度：也包括組織和地點",
-    "strict": "嚴格：也包括產品、專案、客戶和供應商"
-  }
+    "strict": "嚴格：也包括產品、專案、客戶和供應商",
+    "short": {
+      "own": "自訂清單",
+      "light": "輕度",
+      "medium": "中度",
+      "strict": "嚴格"
+    }
+  },
+  "redact": {
+    "title": "遮蔽",
+    "off": "隱藏已關閉。",
+    "turnOn": "開啟",
+    "none": "此頁面上沒有需要隱藏的內容。",
+    "undo": "復原 (Ctrl+Z)",
+    "redo": "重做 (Ctrl+Y)",
+    "reset": "重設此頁面",
+    "filter": "篩選",
+    "count": "已隱藏 {hidden}/{total}",
+    "hideGroup": "隱藏所有{kind}",
+    "other": "其他",
+    "removeUnhidden": "從清單中移除未隱藏的字詞"
+  },
+  "blocked": {
+    "noFile": "隱藏已開啟，但尚未選擇知識檔案。在您於設定中建立或選擇一個知識檔案，或關閉隱藏之前，不會傳送任何內容。",
+    "locked": "隱藏已開啟，但您的知識檔案已鎖定。在您於設定中開啟它之前，不會傳送任何內容。",
+    "noFinder": "名稱尋找已開啟，但名稱辨識尚未下載。在您於設定中下載它，或關閉名稱尋找之前，不會傳送任何內容。"
+  },
+  "previewBefore": "顯示這則訊息會傳送的內容"
 }

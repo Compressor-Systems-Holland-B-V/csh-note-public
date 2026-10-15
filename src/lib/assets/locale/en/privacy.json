@@ -10,10 +10,15 @@
     "notHidden": "Not hidden",
     "notHiddenTitle": "Pages and files are sent as they are",
     "locked": "Locked",
-    "lockedTitle": "Open your knowledge file in Settings first."
+    "lockedTitle": "Open your knowledge file in Settings first.",
+    "toggle": "Hide names in this chat",
+    "offInSettings": "Hiding is off in Settings",
+    "fixed": "Fixed once the chat has started",
+    "required": "Your organisation requires hiding, so it cannot be turned off."
   },
   "saw": {
-    "prompt": "Your message"
+    "prompt": "Your message",
+    "system": "Instructions for the assistant"
   },
   "start": {
     "text": "Names, amounts and contact details become tokens like ⟦CUSTOMER_3⟧ before anything is sent.",
@@ -130,14 +135,27 @@
     "SUPPLIER": "Supplier",
     "PROJECT": "Project",
     "PRODUCT": "Product",
-    "LOCATION": "Location"
+    "LOCATION": "Location",
+    "AMOUNT": "Amount",
+    "EMAIL": "E-mail address",
+    "PHONE": "Phone number",
+    "URL": "Web address",
+    "IBAN": "IBAN",
+    "CARD": "Card number",
+    "IP": "IP address"
   },
   "level": {
     "label": "How much is hidden",
     "own": "Only your list and contact details",
     "light": "Light: also names of people",
     "medium": "Medium: also organisations and places",
-    "strict": "Strict: also products, projects, customers and suppliers"
+    "strict": "Strict: also products, projects, customers and suppliers",
+    "short": {
+      "own": "Own list",
+      "light": "Light",
+      "medium": "Medium",
+      "strict": "Strict"
+    }
   },
   "redact": {
     "title": "Redaction",
@@ -150,6 +168,13 @@
     "filter": "Filter",
     "count": "{hidden} of {total} hidden",
     "hideGroup": "Hide all {kind}",
-    "other": "Other"
-  }
+    "other": "Other",
+    "removeUnhidden": "Remove unhidden words from the list"
+  },
+  "blocked": {
+    "noFile": "Hiding is on, but no knowledge file is chosen. Nothing is sent until you create or choose one in Settings, or turn hiding off.",
+    "locked": "Hiding is on, but your knowledge file is locked. Nothing is sent until you open it in Settings.",
+    "noFinder": "Finding names is on, but the name finder is not downloaded. Nothing is sent until you download it in Settings, or stop finding names."
+  },
+  "previewBefore": "Show what this message would send"
 }

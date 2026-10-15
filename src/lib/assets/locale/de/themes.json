@@ -1,31 +1,35 @@
 {
-  "title": "Designs",
-  "look": "Erscheinungsbild",
-  "import": "Design-Datei importieren…",
-  "intro": "Designs ändern das Aussehen, fügen Seitenvorlagen hinzu oder beides.",
-  "storeFailure": "{reason} Bereits installierte Designs werden unten angezeigt.",
-  "search": "Designs durchsuchen",
+  "title": "Marktplatz",
+  "import": "Importieren",
+  "intro": "Designs (.zth) ändern das Aussehen von znote. Vorlagen (.znx) fügen Seitenlayouts hinzu.",
+  "storeFailure": "{reason} Es werden nur installierte Erweiterungen angezeigt.",
+  "search": "Erweiterungen durchsuchen",
   "installed": "Installiert",
-  "none": "Kein passendes Design gefunden.",
+  "none": "Keine Treffer.",
   "kind": {
-    "look": "Nur Aussehen",
-    "both": "Aussehen und Vorlagen",
-    "templates": "Nur Vorlagen"
+    "look": "Designs",
+    "templates": "Vorlagen"
   },
   "contents": {
     "look": "Ändert das Aussehen",
-    "both": "Ändert das Aussehen und fügt Seitenvorlagen hinzu",
-    "templates": "Fügt Seitenvorlagen hinzu"
+    "templates": "Fügt Vorlagen hinzu"
   },
   "version": "Version {version}",
-  "lookSwitch": "Aussehen",
-  "lookSwitchTitle": "Dieses Design in der Liste der Erscheinungsbilder anzeigen",
-  "templatesSwitch": "Vorlagen",
-  "templatesSwitchTitle": "Die Vorlagen dieses Designs anzeigen, wenn Sie eine Vorlage auswählen",
+  "lookSwitchTitle": "Bei den Designs anzeigen",
+  "templatesSwitchTitle": "In der Vorlagenauswahl anzeigen",
   "install": "Installieren",
   "installing": "Installiere…",
   "update": "Aktualisieren",
   "updating": "Aktualisiere…",
   "remove": "Entfernen",
-  "removeTheme": "Design {name} entfernen"
+  "importTitle": ".zth / .znx-Datei importieren",
+  "filters": "Filter",
+  "browse": "Alle Erweiterungen",
+  "type": "Typ",
+  "category": "Kategorie",
+  "all": "Alle",
+  "use": "Verwenden",
+  "inUse": "In Verwendung",
+  "more": "Weitere Optionen für {name}",
+  "templatesList": "Vorlagen: {names}"
 }

@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Label } from "$lib/components/ui/label";
-  import { Switch } from "$lib/components/ui/switch";
+  import { Button } from "@zsuite/ui/button";
+  import * as Dialog from "@zsuite/ui/dialog";
+  import { Label } from "@zsuite/ui/label";
+  import { Switch } from "@zsuite/ui/switch";
   import { privacy } from "$lib/state/privacy.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import KnowledgeForm from "./KnowledgeForm.svelte";
   import LayoutPicker from "./LayoutPicker.svelte";
   import ModelDownload from "./ModelDownload.svelte";
-  import { t } from "$lib/i18n.svelte";
+  import Picker from "./Picker.svelte";
+  import { languageOptions, t } from "$lib/i18n.svelte";
 
   type Step = "layout" | "privacy" | "file" | "create" | "import" | "downloads" | "marketplace";
 
@@ -74,6 +75,10 @@
     </Dialog.Header>
 
     {#if step === "layout"}
+      <div class="flex items-center justify-between gap-3">
+        <Label for="start-language">{t("settings.language")}</Label>
+        <Picker id="start-language" size="sm" value={settings.values.language} options={languageOptions()} onchange={(language) => settings.set("language", language)} />
+      </div>
       <LayoutPicker />
       <div class="flex justify-end"><Button onclick={() => (step = "privacy")}>{t("common.next")}</Button></div>
     {:else if step === "privacy"}

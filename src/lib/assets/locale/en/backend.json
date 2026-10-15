@@ -35,7 +35,9 @@
     "cutOff": "The answer was cut off: {error}",
     "modelFirst": "Choose a model for the assistant first.",
     "tooManySteps": "The assistant took too many steps and was stopped.",
-    "passwordStore": "The password store of this computer could not be used: {error}"
+    "passwordStore": "The password store of this computer could not be used: {error}",
+    "notAllowed": "Your organisation does not allow this assistant.",
+    "plainHttp": "Plain http:// is only used for a server on this computer or your own network. Use https:// for this address."
   },
   "chat": {
     "busy": "The assistant is still busy. Wait for it to finish, or stop it.",
@@ -52,8 +54,11 @@
     "fixFirst": "Fix the problems on this page before you export it.",
     "pageNotOpened": "The page could not be opened.",
     "slideNotDrawn": "A slide could not be drawn: {error}",
+    "pictureNotDrawn": "A picture could not be drawn: {error}",
     "pdfFailed": "The PDF could not be made: {reason}",
     "pptxFailed": "The presentation could not be made: {error}",
+    "docxFailed": "The Word file could not be made: {error}",
+    "notWord": "This page cannot become a Word document: {error}",
     "nothing": "This page has nothing to export.",
     "nothingYet": "Nothing has been exported yet.",
     "notSaved": "The file could not be saved: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "This file cannot be opened because it needs themes that are not installed:\n• {themes}\nInstall them in the Marketplace, then open the file again.",
     "outside": "This znote file tries to put “{name}” outside its own folder, so it was not imported.",
     "tooLarge": "This znote file is too large once unpacked, so it was not imported.",
-    "openFirst": "Open a znote file first."
+    "openFirst": "Open a znote file first.",
+    "wrongPassword": "The password is wrong, or this is not a znote file."
   },
   "theme": {
     "fileNotRead": "This add-on file could not be read: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” is not a page.",
     "badMove": "A page can only move to a notebook, and a notebook to a project.",
     "folderFirst": "Choose a workspace folder first.",
-    "fileNotRead": "The file could not be read: {error}",
-    "notFullPath": "“{folder}” is not a full folder path."
+    "fileNotRead": "The file could not be read: {error}"
   }
 }

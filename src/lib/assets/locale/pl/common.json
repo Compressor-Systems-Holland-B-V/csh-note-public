@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Edycja",
     "export": "Eksportuj",
-    "themes": "Motywy"
+    "marketplace": "Sklep"
   },
   "appearance": {
     "toLight": "Przełącz na tryb jasny",
@@ -34,5 +34,13 @@
     "downloading": "Pobieranie pakietu {name}…",
     "previewFailed": "Nie można zaktualizować podglądu: {reason}",
     "desktopOnly": "działa to tylko w aplikacji komputerowej."
+  },
+  "preview": "Podgląd",
+  "back": "Wstecz",
+  "finish": "Zakończ",
+  "layout": {
+    "edit": "Edycja",
+    "agent": "Asystent",
+    "redaction": "Ukrywanie"
   }
 }

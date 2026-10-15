@@ -1,10 +1,10 @@
 <script lang="ts">
   import Plus from "@lucide/svelte/icons/plus";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { Switch } from "$lib/components/ui/switch";
+  import { Button } from "@zsuite/ui/button";
+  import * as Dialog from "@zsuite/ui/dialog";
+  import { Input } from "@zsuite/ui/input";
+  import { Label } from "@zsuite/ui/label";
+  import { Switch } from "@zsuite/ui/switch";
   import { accesses, builtIn, efforts, movePreset, presetName, presetsFor, providerName, providerOf, providers } from "$lib/assistant";
   import type { Preset } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";

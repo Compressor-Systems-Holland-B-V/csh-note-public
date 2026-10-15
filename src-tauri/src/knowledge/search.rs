@@ -284,7 +284,8 @@ pub fn entity(open: &Open, token: &str) -> Result<String, String> {
     }
     let mut answer = concept
         .and_then(|concept| card(open, concept))
-        .unwrap_or_else(|| format!("{text}: not in the glossary."));
+        // The token, not the text: the answer is hidden by detection, which can miss a short name.
+        .unwrap_or_else(|| format!("{}: not in the glossary.", token.trim()));
     if !paths.is_empty() {
         answer.push_str(&format!(
             "\nMentioned in: {}",

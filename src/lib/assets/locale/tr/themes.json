@@ -1,31 +1,35 @@
 {
-  "title": "Temalar",
-  "look": "Görünüm",
-  "import": "Bir tema dosyası içe aktar…",
-  "intro": "Temalar görünümü değiştirir, sayfa şablonları ekler veya ikisini birden yapar.",
-  "storeFailure": "{reason} Daha önce yüklediğiniz temalar aşağıda gösterilmiştir.",
-  "search": "Tema ara",
+  "title": "Pazar yeri",
+  "import": "İçe aktar",
+  "intro": "Görünümler (.zth) znote'un görünüşünü değiştirir. Şablonlar (.znx) sayfa düzenleri ekler.",
+  "storeFailure": "{reason} Yalnızca yüklü eklentiler gösteriliyor.",
+  "search": "Eklenti ara",
   "installed": "Yüklü",
-  "none": "Eşleşen tema yok.",
+  "none": "Eşleşme yok.",
   "kind": {
-    "look": "Sadece görünüm",
-    "both": "Görünüm ve şablonlar",
-    "templates": "Sadece şablonlar"
+    "look": "Görünümler",
+    "templates": "Şablonlar"
   },
   "contents": {
     "look": "Görünümü değiştirir",
-    "both": "Görünümü değiştirir ve sayfa şablonları ekler",
-    "templates": "Sayfa şablonları ekler"
+    "templates": "Şablon ekler"
   },
   "version": "Sürüm {version}",
-  "lookSwitch": "Görünüm",
-  "lookSwitchTitle": "Bu temayı görünüm listesinde göster",
-  "templatesSwitch": "Şablonlar",
-  "templatesSwitchTitle": "Bir şablon seçtiğinizde bu temanın şablonlarını göster",
+  "lookSwitchTitle": "Görünümlerde göster",
+  "templatesSwitchTitle": "Şablon seçicide göster",
   "install": "Yükle",
   "installing": "Yükleniyor…",
   "update": "Güncelle",
   "updating": "Güncelleniyor…",
   "remove": "Kaldır",
-  "removeTheme": "{name} temasını kaldır"
+  "importTitle": "Bir .zth / .znx dosyası içe aktar",
+  "filters": "Filtreler",
+  "browse": "Tüm eklentiler",
+  "type": "Tür",
+  "category": "Kategori",
+  "all": "Tümü",
+  "use": "Kullan",
+  "inUse": "Kullanımda",
+  "more": "{name} için daha fazlası",
+  "templatesList": "Şablonlar: {names}"
 }

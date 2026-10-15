@@ -9,6 +9,7 @@
   import type { DecorationSet, ViewUpdate } from "@codemirror/view";
   import { tags } from "@lezer/highlight";
   import { typst_lezer } from "codemirror-lang-typst/lezer";
+  import { tokens } from "$lib/markdown";
   import type { Diagnostic } from "$lib/ipc";
   import { t } from "$lib/i18n.svelte";
 
@@ -74,7 +75,7 @@
   ];
 
   const tokenMarks = new MatchDecorator({
-    regexp: /⟦[^⟦⟧\n]{1,38}⟧/g,
+    regexp: tokens(),
     decoration: Decoration.mark({ class: "cm-token", attributes: { title: t("privacy.unknownToken") } }),
   });
   const unknownTokens = ViewPlugin.fromClass(

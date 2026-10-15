@@ -1,13 +1,16 @@
 <script lang="ts">
   import ChevronDown from "@lucide/svelte/icons/chevron-down";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { providerName, providers } from "$lib/assistant";
   import { agent } from "$lib/state/agent.svelte";
+  import { privacy } from "$lib/state/privacy.svelte";
   import { connections } from "$lib/state/providers.svelte";
   import ProviderSetup from "./ProviderSetup.svelte";
   import { t } from "$lib/i18n.svelte";
 
   let shown = $state<string | null>(null);
+
+  const allowed = $derived(providers.filter(({ id }) => privacy.policy === null || privacy.policy.providers.includes(id)));
 
   $effect(() => {
     connections.check();
@@ -15,7 +18,7 @@
 </script>
 
 <ul class="grid gap-2">
-  {#each providers as provider (provider.id)}
+  {#each allowed as provider (provider.id)}
     {@const connected = connections.status[provider.id]?.connected ?? false}
     {@const active = connections.active === provider.id}
     {@const open = shown === provider.id}

@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Editar",
     "export": "Exportar",
-    "themes": "Temas"
+    "marketplace": "Loja"
   },
   "appearance": {
     "toLight": "Mudar para o modo claro",
@@ -34,5 +34,13 @@
     "downloading": "A transferir o pacote {name}…",
     "previewFailed": "Não foi possível atualizar a pré-visualização: {reason}",
     "desktopOnly": "só funciona na aplicação de ambiente de trabalho."
+  },
+  "preview": "Pré-visualização",
+  "back": "Voltar",
+  "finish": "Concluir",
+  "layout": {
+    "edit": "Editar",
+    "agent": "Assistente",
+    "redaction": "Ocultar"
   }
 }

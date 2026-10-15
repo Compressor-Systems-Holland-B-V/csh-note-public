@@ -9,7 +9,7 @@
   import Save from "@lucide/svelte/icons/save";
   import Undo2 from "@lucide/svelte/icons/undo-2";
   import TemplatePicker from "$lib/components/TemplatePicker.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { agent } from "$lib/state/agent.svelte";
   import { privacy } from "$lib/state/privacy.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";

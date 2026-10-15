@@ -79,5 +79,22 @@
     "start": "Loslegen",
     "empty": "Geöffnete Dateien erscheinen hier.",
     "back": "Zurück zu {name}"
+  },
+  "search": "Seiten durchsuchen",
+  "noHits": "Nichts gefunden.",
+  "browser": {
+    "path": "Aktueller Ort",
+    "projects": "Projekte",
+    "notebooks": "Notizbücher"
+  },
+  "password": {
+    "newTitle": "Schützen Sie Ihre neue znote-Datei",
+    "newText": "Wählen Sie ein Passwort für diese Datei. Notizen, Einstellungen und Chats darin werden damit verschlüsselt. Sie geben es auf jedem Computer einmal ein; danach merkt sich dieser Computer es.",
+    "unlockTitle": "{name} öffnen",
+    "unlockText": "Diese znote-Datei ist verschlüsselt. Geben Sie ihr Passwort ein, um sie zu öffnen. Danach merkt sich dieser Computer es.",
+    "password": "Passwort",
+    "forgotten": "Bewahren Sie dieses Passwort gut auf. Eine Datei, deren Passwort verloren ist, kann nicht mehr geöffnet werden.",
+    "create": "Datei erstellen",
+    "open": "Öffnen"
   }
 }

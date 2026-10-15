@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Button } from "$lib/components/ui/button";
-  import { Label } from "$lib/components/ui/label";
-  import { Separator } from "$lib/components/ui/separator";
-  import { Switch } from "$lib/components/ui/switch";
+  import { Button } from "@zsuite/ui/button";
+  import { Label } from "@zsuite/ui/label";
+  import { Separator } from "@zsuite/ui/separator";
+  import { Switch } from "@zsuite/ui/switch";
   import { privacy } from "$lib/state/privacy.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import type { Settings } from "$lib/state/settings.svelte";
@@ -21,10 +21,16 @@
     privacy.load();
   });
 
+  const forced: Partial<Record<Flag, "hideNames" | "hideAmounts" | "findNames">> = { privacyVeil: "hideNames", privacyAmounts: "hideAmounts", privacyNames: "findNames" };
+  const locked = (key: Flag) => {
+    const rule = forced[key];
+    return rule !== undefined && privacy.required(rule);
+  };
+
   const switches: { key: Flag; disabled: () => boolean }[] = [
-    { key: "privacyVeil", disabled: () => !usable },
-    { key: "privacyAmounts", disabled: () => !usable || !settings.values.privacyVeil },
-    { key: "privacyNames", disabled: () => !usable || !(status?.names ?? false) },
+    { key: "privacyVeil", disabled: () => !usable || locked("privacyVeil") },
+    { key: "privacyAmounts", disabled: () => !usable || !privacy.options.veil || locked("privacyAmounts") },
+    { key: "privacyNames", disabled: () => !usable || !(status?.names ?? false) || locked("privacyNames") },
     { key: "knowledgeOn", disabled: () => !usable },
     { key: "knowledgeAutoAdd", disabled: () => !usable || !settings.values.knowledgeOn },
   ];
@@ -36,13 +42,15 @@
       <Label for="privacy-{key}">{t(`privacy.settings.${key}`)}</Label>
       <p class="text-xs text-muted-foreground">{t(`privacy.settings.${key}Hint`)}</p>
     </div>
-    <Switch id="privacy-{key}" checked={settings.values[key]} {disabled} onCheckedChange={(checked) => settings.set(key, checked)} />
+    <Switch id="privacy-{key}" checked={settings.values[key] || locked(key)} {disabled} onCheckedChange={(checked) => settings.set(key, checked)} />
   </div>
 {/snippet}
 
 <div class="grid gap-4">
   <KnowledgeFiles />
   {#if !usable}<p class="rounded-md bg-muted p-2 text-xs">{t("privacy.settings.needsFile")}</p>{/if}
+  {#if privacy.blocked}<p class="rounded-md bg-destructive/10 p-2 text-xs text-destructive" role="alert">{t(`privacy.blocked.${privacy.blocked}`)}</p>{/if}
+  {#if privacy.required("hideNames")}<p class="rounded-md bg-muted p-2 text-xs">{t("privacy.panel.required")}</p>{/if}
   <Separator />
   {#each switches.slice(0, 2) as { key, disabled } (key)}{@render toggle(key, disabled())}{/each}
   <ModelDownload id="names" />

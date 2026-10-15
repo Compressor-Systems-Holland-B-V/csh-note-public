@@ -15,5 +15,28 @@
   "languageAuto": "与本机相同",
   "assistant": "助手",
   "file": "你的 znote 文件",
-  "switch": "切换…"
+  "switch": "切换…",
+  "layout": "布局",
+  "layouts": {
+    "edit": "Typst 与实时预览。",
+    "agent": "聊天为主，预览在侧。",
+    "redaction": "查找页面，控制要隐藏的内容。"
+  },
+  "parts": {
+    "pages": "页面",
+    "editor": "编辑器",
+    "preview": "预览",
+    "assistant": "聊天",
+    "search": "搜索",
+    "filter": "筛选"
+  },
+  "marketplace": "市场",
+  "marketplaceHint": "安装样式和模板。",
+  "start": {
+    "layout": "你想如何工作？",
+    "privacy": "助手可以看到什么？",
+    "file": "知识文件",
+    "downloads": "下载",
+    "marketplace": "市场"
+  }
 }

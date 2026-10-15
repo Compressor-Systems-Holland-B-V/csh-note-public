@@ -35,7 +35,9 @@
     "cutOff": "Svaret kapades: {error}",
     "modelFirst": "Välj en modell för assistenten först.",
     "tooManySteps": "Assistenten tog för många steg och stoppades.",
-    "passwordStore": "Datorns lösenordshanterare kunde inte användas: {error}"
+    "passwordStore": "Datorns lösenordshanterare kunde inte användas: {error}",
+    "notAllowed": "Din organisation tillåter inte den här assistenten.",
+    "plainHttp": "Vanlig http:// används bara för en server på den här datorn eller ditt eget nätverk. Använd https:// för den här adressen."
   },
   "chat": {
     "busy": "Assistenten är fortfarande upptagen. Vänta på att den blir klar, eller stoppa den.",
@@ -52,8 +54,11 @@
     "fixFirst": "Åtgärda problemen på den här sidan innan du exporterar den.",
     "pageNotOpened": "Sidan kunde inte öppnas.",
     "slideNotDrawn": "En bild kunde inte ritas: {error}",
+    "pictureNotDrawn": "En bild kunde inte ritas: {error}",
     "pdfFailed": "PDF-filen kunde inte skapas: {reason}",
     "pptxFailed": "Presentation kunde inte skapas: {error}",
+    "docxFailed": "Word-filen kunde inte skapas: {error}",
+    "notWord": "Den här sidan kan inte bli ett Word-dokument: {error}",
     "nothing": "Den här sidan har inget att exportera.",
     "nothingYet": "Inget har exporterats än.",
     "notSaved": "Filen kunde inte sparas: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Den här filen kan inte öppnas eftersom den kräver teman som inte är installerade:\n• {themes}\nInstallera dem på sidan Teman och öppna sedan filen igen.",
     "outside": "Den här znote-filen försöker placera ”{name}” utanför sin egen mapp, så den importerades inte.",
     "tooLarge": "Den här znote-filen är för stor när den packats upp, så den importerades inte.",
-    "openFirst": "Öppna en znote-fil först."
+    "openFirst": "Öppna en znote-fil först.",
+    "wrongPassword": "Lösenordet är fel, eller så är det här inte en znote-fil."
   },
   "theme": {
     "fileNotRead": "Den här temafilen kunde inte läsas: {error}",
@@ -121,7 +127,6 @@
     "notPage": "”{path}” är inte en sida.",
     "badMove": "En sida kan bara flyttas till en anteckningsbok, och en anteckningsbok till ett projekt.",
     "folderFirst": "Välj en mapp för arbetsytan först.",
-    "fileNotRead": "Filen kunde inte läsas: {error}",
-    "notFullPath": "”{folder}” är inte en fullständig mappsökväg."
+    "fileNotRead": "Filen kunde inte läsas: {error}"
   }
 }

@@ -2,7 +2,7 @@
   import ArrowLeft from "@lucide/svelte/icons/arrow-left";
   import Bot from "@lucide/svelte/icons/bot";
   import { untrack } from "svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { providerName, providers } from "$lib/assistant";
   import { connections } from "$lib/state/providers.svelte";
   import ProviderSetup from "./ProviderSetup.svelte";

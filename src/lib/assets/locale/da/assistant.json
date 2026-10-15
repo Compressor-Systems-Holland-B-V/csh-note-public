@@ -131,5 +131,10 @@
     "thorough": "Grundig",
     "thoroughHint": "Lange rapporter og grundige omskrivninger. Langsomst.",
     "custom": "Tilpasset"
+  },
+  "files": {
+    "title": "Hvad assistenten ser",
+    "text": "Vælg en side eller fil for at se den, som assistenten gør, og vælg hvor meget der skjules.",
+    "none": "Ingen sider eller filer i denne chat endnu."
   }
 }

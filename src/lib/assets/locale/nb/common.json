@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Rediger",
     "export": "Eksporter",
-    "themes": "Temaer"
+    "marketplace": "Markedsplass"
   },
   "appearance": {
     "toLight": "Bytt til lys modus",
@@ -34,5 +34,13 @@
     "downloading": "Laster ned pakke {name}…",
     "previewFailed": "Forhåndsvisningen kunne ikke oppdateres: {reason}",
     "desktopOnly": "det fungerer bare i skrivebordsappen."
+  },
+  "preview": "Forhåndsvisning",
+  "back": "Tilbake",
+  "finish": "Fullfør",
+  "layout": {
+    "edit": "Rediger",
+    "agent": "Assistent",
+    "redaction": "Skjul navn"
   }
 }

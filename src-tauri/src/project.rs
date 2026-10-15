@@ -15,11 +15,15 @@ use typst::utils::hash128;
 use typst_kit::fonts;
 
 use crate::compile::{Compiler, UsedFont};
+use crate::sealed;
 use crate::snapshot::{self, Home, Manifest};
 use crate::theme;
 
 const IDLE: Duration = Duration::from_secs(30);
 const MAX_FONT_BYTES: u64 = 64 * 1024 * 1024;
+const MAX_BROUGHT_BYTES: u64 = 2 * 1024 * 1024 * 1024;
+const MAX_BROUGHT_FILES: usize = 50_000;
+const SERVICE: &str = "znote file";
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq)]
 struct Record {
@@ -47,6 +51,7 @@ struct Open {
     file: PathBuf,
     home: Home,
     dirty: AtomicBool,
+    password: String,
 }
 
 #[derive(Default)]
@@ -76,6 +81,9 @@ pub enum Answer {
     Asks {
         file: String,
         themes: Vec<String>,
+    },
+    Locked {
+        file: String,
     },
 }
 
@@ -119,10 +127,14 @@ impl Home {
     }
 
     fn recorded(&self) -> Record {
-        fs::read(self.0.join("state.json"))
-            .ok()
-            .and_then(|bytes| serde_json::from_slice(&bytes).ok())
-            .unwrap_or_default()
+        let state = self.0.join("state.json");
+        match fs::read(&state) {
+            Ok(bytes) => serde_json::from_slice(&bytes).unwrap_or(Record {
+                dirty: true,
+                ..Record::default()
+            }),
+            Err(_) => Record::default(),
+        }
     }
 
     fn record(&self, file: &Path, dirty: bool) -> Result<(), String> {
@@ -134,7 +146,7 @@ impl Home {
             dirty,
         };
         let bytes = serde_json::to_vec(&record).map_err(unsaved)?;
-        fs::write(self.0.join("state.json"), bytes).map_err(unsaved)
+        crate::agent::keep(&self.0.join("state.json"), &bytes).map_err(unsaved)
     }
 
     fn used_fonts(&self) -> FontUse {
@@ -175,6 +187,7 @@ impl Home {
         file: &Path,
         target: &Path,
         note: Note,
+        password: &str,
     ) -> Result<(), String> {
         self.prune();
         let known = self.recorded();
@@ -187,8 +200,8 @@ impl Home {
                 installed,
                 &temp,
                 current.then_some(file),
-                note.look,
-                note.settings,
+                (note.look, note.settings),
+                password,
             )
             .and_then(|packed| swap(&temp, target).map(|()| packed))
             .inspect_err(|_| {
@@ -208,9 +221,15 @@ impl Home {
         }
     }
 
-    fn duplicate(&self, themes: &Path, copy: &Path, note: Note) -> Result<(), String> {
+    fn duplicate(
+        &self,
+        themes: &Path,
+        copy: &Path,
+        note: Note,
+        password: &str,
+    ) -> Result<(), String> {
         let temp = with(copy, ".tmp");
-        self.pack(themes, &temp, None, note.look, note.settings)?;
+        self.pack(themes, &temp, None, (note.look, note.settings), password)?;
         swap(&temp, copy)
     }
 
@@ -271,7 +290,13 @@ impl Home {
     }
 }
 
-fn load(projects: &Path, themes: &Path, file: &Path, accept: bool) -> Result<Loaded, String> {
+fn load(
+    projects: &Path,
+    themes: &Path,
+    file: &Path,
+    accept: bool,
+    password: &str,
+) -> Result<Loaded, String> {
     let home = Home::of(projects, file);
     let known = home.recorded();
     let kept = known.file == file.to_string_lossy() && home.pages().is_dir();
@@ -283,7 +308,7 @@ fn load(projects: &Path, themes: &Path, file: &Path, accept: bool) -> Result<Loa
         } else {
             beside(file)
         };
-        home.store(themes, file, &target, home.kept_note())?;
+        home.store(themes, file, &target, home.kept_note(), password)?;
         if target == file {
             home.record(file, false)?;
             ready = true;
@@ -300,14 +325,18 @@ fn load(projects: &Path, themes: &Path, file: &Path, accept: bool) -> Result<Loa
         None => {
             fs::create_dir_all(projects)
                 .map_err(|error| format!("This znote file could not be opened: {error}"))?;
-            let manifest = home.unpack(file).inspect_err(|_| {
+            let manifest = home.unpack(file, password).inspect_err(|_| {
                 let _ = fs::remove_dir_all(&home.0);
             })?;
             home.record(file, false)?;
             manifest
         }
     };
-    let (offered, absent) = home.missing(&manifest, &theme::installed(themes));
+    let (offered, absent) = home.missing(
+        &manifest,
+        &theme::installed(themes),
+        &theme::installed_looks(themes),
+    );
     if !absent.is_empty() {
         return Err(snapshot::absent(&absent));
     }
@@ -318,7 +347,10 @@ fn load(projects: &Path, themes: &Path, file: &Path, accept: bool) -> Result<Loa
         return Ok(Loaded::Asks(offered.iter().map(name).collect()));
     }
     for folder in &offered {
-        theme::adopt(themes, folder)?;
+        match folder.starts_with(home.looks()) {
+            true => theme::adopt_look(themes, folder)?,
+            false => theme::adopt(themes, folder)?,
+        }
     }
     Ok(Loaded::Ready(home, manifest))
 }
@@ -332,31 +364,41 @@ fn tidy(projects: &Path, current: &Home) {
     }
 }
 
-fn copy_tree(from: &Path, to: &Path) -> std::io::Result<()> {
-    fs::create_dir_all(to)?;
-    for entry in fs::read_dir(from)?.flatten() {
-        let kind = entry.file_type()?;
+fn copy_tree(from: &Path, to: &Path, left: &mut (u64, usize)) -> Result<(), String> {
+    fs::create_dir_all(to).map_err(unsaved)?;
+    for entry in fs::read_dir(from).map_err(unsaved)?.flatten() {
+        let kind = entry.file_type().map_err(unsaved)?;
         if kind.is_dir() {
-            copy_tree(&entry.path(), &to.join(entry.file_name()))?;
+            copy_tree(&entry.path(), &to.join(entry.file_name()), left)?;
         } else if kind.is_file() {
-            fs::copy(entry.path(), to.join(entry.file_name()))?;
+            let size = entry.metadata().map_err(unsaved)?.len();
+            if left.1 == 0 || size > left.0 {
+                return Err("This folder holds too much to bring into one znote file.".into());
+            }
+            *left = (left.0 - size, left.1 - 1);
+            fs::copy(entry.path(), to.join(entry.file_name())).map_err(unsaved)?;
         }
     }
     Ok(())
 }
 
-fn create(projects: &Path, themes: &Path, file: &Path, from: Option<&Path>) -> Result<(), String> {
+fn create(
+    projects: &Path,
+    themes: &Path,
+    file: &Path,
+    from: Option<&Path>,
+    password: &str,
+) -> Result<(), String> {
     let fresh = Home(projects.join(".new"));
     let _ = fs::remove_dir_all(&fresh.0);
     let pages = fresh.pages();
     let filled = match from {
-        Some(folder) => copy_tree(folder, &pages),
-        None => fs::create_dir_all(&pages),
+        Some(folder) => copy_tree(folder, &pages, &mut (MAX_BROUGHT_BYTES, MAX_BROUGHT_FILES)),
+        None => fs::create_dir_all(&pages).map_err(unsaved),
     };
     let temp = with(file, ".tmp");
     let made = filled
-        .map_err(unsaved)
-        .and_then(|()| fresh.pack(themes, &temp, None, None, Value::Null))
+        .and_then(|()| fresh.pack(themes, &temp, None, (None, Value::Null), password))
         .and_then(|_| swap(&temp, file));
     let _ = fs::remove_dir_all(&fresh.0);
     let _ = fs::remove_dir_all(Home::of(projects, file).0);
@@ -371,12 +413,36 @@ fn projects(app: &AppHandle) -> Result<PathBuf, String> {
         .join("projects"))
 }
 
+fn key_of(file: &Path) -> String {
+    format!("{:032x}", hash128(&file.to_string_lossy()))
+}
+
+fn remembered(file: &Path) -> Option<String> {
+    sealed::remembered(SERVICE, &key_of(file))
+}
+
+fn remember(file: &Path, password: &str) {
+    let _ = sealed::remember(SERVICE, &key_of(file), Some(password));
+}
+
 fn current(app: &AppHandle) -> Option<Arc<Open>> {
     app.state::<Project>().open.lock().ok()?.clone()
 }
 
 pub fn file(app: &AppHandle) -> Option<String> {
     current(app).map(|open| open.file.to_string_lossy().into_owned())
+}
+
+pub fn pages(app: &AppHandle) -> Result<PathBuf, String> {
+    current(app)
+        .map(|open| open.home.pages())
+        .ok_or_else(|| "Open a znote file first.".to_string())
+}
+
+pub fn chats(app: &AppHandle) -> Result<PathBuf, String> {
+    current(app)
+        .map(|open| open.home.chats())
+        .ok_or_else(|| "Open a znote file first.".to_string())
 }
 
 pub fn fonts(app: &AppHandle) -> Option<PathBuf> {
@@ -448,7 +514,10 @@ pub fn save(app: &AppHandle) {
         .map(|note| note.clone())
         .unwrap_or_default();
     let stored = theme::folder(app)
-        .and_then(|themes| open.home.store(&themes, &open.file, &open.file, note))
+        .and_then(|themes| {
+            open.home
+                .store(&themes, &open.file, &open.file, note, &open.password)
+        })
         .and_then(|()| {
             open.home
                 .record(&open.file, open.dirty.load(Ordering::Relaxed))
@@ -482,12 +551,36 @@ fn watch(app: &AppHandle) -> Result<(), String> {
     Ok(())
 }
 
+pub fn close(app: &AppHandle) {
+    save(app);
+    let Ok(projects) = projects(app) else { return };
+    tidy(&projects, &Home(projects.join(".none")));
+}
+
 fn switch(app: &AppHandle, file: PathBuf, accept: bool) -> Result<Answer, String> {
+    let shown = file.to_string_lossy().into_owned();
+    let password = remembered(&file)
+        .filter(|password| !file.exists() || snapshot::unlocks(&file, password).is_ok());
+    match password {
+        Some(password) => opened(app, file, accept, password),
+        None if file.exists() => Ok(Answer::Locked { file: shown }),
+        None => Err(format!(
+            "“{shown}” could not be found. It may have been moved or deleted."
+        )),
+    }
+}
+
+fn opened(
+    app: &AppHandle,
+    file: PathBuf,
+    accept: bool,
+    password: String,
+) -> Result<Answer, String> {
     save(app);
     let projects = projects(app)?;
     let themes = theme::folder(app)?;
     let shown = file.to_string_lossy().into_owned();
-    let (home, manifest) = match load(&projects, &themes, &file, accept)? {
+    let (home, manifest) = match load(&projects, &themes, &file, accept, &password)? {
         Loaded::Ready(home, manifest) => (home, manifest),
         Loaded::Asks(themes) => {
             return Ok(Answer::Asks {
@@ -510,6 +603,7 @@ fn switch(app: &AppHandle, file: PathBuf, accept: bool) -> Result<Answer, String
         file,
         home,
         dirty: AtomicBool::new(false),
+        password,
     }));
     app.state::<Compiler>().forget_themes()?;
     Ok(Answer::Opened {
@@ -547,8 +641,16 @@ pub fn project_asked() -> Option<String> {
     )
 }
 
-#[tauri::command(async)]
-pub fn project_open(
+#[tauri::command]
+pub async fn project_open(
+    app: AppHandle,
+    file: Option<String>,
+    accept: bool,
+) -> Result<Option<Answer>, String> {
+    crate::blocking(move || project_open_now(app, file, accept)).await
+}
+
+fn project_open_now(
     app: AppHandle,
     file: Option<String>,
     accept: bool,
@@ -570,8 +672,43 @@ pub fn project_open(
     switch(&app, file, accept).map(Some)
 }
 
-#[tauri::command(async)]
-pub fn project_new(app: AppHandle, from: Option<String>) -> Result<Option<Answer>, String> {
+#[tauri::command]
+pub async fn project_unlock(
+    app: AppHandle,
+    file: String,
+    password: String,
+    accept: bool,
+) -> Result<Answer, String> {
+    crate::blocking(move || project_unlock_now(app, file, password, accept)).await
+}
+
+fn project_unlock_now(
+    app: AppHandle,
+    file: String,
+    password: String,
+    accept: bool,
+) -> Result<Answer, String> {
+    let file = PathBuf::from(file);
+    snapshot::unlocks(&file, &password)?;
+    remember(&file, &password);
+    opened(&app, file, accept, password)
+}
+
+#[tauri::command]
+pub async fn project_new(
+    app: AppHandle,
+    from: Option<String>,
+    password: String,
+) -> Result<Option<Answer>, String> {
+    crate::blocking(move || project_new_now(app, from, password)).await
+}
+
+fn project_new_now(
+    app: AppHandle,
+    from: Option<String>,
+    password: String,
+) -> Result<Option<Answer>, String> {
+    sealed::check_password(&password)?;
     let mut dialog = app
         .dialog()
         .file()
@@ -590,8 +727,10 @@ pub fn project_new(app: AppHandle, from: Option<String>) -> Result<Option<Answer
         &theme::folder(&app)?,
         &file,
         from.as_deref().map(Path::new),
+        &password,
     )?;
-    switch(&app, file, true).map(Some)
+    remember(&file, &password);
+    opened(&app, file, true, password).map(Some)
 }
 
 #[tauri::command]
@@ -610,8 +749,14 @@ pub fn project_note(
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn save_snapshot(app: AppHandle, project: State<Project>) -> Result<Option<String>, String> {
+#[tauri::command]
+pub async fn save_snapshot(app: AppHandle) -> Result<Option<String>, String> {
+    crate::blocking(move || save_snapshot_now(&app)).await
+}
+
+fn save_snapshot_now(app: &AppHandle) -> Result<Option<String>, String> {
+    let app = app.clone();
+    let project = app.state::<Project>();
     let open = current(&app).ok_or("Open a znote file first.")?;
     let name = format!(
         "{} copy.znote",
@@ -636,13 +781,17 @@ pub fn save_snapshot(app: AppHandle, project: State<Project>) -> Result<Option<S
         .lock()
         .map_err(|error| error.to_string())?
         .clone();
-    open.home.duplicate(&theme::folder(&app)?, &copy, note)?;
+    open.home
+        .duplicate(&theme::folder(&app)?, &copy, note, &open.password)?;
+    remember(&copy, &open.password);
     Ok(Some(copy.to_string_lossy().into_owned()))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    const PASSWORD: &str = "a fine password";
     use crate::workspace;
 
     struct Desk {
@@ -666,7 +815,7 @@ mod tests {
     }
 
     fn ready(projects: &Path, themes: &Path, file: &Path) -> Home {
-        match load(projects, themes, file, true).unwrap() {
+        match load(projects, themes, file, true, PASSWORD).unwrap() {
             Loaded::Ready(home, _) => home,
             Loaded::Asks(themes) => panic!("asked about {themes:?}"),
         }
@@ -683,7 +832,8 @@ mod tests {
     }
 
     fn save(home: &Home, themes: &Path, file: &Path) {
-        home.store(themes, file, file, Note::default()).unwrap();
+        home.store(themes, file, file, Note::default(), PASSWORD)
+            .unwrap();
         home.record(file, false).unwrap();
     }
 
@@ -698,13 +848,14 @@ mod tests {
         )
         .unwrap();
         fs::write(folder.join("typst/lib.typ"), "#let brand = [Acme]").unwrap();
+        fs::write(folder.join("guide.md"), "Use `brand`.").unwrap();
     }
 
     #[test]
     fn a_znote_file_carries_the_notes_and_their_theme_to_a_computer_that_never_saw_them() {
         let desk = desk("portable");
         install(&desk.themes, "acme");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         assert!(workspace::tree(&home.pages()).is_empty());
         write(&home, "#import \"@themes/acme:1.0.0\": brand\n= Monday\n");
@@ -716,7 +867,7 @@ mod tests {
         let (there, their_themes) = (desk.base.join("there"), desk.base.join("their themes"));
         let moved = desk.base.join("Copied.znote");
         fs::copy(&desk.file, &moved).unwrap();
-        match load(&there, &their_themes, &moved, false).unwrap() {
+        match load(&there, &their_themes, &moved, false, PASSWORD).unwrap() {
             Loaded::Asks(themes) => assert_eq!(themes, ["House style 1.0.0"]),
             Loaded::Ready(..) => panic!("the theme was installed without asking"),
         }
@@ -759,13 +910,22 @@ mod tests {
     fn a_theme_in_a_file_is_checked_before_it_is_installed() {
         let desk = desk("bad-theme");
         install(&desk.themes, "acme");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "#import \"@themes/acme:1.0.0\": brand\n");
         fs::write(desk.themes.join("acme/1.0.0/theme.json"), r#"{ "format": 1, "id": "acme", "name": "House style", "version": "1.0.0", "ui": { "light": { "--background": "url(https://example.com/track)" } } }"#).unwrap();
         save(&home, &desk.themes, &desk.file);
         let theirs = desk.base.join("their themes");
-        assert!(load(&desk.base.join("there"), &theirs, &desk.file, true).is_err());
+        assert!(
+            load(
+                &desk.base.join("there"),
+                &theirs,
+                &desk.file,
+                true,
+                PASSWORD
+            )
+            .is_err()
+        );
         assert!(!theirs.join("acme").exists());
     }
 
@@ -800,7 +960,14 @@ mod tests {
         fs::create_dir_all(&old).unwrap();
         workspace::ensure(&old, "Work/Notes/Monday").unwrap();
         workspace::write_text(&old, "Work/Notes/Monday", "= From the folder\n").unwrap();
-        create(&desk.projects, &desk.themes, &desk.file, Some(&old)).unwrap();
+        create(
+            &desk.projects,
+            &desk.themes,
+            &desk.file,
+            Some(&old),
+            PASSWORD,
+        )
+        .unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         assert_eq!(read(&home), "= From the folder\n");
         assert_eq!(
@@ -812,13 +979,13 @@ mod tests {
     #[test]
     fn a_copy_still_has_what_was_deleted_afterwards_and_a_new_file_keeps_what_it_replaces() {
         let desk = desk("copy");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "= Kept in the copy\n");
         save(&home, &desk.themes, &desk.file);
         let copy = desk.base.join("Elsewhere").join("Notes copy.znote");
         fs::create_dir_all(copy.parent().unwrap()).unwrap();
-        home.duplicate(&desk.themes, &copy, Note::default())
+        home.duplicate(&desk.themes, &copy, Note::default(), PASSWORD)
             .unwrap();
 
         fs::remove_dir_all(home.pages().join("Work")).unwrap();
@@ -832,7 +999,7 @@ mod tests {
             "= Kept in the copy\n"
         );
 
-        create(&desk.projects, &desk.themes, &copy, None).unwrap();
+        create(&desk.projects, &desk.themes, &copy, None, PASSWORD).unwrap();
         assert!(workspace::tree(&ready(&desk.projects, &desk.themes, &copy).pages()).is_empty());
         let replaced = desk.base.join("Replaced.znote");
         fs::copy(with(&copy, ".bak"), &replaced).unwrap();
@@ -845,7 +1012,7 @@ mod tests {
     #[test]
     fn what_was_not_saved_before_a_crash_is_saved_on_the_next_start() {
         let desk = desk("crash");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "= Typed just before the crash\n");
         home.record(&desk.file, true).unwrap();
@@ -865,7 +1032,7 @@ mod tests {
     #[test]
     fn when_the_file_and_the_unsaved_notes_both_changed_neither_is_lost() {
         let desk = desk("conflict");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "= Mine, not saved\n");
         save(&home, &desk.themes, &desk.file);
@@ -897,8 +1064,8 @@ mod tests {
             desk.base.join("First.znote"),
             desk.base.join("Second.znote"),
         );
-        create(&desk.projects, &desk.themes, &first, None).unwrap();
-        create(&desk.projects, &desk.themes, &second, None).unwrap();
+        create(&desk.projects, &desk.themes, &first, None, PASSWORD).unwrap();
+        create(&desk.projects, &desk.themes, &second, None, PASSWORD).unwrap();
         let one = ready(&desk.projects, &desk.themes, &first);
         let two = ready(&desk.projects, &desk.themes, &second);
         write(&two, "= Second\n");
@@ -925,7 +1092,8 @@ mod tests {
                 &desk.projects,
                 &desk.themes,
                 &desk.base.join("Missing.znote"),
-                true
+                true,
+                PASSWORD
             )
             .is_err_and(|error| error.contains("could not be found"))
         );
@@ -934,7 +1102,7 @@ mod tests {
     #[test]
     fn fonts_a_page_uses_travel_in_the_file_unless_they_may_not_and_then_the_reader_is_told() {
         let desk = desk("fonts");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "= Monday\n");
         let system = desk.base.join("system fonts");
@@ -983,7 +1151,7 @@ mod tests {
     #[ignore = "writes about 500 MB to the temporary folder; run it by name to time a save"]
     fn saving_one_changed_line_in_a_large_file_stays_fast() {
         let desk = desk("large");
-        create(&desk.projects, &desk.themes, &desk.file, None).unwrap();
+        create(&desk.projects, &desk.themes, &desk.file, None, PASSWORD).unwrap();
         let home = ready(&desk.projects, &desk.themes, &desk.file);
         write(&home, "= Monday\n");
         let mut seed = 0x2545_F491_4F6C_DD1D_u64;
@@ -1014,5 +1182,17 @@ mod tests {
         println!("{size} MB file: first save {first:?}, save after one changed line {again:?}");
         let _ = fs::remove_dir_all(&desk.base);
         assert!(again < Duration::from_secs(5), "{again:?}");
+    }
+
+    #[test]
+    fn a_damaged_state_file_counts_as_unsaved_work_so_it_is_never_cleared() {
+        let desk = desk("damaged");
+        let home = Home(desk.projects.join("home"));
+        fs::create_dir_all(&home.0).unwrap();
+        assert!(!home.recorded().dirty);
+        fs::write(home.0.join("state.json"), "{ half writ").unwrap();
+        assert!(home.recorded().dirty);
+        tidy(&desk.projects, &Home(desk.projects.join("other")));
+        assert!(home.0.is_dir());
     }
 }

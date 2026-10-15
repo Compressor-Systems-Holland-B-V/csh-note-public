@@ -35,7 +35,9 @@
     "cutOff": "Yanıt kesildi: {error}",
     "modelFirst": "Önce asistan için bir model seçin.",
     "tooManySteps": "Asistan çok fazla adım attı ve durduruldu.",
-    "passwordStore": "Bu bilgisayarın parola deposu kullanılamadı: {error}"
+    "passwordStore": "Bu bilgisayarın parola deposu kullanılamadı: {error}",
+    "notAllowed": "Kuruluşunuz bu asistana izin vermiyor.",
+    "plainHttp": "Düz http:// yalnızca bu bilgisayardaki veya kendi ağınızdaki bir sunucu için kullanılır. Bu adres için https:// kullanın."
   },
   "chat": {
     "busy": "Asistan hala meşgul. Bitirmesini bekleyin veya durdurun.",
@@ -52,8 +54,11 @@
     "fixFirst": "Dışa aktarmadan önce bu sayfadaki sorunları düzeltin.",
     "pageNotOpened": "Sayfa açılamadı.",
     "slideNotDrawn": "Slayt çizilemedi: {error}",
+    "pictureNotDrawn": "Bir görsel çizilemedi: {error}",
     "pdfFailed": "PDF oluşturulamadı: {reason}",
     "pptxFailed": "Sunum oluşturulamadı: {error}",
+    "docxFailed": "Word dosyası oluşturulamadı: {error}",
+    "notWord": "Bu sayfa Word belgesine dönüştürülemiyor: {error}",
     "nothing": "Bu sayfada dışa aktarılacak bir şey yok.",
     "nothingYet": "Henüz hiçbir şey dışa aktarılmadı.",
     "notSaved": "Dosya kaydedilemedi: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Bu dosya, yüklü olmayan temalara ihtiyaç duyduğu için açılamıyor:\n• {themes}\nBunları Temalar sayfasından yükleyin, ardından dosyayı tekrar açın.",
     "outside": "Bu znote dosyası “{name}” öğesini kendi klasörünün dışına koymaya çalıştığı için içe aktarılmadı.",
     "tooLarge": "Bu znote dosyası açıldıktan sonra çok büyük olduğu için içe aktarılmadı.",
-    "openFirst": "Önce bir znote dosyası açın."
+    "openFirst": "Önce bir znote dosyası açın.",
+    "wrongPassword": "Parola yanlış ya da bu bir znote dosyası değil."
   },
   "theme": {
     "fileNotRead": "Bu tema dosyası okunamadı: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” bir sayfa değil.",
     "badMove": "Bir sayfa yalnızca bir not defterine, bir not defteri ise yalnızca bir projeye taşınabilir.",
     "folderFirst": "Önce bir çalışma alanı klasörü seçin.",
-    "fileNotRead": "Dosya okunamadı: {error}",
-    "notFullPath": "“{folder}” tam bir klasör yolu değil."
+    "fileNotRead": "Dosya okunamadı: {error}"
   }
 }

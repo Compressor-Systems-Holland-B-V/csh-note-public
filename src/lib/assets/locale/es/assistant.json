@@ -131,5 +131,10 @@
     "thorough": "Minucioso",
     "thoroughHint": "Informes largos y reescrituras cuidadosas. El más lento.",
     "custom": "Personalizado"
+  },
+  "files": {
+    "title": "Lo que ve el asistente",
+    "text": "Elige una página o un archivo para verlo como lo ve el asistente y decide cuánto se oculta.",
+    "none": "Todavía no hay páginas ni archivos en este chat."
   }
 }

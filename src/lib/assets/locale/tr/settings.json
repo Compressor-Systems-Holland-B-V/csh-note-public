@@ -15,5 +15,28 @@
   "languageAuto": "Bu bilgisayarla aynı",
   "assistant": "Asistan",
   "file": "znote dosyanız",
-  "switch": "Değiştir…"
+  "switch": "Değiştir…",
+  "layout": "Düzen",
+  "layouts": {
+    "edit": "Canlı önizlemeli Typst.",
+    "agent": "Önce sohbet, yanda önizleme.",
+    "redaction": "Sayfaları bulun, neyin gizleneceğini yönetin."
+  },
+  "parts": {
+    "pages": "Sayfalar",
+    "editor": "Düzenleyici",
+    "preview": "Önizleme",
+    "assistant": "Sohbet",
+    "search": "Ara",
+    "filter": "Filtre"
+  },
+  "marketplace": "Pazar yeri",
+  "marketplaceHint": "Görünümler ve şablonlar yükleyin.",
+  "start": {
+    "layout": "Nasıl çalışmak istersiniz?",
+    "privacy": "Asistan neyi görebilir?",
+    "file": "Bilgi dosyası",
+    "downloads": "İndirmeler",
+    "marketplace": "Pazar yeri"
+  }
 }

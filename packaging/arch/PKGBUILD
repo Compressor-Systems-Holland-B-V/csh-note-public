@@ -1,5 +1,5 @@
 pkgname=znote
-pkgver=0.9.0
+pkgver=1.0.0
 pkgrel=1
 pkgdesc="A lightweight desktop editor for Typst with live preview"
 arch=('x86_64')
@@ -10,8 +10,17 @@ optdepends=('gnome-keyring: store assistant provider keys'
             'kwallet: store assistant provider keys')
 makedepends=('rust' 'cargo' 'nodejs' 'pnpm')
 options=('!debug' '!lto')
-source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+# The commit of the vendor/zsuite submodule at this release; GitHub's tarball leaves it out.
+_zsuite=69131b916f8a3b89f00b4c96c2002dc3e0e2f837
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz" "zsuite-$_zsuite.tar.gz::https://github.com/ZAL-Analytics/zsuite/archive/$_zsuite.tar.gz")
+sha256sums=('SKIP' 'SKIP')
+
+prepare() {
+  if [ -d "$srcdir/zsuite-$_zsuite" ]; then
+    rm -rf "$srcdir/$pkgname-$pkgver/vendor/zsuite"
+    mv "$srcdir/zsuite-$_zsuite" "$srcdir/$pkgname-$pkgver/vendor/zsuite"
+  fi
+}
 
 build() {
   cd "$srcdir/$pkgname-$pkgver"

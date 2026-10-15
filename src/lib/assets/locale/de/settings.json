@@ -15,5 +15,28 @@
   "languageAuto": "Wie auf diesem Computer",
   "assistant": "Assistent",
   "file": "Ihre znote-Datei",
-  "switch": "Wechseln…"
+  "switch": "Wechseln…",
+  "layout": "Layout",
+  "layouts": {
+    "edit": "Typst mit Live-Vorschau.",
+    "agent": "Zuerst der Chat, Vorschau daneben.",
+    "redaction": "Seiten finden und festlegen, was verborgen wird."
+  },
+  "parts": {
+    "pages": "Seiten",
+    "editor": "Editor",
+    "preview": "Vorschau",
+    "assistant": "Chat",
+    "search": "Suche",
+    "filter": "Filter"
+  },
+  "marketplace": "Marktplatz",
+  "marketplaceHint": "Designs und Vorlagen installieren.",
+  "start": {
+    "layout": "Wie möchten Sie arbeiten?",
+    "privacy": "Was darf der Assistent sehen?",
+    "file": "Wissensdatei",
+    "downloads": "Downloads",
+    "marketplace": "Marktplatz"
+  }
 }

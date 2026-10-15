@@ -6,69 +6,19 @@
   import Folder from "@lucide/svelte/icons/folder";
   import Plus from "@lucide/svelte/icons/plus";
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
-  import { Button } from "$lib/components/ui/button";
-  import * as ContextMenu from "$lib/components/ui/context-menu";
-  import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import { theme, withTemplate } from "$lib/state/theme.svelte";
-  import { pickTypstFile } from "$lib/ipc";
+  import { Button } from "@zsuite/ui/button";
+  import * as ContextMenu from "@zsuite/ui/context-menu";
+  import * as DropdownMenu from "@zsuite/ui/dropdown-menu";
+  import { askNew, askNewPage, askRemove, askRename, importPage } from "$lib/entries";
   import { agent } from "$lib/state/agent.svelte";
   import { privacy } from "$lib/state/privacy.svelte";
-  import { childOf, nameOf, parentOf, workspace } from "$lib/state/workspace.svelte";
+  import { workspace } from "$lib/state/workspace.svelte";
   import { t } from "$lib/i18n.svelte";
 
   let ask = $state<Ask | null>(null);
 
   const project = $derived(workspace.project);
   const row = "rounded-md outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring";
-
-  function add(kind: string, parent: string) {
-    ask = {
-      title: t(`workspace.new.${kind}`),
-      value: "",
-      action: t("common.create"),
-      run: (name) => workspace.create(childOf(parent, name)),
-    };
-  }
-
-  function addPage(notebook: string) {
-    const templates = theme.offered;
-    ask = {
-      title: t("workspace.new.page"),
-      value: "",
-      action: t("common.create"),
-      options: [t("workspace.noTemplate"), ...templates.map((template) => template.label)],
-      run: async (name, option) => {
-        await workspace.create(childOf(notebook, name));
-        if (option > 0) workspace.rewrite((text) => withTemplate(text, templates[option - 1]));
-      },
-    };
-  }
-
-  function importPage(notebook: string) {
-    return workspace.attempt(async () => {
-      const file = await pickTypstFile();
-      if (file !== null) await workspace.importPage(notebook, file);
-    });
-  }
-
-  function rename(kind: string, path: string) {
-    ask = {
-      title: t(`workspace.rename.${kind}`),
-      value: nameOf(path),
-      action: t("common.rename"),
-      run: (name) => workspace.move(path, childOf(parentOf(path), name)),
-    };
-  }
-
-  function remove(kind: string, path: string) {
-    ask = {
-      title: t(`workspace.remove.${kind}`, { name: nameOf(path) }),
-      text: t("workspace.remove.text"),
-      action: t("common.delete"),
-      destructive: true,
-      run: () => workspace.remove(path),
-    };
-  }
 </script>
 
 <div class="flex h-full flex-col text-sm">
@@ -88,13 +38,13 @@
           <DropdownMenu.Item onSelect={() => (workspace.project = name)}><Folder /> {name}</DropdownMenu.Item>
         {/each}
         {#if workspace.tree.length > 0}<DropdownMenu.Separator />{/if}
-        <DropdownMenu.Item onSelect={() => add("project", "")}>{t("workspace.menu.newProject")}</DropdownMenu.Item>
+        <DropdownMenu.Item onSelect={() => (ask = askNew("project", ""))}>{t("workspace.menu.newProject")}</DropdownMenu.Item>
         {#if project}
-          <DropdownMenu.Item onSelect={() => rename("project", project)}>{t("workspace.menu.renameProject")}</DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={() => (ask = askRename("project", project))}>{t("workspace.menu.renameProject")}</DropdownMenu.Item>
           {#if privacy.options.knowledge}
             <DropdownMenu.Item onSelect={() => privacy.add(project)}>{t("privacy.addToKnowledge")}</DropdownMenu.Item>
           {/if}
-          <DropdownMenu.Item variant="destructive" onSelect={() => remove("project", project)}>
+          <DropdownMenu.Item variant="destructive" onSelect={() => (ask = askRemove("project", project))}>
             {t("workspace.menu.deleteProject")}
           </DropdownMenu.Item>
         {/if}
@@ -120,7 +70,7 @@
                   title={t("workspace.new.page")}
                   onclick={(event) => {
                     event.preventDefault();
-                    addPage(path);
+                    ask = askNewPage(path);
                   }}
                 >
                   <Plus />
@@ -129,13 +79,13 @@
             {/snippet}
           </ContextMenu.Trigger>
           <ContextMenu.Content>
-            <ContextMenu.Item onSelect={() => addPage(path)}>{t("workspace.menu.newPage")}</ContextMenu.Item>
+            <ContextMenu.Item onSelect={() => (ask = askNewPage(path))}>{t("workspace.menu.newPage")}</ContextMenu.Item>
             <ContextMenu.Item onSelect={() => importPage(path)}>{t("workspace.menu.importPage")}</ContextMenu.Item>
-            <ContextMenu.Item onSelect={() => rename("notebook", path)}>{t("workspace.menu.rename")}</ContextMenu.Item>
+            <ContextMenu.Item onSelect={() => (ask = askRename("notebook", path))}>{t("workspace.menu.rename")}</ContextMenu.Item>
             {#if privacy.options.knowledge}
               <ContextMenu.Item onSelect={() => privacy.add(path)}>{t("privacy.addToKnowledge")}</ContextMenu.Item>
             {/if}
-            <ContextMenu.Item variant="destructive" onSelect={() => remove("notebook", path)}>{t("workspace.menu.delete")}</ContextMenu.Item>
+            <ContextMenu.Item variant="destructive" onSelect={() => (ask = askRemove("notebook", path))}>{t("workspace.menu.delete")}</ContextMenu.Item>
           </ContextMenu.Content>
         </ContextMenu.Root>
         {#each notebook.pages as page (page)}
@@ -159,7 +109,7 @@
               {/snippet}
             </ContextMenu.Trigger>
             <ContextMenu.Content>
-              <ContextMenu.Item onSelect={() => rename("page", pagePath)}>{t("workspace.menu.rename")}</ContextMenu.Item>
+              <ContextMenu.Item onSelect={() => (ask = askRename("page", pagePath))}>{t("workspace.menu.rename")}</ContextMenu.Item>
               {#if privacy.options.knowledge}
                 <ContextMenu.Item onSelect={() => privacy.add(pagePath)}>{t("privacy.addToKnowledge")}</ContextMenu.Item>
               {/if}
@@ -172,7 +122,7 @@
                   </ContextMenu.Item>
                 {/if}
               {/each}
-              <ContextMenu.Item variant="destructive" onSelect={() => remove("page", pagePath)}>{t("workspace.menu.delete")}</ContextMenu.Item>
+              <ContextMenu.Item variant="destructive" onSelect={() => (ask = askRemove("page", pagePath))}>{t("workspace.menu.delete")}</ContextMenu.Item>
             </ContextMenu.Content>
           </ContextMenu.Root>
         {/each}
@@ -186,9 +136,9 @@
 
   <div class="flex shrink-0 items-center border-t p-1">
     {#if project}
-      <Button variant="ghost" size="sm" onclick={() => add("notebook", project)}><Plus /> {t("workspace.new.notebook")}</Button>
+      <Button variant="ghost" size="sm" onclick={() => (ask = askNew("notebook", project))}><Plus /> {t("workspace.new.notebook")}</Button>
     {:else}
-      <Button variant="ghost" size="sm" onclick={() => add("project", "")}><Plus /> {t("workspace.new.project")}</Button>
+      <Button variant="ghost" size="sm" onclick={() => (ask = askNew("project", ""))}><Plus /> {t("workspace.new.project")}</Button>
     {/if}
   </div>
 </div>

@@ -1,31 +1,35 @@
 {
-  "title": "Thema's",
-  "look": "Uiterlijk",
-  "import": "Een themabestand importeren…",
-  "intro": "Thema's wijzigen het uiterlijk, voegen paginasjablonen toe, of beide.",
-  "storeFailure": "{reason} Thema's die je al hebt geïnstalleerd, staan hieronder.",
-  "search": "Thema's zoeken",
+  "title": "Marktplaats",
+  "import": "Importeren",
+  "intro": "Looks (.zth) veranderen hoe znote eruitziet. Sjablonen (.znx) voegen paginalay-outs toe.",
+  "storeFailure": "{reason} Alleen geïnstalleerde add-ons worden getoond.",
+  "search": "Add-ons zoeken",
   "installed": "Geïnstalleerd",
-  "none": "Geen thema gevonden.",
+  "none": "Geen resultaten.",
   "kind": {
-    "look": "Alleen uiterlijk",
-    "both": "Uiterlijk en sjablonen",
-    "templates": "Alleen sjablonen"
+    "look": "Uiterlijken",
+    "templates": "Sjablonen"
   },
   "contents": {
     "look": "Wijzigt het uiterlijk",
-    "both": "Wijzigt het uiterlijk en voegt paginasjablonen toe",
-    "templates": "Voegt paginasjablonen toe"
+    "templates": "Voegt sjablonen toe"
   },
   "version": "Versie {version}",
-  "lookSwitch": "Uiterlijk",
-  "lookSwitchTitle": "Dit thema weergeven in de lijst met uiterlijken",
-  "templatesSwitch": "Sjablonen",
-  "templatesSwitchTitle": "De sjablonen van dit thema weergeven wanneer je een sjabloon kiest",
+  "lookSwitchTitle": "Weergeven bij uiterlijken",
+  "templatesSwitchTitle": "Weergeven in sjabloonkiezer",
   "install": "Installeren",
   "installing": "Installeren…",
   "update": "Bijwerken",
   "updating": "Bijwerken…",
   "remove": "Verwijderen",
-  "removeTheme": "Het thema {name} verwijderen"
+  "importTitle": "Een .zth / .znx-bestand importeren",
+  "filters": "Filters",
+  "browse": "Alle add-ons",
+  "type": "Type",
+  "category": "Categorie",
+  "all": "Alle",
+  "use": "Gebruiken",
+  "inUse": "In gebruik",
+  "more": "Meer voor {name}",
+  "templatesList": "Sjablonen: {names}"
 }

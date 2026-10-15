@@ -131,5 +131,10 @@
     "thorough": "Thorough",
     "thoroughHint": "Long, careful work. Slowest.",
     "custom": "Custom"
+  },
+  "files": {
+    "title": "What the assistant sees",
+    "text": "Pick a page or file to see it as the assistant does, and choose how much is hidden.",
+    "none": "No pages or files in this chat yet."
   }
 }

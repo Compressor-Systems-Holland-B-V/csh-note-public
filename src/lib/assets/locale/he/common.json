@@ -17,7 +17,7 @@
   "mode": {
     "edit": "עריכה",
     "export": "ייצוא",
-    "themes": "ערכות נושא"
+    "marketplace": "חנות"
   },
   "appearance": {
     "toLight": "מעבר למצב בהיר",
@@ -34,5 +34,13 @@
     "downloading": "מוריד חבילה {name}…",
     "previewFailed": "לא ניתן היה לעדכן את התצוגה המקדימה: {reason}",
     "desktopOnly": "זה עובד רק באפליקציית שולחן העבודה."
+  },
+  "preview": "תצוגה מקדימה",
+  "back": "חזרה",
+  "finish": "סיום",
+  "layout": {
+    "edit": "עריכה",
+    "agent": "עוזר",
+    "redaction": "הסתרה"
   }
 }

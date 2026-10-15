@@ -31,7 +31,6 @@ jobs:
             "rpm":  { "name": "rpm",  "os": "ubuntu-24.04",   "kind": "tauri", "rust": true, "bundle": "rpm",  "glob": "src-tauri/target/release/bundle/rpm/*.rpm" },
             "exe":  { "name": "exe",  "os": "windows-latest", "kind": "tauri", "rust": true, "bundle": "nsis", "glob": "src-tauri/target/release/bundle/nsis/*-setup.exe" },
             "dmg":  { "name": "dmg",  "os": "macos-14",       "kind": "tauri", "rust": true, "bundle": "dmg",  "glob": "src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg" },
-            "msix": { "name": "msix", "os": "windows-latest", "kind": "msix",  "rust": true, "glob": "dist/packages/*.msix" },
             "arch": { "name": "arch", "os": "ubuntu-24.04",   "kind": "arch",  "glob": "dist/packages/*.pkg.tar.zst" }
           }
           JSON
@@ -58,6 +57,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Work out the version being built
         id: version
@@ -126,43 +127,6 @@ jobs:
         if: matrix.bundle == 'dmg'
         run: pnpm tauri build --target universal-apple-darwin --bundles dmg
 
-      - name: Build the msix package
-        if: matrix.kind == 'msix'
-        shell: pwsh
-        env:
-          VERSION: ${{ steps.version.outputs.value }}
-        run: |
-          $ErrorActionPreference = 'Stop'
-
-          pnpm tauri build --no-bundle
-          if ($LASTEXITCODE -ne 0) { throw 'tauri build failed' }
-
-          $layout = 'dist/msix'
-          New-Item -ItemType Directory -Force -Path "$layout/Assets", 'dist/packages' | Out-Null
-
-          Copy-Item 'src-tauri/target/release/znote.exe' $layout
-
-          foreach ($logo in 'StoreLogo', 'Square44x44Logo') {
-            Copy-Item "src-tauri/icons/$logo.png" "$layout/Assets"
-          }
-
-          # the start tiles are opaque, built by tools/icon/msix-tiles.py
-          Copy-Item 'packaging/msix/Assets/*.png' "$layout/Assets"
-
-          $manifest = Get-Content 'packaging/msix/AppxManifest.xml.in' -Raw
-          $manifest.Replace('@VERSION@', "$env:VERSION.0") |
-            Set-Content "$layout/AppxManifest.xml" -Encoding utf8
-
-          $makeappx = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin" -Filter makeappx.exe -Recurse |
-            Where-Object { $_.Directory.Name -eq 'x64' } |
-            Sort-Object { $_.Directory.Parent.Name } |
-            Select-Object -Last 1
-          if (-not $makeappx) { throw 'no makeappx.exe in the windows sdk on this runner' }
-          Write-Output "packing with $($makeappx.FullName)"
-
-          & $makeappx.FullName pack /d $layout /p "dist/packages/znote-$env:VERSION-x64.msix" /o
-          if ($LASTEXITCODE -ne 0) { throw 'makeappx failed' }
-
       # arch, built from the checkout so untagged commits package too
 
       - name: Build the arch package
@@ -170,6 +134,7 @@ jobs:
         run: |
           mkdir -p dist/packages dist/arch/repo
           git archive HEAD | tar -x -C dist/arch/repo
+          git -C vendor/zsuite archive --prefix=vendor/zsuite/ HEAD | tar -x -C dist/arch/repo
           version="$(node -p 'require("./package.json").version')"
           sed -e 's|^source=.*|source=()|' \
               -e '/^sha256sums=/d' \

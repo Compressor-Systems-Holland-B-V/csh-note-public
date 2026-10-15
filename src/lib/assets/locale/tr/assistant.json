@@ -131,5 +131,10 @@
     "thorough": "Kapsamlı",
     "thoroughHint": "Uzun raporlar ve dikkatli yeniden yazımlar. En yavaşı.",
     "custom": "Özel"
+  },
+  "files": {
+    "title": "Asistanın gördükleri",
+    "text": "Bir sayfayı veya dosyayı asistanın gördüğü gibi görmek için seçin ve ne kadarının gizleneceğini belirleyin.",
+    "none": "Bu sohbette henüz sayfa veya dosya yok."
   }
 }

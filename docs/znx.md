@@ -1,8 +1,12 @@
 # The `.znx` format
 
-A `.znx` file is a znote add-on. It can carry a UI look (colours, logo, font), Typst document
-templates, or both. Users get one from the Marketplace or import it there with "Import a .znx
-file". This page is for people who make one.
+A `.znx` file is a znote add-on with Typst document templates and the Typst package they import.
+Users get one from the Marketplace or import it there. This page is for people who make one.
+
+The look of the app (colours, logo, interface font) is not part of a `.znx`. It comes in a `.zth`
+file, a format shared with other apps; see
+[`vendor/zsuite/docs/zth.md`](../vendor/zsuite/docs/zth.md). A company that wants both publishes
+one of each, usually with the same `id`.
 
 ## Layout
 
@@ -10,12 +14,11 @@ A `.znx` is a zip archive with a different extension:
 
 ```
 theme.json     required
-ui/            logos and fonts for the app itself
+guide.md       required: how to write pages with these templates, read by the assistant
 typst/         a normal Typst package: typst.toml, lib.typ, assets/, fonts/ ...
 ```
 
-Both `ui` and `typst` are optional, so one file can be a UI look, a set of templates, or both.
-Zip the three entries themselves, not a folder that contains them.
+Zip the entries themselves, not a folder that contains them.
 
 ## `theme.json`
 
@@ -25,16 +28,9 @@ Zip the three entries themselves, not a folder that contains them.
   "id": "acme",
   "name": "Acme",
   "version": "0.1.0",
-  "description": "The Acme company look with report templates.",
+  "description": "Acme report templates.",
   "category": "Business",
   "tags": ["navy", "corporate"],
-  "ui": {
-    "logo": "ui/logo.svg",
-    "logoDark": "ui/logo-white.svg",
-    "font": { "family": "Acme Sans", "files": ["typst/fonts/AcmeSans-Regular.ttf"] },
-    "light": { "--primary": "#0F172A", "--accent": "#2563EB", "--background": "#FFFFFF" },
-    "dark": { "--primary": "#2563EB", "--background": "#0F172A" }
-  },
   "typst": {
     "templates": [
       {
@@ -49,47 +45,24 @@ Zip the three entries themselves, not a folder that contains them.
 
 | Field | Rules |
 |---|---|
-| `format` | Always `1`. |
-| `id` | Lowercase letters, digits and dashes, starting with a letter. Importing a theme replaces the installed theme with the same id. |
-| `name` | Shown in Settings. Letters, digits, spaces and `- _ . &`, at most 60 characters. |
+| `format` | Always `1`. Fields not on this page, such as a `ui` section with a look, are refused. |
+| `id` | 1 to 40 lowercase letters, digits and dashes, starting with a letter. Importing replaces the installed add-on with the same id and version; other versions stay, because a page imports one exact version. |
+| `name` | Shown in the Marketplace. Letters, digits, spaces and `- _ . &`, at most 60 characters. |
 | `version` | Three numbers, like `0.1.0`. |
-| `description` | Optional. One or two sentences shown on the theme card, at most 200 characters. |
-| `category` | Optional. One word or short name the Marketplace can filter on, such as `Academic`, `Business`, `Technical`, `Education`, `Personal`, `Creative` or `Interface`. |
+| `description` | Optional. One or two sentences shown on the Marketplace card, at most 200 characters. |
+| `category` | Optional. One word or short name the Marketplace can filter on, such as `Academic`, `Business`, `Technical`, `Education`, `Personal` or `Creative`. |
 | `tags` | Optional. Up to 10 short words that the search box also looks at. |
-| `ui.logo`, `ui.logoDark` | Shown in the title bar. `svg`, `png`, `jpg` or `jpeg`. The dark logo is used in dark mode and falls back to `logo`. |
-| `ui.font` | `family` is the name the app uses; `files` are `ttf` or `otf`. List one file per weight and style; the weight and style are read from each file. |
-| `ui.light`, `ui.dark` | Colour settings for light and dark mode. Anything left out keeps the default. |
-| `typst.templates` | Entries for the template picker. `kind` is `document`, `slides` or `poster`. |
-
-Paths use `/`, are relative to the archive root and must point to a file in the archive.
-
-### Colour settings
-
-Only these names are accepted:
-
-```
---background  --foreground  --card  --card-foreground  --popover  --popover-foreground
---primary  --primary-foreground  --secondary  --secondary-foreground  --muted  --muted-foreground
---accent  --accent-foreground  --destructive  --border  --input  --ring
---chart-1  --chart-2  --chart-3  --chart-4  --chart-5
---sidebar  --sidebar-foreground  --sidebar-primary  --sidebar-primary-foreground
---sidebar-accent  --sidebar-accent-foreground  --sidebar-border  --sidebar-ring
---radius
-```
-
-A colour is a hex value (`#RGB`, `#RGBA`, `#RRGGBB`, `#RRGGBBAA`) or one of `rgb()`, `rgba()`,
-`hsl()`, `hsla()`, `oklch()`, `oklab()` with numbers only, such as `oklch(0.5 0.1 240 / 50%)`.
-`--radius` is a number with an optional `px`, `rem`, `em` or `%`. Colour names, `var()`, `url()`
-and anything else are refused.
-
-The editor colours its syntax with the chart settings: `--chart-1` keywords, `--chart-2` strings,
-`--chart-3` headings and function names, `--chart-4` warnings, `--chart-5` numbers.
+| `typst.templates` | Entries for the template picker: `label` (at most 60 letters, digits, spaces and `- _ . &`), `kind` (`document`, `slides` or `poster`) and `snippet`. |
 
 ## The Typst package
 
 Everything under `typst/` is installed as the package `@themes/<id>:<version>`, so a page imports
-it with `#import "@themes/acme:0.1.0": *`. Fonts anywhere in the theme are available to Typst by
+it with `#import "@themes/acme:0.1.0": *`. Fonts anywhere in the add-on are available to Typst by
 their family name.
+
+The editor colours its syntax with the chart colours of the look (`.zth`) in use: `--chart-1`
+keywords, `--chart-2` strings, `--chart-3` headings and function names, `--chart-4` warnings,
+`--chart-5` numbers.
 
 A template's `snippet` is the Typst that the picker puts at the top of the page, between two
 marker lines:
@@ -103,21 +76,46 @@ marker lines:
 
 Picking another template replaces that block and leaves the rest of the page alone.
 
+## `guide.md`
+
+Every add-on carries a `guide.md`: Markdown that tells znote's assistant how to write a page with
+its templates. When the open page uses one of them, the assistant gets the guide, plus the
+top-level `#let` lines the package exports (names, parameters, short values and the `//` comments
+right above them; relative imports are followed), and is told not to style the page itself. An
+add-on without a guide, or with one over 16 KB, is not imported.
+
+Write it for a reader who knows Typst but not your package, in this order:
+
+- **Templates**: per template, when to use it and the parameters of its show rule.
+- **Writing a page**: what the template already styles (page, fonts, headings, tables, title
+  block) and how to structure content; for slides, exactly how a new slide starts.
+- **Helpers**: each function or colour a page is meant to use, one line on when, and a short
+  example that compiles after the template's header.
+- **Do not**: what the assistant must leave alone, such as `#set page`, its own colours or boxes.
+
+Only describe how to write Typst with your templates. The assistant is told to ignore anything in
+a guide about other pages, files, tools or websites.
+
 ## Limits
 
 - The file is at most 50 MB, 200 MB unpacked, 2000 entries.
-- Every entry must stay inside the theme folder; names with `..`, `\` or `:` are refused.
-- A theme that breaks any rule on this page is not imported, and the app says which rule.
+- Every entry must stay inside the add-on folder; names with `..`, `\` or `:` are refused.
+- An add-on that breaks any rule on this page is not imported, and the app says which rule.
 
 ## The Marketplace
 
-The Marketplace also lists the add-ons published at
-<https://huggingface.co/datasets/zal-analytics-core/znote-data>. That list is `index.json`, an
-array with the `theme.json` of every published add-on, and each add-on is downloaded from
-`themes/<id>.znx`. A downloaded add-on goes through the same checks as an imported file.
+The Marketplace lists two stores on Hugging Face:
 
-The sources live in the local `data/src/<id>/` folders, one folder per theme laid out like the
-archive. `scripts/sync_data --build` zips them and writes `index.json`, `--upload` also checks that
-every theme installs and every template compiles and then publishes `data/`, and `--download`
-fetches what is published. Raise `version` when you change a published theme so the app offers the
-update.
+- templates from <https://huggingface.co/datasets/zal-analytics-core/znote-data>: `index.json` and
+  `themes/<id>.znx`;
+- looks from <https://huggingface.co/datasets/zal-analytics-core/zsuite-themes>: `index.json` and
+  `themes/<id>.zth`.
+
+Each `index.json` is an array with the `theme.json` of every published file. A download goes
+through the same checks as an imported file.
+
+The sources live in the local `data/src/<id>/` (templates) and `data-looks/src/<id>/` (looks)
+folders, one folder per file laid out like the archive. `scripts/sync_data --build` zips them and
+writes both `index.json` files, `--upload` also checks that every look installs and every template
+compiles and then publishes both, and `--download` fetches what is published. Raise `version`
+when you change a published file so the app offers the update.

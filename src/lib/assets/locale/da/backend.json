@@ -35,7 +35,9 @@
     "cutOff": "Svaret blev afbrudt: {error}",
     "modelFirst": "Vælg en model til assistenten først.",
     "tooManySteps": "Assistenten tog for mange skridt og blev stoppet.",
-    "passwordStore": "Computerens adgangskodelager kunne ikke bruges: {error}"
+    "passwordStore": "Computerens adgangskodelager kunne ikke bruges: {error}",
+    "notAllowed": "Din organisation tillader ikke denne assistent.",
+    "plainHttp": "Almindelig http:// bruges kun til en server på denne computer eller dit eget netværk. Brug https:// til denne adresse."
   },
   "chat": {
     "busy": "Assistenten er stadig optaget. Vent på, at den bliver færdig, eller stop den.",
@@ -52,8 +54,11 @@
     "fixFirst": "Ret problemerne på denne side, før du eksporterer den.",
     "pageNotOpened": "Siden kunne ikke åbnes.",
     "slideNotDrawn": "Et slide kunne ikke tegnes: {error}",
+    "pictureNotDrawn": "Et billede kunne ikke tegnes: {error}",
     "pdfFailed": "PDF-filen kunne ikke oprettes: {reason}",
     "pptxFailed": "Præsentationen kunne ikke oprettes: {error}",
+    "docxFailed": "Word-filen kunne ikke oprettes: {error}",
+    "notWord": "Denne side kan ikke blive til et Word-dokument: {error}",
     "nothing": "Denne side har intet at eksportere.",
     "nothingYet": "Intet er blevet eksporteret endnu.",
     "notSaved": "Filen kunne ikke gemmes: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Denne fil kan ikke åbnes, fordi den kræver temaer, der ikke er installeret:\n• {themes}\nInstallér dem på siden Temaer, og åbn derefter filen igen.",
     "outside": "Denne znote-fil forsøger at placere “{name}” uden for sin egen mappe, så den blev ikke importeret.",
     "tooLarge": "Denne znote-fil er for stor, når den er pakket ud, så den blev ikke importeret.",
-    "openFirst": "Åbn først en znote-fil."
+    "openFirst": "Åbn først en znote-fil.",
+    "wrongPassword": "Adgangskoden er forkert, eller dette er ikke en znote-fil."
   },
   "theme": {
     "fileNotRead": "Denne temafil kunne ikke læses: {error}",
@@ -121,7 +127,6 @@
     "notPage": "”{path}” er ikke en side.",
     "badMove": "En side kan kun flyttes til en notesbog, og en notesbog til et projekt.",
     "folderFirst": "Vælg en arbejdsområdemappe først.",
-    "fileNotRead": "Filen kunne ikke læses: {error}",
-    "notFullPath": "”{folder}” er ikke en fuld mappesti."
+    "fileNotRead": "Filen kunne ikke læses: {error}"
   }
 }

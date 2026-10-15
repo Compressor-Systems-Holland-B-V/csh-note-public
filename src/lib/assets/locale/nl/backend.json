@@ -35,7 +35,9 @@
     "cutOff": "Het antwoord is afgebroken: {error}",
     "modelFirst": "Kies eerst een model voor de assistent.",
     "tooManySteps": "De assistent heeft te veel stappen gezet en is gestopt.",
-    "passwordStore": "De wachtwoordkluis van deze computer kon niet worden gebruikt: {error}"
+    "passwordStore": "De wachtwoordkluis van deze computer kon niet worden gebruikt: {error}",
+    "notAllowed": "Je organisatie staat deze assistent niet toe.",
+    "plainHttp": "Gewoon http:// wordt alleen gebruikt voor een server op deze computer of je eigen netwerk. Gebruik https:// voor dit adres."
   },
   "chat": {
     "busy": "De assistent is nog bezig. Wacht tot hij klaar is, of stop hem.",
@@ -52,8 +54,11 @@
     "fixFirst": "Los de problemen op deze pagina op voordat je haar exporteert.",
     "pageNotOpened": "De pagina kon niet worden geopend.",
     "slideNotDrawn": "Een dia kon niet worden getekend: {error}",
+    "pictureNotDrawn": "Een afbeelding kon niet worden getekend: {error}",
     "pdfFailed": "De PDF kon niet worden gemaakt: {reason}",
     "pptxFailed": "De presentatie kon niet worden gemaakt: {error}",
+    "docxFailed": "Het Word-bestand kon niet worden gemaakt: {error}",
+    "notWord": "Van deze pagina kan geen Word-document worden gemaakt: {error}",
     "nothing": "Deze pagina heeft niets om te exporteren.",
     "nothingYet": "Er is nog niets geëxporteerd.",
     "notSaved": "Het bestand kon niet worden opgeslagen: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Dit bestand kan niet worden geopend omdat het thema's nodig heeft die niet zijn geïnstalleerd:\n• {themes}\nInstalleer ze op de pagina Thema's en open het bestand daarna opnieuw.",
     "outside": "Dit znote-bestand probeert “{name}” buiten zijn eigen map te plaatsen en is daarom niet geïmporteerd.",
     "tooLarge": "Dit znote-bestand is uitgepakt te groot en is daarom niet geïmporteerd.",
-    "openFirst": "Open eerst een znote-bestand."
+    "openFirst": "Open eerst een znote-bestand.",
+    "wrongPassword": "Het wachtwoord klopt niet, of dit is geen znote-bestand."
   },
   "theme": {
     "fileNotRead": "Dit themabestand kon niet worden gelezen: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” is geen pagina.",
     "badMove": "Een pagina kan alleen naar een notitieblok worden verplaatst, en een notitieblok naar een project.",
     "folderFirst": "Kies eerst een werkruimtemap.",
-    "fileNotRead": "Het bestand kon niet worden gelezen: {error}",
-    "notFullPath": "“{folder}” is geen volledig mappad."
+    "fileNotRead": "Het bestand kon niet worden gelezen: {error}"
   }
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import LoaderCircle from "@lucide/svelte/icons/loader-circle";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { exportPage, openExport, showExport } from "$lib/ipc";
   import type { Exported, ExportFormat } from "$lib/ipc";
   import { doc } from "$lib/state/document.svelte";
@@ -12,6 +12,7 @@
   const formats: { id: ExportFormat; label: string }[] = [
     { id: "pdf", label: "PDF" },
     { id: "pptx", label: "PowerPoint" },
+    { id: "docx", label: "Word" },
   ];
 
   let chosen = $state<ExportFormat | null>(null);
@@ -78,9 +79,6 @@
   {#if done}
     <div class="grid gap-2 border-t pt-3" role="status">
       <p class="break-all">{t("export.savedTo", { path: done.path })}</p>
-      {#if done.missingFonts.length > 0}
-        <p class="text-muted-foreground">{t("export.missingFonts", { fonts: done.missingFonts.join(", ") })}</p>
-      {/if}
       <div class="flex gap-1">
         <Button variant="outline" size="sm" onclick={() => attempt(openExport)}>{t("export.openFile")}</Button>
         <Button variant="outline" size="sm" onclick={() => attempt(showExport)}>{t("export.showInFolder")}</Button>

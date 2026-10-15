@@ -1,5 +1,5 @@
 <script lang="ts">
-  import * as ContextMenu from "$lib/components/ui/context-menu";
+  import * as ContextMenu from "@zsuite/ui/context-menu";
   import type { Piece } from "$lib/ipc";
   import { kindColour, kinds, linesToHide, privacy } from "$lib/state/privacy.svelte";
   import { messageOf } from "$lib/utils";
@@ -80,6 +80,14 @@
         {@const piece = chosen}
         <ContextMenu.Label class="truncate">{t("privacy.view.isHidden", { text: piece.text, kind: kindName(piece.kind) })}</ContextMenu.Label>
         <ContextMenu.Item onSelect={() => change([piece.text], null)}>{t("privacy.view.dontHide")}</ContextMenu.Item>
+        <ContextMenu.Sub>
+          <ContextMenu.SubTrigger>{t("privacy.view.kind")}</ContextMenu.SubTrigger>
+          <ContextMenu.SubContent>
+            {#each kinds as kind (kind)}
+              <ContextMenu.Item disabled={kind === piece.kind} onSelect={() => change([piece.text], kind)}><span class="size-3 rounded-sm {kindColour(kind)}"></span> {kindName(kind)}</ContextMenu.Item>
+            {/each}
+          </ContextMenu.SubContent>
+        </ContextMenu.Sub>
       {:else if selected.length > 0}
         {@const picked = selected}
         <ContextMenu.Sub>

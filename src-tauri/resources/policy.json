@@ -1,0 +1,11 @@
+{
+  "$schema": "./policy.schema.json",
+  "hideNames": "optional",
+  "findNames": "optional",
+  "hideAmounts": "optional",
+  "minimumLevel": 0,
+  "web": "allowed",
+  "providers": ["claude", "openrouter", "custom"],
+  "dataCollection": "deny",
+  "zeroRetention": false
+}

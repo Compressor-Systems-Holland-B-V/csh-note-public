@@ -1,11 +1,11 @@
 <script lang="ts">
   import FileText from "@lucide/svelte/icons/file-text";
   import Search from "@lucide/svelte/icons/search";
-  import { Input } from "$lib/components/ui/input";
+  import { Input } from "@zsuite/ui/input";
   import { searchPages, type Hit } from "$lib/ipc";
   import { workspace } from "$lib/state/workspace.svelte";
   import { messageOf } from "$lib/utils";
-  import Sidebar from "./Sidebar.svelte";
+  import WorkspaceBrowser from "./WorkspaceBrowser.svelte";
   import { t } from "$lib/i18n.svelte";
 
   let query = $state("");
@@ -35,7 +35,7 @@
     <Input type="search" class="ps-8" placeholder={t("workspace.search")} aria-label={t("workspace.search")} bind:value={query} />
   </div>
   {#if query.trim() === ""}
-    <div class="min-h-0 flex-1"><Sidebar /></div>
+    <div class="min-h-0 flex-1"><WorkspaceBrowser /></div>
   {:else}
     <nav class="min-h-0 flex-1 overflow-auto p-2 text-sm" aria-label={t("workspace.search")}>
       {#if failure}<p class="p-2 text-destructive" role="alert">{failure}</p>{/if}

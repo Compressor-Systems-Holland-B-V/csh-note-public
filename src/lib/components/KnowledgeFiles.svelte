@@ -1,7 +1,7 @@
 <script lang="ts">
   import Check from "@lucide/svelte/icons/check";
   import AskDialog, { type Ask } from "$lib/components/AskDialog.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { privacy } from "$lib/state/privacy.svelte";
   import KnowledgeForm from "./KnowledgeForm.svelte";
   import type { FormMode } from "./KnowledgeForm.svelte";

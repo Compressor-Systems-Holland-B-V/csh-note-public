@@ -4,7 +4,7 @@
   import Minus from "@lucide/svelte/icons/minus";
   import Plus from "@lucide/svelte/icons/plus";
   import RefreshCw from "@lucide/svelte/icons/refresh-cw";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import type { PageView } from "$lib/state/document.svelte";
   import { t } from "$lib/i18n.svelte";
 

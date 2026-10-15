@@ -10,10 +10,15 @@
     "notHidden": "Ikke skjult",
     "notHiddenTitle": "Assistenten ser dine sider og filer præcis, som de er",
     "locked": "Låst",
-    "lockedTitle": "Åbn først din vidensfil i Indstillinger."
+    "lockedTitle": "Åbn først din vidensfil i Indstillinger.",
+    "toggle": "Skjul navne i denne chat",
+    "offInSettings": "Skjulning er slået fra i Indstillinger",
+    "fixed": "Låst, når chatten er startet",
+    "required": "Din organisation kræver skjulning, så den kan ikke slås fra."
   },
   "saw": {
-    "prompt": "Din besked"
+    "prompt": "Din besked",
+    "system": "Instruktioner til assistenten"
   },
   "start": {
     "text": "Navne, beløb og kontaktoplysninger bliver til pladsholdere som ⟦CUSTOMER_3⟧, før noget sendes.",
@@ -120,7 +125,8 @@
     "dontHide": "Skjul ikke dette",
     "alwaysHide": "Skjul altid dette",
     "hideAs": "Skjul “{text}” som",
-    "kind": "Type"
+    "kind": "Type",
+    "lines": "{count} linjer"
   },
   "kinds": {
     "CUSTOMER": "Kunde",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Leverandør",
     "PROJECT": "Projekt",
     "PRODUCT": "Produkt",
-    "LOCATION": "Sted"
+    "LOCATION": "Sted",
+    "AMOUNT": "Beløb",
+    "EMAIL": "E-mailadresse",
+    "PHONE": "Telefonnummer",
+    "URL": "Webadresse",
+    "IBAN": "IBAN",
+    "CARD": "Kortnummer",
+    "IP": "IP-adresse"
   },
   "level": {
     "label": "Hvor meget der skjules",
     "own": "Kun din egen liste og kontaktoplysninger",
     "light": "Let: også navne på personer",
     "medium": "Middel: også organisationer og steder",
-    "strict": "Streng: også produkter, projekter, kunder og leverandører"
-  }
+    "strict": "Streng: også produkter, projekter, kunder og leverandører",
+    "short": {
+      "own": "Egen liste",
+      "light": "Let",
+      "medium": "Middel",
+      "strict": "Streng"
+    }
+  },
+  "redact": {
+    "title": "Skjulning",
+    "off": "Skjulning er slået fra.",
+    "turnOn": "Slå til",
+    "none": "Intet at skjule på denne side.",
+    "undo": "Fortryd (Ctrl+Z)",
+    "redo": "Annuller fortryd (Ctrl+Y)",
+    "reset": "Nulstil denne side",
+    "filter": "Filter",
+    "count": "{hidden} af {total} skjult",
+    "hideGroup": "Skjul alle: {kind}",
+    "other": "Andet",
+    "removeUnhidden": "Fjern ikke-skjulte ord fra listen"
+  },
+  "blocked": {
+    "noFile": "Skjulning er slået til, men der er ikke valgt en vidensfil. Intet sendes, før du opretter eller vælger en i Indstillinger eller slår skjulning fra.",
+    "locked": "Skjulning er slået til, men din vidensfil er låst. Intet sendes, før du åbner den i Indstillinger.",
+    "noFinder": "Navnesøgning er slået til, men navnefinderen er ikke hentet. Intet sendes, før du henter den i Indstillinger eller slår navnesøgning fra."
+  },
+  "previewBefore": "Vis hvad denne besked ville sende"
 }

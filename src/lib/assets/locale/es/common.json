@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Editar",
     "export": "Exportar",
-    "themes": "Temas"
+    "marketplace": "Mercado"
   },
   "appearance": {
     "toLight": "Cambiar al modo claro",
@@ -34,5 +34,13 @@
     "downloading": "Descargando el paquete {name}…",
     "previewFailed": "No se pudo actualizar la vista previa: {reason}",
     "desktopOnly": "solo funciona en la aplicación de escritorio."
+  },
+  "preview": "Vista previa",
+  "back": "Atrás",
+  "finish": "Finalizar",
+  "layout": {
+    "edit": "Editar",
+    "agent": "Asistente",
+    "redaction": "Ocultar"
   }
 }

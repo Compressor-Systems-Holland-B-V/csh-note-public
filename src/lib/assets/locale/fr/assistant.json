@@ -131,5 +131,10 @@
     "thorough": "Approfondi",
     "thoroughHint": "Rapports longs et réécritures minutieuses. Le plus lent.",
     "custom": "Personnalisé"
+  },
+  "files": {
+    "title": "Ce que voit l’assistant",
+    "text": "Choisissez une page ou un fichier pour le voir comme l’assistant le voit, et choisissez ce qui est masqué.",
+    "none": "Aucune page ni aucun fichier dans cette discussion pour l’instant."
   }
 }

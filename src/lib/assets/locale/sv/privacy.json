@@ -10,10 +10,15 @@
     "notHidden": "Inte dolt",
     "notHiddenTitle": "Assistenten ser dina sidor och filer precis som de är",
     "locked": "Låst",
-    "lockedTitle": "Öppna din kunskapsfil i Inställningar först."
+    "lockedTitle": "Öppna din kunskapsfil i Inställningar först.",
+    "toggle": "Dölj namn i den här chatten",
+    "offInSettings": "Döljning är avstängd i Inställningar",
+    "fixed": "Låst när chatten har börjat",
+    "required": "Din organisation kräver döljning, så den kan inte stängas av."
   },
   "saw": {
-    "prompt": "Ditt meddelande"
+    "prompt": "Ditt meddelande",
+    "system": "Instruktioner till assistenten"
   },
   "start": {
     "text": "Namn, belopp och kontaktuppgifter blir platshållare som ⟦CUSTOMER_3⟧ innan något skickas.",
@@ -120,7 +125,8 @@
     "dontHide": "Dölj inte detta",
     "alwaysHide": "Dölj alltid detta",
     "hideAs": "Dölj ”{text}” som",
-    "kind": "Typ"
+    "kind": "Typ",
+    "lines": "Rader: {count}"
   },
   "kinds": {
     "CUSTOMER": "Kund",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Leverantör",
     "PROJECT": "Projekt",
     "PRODUCT": "Produkt",
-    "LOCATION": "Plats"
+    "LOCATION": "Plats",
+    "AMOUNT": "Belopp",
+    "EMAIL": "E-postadress",
+    "PHONE": "Telefonnummer",
+    "URL": "Webbadress",
+    "IBAN": "IBAN",
+    "CARD": "Kortnummer",
+    "IP": "IP-adress"
   },
   "level": {
     "label": "Hur mycket som döljs",
     "own": "Bara din egen lista och kontaktuppgifter",
     "light": "Lätt: även namn på personer",
     "medium": "Medel: även organisationer och platser",
-    "strict": "Strikt: även produkter, projekt, kunder och leverantörer"
-  }
+    "strict": "Strikt: även produkter, projekt, kunder och leverantörer",
+    "short": {
+      "own": "Egen lista",
+      "light": "Lätt",
+      "medium": "Medel",
+      "strict": "Strikt"
+    }
+  },
+  "redact": {
+    "title": "Maskering",
+    "off": "Döljning är avstängd.",
+    "turnOn": "Slå på",
+    "none": "Inget att dölja på den här sidan.",
+    "undo": "Ångra (Ctrl+Z)",
+    "redo": "Gör om (Ctrl+Y)",
+    "reset": "Återställ den här sidan",
+    "filter": "Filter",
+    "count": "{hidden} av {total} dolda",
+    "hideGroup": "Dölj alla {kind}",
+    "other": "Övrigt",
+    "removeUnhidden": "Ta bort ord som inte döljs från listan"
+  },
+  "blocked": {
+    "noFile": "Döljning är på, men ingen kunskapsfil är vald. Inget skickas förrän du skapar eller väljer en i Inställningar, eller stänger av döljning.",
+    "locked": "Döljning är på, men din kunskapsfil är låst. Inget skickas förrän du öppnar den i Inställningar.",
+    "noFinder": "Namnsökning är på, men namnsökaren är inte nedladdad. Inget skickas förrän du laddar ned den i Inställningar, eller stänger av namnsökning."
+  },
+  "previewBefore": "Visa vad det här meddelandet skulle skicka"
 }

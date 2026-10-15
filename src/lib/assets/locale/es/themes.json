@@ -1,31 +1,35 @@
 {
-  "title": "Temas",
-  "look": "Apariencia",
-  "import": "Importar un archivo de tema…",
-  "intro": "Los temas cambian el aspecto, añaden plantillas de página o ambas cosas.",
-  "storeFailure": "{reason} Los temas que ya ha instalado se muestran a continuación.",
-  "search": "Buscar temas",
+  "title": "Mercado",
+  "import": "Importar",
+  "intro": "Los aspectos (.zth) cambian la apariencia de znote. Las plantillas (.znx) añaden diseños de página.",
+  "storeFailure": "{reason} Solo se muestran los complementos instalados.",
+  "search": "Buscar complementos",
   "installed": "Instalados",
-  "none": "No hay temas que coincidan.",
+  "none": "Sin resultados.",
   "kind": {
-    "look": "Solo apariencia",
-    "both": "Apariencia y plantillas",
-    "templates": "Solo plantillas"
+    "look": "Aspectos",
+    "templates": "Plantillas"
   },
   "contents": {
     "look": "Cambia la apariencia",
-    "both": "Cambia la apariencia y añade plantillas de página",
-    "templates": "Añade plantillas de página"
+    "templates": "Añade plantillas"
   },
   "version": "Versión {version}",
-  "lookSwitch": "Apariencia",
-  "lookSwitchTitle": "Mostrar este tema en la lista de apariencias",
-  "templatesSwitch": "Plantillas",
-  "templatesSwitchTitle": "Mostrar las plantillas de este tema al elegir una plantilla",
+  "lookSwitchTitle": "Mostrar en aspectos",
+  "templatesSwitchTitle": "Mostrar en el selector de plantillas",
   "install": "Instalar",
   "installing": "Instalando…",
   "update": "Actualizar",
   "updating": "Actualizando…",
   "remove": "Eliminar",
-  "removeTheme": "Eliminar el tema {name}"
+  "importTitle": "Importar un archivo .zth / .znx",
+  "filters": "Filtros",
+  "browse": "Todos los complementos",
+  "type": "Tipo",
+  "category": "Categoría",
+  "all": "Todos",
+  "use": "Usar",
+  "inUse": "En uso",
+  "more": "Más opciones de {name}",
+  "templatesList": "Plantillas: {names}"
 }

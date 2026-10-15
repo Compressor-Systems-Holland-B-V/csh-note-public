@@ -15,5 +15,28 @@
   "languageAuto": "Identique à cet ordinateur",
   "assistant": "Assistant",
   "file": "Votre fichier znote",
-  "switch": "Changer…"
+  "switch": "Changer…",
+  "layout": "Disposition",
+  "layouts": {
+    "edit": "Typst avec aperçu en direct.",
+    "agent": "La discussion d’abord, l’aperçu sur le côté.",
+    "redaction": "Trouvez des pages, contrôlez ce qui est masqué."
+  },
+  "parts": {
+    "pages": "Pages",
+    "editor": "Éditeur",
+    "preview": "Aperçu",
+    "assistant": "Discussion",
+    "search": "Recherche",
+    "filter": "Filtre"
+  },
+  "marketplace": "Boutique",
+  "marketplaceHint": "Installez des thèmes et des modèles.",
+  "start": {
+    "layout": "Comment voulez-vous travailler ?",
+    "privacy": "Que peut voir l’assistant ?",
+    "file": "Fichier de connaissances",
+    "downloads": "Téléchargements",
+    "marketplace": "Boutique"
+  }
 }

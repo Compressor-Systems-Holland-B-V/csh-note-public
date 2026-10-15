@@ -20,7 +20,6 @@ VERSION="$(node -p "require('./package.json').version")"
 OUT_DIR=packaging/repo/html
 TEMPLATE=tools/download-page/index.template.html
 REPO_URL=https://github.com/ZAL-Analytics/znote
-STORE_URL=
 
 pages() {
   local TAG="${1:-v$VERSION}"
@@ -58,7 +57,6 @@ linux|*.pkg.tar.zst|arch|Arch Linux|.pkg.tar.zst, 64-bit|For Arch, Manjaro and E
       debian)  echo '<circle cx="12" cy="12" r="5.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="3.2" r="2.6"/><circle cx="4.4" cy="16.4" r="2.6"/><circle cx="19.6" cy="16.4" r="2.6"/>' ;;
       fedora)  echo '<path d="M12 0a12 12 0 0 0 0 24h5.7a6.3 6.3 0 0 0 6.3-6.3V12A12 12 0 0 0 12 0zm1.6 5.6a3.6 3.6 0 0 1 3.6 3.6 1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 0-1.2-1.2 1.2 1.2 0 0 0-1.2 1.2v2.2h2a1.2 1.2 0 1 1 0 2.4h-2v1.4a3.6 3.6 0 1 1-3.6-3.6h1.2V9.2a3.6 3.6 0 0 1 3.6-3.6zM9.2 13.6a1.2 1.2 0 1 0 1.2 1.2v-1.2z"/>' ;;
       arch)    echo '<path d="M12 .8c.8 1.6 1.3 2.7 2.2 4.3-.6-.6-1.2-1-1.8-1.4.9 2.3 1.4 4.7 1.2 7.1-.1 2.6-1.1 5-2.7 7 1.6-.4 3.2-1.3 4.4-2.5-.1.7-.4 1.4-.9 2.1 2.1-1.4 3.2-3.4 3.4-5.4l4.6 10.2H1.6L12 .8zm.3 15.4c1 .6 1.9 1.4 2.5 2.4H9.2c.6-1 1.5-1.8 2.5-2.4z"/>' ;;
-      store)   echo '<path d="M3.4 7.6h17.2l-1.2 12.6a2 2 0 0 1-2 1.8H6.6a2 2 0 0 1-2-1.8z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8.2 7.6V5.4a3.8 3.8 0 0 1 7.6 0v2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M9.1 11.6h2.6v2.6H9.1zm3.2 0h2.6v2.6h-2.6zm-3.2 3.2h2.6v2.6H9.1zm3.2 0h2.6v2.6h-2.6z"/>' ;;
     esac
   }
 
@@ -114,12 +112,6 @@ linux|*.pkg.tar.zst|arch|Arch Linux|.pkg.tar.zst, 64-bit|For Arch, Manjaro and E
     echo "$TAG has no assets matching any known package, stopping" >&2
     exit 1
   fi
-
-  [ -z "$STORE_URL" ] || cards+="$(card windows store "Microsoft Store" "Windows 10 and 11" \
-    "Installs and updates through the Microsoft Store." \
-    "<a class=\"button\" href=\"$STORE_URL\">Open in Microsoft Store</a>")
-"
-  echo "    Microsoft Store -> ${STORE_URL:-not listed yet}"
 
   echo "==> Writing $OUT_DIR"
   mkdir -p "$OUT_DIR"

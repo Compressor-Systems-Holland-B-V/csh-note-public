@@ -79,5 +79,22 @@
     "start": "Zacznij",
     "empty": "Tutaj pojawią się otwierane pliki.",
     "back": "Wróć do {name}"
+  },
+  "search": "Szukaj stron",
+  "noHits": "Nic nie znaleziono.",
+  "browser": {
+    "path": "Gdzie jesteś",
+    "projects": "Projekty",
+    "notebooks": "Notatniki"
+  },
+  "password": {
+    "newTitle": "Chroń swój nowy plik znote",
+    "newText": "Wybierz hasło do tego pliku. Notatki, ustawienia i czaty w nim są nim szyfrowane. Wpisujesz je raz na każdym komputerze; potem ten komputer je pamięta.",
+    "unlockTitle": "Otwórz {name}",
+    "unlockText": "Ten plik znote jest zaszyfrowany. Wpisz jego hasło, aby go otworzyć. Potem ten komputer je zapamięta.",
+    "password": "Hasło",
+    "forgotten": "Przechowuj to hasło w bezpiecznym miejscu. Pliku, do którego hasło zostało utracone, nie da się już otworzyć.",
+    "create": "Utwórz plik",
+    "open": "Otwórz"
   }
 }

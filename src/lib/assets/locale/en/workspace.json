@@ -81,5 +81,20 @@
     "back": "Back to {name}"
   },
   "search": "Search pages",
-  "noHits": "Nothing found."
+  "noHits": "Nothing found.",
+  "browser": {
+    "path": "Where you are",
+    "projects": "Projects",
+    "notebooks": "Notebooks"
+  },
+  "password": {
+    "newTitle": "Protect your new znote file",
+    "newText": "Choose a password for this file. Notes, settings and chats inside it are encrypted with it. You type it once on each computer; after that this computer remembers it.",
+    "unlockTitle": "Open {name}",
+    "unlockText": "This znote file is encrypted. Type its password to open it. This computer remembers it after that.",
+    "password": "Password",
+    "forgotten": "Keep this password safe. A file whose password is lost cannot be opened again.",
+    "create": "Create file",
+    "open": "Open"
+  }
 }

@@ -131,5 +131,10 @@
     "thorough": "Grondig",
     "thoroughHint": "Lange rapporten en zorgvuldige herschrijvingen. Het traagst.",
     "custom": "Aangepast"
+  },
+  "files": {
+    "title": "Wat de assistent ziet",
+    "text": "Kies een pagina of bestand om het te zien zoals de assistent het ziet, en kies hoeveel er verborgen wordt.",
+    "none": "Nog geen pagina's of bestanden in deze chat."
   }
 }

@@ -1,37 +1,6 @@
 use std::net::{Ipv4Addr, Ipv6Addr};
 
-use regex::Regex;
-
-pub const AMOUNT: &str = "AMOUNT";
-
-const CURRENCIES: &str = "EUR|USD|GBP|CHF|JPY|CNY|SEK|NOK|DKK|PLN|CZK|HUF|INR|AUD|CAD|NZD|ZAR|BRL|MXN|TRY|RUB|AED|SAR|SGD|HKD|KRW";
-
-pub struct Patterns(Vec<(&'static str, Regex)>);
-
-fn sources() -> Vec<(&'static str, String)> {
-    let number = r"\d(?:[\d.,'\u{a0}]|[ ]\d)*";
-    let scale = r"(?:[ ]?(?:k|K|m|M|mln|mio|bn|million|billion))?";
-    vec![
-        (
-            "EMAIL",
-            r"[A-Za-z0-9._%+\-\\]+@[A-Za-z0-9\-]+(?:\.[A-Za-z0-9\-]+)*\.[A-Za-z]{2,}".into(),
-        ),
-        ("URL", r#"(?:https?|ftp)://[^\s<>"'`\]\)]+"#.into()),
-        ("IBAN", r"\b[A-Z]{2}\d{2}(?:[ ]?[A-Z0-9]){11,30}\b".into()),
-        ("CARD", r"\b\d(?:[ \-]?\d){12,18}\b".into()),
-        ("IP", r"\b\d{1,3}(?:\.\d{1,3}){3}\b".into()),
-        ("IP", r"(?i)[0-9a-f]{0,4}(?::[0-9a-f]{0,4}){2,7}".into()),
-        ("PHONE", r"(?:\+|\b0)\(?\d[\d \-/().]{6,}\d\b".into()),
-        (
-            AMOUNT,
-            format!(r"(?:\\?[€$£¥₹]|\b(?:{CURRENCIES})\b)[ \u{{a0}}]?{number}{scale}"),
-        ),
-        (
-            AMOUNT,
-            format!(r"\b{number}{scale}[ \u{{a0}}]?(?:[€£¥₹]|\b(?:{CURRENCIES})\b)"),
-        ),
-    ]
-}
+use super::rules::{Check, Rules};
 
 fn iban(text: &str) -> bool {
     let compact: String = text.chars().filter(|c| *c != ' ').collect();
@@ -84,73 +53,54 @@ fn phone(text: &str) -> bool {
 }
 
 fn amount(text: &str, after: &str) -> bool {
-    !(text.starts_with('$') && after.starts_with('$'))
+    !(text.starts_with('$') && after.starts_with('$')) && !text.ends_with('$')
 }
 
-fn valid(kind: &str, text: &str, after: &str) -> bool {
-    match kind {
-        "IBAN" => iban(text),
-        "CARD" => luhn(text),
-        "IP" if text.contains(':') => ipv6(text),
-        "IP" => text.parse::<Ipv4Addr>().is_ok(),
-        "PHONE" => phone(text),
-        AMOUNT => amount(text, after),
-        _ => true,
+fn valid(check: Option<Check>, text: &str, after: &str) -> bool {
+    match check {
+        None => true,
+        Some(Check::Iban) => iban(text),
+        Some(Check::Luhn) => luhn(text),
+        Some(Check::Ipv4) => text.parse::<Ipv4Addr>().is_ok(),
+        Some(Check::Ipv6) => ipv6(text),
+        Some(Check::Phone) => phone(text),
+        Some(Check::Amount) => amount(text, after),
     }
 }
 
-fn trimmed(kind: &str, text: &str) -> usize {
-    match kind {
-        "URL" => text.trim_end_matches(['.', ',', ';', ':', '!', '?']).len(),
-        AMOUNT => text.trim_end_matches(['.', ',', '\'', ' ', '\u{a0}']).len(),
-        _ => text.len(),
-    }
-}
-
-impl Patterns {
-    pub fn new() -> Self {
-        Self(
-            sources()
-                .into_iter()
-                .filter_map(|(kind, source)| Some((kind, Regex::new(&source).ok()?)))
-                .collect(),
-        )
-    }
-
-    pub fn find(&self, text: &str, amounts: bool) -> Vec<(usize, usize, &'static str)> {
-        let mut found = Vec::new();
-        for (kind, pattern) in &self.0 {
-            if *kind == AMOUNT && !amounts {
-                continue;
-            }
-            for hit in pattern.find_iter(text) {
-                let end = hit.start() + trimmed(kind, hit.as_str());
-                let piece = &text[hit.start()..end];
-                if !piece.is_empty() && !piece.contains('\n') && valid(kind, piece, &text[end..]) {
-                    found.push((hit.start(), end, *kind));
-                }
+pub fn find<'a>(rules: &'a Rules, text: &str, amounts: bool) -> Vec<(usize, usize, &'a str)> {
+    let mut found = Vec::new();
+    for pattern in rules
+        .patterns
+        .iter()
+        .filter(|pattern| amounts || !pattern.amounts)
+    {
+        for hit in pattern.regex.find_iter(text) {
+            let end = hit.start() + hit.as_str().trim_end_matches(pattern.trim.as_slice()).len();
+            let piece = &text[hit.start()..end];
+            if !piece.is_empty()
+                && !piece.contains('\n')
+                && valid(pattern.check, piece, &text[end..])
+            {
+                found.push((hit.start(), end, pattern.kind.as_str()));
             }
         }
-        found
     }
+    found
 }
 
 #[cfg(test)]
 mod tests {
+    use super::super::rules::rules;
     use super::*;
 
     fn kinds(text: &str) -> Vec<(&str, &'static str)> {
-        let mut found = Patterns::new().find(text, true);
+        let mut found = find(rules().unwrap(), text, true);
         found.sort();
         found
             .into_iter()
             .map(|(start, end, kind)| (&text[start..end], kind))
             .collect()
-    }
-
-    #[test]
-    fn every_pattern_compiles() {
-        assert_eq!(Patterns::new().0.len(), sources().len());
     }
 
     #[test]
@@ -191,12 +141,16 @@ mod tests {
         assert_eq!(
             kinds("costs € 1.250,00 or EUR 40k, 300 USD and \\$12 but not $5$ or 300 apples"),
             [
-                ("€ 1.250,00", AMOUNT),
-                ("EUR 40k", AMOUNT),
-                ("300 USD", AMOUNT),
-                ("\\$12", AMOUNT)
+                ("€ 1.250,00", "AMOUNT"),
+                ("EUR 40k", "AMOUNT"),
+                ("300 USD", "AMOUNT"),
+                ("\\$12", "AMOUNT")
             ]
         );
-        assert!(Patterns::new().find("€ 10", false).is_empty());
+        assert!(find(rules().unwrap(), "€ 10", false).is_empty());
+        assert_eq!(
+            kinds("€ 5 mln and 2 miljoen EUR"),
+            [("€ 5 mln", "AMOUNT"), ("2 miljoen EUR", "AMOUNT")]
+        );
     }
 }

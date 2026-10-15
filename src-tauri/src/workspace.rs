@@ -164,6 +164,12 @@ pub fn ensure(root: &Path, page: &str) -> Result<(), String> {
 }
 
 pub fn create(root: &Path, path: &str) -> Result<(), String> {
+    let valid = depth(path) <= 3 && path.split('/').all(|name| check_name(name).is_ok());
+    if let Some((parent, _)) = path.rsplit_once('/').filter(|_| valid)
+        && !resolve(root, parent).is_ok_and(|folder| folder.exists())
+    {
+        create(root, parent)?;
+    }
     let target = resolve(root, path)?;
     if target.exists() {
         return Err(taken(path));
@@ -337,8 +343,12 @@ pub struct PickedFile {
     text: String,
 }
 
-#[tauri::command(async)]
-pub fn pick_typst_file(app: AppHandle) -> Result<Option<PickedFile>, String> {
+#[tauri::command]
+pub async fn pick_typst_file(app: AppHandle) -> Result<Option<PickedFile>, String> {
+    crate::blocking(move || pick_typst_file_now(app)).await
+}
+
+fn pick_typst_file_now(app: AppHandle) -> Result<Option<PickedFile>, String> {
     let Some(file) = app
         .dialog()
         .file()
@@ -364,9 +374,9 @@ pub fn open_workspace(
     workspace: State<Workspace>,
     folder: String,
 ) -> Result<Vec<Project>, String> {
-    let root = PathBuf::from(&folder);
-    if !root.is_absolute() {
-        return Err(format!("“{folder}” is not a full folder path."));
+    let root = crate::project::pages(&app)?;
+    if root != Path::new(&folder) {
+        return Err("Open a znote file first.".into());
     }
     fs::create_dir_all(&root).map_err(|error| failed("open", &folder, error))?;
     let watcher = watch(app, root.clone()).map_err(|error| failed("watch", &folder, error))?;
@@ -407,16 +417,21 @@ pub fn move_entry(
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn delete_entry(app: AppHandle, path: String) -> Result<(), String> {
+#[tauri::command]
+pub async fn delete_entry(app: AppHandle, path: String) -> Result<(), String> {
+    crate::blocking(move || delete_entry_now(app, path)).await
+}
+
+fn delete_entry_now(app: AppHandle, path: String) -> Result<(), String> {
     delete(&app.state::<Workspace>().root()?, &path)?;
     crate::project::changed(&app);
     Ok(())
 }
 
-#[tauri::command(async)]
-pub fn search_pages(workspace: State<Workspace>, query: String) -> Result<Vec<Hit>, String> {
-    Ok(find(&workspace.root()?, &query, 200))
+#[tauri::command]
+pub async fn search_pages(app: AppHandle, query: String) -> Result<Vec<Hit>, String> {
+    let root = app.state::<Workspace>().root()?;
+    crate::blocking(move || Ok(find(&root, &query, 200))).await
 }
 
 #[tauri::command]
@@ -456,10 +471,25 @@ mod tests {
     }
 
     #[test]
+    fn a_notebook_or_page_makes_its_missing_project_and_notebook() {
+        let root = workspace("parents");
+        create(&root, "Pilot/Summary").unwrap();
+        create(&root, "Plans/2026/Goals").unwrap();
+        assert!(root.join("Pilot/Summary").is_dir());
+        assert!(root.join("Plans/2026/Goals.typ").is_file());
+        assert!(create(&root, "Pilot/Summary").is_err());
+    }
+
+    #[test]
     fn search_finds_lines_in_any_case_and_pages_by_name() {
         let root = filled("find");
         create(&root, "Work/Notes/Budget").unwrap();
-        write_text(&root, "Work/Notes/Monday", "= Monday\nCall ACME about the budget\n").unwrap();
+        write_text(
+            &root,
+            "Work/Notes/Monday",
+            "= Monday\nCall ACME about the budget\n",
+        )
+        .unwrap();
         let hits = find(&root, " budget ", 10);
         assert_eq!(
             hits,
@@ -542,6 +572,9 @@ mod tests {
             assert!(write_text(&root, path, "x").is_err(), "write {path}");
         }
         assert!(create(&root, "Work/Notes/Monday/deeper").is_err());
+        assert!(create(&root, "New/Notes/..").is_err());
+        assert!(create(&root, "New/Notes/Page/deeper").is_err());
+        assert!(!root.join("New").exists());
         assert!(read_text(&root, "Work/Notes").is_err());
         assert_eq!(fs::read_to_string(&outside).unwrap(), "secret");
         assert_eq!(read_text(&root, "Work/Notes/Monday").unwrap(), "");

@@ -3,7 +3,7 @@
   import Check from "@lucide/svelte/icons/check";
   import ChevronRight from "@lucide/svelte/icons/chevron-right";
   import GitCompare from "@lucide/svelte/icons/git-compare";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { summaryOf } from "$lib/assistant";
   import type { ChatPart } from "$lib/ipc";
   import { agent } from "$lib/state/agent.svelte";

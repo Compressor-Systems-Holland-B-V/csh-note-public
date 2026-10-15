@@ -1,31 +1,35 @@
 {
   "title": "Marketplace",
-  "look": "Look",
-  "import": "Import .znx file…",
-  "intro": "Add-ons change the look, add page templates, or both.",
+  "import": "Import",
+  "intro": "Looks (.zth) change how znote looks. Templates (.znx) add page layouts.",
   "storeFailure": "{reason} Showing installed add-ons only.",
   "search": "Search add-ons",
   "installed": "Installed",
   "none": "No matches.",
   "kind": {
-    "look": "Look only",
-    "both": "Look and templates",
-    "templates": "Templates only"
+    "look": "Looks",
+    "templates": "Templates"
   },
   "contents": {
     "look": "Changes the look",
-    "both": "Changes the look, adds templates",
     "templates": "Adds templates"
   },
   "version": "Version {version}",
-  "lookSwitch": "Look",
   "lookSwitchTitle": "Show in looks",
-  "templatesSwitch": "Templates",
   "templatesSwitchTitle": "Show in template picker",
   "install": "Install",
   "installing": "Installing…",
   "update": "Update",
   "updating": "Updating…",
   "remove": "Remove",
-  "removeTheme": "Remove {name}"
+  "importTitle": "Import a .zth / .znx file",
+  "filters": "Filters",
+  "browse": "All add-ons",
+  "type": "Type",
+  "category": "Category",
+  "all": "All",
+  "use": "Use",
+  "inUse": "In use",
+  "more": "More for {name}",
+  "templatesList": "Templates: {names}"
 }

@@ -10,16 +10,17 @@ back it up and move it on your own.
 - **Where.** Imported and created files live in `<local app data>/knowledge/<id>.znote-knowledge`,
   with `index.json` next to them listing each file's name and which one is in use. Local app data
   is not synced between the computers of a company domain.
-- **Password.** The whole file is encrypted with SQLCipher. The password is chosen when the file
-  is made. "Remember on this computer" keeps it in the password store of the operating system
-  under the file's id; otherwise znote asks for it once per start. The password is never written
-  anywhere else.
-- **Several files, one in use.** You can import several. Exactly one is in use; hiding and the
-  knowledge base are off when none is.
+- **Password.** The whole file is encrypted with SQLCipher. The password, at least 8 characters,
+  is chosen when the file is made. "Remember on this computer" keeps it in the password store of
+  the operating system under the file's id; otherwise znote asks for it once per start. The
+  password is never written anywhere else.
+- **Several files, one in use.** You can import several. Exactly one is in use. With none in use
+  the knowledge base is off, and with hiding on nothing is sent to the assistant until one is
+  open.
 - **Import.** znote opens the chosen file read-only with the password you give, checks it
   (`PRAGMA integrity_check`) and its format version, and only then copies it in. A wrong password,
-  an unknown version or a damaged file is refused and nothing is copied. A file whose id is already
-  imported is refused too.
+  an unknown version, a damaged file or one with database triggers or views is refused and nothing
+  is copied. A file whose id is already imported is refused too.
 - **Export.** Writes a copy with its own password (`sqlcipher_export`), opens the copy with that
   password and checks it before reporting the export as done. The copy keeps the id, the glossary
   and every token, so it gives the same tokens on another computer.
@@ -29,7 +30,8 @@ back it up and move it on your own.
 
 ## Inside
 
-The file is a SQLite database (SQLCipher 4 defaults). Format version 1 has these tables:
+The file is a SQLite database encrypted with SQLCipher 4 and its default settings, the same as a
+`.znote` file (see [the `.znote` format](znote-file.md#layout)). Format version 1 has these tables:
 
 | Table | Holds |
 |---|---|

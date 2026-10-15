@@ -10,10 +10,15 @@
     "notHidden": "Niet verborgen",
     "notHiddenTitle": "De assistent ziet je pagina’s en bestanden precies zoals ze zijn",
     "locked": "Vergrendeld",
-    "lockedTitle": "Open eerst je kennisbestand in Instellingen."
+    "lockedTitle": "Open eerst je kennisbestand in Instellingen.",
+    "toggle": "Namen verbergen in deze chat",
+    "offInSettings": "Verbergen staat uit in Instellingen",
+    "fixed": "Vast zodra de chat is begonnen",
+    "required": "Je organisatie vereist verbergen, dus het kan niet uit."
   },
   "saw": {
-    "prompt": "Je bericht"
+    "prompt": "Je bericht",
+    "system": "Instructies voor de assistent"
   },
   "start": {
     "text": "Namen, bedragen en contactgegevens worden codes zoals ⟦CUSTOMER_3⟧ voordat er iets wordt verzonden.",
@@ -120,7 +125,8 @@
     "dontHide": "Dit niet verbergen",
     "alwaysHide": "Dit altijd verbergen",
     "hideAs": "“{text}” verbergen als",
-    "kind": "Soort"
+    "kind": "Soort",
+    "lines": "{count} regels"
   },
   "kinds": {
     "CUSTOMER": "Klant",
@@ -129,13 +135,46 @@
     "SUPPLIER": "Leverancier",
     "PROJECT": "Project",
     "PRODUCT": "Product",
-    "LOCATION": "Locatie"
+    "LOCATION": "Locatie",
+    "AMOUNT": "Bedrag",
+    "EMAIL": "E-mailadres",
+    "PHONE": "Telefoonnummer",
+    "URL": "Webadres",
+    "IBAN": "IBAN",
+    "CARD": "Kaartnummer",
+    "IP": "IP-adres"
   },
   "level": {
     "label": "Hoeveel er verborgen wordt",
     "own": "Alleen je eigen lijst en contactgegevens",
     "light": "Licht: ook namen van personen",
     "medium": "Middel: ook organisaties en plaatsen",
-    "strict": "Streng: ook producten, projecten, klanten en leveranciers"
-  }
+    "strict": "Streng: ook producten, projecten, klanten en leveranciers",
+    "short": {
+      "own": "Eigen lijst",
+      "light": "Licht",
+      "medium": "Middel",
+      "strict": "Streng"
+    }
+  },
+  "redact": {
+    "title": "Verbergen",
+    "off": "Verbergen staat uit.",
+    "turnOn": "Inschakelen",
+    "none": "Niets te verbergen op deze pagina.",
+    "undo": "Ongedaan maken (Ctrl+Z)",
+    "redo": "Opnieuw (Ctrl+Y)",
+    "reset": "Deze pagina herstellen",
+    "filter": "Filter",
+    "count": "{hidden} van {total} verborgen",
+    "hideGroup": "Alle {kind} verbergen",
+    "other": "Overig",
+    "removeUnhidden": "Niet-verborgen woorden uit de lijst verwijderen"
+  },
+  "blocked": {
+    "noFile": "Verbergen staat aan, maar er is geen kennisbestand gekozen. Er wordt niets verstuurd tot je er een maakt of kiest in Instellingen, of verbergen uitzet.",
+    "locked": "Verbergen staat aan, maar je kennisbestand is vergrendeld. Er wordt niets verstuurd tot je het opent in Instellingen.",
+    "noFinder": "Namen zoeken staat aan, maar de namenzoeker is niet gedownload. Er wordt niets verstuurd tot je hem downloadt in Instellingen, of namen zoeken uitzet."
+  },
+  "previewBefore": "Toon wat dit bericht zou versturen"
 }

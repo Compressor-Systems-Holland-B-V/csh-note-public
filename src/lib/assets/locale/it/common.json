@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Modifica",
     "export": "Esporta",
-    "themes": "Temi"
+    "marketplace": "Negozio"
   },
   "appearance": {
     "toLight": "Passa alla modalità chiara",
@@ -34,5 +34,13 @@
     "downloading": "Download del pacchetto {name} in corso…",
     "previewFailed": "Impossibile aggiornare l'anteprima: {reason}",
     "desktopOnly": "funziona solo nell'app desktop."
+  },
+  "preview": "Anteprima",
+  "back": "Indietro",
+  "finish": "Fine",
+  "layout": {
+    "edit": "Modifica",
+    "agent": "Assistente",
+    "redaction": "Nascondi"
   }
 }

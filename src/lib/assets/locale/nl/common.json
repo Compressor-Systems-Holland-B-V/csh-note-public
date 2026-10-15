@@ -17,7 +17,7 @@
   "mode": {
     "edit": "Bewerken",
     "export": "Exporteren",
-    "themes": "Thema's"
+    "marketplace": "Marktplaats"
   },
   "appearance": {
     "toLight": "Overschakelen naar lichte modus",
@@ -34,5 +34,13 @@
     "downloading": "Pakket {name} downloaden…",
     "previewFailed": "Het voorbeeld kon niet worden bijgewerkt: {reason}",
     "desktopOnly": "het werkt alleen in de desktop-app."
+  },
+  "preview": "Voorbeeld",
+  "back": "Terug",
+  "finish": "Voltooien",
+  "layout": {
+    "edit": "Bewerken",
+    "agent": "Assistent",
+    "redaction": "Verbergen"
   }
 }

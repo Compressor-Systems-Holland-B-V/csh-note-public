@@ -17,7 +17,7 @@
   "mode": {
     "edit": "編輯",
     "export": "匯出",
-    "themes": "主題"
+    "marketplace": "市集"
   },
   "appearance": {
     "toLight": "切換至淺色模式",
@@ -34,5 +34,13 @@
     "downloading": "正在下載套件 {name}…",
     "previewFailed": "無法更新預覽:{reason}",
     "desktopOnly": "僅在桌面版應用程式中可用。"
+  },
+  "preview": "預覽",
+  "back": "返回",
+  "finish": "完成",
+  "layout": {
+    "edit": "編輯",
+    "agent": "助理",
+    "redaction": "遮蔽"
   }
 }

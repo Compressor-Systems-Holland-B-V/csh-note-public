@@ -35,7 +35,9 @@
     "cutOff": "La risposta è stata interrotta: {error}",
     "modelFirst": "Scegli prima un modello per l'assistente.",
     "tooManySteps": "L'assistente ha eseguito troppi passaggi ed è stato fermato.",
-    "passwordStore": "Non è stato possibile utilizzare l'archivio password di questo computer: {error}"
+    "passwordStore": "Non è stato possibile utilizzare l'archivio password di questo computer: {error}",
+    "notAllowed": "La tua organizzazione non consente questo assistente.",
+    "plainHttp": "Il semplice http:// si usa solo per un server su questo computer o sulla tua rete. Usa https:// per questo indirizzo."
   },
   "chat": {
     "busy": "L'assistente è ancora occupato. Attendi che finisca o fermalo.",
@@ -52,8 +54,11 @@
     "fixFirst": "Risolvi i problemi in questa pagina prima di esportarla.",
     "pageNotOpened": "Non è stato possibile aprire la pagina.",
     "slideNotDrawn": "Non è stato possibile creare una diapositiva: {error}",
+    "pictureNotDrawn": "Impossibile disegnare un'immagine: {error}",
     "pdfFailed": "Non è stato possibile creare il PDF: {reason}",
     "pptxFailed": "Non è stato possibile creare la presentazione: {error}",
+    "docxFailed": "Impossibile creare il file Word: {error}",
+    "notWord": "Questa pagina non può diventare un documento Word: {error}",
     "nothing": "Questa pagina non contiene nulla da esportare.",
     "nothingYet": "Non è stato ancora esportato nulla.",
     "notSaved": "Non è stato possibile salvare il file: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Impossibile aprire questo file perché richiede temi non installati:\n• {themes}\nInstallali nella pagina Temi, quindi riapri il file.",
     "outside": "Questo file znote tenta di inserire “{name}” al di fuori della sua cartella, quindi non è stato importato.",
     "tooLarge": "Questo file znote è troppo grande una volta estratto, quindi non è stato importato.",
-    "openFirst": "Apri prima un file znote."
+    "openFirst": "Apri prima un file znote.",
+    "wrongPassword": "La password è errata, oppure questo non è un file znote."
   },
   "theme": {
     "fileNotRead": "Non è stato possibile leggere questo file di tema: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” non è una pagina.",
     "badMove": "Una pagina può essere spostata solo in un blocco note, e un blocco note in un progetto.",
     "folderFirst": "Scegli prima una cartella dello spazio di lavoro.",
-    "fileNotRead": "Impossibile leggere il file: {error}",
-    "notFullPath": "“{folder}” non è un percorso di cartella completo."
+    "fileNotRead": "Impossibile leggere il file: {error}"
   }
 }

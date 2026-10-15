@@ -4,12 +4,12 @@
   import ShieldCheck from "@lucide/svelte/icons/shield-check";
   import Sparkles from "@lucide/svelte/icons/sparkles";
   import SquarePen from "@lucide/svelte/icons/square-pen";
-  import { Button } from "$lib/components/ui/button";
-  import * as Dialog from "$lib/components/ui/dialog";
-  import { Input } from "$lib/components/ui/input";
-  import { Label } from "$lib/components/ui/label";
-  import { Switch } from "$lib/components/ui/switch";
-  import * as Tabs from "$lib/components/ui/tabs";
+  import { Button } from "@zsuite/ui/button";
+  import * as Dialog from "@zsuite/ui/dialog";
+  import { Input } from "@zsuite/ui/input";
+  import { Label } from "@zsuite/ui/label";
+  import { Switch } from "@zsuite/ui/switch";
+  import * as Tabs from "@zsuite/ui/tabs";
   import { projects } from "$lib/state/project.svelte";
   import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";

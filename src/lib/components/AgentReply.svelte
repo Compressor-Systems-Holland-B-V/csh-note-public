@@ -1,6 +1,6 @@
 <script lang="ts">
   import { untrack } from "svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import type { Restored } from "$lib/ipc";
   import { longReply, render, withMarks } from "$lib/markdown";
   import { kinds } from "$lib/state/privacy.svelte";

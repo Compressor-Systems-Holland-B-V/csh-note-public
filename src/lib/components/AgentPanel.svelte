@@ -6,6 +6,7 @@
   import MessageSquarePlus from "@lucide/svelte/icons/message-square-plus";
   import Shield from "@lucide/svelte/icons/shield";
   import ShieldCheck from "@lucide/svelte/icons/shield-check";
+  import ChatFiles from "$lib/components/ChatFiles.svelte";
   import AgentComposer from "$lib/components/AgentComposer.svelte";
   import AgentConnect from "$lib/components/AgentConnect.svelte";
   import AgentHistory from "$lib/components/AgentHistory.svelte";
@@ -13,7 +14,7 @@
   import AgentSteps from "$lib/components/AgentSteps.svelte";
   import ReferenceIcon from "$lib/components/ReferenceIcon.svelte";
   import VeiledView from "$lib/components/VeiledView.svelte";
-  import { Button } from "$lib/components/ui/button";
+  import { Button } from "@zsuite/ui/button";
   import { tick } from "svelte";
   import type { Seen } from "$lib/ipc";
   import { grouped } from "$lib/assistant";
@@ -27,7 +28,17 @@
   let list = $state<HTMLDivElement>();
   let history = $state(false);
   let viewing = $state<Seen[] | null>(null);
+  let files = $state(false);
   let now = $state(Date.now());
+
+  const shieldTitle = $derived(
+    [
+      t(agent.hiding ? (privacy.locked ? "privacy.panel.locked" : "privacy.panel.hidden") : "privacy.panel.notHidden"),
+      t(!privacy.hiding ? "privacy.panel.offInSettings" : privacy.locked && agent.hiding ? "privacy.panel.lockedTitle" : agent.hiding ? "privacy.panel.hiddenTitle" : "privacy.panel.notHiddenTitle"),
+      ...(privacy.hiding && agent.veilLocked ? [t("privacy.panel.fixed")] : []),
+      ...(privacy.required("hideNames") ? [t("privacy.panel.required")] : []),
+    ].join("\n"),
+  );
 
   const seconds = $derived(agent.started === null ? 0 : Math.max(0, Math.round((now - agent.started) / 1000)));
 
@@ -52,10 +63,21 @@
 <aside class="flex h-full min-h-0 flex-col overflow-hidden text-sm" aria-label={t("assistant.title")}>
   <div class="relative flex h-9 shrink-0 items-center gap-1 border-b px-2">
     <span class="font-medium">{t("assistant.title")}</span>
-    <span class="flex items-center p-1 text-xs {privacy.hiding ? 'text-chart-2' : 'text-muted-foreground'}" role="status" title={`${t(privacy.hiding ? (privacy.locked ? "privacy.panel.locked" : "privacy.panel.hidden") : "privacy.panel.notHidden")}\n${t(privacy.hiding ? (privacy.locked ? "privacy.panel.lockedTitle" : "privacy.panel.hiddenTitle") : "privacy.panel.notHiddenTitle")}`}>
-      {#if privacy.hiding}<ShieldCheck class="size-3.5 shrink-0" />{:else}<Shield class="size-3.5 shrink-0" />{/if}
-      <span class="sr-only">{t(privacy.hiding ? (privacy.locked ? "privacy.panel.locked" : "privacy.panel.hidden") : "privacy.panel.notHidden")}</span>
-    </span>
+    <Button
+      variant="ghost"
+      size="icon-xs"
+      class={agent.hiding ? "text-chart-2 hover:text-chart-2" : "text-muted-foreground"}
+      aria-label={t("privacy.panel.toggle")}
+      aria-pressed={agent.hiding}
+      title={shieldTitle}
+      disabled={!privacy.hiding || agent.veilLocked || privacy.required("hideNames")}
+      onclick={() => (agent.veil = !agent.veil)}
+    >
+      {#if agent.hiding}<ShieldCheck />{:else}<Shield />{/if}
+    </Button>
+    <Button variant="ghost" size="icon-xs" aria-label={t("assistant.files.title")} title={t("assistant.files.title")} disabled={!agent.hiding} onclick={() => (files = true)}>
+      <Eye />
+    </Button>
     <span class="flex-1"></span>
     {#if connections.ready}
       <Button
@@ -153,10 +175,12 @@
           <span class="shrink-0 text-xs text-muted-foreground tabular-nums" aria-label={t("assistant.timeSoFar")}>{t("assistant.seconds", { seconds })}</span>
         </p>
       {/if}
+      {#if agent.hiding && privacy.blocked}<p class="shrink-0 rounded-md bg-destructive/10 p-2 text-xs text-destructive" role="alert">{t(`privacy.blocked.${privacy.blocked}`)}</p>{/if}
       {#if agent.otherKnowledge}<p class="shrink-0 rounded-md bg-muted p-2 text-xs" role="note">{t("privacy.otherKnowledge")}</p>{/if}
       {#if agent.failure}<p class="shrink-0 wrap-anywhere text-destructive" role="alert">{agent.failure}</p>{/if}
     </div>
     <AgentComposer {wide} />
   {/if}
 </aside>
+{#if files}<ChatFiles onclose={() => (files = false)} />{/if}
 {#if viewing}{@const saw = viewing}<VeiledView load={async () => saw} onclose={() => (viewing = null)} />{/if}

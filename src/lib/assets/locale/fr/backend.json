@@ -35,7 +35,9 @@
     "cutOff": "La réponse a été tronquée : {error}",
     "modelFirst": "Choisissez d’abord un modèle pour l’assistant.",
     "tooManySteps": "L’assistant a effectué trop d’étapes et a été arrêté.",
-    "passwordStore": "Le gestionnaire de mots de passe de cet ordinateur n’a pas pu être utilisé : {error}"
+    "passwordStore": "Le gestionnaire de mots de passe de cet ordinateur n’a pas pu être utilisé : {error}",
+    "notAllowed": "Votre organisation n’autorise pas cet assistant.",
+    "plainHttp": "Le simple http:// n’est utilisé que pour un serveur sur cet ordinateur ou sur votre propre réseau. Utilisez https:// pour cette adresse."
   },
   "chat": {
     "busy": "L’assistant est toujours occupé. Attendez qu’il termine ou arrêtez-le.",
@@ -52,8 +54,11 @@
     "fixFirst": "Corrigez les problèmes sur cette page avant de l’exporter.",
     "pageNotOpened": "La page n’a pas pu être ouverte.",
     "slideNotDrawn": "Une diapositive n’a pas pu être dessinée : {error}",
+    "pictureNotDrawn": "Une image n’a pas pu être dessinée : {error}",
     "pdfFailed": "Le PDF n’a pas pu être créé : {reason}",
     "pptxFailed": "La présentation n’a pas pu être créée : {error}",
+    "docxFailed": "Le fichier Word n’a pas pu être créé : {error}",
+    "notWord": "Cette page ne peut pas devenir un document Word : {error}",
     "nothing": "Cette page ne contient rien à exporter.",
     "nothingYet": "Rien n’a encore été exporté.",
     "notSaved": "Le fichier n’a pas pu être enregistré : {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "Ce fichier ne peut pas être ouvert car il nécessite des thèmes qui ne sont pas installés :\n• {themes}\nInstallez-les sur la page Thèmes, puis ouvrez à nouveau le fichier.",
     "outside": "Ce fichier znote tente de placer « {name} » en dehors de son propre dossier, il n’a donc pas été importé.",
     "tooLarge": "Ce fichier znote est trop volumineux une fois décompressé, il n’a donc pas été importé.",
-    "openFirst": "Ouvrez d’abord un fichier znote."
+    "openFirst": "Ouvrez d’abord un fichier znote.",
+    "wrongPassword": "Le mot de passe est incorrect, ou ce n’est pas un fichier znote."
   },
   "theme": {
     "fileNotRead": "Ce fichier de thème n’a pas pu être lu : {error}",
@@ -121,7 +127,6 @@
     "notPage": "« {path} » n'est pas une page.",
     "badMove": "Une page ne peut être déplacée que dans un carnet, et un carnet dans un projet.",
     "folderFirst": "Choisissez d'abord un dossier d'espace de travail.",
-    "fileNotRead": "Le fichier n'a pas pu être lu : {error}",
-    "notFullPath": "« {folder} » n'est pas un chemin de dossier complet."
+    "fileNotRead": "Le fichier n'a pas pu être lu : {error}"
   }
 }

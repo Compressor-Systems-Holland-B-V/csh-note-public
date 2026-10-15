@@ -1,6 +1,6 @@
 import * as ipc from "$lib/ipc";
-import type { ChatMessage, ChatPart } from "$lib/ipc";
-import { actionsIn, changedLines, chosenPreset, defaultProvider, describe, promptFor, providerOf, referenceTo, say, standard, systemPrompt } from "$lib/assistant";
+import type { ChatMessage, ChatPart, Seen } from "$lib/ipc";
+import { actionsIn, changedLines, chosenPreset, defaultProvider, describe, promptFor, providerOf, referenceTo, say, standard, systemPrompt, unsavedTypst } from "$lib/assistant";
 import type { Preset, Reference } from "$lib/assistant";
 import { messageOf } from "$lib/utils";
 import { Chats, chats } from "./chats.svelte";
@@ -8,18 +8,18 @@ import { Document, doc } from "./document.svelte";
 import { privacy } from "./privacy.svelte";
 import { Connections, connections } from "./providers.svelte";
 import { SettingsState, settings } from "./settings.svelte";
-import { theme } from "./theme.svelte";
+import { templateOf, theme } from "./theme.svelte";
 import type { TemplateChoice } from "./theme.svelte";
 import { Workspace, moved, workspace } from "./workspace.svelte";
 import { t, translated } from "$lib/i18n.svelte";
 
-type Backend = Pick<typeof ipc, "agentCancel" | "agentRun" | "agentAttach" | "agentLevel" | "agentForget" | "createEntry" | "writePage">;
+type Backend = Pick<typeof ipc, "agentCancel" | "agentRun" | "agentAttach" | "agentFiles" | "agentLevel" | "agentForget" | "agentInScope" | "agentPreview" | "createEntry" | "writePage">;
 
 type Connected = Pick<Connections, "active" | "model" | "check" | "connected">;
 
-type Run = { id: string; messages: ChatMessage[]; session: string | null; provider: string; model: string | null; preset: Preset; knowledge: string | null };
+type Run = { id: string; messages: ChatMessage[]; session: string | null; provider: string; model: string | null; preset: Preset; knowledge: string | null; hiding: boolean; pages: string[] };
 
-type Templates = Pick<TemplateChoice, "label" | "kind" | "snippet">[];
+type Templates = TemplateChoice[];
 
 const maxFixes = 2;
 const compileWaitMs = 20000;
@@ -28,6 +28,7 @@ export class Agent {
   messages = $state<ChatMessage[]>([]);
   references = $state<Reference[]>([]);
   web = $state(false);
+  veil = $state(true);
   running = $state(false);
   started = $state<number | null>(null);
   failure = $state<string | null>(null);
@@ -58,6 +59,8 @@ export class Agent {
     private chats: Chats,
     private connections: Connected,
     private veiledWith: () => string | null = () => null,
+    private hidingWanted: () => boolean = () => veiledWith() !== null,
+    private hidingLocked: () => boolean = () => false,
   ) {}
 
   get runningChat() {
@@ -83,6 +86,14 @@ export class Agent {
     const preset = this.preset;
     if (!standard(preset.id) && preset.model !== null) return preset.model;
     return picked ?? preset.model ?? this.connections.model(provider);
+  }
+
+  get hiding() {
+    return (this.veil || this.hidingLocked()) && this.hidingWanted();
+  }
+
+  get veilLocked() {
+    return this.messages.length > 0;
   }
 
   get otherKnowledge() {
@@ -138,6 +149,7 @@ export class Agent {
     this.messages = [];
     this.references = [];
     this.web = false;
+    this.veil = true;
     this.session = null;
     this.provider = null;
     this.choice = null;
@@ -157,6 +169,7 @@ export class Agent {
     this.provider = chat.provider;
     this.choice = chat.provider === null ? null : { provider: chat.provider, model: null };
     this.chatId = id;
+    this.veil = (chat.knowledge ?? null) !== null;
     this.references = [];
     this.web = false;
     this.failure = null;
@@ -172,6 +185,7 @@ export class Agent {
     this.backend.agentForget(id).catch((error: unknown) => (this.failure = messageOf(error)));
     if (id !== this.chatId) return;
     this.messages = [];
+    this.veil = true;
     this.session = null;
     this.provider = null;
     this.choice = null;
@@ -246,16 +260,19 @@ export class Agent {
   attach() {
     return this.attempt(async () => {
       const files = await this.backend.agentAttach(this.chat());
-      this.references.push(...files.map(({ name, path, text, level }) => ({ label: name, line: `the attached file ${path}`, path, text, level })));
+      this.references.push(...files.map(({ name, id, path, text, level }) => ({ label: name, line: `the attached file ${id}`, path, text, level })));
     });
   }
 
-  setLevel(reference: Reference, level: number) {
-    const { path } = reference;
-    if (path === undefined) return;
+  files() {
+    const id = this.chatId;
+    return id === null ? Promise.resolve([]) : this.backend.agentFiles(id);
+  }
+
+  setLevel(path: string, level: number) {
     return this.attempt(async () => {
       await this.backend.agentLevel(this.chat(), path, level);
-      reference.level = level;
+      for (const reference of this.references) if (reference.path === path) reference.level = level;
     });
   }
 
@@ -267,8 +284,7 @@ export class Agent {
     this.running = true;
     this.started = Date.now();
     this.stopped = false;
-    const session = this.provider === provider ? this.session : null;
-    const run: Run = { id: this.chat(), messages: this.messages, session, provider, model: this.model, preset: this.preset, knowledge: this.veiledWith() };
+    const run = this.draft(provider, references);
     this.run = run;
     this.provider = provider;
     run.messages.push({
@@ -284,8 +300,9 @@ export class Agent {
       this.edited = [];
       let prompt: string | null = promptFor(text, this.workspace.page, references);
       for (let fixes = 0; prompt !== null && !this.stopped; fixes += 1) {
-        const reply = await this.turn(run, prompt);
-        const problems = [...(await this.carryOut(run, reply)), ...(await this.problemsOnPage())];
+        const { reply, saved } = await this.turn(run, prompt);
+        const unsaved = run.preset.access === "read" ? null : unsavedTypst(reply, saved);
+        const problems = [...(await this.carryOut(run, reply)), ...(await this.problemsOnPage()), ...(unsaved === null ? [] : [unsaved])];
         prompt =
           problems.length > 0 && fixes < maxFixes
             ? `znote reports these problems after your last reply. Fix them.\n- ${problems.join("\n- ")}`
@@ -307,15 +324,26 @@ export class Agent {
     say(run.messages[run.messages.length - 1].parts, kind, text, page);
   }
 
-  private async turn(run: Run, prompt: string) {
-    const outcome = { reply: "", failure: null as string | null };
-    run.messages.push({ from: "assistant", parts: [] });
-    this.doing(t("assistant.activity.thinking"));
+  private draft(provider: string, references: Reference[]): Run {
+    const session = this.provider === provider ? this.session : null;
+    const pages = references.filter((reference) => reference.path === undefined).map((reference) => reference.label);
+    return { id: this.chat(), messages: this.messages, session, provider, model: this.model, preset: this.preset, knowledge: this.hiding ? this.veiledWith() : null, hiding: this.hiding, pages };
+  }
+
+  async preview(text: string): Promise<Seen[]> {
+    const provider = this.using;
+    if (provider === null) return [];
+    const run = this.draft(provider, this.references);
+    const shown = await this.backend.agentPreview(this.turnOf(run, promptFor(text, this.workspace.page, this.references)));
+    return shown.flatMap((event) => (event.kind === "saw" ? [{ label: event.label, text: event.text }] : []));
+  }
+
+  private turnOf(run: Run, prompt: string): ipc.AgentTurn {
     const { effort, access, fast, web } = run.preset;
-    const turn = {
+    return {
       chat: run.id,
       prompt,
-      system: systemPrompt(this.templates(), access),
+      system: systemPrompt(this.templates(), access, this.workspace.page === null ? null : (templateOf(this.doc.text, this.templates())?.id ?? null)),
       session: run.session,
       provider: run.provider,
       model: run.model,
@@ -323,8 +351,17 @@ export class Agent {
       readOnly: access === "read",
       fast: fast && providerOf(run.provider)?.fast === true,
       web: web ?? this.web,
+      veil: run.hiding,
+      pages: run.pages,
+      page: this.workspace.page,
     };
-    await this.backend.agentRun(turn, (event) => {
+  }
+
+  private async turn(run: Run, prompt: string) {
+    const outcome = { reply: "", saved: false, failure: null as string | null };
+    run.messages.push({ from: "assistant", parts: [] });
+    this.doing(t("assistant.activity.thinking"));
+    await this.backend.agentRun(this.turnOf(run, prompt), (event) => {
       if (event.kind === "text") {
         outcome.reply += event.text;
         this.say(run, "text", event.text);
@@ -339,6 +376,7 @@ export class Agent {
         run.session = event.session || run.session;
         outcome.failure = event.failure;
       } else if (event.kind === "edited") {
+        outcome.saved = true;
         this.record(event.page, event.before);
         this.say(run, "note", `Edited ${event.page}`, event.page);
       } else if (event.kind === "veiled") {
@@ -349,6 +387,7 @@ export class Agent {
       } else if (event.kind === "saw") {
         (run.messages[run.messages.length - 1].saw ??= []).push({ label: event.label, text: event.text });
       } else if (event.kind === "conflict") {
+        outcome.saved = true;
         this.conflicts[event.page] = event.theirs;
         this.say(run, "note", `Not saved ${event.page}`, event.page);
       } else {
@@ -356,7 +395,7 @@ export class Agent {
       }
     });
     if (outcome.failure !== null) throw new Error(translated(outcome.failure));
-    return outcome.reply;
+    return outcome;
   }
 
   private allowed(run: Run, path: string) {
@@ -386,6 +425,11 @@ export class Agent {
     if (run.preset.access === "read") return problems;
     for (const action of actionsIn(reply)) {
       if (this.stopped) break;
+      const target = action.do === "rename" ? action.from : action.path;
+      if (action.do !== "create" && !(await this.backend.agentInScope(run.id, target, this.workspace.page).catch(() => false))) {
+        problems.push(`“${target}” is not part of this chat. Ask the user to add it with @.`);
+        continue;
+      }
       try {
         this.doing(action.do === "rename" ? t("assistant.activity.renaming", { path: action.from }) : t(action.do === "create" ? "assistant.activity.creating" : "assistant.activity.deleting", { path: action.path }));
         if (action.do === "rename") {
@@ -428,12 +472,23 @@ export class Agent {
   }
 }
 
-export const agent = new Agent(ipc, workspace, doc, settings, () => theme.offered, chats, connections, () => (privacy.hiding ? (privacy.status?.active ?? null) : null));
+export const agent = new Agent(
+  ipc,
+  workspace,
+  doc,
+  settings,
+  () => theme.templates,
+  chats,
+  connections,
+  () => (privacy.hiding ? (privacy.status?.active ?? null) : null),
+  () => privacy.hiding,
+  () => privacy.required("hideNames"),
+);
 
 if (import.meta.vitest) {
   const { test, expect, vi } = import.meta.vitest;
 
-  function setup(replies: string[], broken = false) {
+  function setup(replies: string[], broken = false, knowledge: string | null = null) {
     const disk: Record<string, string> = { "Work/Notes/A": "= A\n", "Work/Notes/B": "= B\n" };
     const tree = () => [{ name: "Work", notebooks: [{ name: "Notes", pages: ["A", "B"] }] }];
     const files = {
@@ -457,6 +512,12 @@ if (import.meta.vitest) {
     const linked = { active: "claude" as string | null, also: [] as string[], model: () => null as string | null, check: vi.fn(async () => {}), connected: (provider: string): boolean => provider === linked.active || linked.also.includes(provider) };
     const backend = {
       agentCancel: vi.fn(async () => {}),
+      agentInScope: vi.fn(async (_chat: string, path: string) => !path.startsWith("Private")),
+      agentPreview: vi.fn(async (turn: ipc.AgentTurn): Promise<ipc.AgentEvent[]> => [
+        { kind: "saw", label: "system", text: turn.system },
+        { kind: "saw", label: "prompt", text: turn.prompt.replace("Acme", "⟦CUSTOMER_1⟧") },
+        { kind: "step", tool: "", page: "" },
+      ]),
       agentRun: vi.fn(async (turn: ipc.AgentTurn, handler: (event: ipc.AgentEvent) => void) => {
         prompts.push(turn.prompt);
         const text = replies[prompts.length - 1] ?? "Done.";
@@ -471,7 +532,8 @@ if (import.meta.vitest) {
         handler({ kind: "text", text });
         handler({ kind: "done", session: "session-1", failure: null });
       }),
-      agentAttach: vi.fn(async () => [{ name: "report.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
+      agentAttach: vi.fn(async () => [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
+      agentFiles: vi.fn(async () => [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
       agentLevel: vi.fn(async () => {}),
       agentForget: vi.fn(async () => {}),
       createEntry: files.createEntry,
@@ -479,11 +541,16 @@ if (import.meta.vitest) {
     };
     const space = new Workspace(files, document, chosen);
     const history = new Chats(() => Promise.resolve());
-    const agent: Agent = new Agent(backend, space, document, chosen, () => [], history, linked);
+    const agent: Agent = new Agent(backend, space, document, chosen, () => [], history, linked, () => knowledge);
     return { agent, backend, files, prompts, space, chosen, document, seen, history, linked, disk };
   }
 
   const preset = (access: Preset["access"], model: string | null = null, web: boolean | null = null): Preset => ({ id: "mine", name: "Mine", hint: "", model, effort: "high", access, fast: true, web });
+
+  const chosenFull = (agent: Agent) => {
+    agent["settings"].set("assistantPresets", { claude: [preset("full")] });
+    agent["settings"].set("assistantPreset", "mine");
+  };
 
   test("a deletion waits for the user, and keeping the item is told to the assistant", async () => {
     const { agent, files, prompts, backend } = setup(['Removing it.\n```znote\n{"do":"delete","path":"Work/Old"}\n```']);
@@ -499,6 +566,13 @@ if (import.meta.vitest) {
     expect(agent.running).toBe(false);
   });
 
+  test("Typst put in the chat instead of on a page is sent back once", async () => {
+    const { agent, prompts } = setup(["Here it is.\n```typ\n= Summary\n```"]);
+    await agent.send("Write a summary");
+    expect(prompts).toHaveLength(2);
+    expect(prompts[1]).toContain("no page was saved");
+  });
+
   test("the chosen preset decides the model, what the assistant may do, and whether it asks before deleting", async () => {
     const reply = '```znote\n{"do":"delete","path":"Work/Old"}\n{"do":"create","path":"Work/New"}\n```';
     const { agent, files, chosen, backend, linked } = setup([reply, reply]);
@@ -508,6 +582,7 @@ if (import.meta.vitest) {
     await agent.send("Delete the old project");
     expect(files.deleteEntry).toHaveBeenCalledWith("Work/Old");
     expect(files.createEntry).toHaveBeenCalledWith("Work/New");
+    expect(backend.agentInScope).toHaveBeenCalledWith(agent.chatId, "Work/Old", null);
     expect(agent.messages.at(-1)?.parts.map((part) => part.text)).toContain("Deleted Work/Old");
     expect(backend.agentRun.mock.calls[0][0]).toMatchObject({ provider: "claude", model: "opus", effort: "high", readOnly: false, fast: true, web: false });
 
@@ -604,6 +679,17 @@ if (import.meta.vitest) {
     expect(agent.activity).toBe(null);
   });
 
+  test("the assistant is told only the pages it may see and an attached file by its number", async () => {
+    const { agent, backend } = setup(["Done."]);
+    agent.refer("Work/Notes");
+    await agent.attach();
+    await agent.send("Sum it up");
+    const turn = backend.agentRun.mock.calls[0][0];
+    expect(turn.pages).toEqual(["Work/Notes"]);
+    expect(turn.prompt).toContain("the attached file 1.pdf");
+    expect(turn.prompt).not.toContain("/data/assistant");
+  });
+
   test("a finished chat is kept, can be reopened, and deleting the open one clears the panel", async () => {
     const { agent, history, backend } = setup(["First answer."]);
     await agent.send("First question");
@@ -614,7 +700,7 @@ if (import.meta.vitest) {
     await agent.attach();
     const abandoned = agent.chatId;
     expect(backend.agentAttach).toHaveBeenCalledWith(abandoned);
-    await agent.setLevel(agent.references[0], 3);
+    await agent.setLevel("/data/assistant/1-report.pdf", 3);
     expect(backend.agentLevel).toHaveBeenCalledWith(abandoned, "/data/assistant/1-report.pdf", 3);
     expect(agent.references[0].level).toBe(3);
     await agent.newChat();
@@ -712,6 +798,27 @@ if (import.meta.vitest) {
     expect(agent.conflicts).toEqual({});
   });
 
+  test("hiding is chosen per chat before it starts, and an opened chat keeps its choice", async () => {
+    const { agent, backend, history } = setup([], false, "file-1");
+    expect([agent.hiding, agent.veilLocked]).toEqual([true, false]);
+    agent.veil = false;
+    await agent.send("Plain chat");
+    expect(backend.agentRun.mock.calls[0][0].veil).toBe(false);
+    expect(history.list[0].knowledge).toBe(null);
+    expect(agent.veilLocked).toBe(true);
+    const plain = agent.chatId ?? "";
+    agent.newChat();
+    expect(agent.hiding).toBe(true);
+    await agent.send("Hidden chat");
+    expect(backend.agentRun.mock.calls[1][0].veil).toBe(true);
+    expect(history.list[0].knowledge).toBe("file-1");
+    agent.openChat(plain);
+    expect(agent.hiding).toBe(false);
+    expect(await agent.files()).toHaveLength(1);
+    agent.newChat();
+    expect(await agent.files()).toEqual([]);
+  });
+
   test("a failed turn shows the reason and checks the connection again", async () => {
     const { agent, backend, linked } = setup([]);
     backend.agentRun.mockImplementationOnce(async (_turn, handler) => handler({ kind: "done", session: "", failure: "The account has no credit left." }));
@@ -719,5 +826,36 @@ if (import.meta.vitest) {
     expect(agent.failure).toBe("The account has no credit left.");
     expect(linked.check).toHaveBeenCalled();
     expect(agent.running).toBe(false);
+  });
+
+  test("a chat that wants hiding asks for it even before the knowledge file is known, so it is never sent in clear", async () => {
+    const { agent, backend } = setup([], false, null);
+    const unsure = new Agent(backend, agent["workspace"], agent["doc"], agent["settings"], () => [], new Chats(() => Promise.resolve()), agent["connections"], () => null, () => true);
+    expect(unsure.hiding).toBe(true);
+    await unsure.send("Tell me about Acme");
+    expect(backend.agentRun.mock.calls[0][0].veil).toBe(true);
+    const forced = new Agent(backend, agent["workspace"], agent["doc"], agent["settings"], () => [], new Chats(() => Promise.resolve()), agent["connections"], () => "file-1", () => true, () => true);
+    forced.veil = false;
+    expect(forced.hiding).toBe(true);
+  });
+
+  test("the assistant cannot rename or delete what the chat was not given", async () => {
+    const { agent, files, prompts } = setup(['```znote\n{"do":"delete","path":"Private/Diary"}\n{"do":"rename","from":"Private/Notes","to":"Work/Notes"}\n```']);
+    chosenFull(agent);
+    await agent.send("Tidy up");
+    expect(files.deleteEntry).not.toHaveBeenCalled();
+    expect(files.moveEntry).not.toHaveBeenCalled();
+    expect(prompts[1]).toContain("“Private/Diary” is not part of this chat");
+    expect(prompts[1]).toContain("“Private/Notes” is not part of this chat");
+  });
+
+  test("what a message would send is shown before it is sent, and nothing is sent by looking", async () => {
+    const { agent, backend } = setup([], false, "file-1");
+    const shown = await agent.preview("Write to Acme");
+    expect(shown.map(({ label }) => label)).toEqual(["system", "prompt"]);
+    expect(shown[1].text).toContain("Write to ⟦CUSTOMER_1⟧");
+    expect(backend.agentPreview.mock.calls[0][0].veil).toBe(true);
+    expect(backend.agentRun).not.toHaveBeenCalled();
+    expect(agent.messages).toEqual([]);
   });
 }

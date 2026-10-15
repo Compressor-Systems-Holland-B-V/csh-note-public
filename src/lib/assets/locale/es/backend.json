@@ -35,7 +35,9 @@
     "cutOff": "La respuesta se cortó: {error}",
     "modelFirst": "Elija primero un modelo para el asistente.",
     "tooManySteps": "El asistente realizó demasiados pasos y se detuvo.",
-    "passwordStore": "No se pudo usar el almacén de contraseñas de este equipo: {error}"
+    "passwordStore": "No se pudo usar el almacén de contraseñas de este equipo: {error}",
+    "notAllowed": "Tu organización no permite este asistente.",
+    "plainHttp": "El http:// simple solo se usa para un servidor en este equipo o en tu propia red. Usa https:// para esta dirección."
   },
   "chat": {
     "busy": "El asistente sigue ocupado. Espere a que termine o deténgalo.",
@@ -52,8 +54,11 @@
     "fixFirst": "Solucione los problemas de esta página antes de exportarla.",
     "pageNotOpened": "No se pudo abrir la página.",
     "slideNotDrawn": "No se pudo dibujar una diapositiva: {error}",
+    "pictureNotDrawn": "No se pudo dibujar una imagen: {error}",
     "pdfFailed": "No se pudo crear el PDF: {reason}",
     "pptxFailed": "No se pudo crear la presentación: {error}",
+    "docxFailed": "No se pudo crear el archivo de Word: {error}",
+    "notWord": "Esta página no se puede convertir en un documento de Word: {error}",
     "nothing": "Esta página no tiene nada que exportar.",
     "nothingYet": "Aún no se ha exportado nada.",
     "notSaved": "No se pudo guardar el archivo: {error}",
@@ -74,7 +79,8 @@
     "missingThemes": "No se puede abrir este archivo porque necesita temas que no están instalados:\n• {themes}\nInstálalos en la página Temas y vuelve a abrir el archivo.",
     "outside": "Este archivo de znote intenta colocar “{name}” fuera de su propia carpeta, por lo que no se importó.",
     "tooLarge": "Este archivo de znote es demasiado grande una vez descomprimido, por lo que no se importó.",
-    "openFirst": "Abre primero un archivo znote."
+    "openFirst": "Abre primero un archivo znote.",
+    "wrongPassword": "La contraseña es incorrecta, o este no es un archivo de znote."
   },
   "theme": {
     "fileNotRead": "No se pudo leer este archivo de tema: {error}",
@@ -121,7 +127,6 @@
     "notPage": "“{path}” no es una página.",
     "badMove": "Una página solo puede moverse a un cuaderno, y un cuaderno a un proyecto.",
     "folderFirst": "Elija primero una carpeta de espacio de trabajo.",
-    "fileNotRead": "No se pudo leer el archivo: {error}",
-    "notFullPath": "“{folder}” no es una ruta de carpeta completa."
+    "fileNotRead": "No se pudo leer el archivo: {error}"
   }
 }

@@ -1,13 +1,15 @@
 <script lang="ts">
   import Redo2 from "@lucide/svelte/icons/redo-2";
   import RotateCcw from "@lucide/svelte/icons/rotate-ccw";
+  import Trash2 from "@lucide/svelte/icons/trash-2";
   import Undo2 from "@lucide/svelte/icons/undo-2";
-  import { Button } from "$lib/components/ui/button";
-  import { Input } from "$lib/components/ui/input";
+  import { Button } from "@zsuite/ui/button";
+  import { Input } from "@zsuite/ui/input";
+  import * as Resizable from "@zsuite/ui/resizable";
   import type { Piece } from "$lib/ipc";
   import { doc } from "$lib/state/document.svelte";
   import { kindColour, kinds, privacy } from "$lib/state/privacy.svelte";
-  import { groupsOf, hideChoice, itemsOf, redaction, remember, type Item, type Known } from "$lib/state/redaction.svelte";
+  import { groupsOf, hideChoice, itemsOf, redaction, remember, unwanted, type Item, type Known } from "$lib/state/redaction.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import { messageOf } from "$lib/utils";
   import LevelSlider from "./LevelSlider.svelte";
@@ -29,6 +31,14 @@
   const wanted = $derived(filter.trim().toLowerCase());
   const groups = $derived(groupsOf(items.filter((item) => item.text.toLowerCase().includes(wanted)), kinds));
   const hiddenCount = $derived(items.filter((item) => item.hidden).length);
+  const removable = $derived(unwanted(items));
+
+  function removeUnhidden() {
+    const texts = removable.map((item) => item.text);
+    for (const text of texts) memory.get(view.page)?.delete(text);
+    view = { ...view };
+    run(() => redaction.reset(texts));
+  }
 
   const kindName = (kind: string) => (kinds.includes(kind) ? t(`privacy.kinds.${kind}`) : kind === "OTHER" ? t("privacy.redact.other") : kind.charAt(0) + kind.slice(1).toLowerCase());
 
@@ -89,6 +99,7 @@
       {@render tool(t("privacy.redact.undo"), Undo2, () => run(() => redaction.undo()), redaction.done.length === 0)}
       {@render tool(t("privacy.redact.redo"), Redo2, () => run(() => redaction.redo()), redaction.undone.length === 0)}
       {@render tool(t("privacy.redact.reset"), RotateCcw, () => run(() => redaction.reset(items.map((item) => item.text))), !items.some((item) => redaction.choiceOf(item.text) !== undefined))}
+      {@render tool(t("privacy.redact.removeUnhidden"), Trash2, removeUnhidden, removable.length === 0)}
     {/if}
   </div>
   {#if page === null}
@@ -101,43 +112,46 @@
   {:else}
     {@const current = page}
     <LevelSlider class="shrink-0 border-b px-3 py-2" {level} onlevel={(chosen) => privacy.setPageLevel(current, chosen)} />
-    <div class="flex min-h-0 flex-1 flex-col border-b">
-      <div class="flex shrink-0 items-center gap-2 px-3 py-2">
-        <Input type="search" class="h-7 min-w-0 flex-1" placeholder={t("privacy.redact.filter")} aria-label={t("privacy.redact.filter")} bind:value={filter} />
-        <span class="shrink-0 text-xs text-muted-foreground tabular-nums">{t("privacy.redact.count", { hidden: hiddenCount, total: items.length })}</span>
-      </div>
-      {#if failure}<p class="px-3 text-destructive" role="alert">{failure}</p>{/if}
-      <div class="min-h-0 flex-1 overflow-y-auto px-3 pb-2">
-        {#each groups as group (group.kind)}
-          {@const on = group.items.filter((item) => item.hidden).length}
-          <fieldset class="mb-2">
-            <legend class="flex w-full items-center gap-2 py-1 font-medium">
-              <input
-                type="checkbox"
-                class="accent-primary"
-                checked={on === group.items.length}
-                indeterminate={on > 0 && on < group.items.length}
-                aria-label={t("privacy.redact.hideGroup", { kind: kindName(group.kind) })}
-                onchange={() => setHidden(group.items, on < group.items.length)}
-              />
-              <span class="size-3 shrink-0 rounded-sm {kindColour(group.kind)}"></span>
-              {kindName(group.kind)}
-              <span class="text-xs font-normal text-muted-foreground tabular-nums">{on}/{group.items.length}</span>
-            </legend>
-            {#each group.items as item (item.text)}
-              <label class="flex cursor-pointer items-center gap-2 rounded-md py-0.5 ps-5 pe-1 hover:bg-accent">
-                <input type="checkbox" class="accent-primary" checked={item.hidden} onchange={() => setHidden([item], !item.hidden)} />
-                <span class="min-w-0 flex-1 truncate {item.hidden ? '' : 'text-muted-foreground'}" title={item.text}>{item.text}</span>
-              </label>
-            {/each}
-          </fieldset>
-        {:else}
-          <p class="py-2 text-muted-foreground">{t("privacy.redact.none")}</p>
-        {/each}
-      </div>
-    </div>
-    <div class="h-2/5 shrink-0">
-      <PrivacyView text={doc.text} {level} onchoose={(texts, kind) => redaction.set(texts.map((text) => ({ text, after: kind })))} />
-    </div>
+    <Resizable.PaneGroup direction="vertical" autoSaveId="znote-redaction" class="min-h-0 flex-1">
+      <Resizable.Pane defaultSize={40} minSize={15} class="flex min-h-0 flex-col">
+        <div class="flex shrink-0 items-center gap-2 px-3 py-2">
+          <Input type="search" class="h-7 min-w-0 flex-1" placeholder={t("privacy.redact.filter")} aria-label={t("privacy.redact.filter")} bind:value={filter} />
+          <span class="shrink-0 text-xs text-muted-foreground tabular-nums">{t("privacy.redact.count", { hidden: hiddenCount, total: items.length })}</span>
+        </div>
+        {#if failure}<p class="px-3 text-destructive" role="alert">{failure}</p>{/if}
+        <div class="min-h-0 flex-1 overflow-y-auto px-3 pb-2">
+          {#each groups as group (group.kind)}
+            {@const on = group.items.filter((item) => item.hidden).length}
+            <fieldset class="mb-2">
+              <legend class="flex w-full items-center gap-2 py-1 font-medium">
+                <input
+                  type="checkbox"
+                  class="accent-primary"
+                  checked={on === group.items.length}
+                  indeterminate={on > 0 && on < group.items.length}
+                  aria-label={t("privacy.redact.hideGroup", { kind: kindName(group.kind) })}
+                  onchange={() => setHidden(group.items, on < group.items.length)}
+                />
+                <span class="size-3 shrink-0 rounded-sm {kindColour(group.kind)}"></span>
+                {kindName(group.kind)}
+                <span class="text-xs font-normal text-muted-foreground tabular-nums">{on}/{group.items.length}</span>
+              </legend>
+              {#each group.items as item (item.text)}
+                <label class="flex cursor-pointer items-center gap-2 rounded-md py-0.5 ps-5 pe-1 hover:bg-accent">
+                  <input type="checkbox" class="accent-primary" checked={item.hidden} onchange={() => setHidden([item], !item.hidden)} />
+                  <span class="min-w-0 flex-1 truncate {item.hidden ? '' : 'text-muted-foreground'}" title={item.text}>{item.text}</span>
+                </label>
+              {/each}
+            </fieldset>
+          {:else}
+            <p class="py-2 text-muted-foreground">{t("privacy.redact.none")}</p>
+          {/each}
+        </div>
+      </Resizable.Pane>
+      <Resizable.Handle withHandle />
+      <Resizable.Pane defaultSize={60} minSize={15}>
+        <PrivacyView text={doc.text} {level} onchoose={(texts, kind) => redaction.set(texts.map((text) => ({ text, after: kind })))} />
+      </Resizable.Pane>
+    </Resizable.PaneGroup>
   {/if}
 </section>

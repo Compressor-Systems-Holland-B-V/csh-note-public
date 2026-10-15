@@ -131,5 +131,10 @@
     "thorough": "Minucioso",
     "thoroughHint": "Relatórios longos e reescritas cuidadosas. O mais lento.",
     "custom": "Personalizado"
+  },
+  "files": {
+    "title": "O que o assistente vê",
+    "text": "Escolha uma página ou ficheiro para o ver como o assistente o vê, e escolha quanto fica oculto.",
+    "none": "Ainda não há páginas nem ficheiros nesta conversa."
   }
 }
