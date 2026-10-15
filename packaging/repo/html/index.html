@@ -8,11 +8,11 @@
     <title>Download znote</title>
     <meta
       name="description"
-      content="Download znote 0.8.0 for Windows, macOS and Linux. A lightweight desktop editor for Typst with a live preview." />
+      content="Download znote 1.0.0 for Windows, macOS and Linux. A lightweight desktop editor for Typst with a live preview." />
     <meta property="og:title" content="Download znote" />
     <meta
       property="og:description"
-      content="A lightweight desktop editor for Typst with a live preview, themes, PDF, PowerPoint and Word export and an optional writing assistant." />
+      content="A lightweight desktop editor for Typst with a live preview, themes, PDF and PowerPoint export and an optional writing assistant." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="favicon.png" />
 
@@ -417,11 +417,11 @@
         <p class="tagline">
           A lightweight desktop editor for Typst. Type on one side and watch your
           document render on the other. Organise pages into projects and notebooks,
-          change the look with themes, export to PDF, PowerPoint or Word, and ask the
+          change the look with themes, export to PDF or PowerPoint, and ask the
           optional assistant to write or edit for you.
         </p>
-        <a class="version" href="https://github.com/ZAL-Analytics/znote/releases">
-          Version 0.8.0 &middot; released soon
+        <a class="version" href="https://github.com/ZAL-Analytics/znote/releases/tag/v1.0.0">
+          Version 1.0.0 &middot; released 2026-10-15
         </a>
       </div>
     </header>
@@ -431,15 +431,65 @@
         <div class="wrap">
           <h2>Choose your system</h2>
           <ul class="downloads">
-            <li class="card">
+            <li class="card" data-os="windows">
               <div class="card-head">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M0 3.4 9.8 2v9.4H0zm10.9-1.6L24 0v11.4H10.9zM0 12.6h9.8V22L0 20.6zm10.9 0H24V24l-13.1-1.8z"/></svg>
                 <div>
-                  <div class="card-name">No release yet</div>
-                  <div class="card-note">Windows, macOS and Linux</div>
+                  <div class="card-name">Windows</div>
+                  <div class="card-note">10 and 11, 64-bit</div>
                 </div>
+                <span class="yours-flag">Your system</span>
               </div>
-              <p class="card-body">The first packages are on their way. Until then, the source and every build are on GitHub.</p>
-              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases">See the releases</a>
+              <p class="card-body">Installer. Adds znote to the start menu and opens .znote files.</p>
+              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases/download/v1.0.0/znote_1.0.0_x64-setup.exe" download>Download <span class="size">24.5 MB</span></a>
+            </li>
+            <li class="card" data-os="macos">
+              <div class="card-head">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.7c0-2.7 2.2-4 2.3-4.1-1.2-1.8-3.2-2-3.9-2.1-1.6-.2-3.2.9-4 .9s-2.1-.9-3.5-.9c-1.8 0-3.4 1-4.3 2.6-1.9 3.2-.5 8 1.3 10.6.9 1.3 1.9 2.7 3.3 2.6 1.3-.1 1.8-.8 3.4-.8s2 .8 3.4.8 2.3-1.3 3.2-2.5c1-1.5 1.4-2.9 1.4-3-.1 0-2.7-1-2.7-4.1zM13.8 4.3c.7-.9 1.2-2.1 1.1-3.3-1 0-2.3.7-3.1 1.6-.7.8-1.3 2-1.1 3.2 1.1.1 2.3-.6 3.1-1.5z"/></svg>
+                <div>
+                  <div class="card-name">macOS</div>
+                  <div class="card-note">Apple silicon and Intel</div>
+                </div>
+                <span class="yours-flag">Your system</span>
+              </div>
+              <p class="card-body">Disk image. Drag the app into your Applications folder.</p>
+              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases/download/v1.0.0/znote_1.0.0_universal.dmg" download>Download <span class="size">62.9 MB</span></a>
+            </li>
+            <li class="card" data-os="linux">
+              <div class="card-head">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="3.2" r="2.6"/><circle cx="4.4" cy="16.4" r="2.6"/><circle cx="19.6" cy="16.4" r="2.6"/></svg>
+                <div>
+                  <div class="card-name">Debian and Ubuntu</div>
+                  <div class="card-note">.deb, 64-bit</div>
+                </div>
+                <span class="yours-flag">Your system</span>
+              </div>
+              <p class="card-body">For Debian 13 and later, Ubuntu 24.04 and later, Mint and Pop!_OS.</p>
+              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases/download/v1.0.0/znote_1.0.0_amd64.deb" download>Download <span class="size">36.1 MB</span></a>
+            </li>
+            <li class="card" data-os="linux">
+              <div class="card-head">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0a12 12 0 0 0 0 24h5.7a6.3 6.3 0 0 0 6.3-6.3V12A12 12 0 0 0 12 0zm1.6 5.6a3.6 3.6 0 0 1 3.6 3.6 1.2 1.2 0 1 1-2.4 0 1.2 1.2 0 0 0-1.2-1.2 1.2 1.2 0 0 0-1.2 1.2v2.2h2a1.2 1.2 0 1 1 0 2.4h-2v1.4a3.6 3.6 0 1 1-3.6-3.6h1.2V9.2a3.6 3.6 0 0 1 3.6-3.6zM9.2 13.6a1.2 1.2 0 1 0 1.2 1.2v-1.2z"/></svg>
+                <div>
+                  <div class="card-name">Fedora and openSUSE</div>
+                  <div class="card-note">.rpm, 64-bit</div>
+                </div>
+                <span class="yours-flag">Your system</span>
+              </div>
+              <p class="card-body">For Fedora, openSUSE and other rpm based systems.</p>
+              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases/download/v1.0.0/znote-1.0.0-1.x86_64.rpm" download>Download <span class="size">36.1 MB</span></a>
+            </li>
+            <li class="card" data-os="linux">
+              <div class="card-head">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8c.8 1.6 1.3 2.7 2.2 4.3-.6-.6-1.2-1-1.8-1.4.9 2.3 1.4 4.7 1.2 7.1-.1 2.6-1.1 5-2.7 7 1.6-.4 3.2-1.3 4.4-2.5-.1.7-.4 1.4-.9 2.1 2.1-1.4 3.2-3.4 3.4-5.4l4.6 10.2H1.6L12 .8zm.3 15.4c1 .6 1.9 1.4 2.5 2.4H9.2c.6-1 1.5-1.8 2.5-2.4z"/></svg>
+                <div>
+                  <div class="card-name">Arch Linux</div>
+                  <div class="card-note">.pkg.tar.zst, 64-bit</div>
+                </div>
+                <span class="yours-flag">Your system</span>
+              </div>
+              <p class="card-body">For Arch, Manjaro and EndeavourOS.</p>
+              <a class="button" href="https://github.com/ZAL-Analytics/znote/releases/download/v1.0.0/znote-1.0.0-1-x86_64.pkg.tar.zst" download>Download <span class="size">33.1 MB</span></a>
             </li>
           </ul>
         </div>
@@ -496,7 +546,7 @@ sudo pacman -U ./znote-*.pkg.tar.zst        # arch</code></pre>
     <footer>
       <div class="wrap">
         <p>
-          <a href="https://github.com/ZAL-Analytics/znote/releases">All files for this release</a> &middot;
+          <a href="https://github.com/ZAL-Analytics/znote/releases/tag/v1.0.0">All files for this release</a> &middot;
           <a href="https://github.com/ZAL-Analytics/znote">Source on GitHub</a> &middot;
           <a href="privacy.html">Privacy</a> &middot;
           Apache 2.0 licence
