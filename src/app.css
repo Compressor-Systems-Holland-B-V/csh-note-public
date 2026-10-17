@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "@zsuite/ui/tokens.css";
 @source "../node_modules/@zsuite/ui/src";
+@source "../node_modules/@zsuite/assistant/src";
 @keyframes shimmer {
   from {
     background-position: 200% 0;

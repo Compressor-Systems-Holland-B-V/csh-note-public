@@ -63,6 +63,8 @@
     "recent": "Aperti in precedenza",
     "forget": "Rimuovi da questo elenco",
     "forgetFile": "Rimuovi {name} da questo elenco",
+    "save": "Salva",
+    "saving": "Salvataggio…",
     "copy": "Salva una copia di questo file znote",
     "switch": "Apri o crea un altro file znote",
     "savedAt": "Salvato alle {time}",

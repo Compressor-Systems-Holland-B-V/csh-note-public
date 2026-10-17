@@ -10,14 +10,17 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use typst::syntax::package::PackageVersion;
 
-use crate::sealed;
 use crate::theme;
 use crate::workspace::check_name;
+use zsuite_sealed::sealed;
 
 const MAX_UNPACKED_BYTES: u64 = 2 * 1024 * 1024 * 1024;
 const MAX_MANIFEST_BYTES: u64 = 1024 * 1024;
 const MAX_ENTRIES: usize = 50_000;
 const MANIFEST: &str = "znote.json";
+// An empty folder is stored as this empty entry inside it, since entries hold files only. Older
+// versions skip it as a name they cannot use, so they still open the file.
+const KEEP: &str = ".keep";
 const SCHEMA: &str =
     "CREATE TABLE IF NOT EXISTS entries (name TEXT PRIMARY KEY, data BLOB NOT NULL);";
 const WRONG: &str = "The password is wrong, or this is not a znote file.";
@@ -73,7 +76,11 @@ fn files(folder: &Path, found: &mut Vec<PathBuf>) -> io::Result<()> {
             continue;
         }
         if kind.is_dir() {
+            let before = found.len();
             files(&path, found)?;
+            if found.len() == before {
+                found.push(path.join(KEEP));
+            }
         } else if kind.is_file()
             && path
                 .extension()
@@ -256,6 +263,12 @@ fn written(staging: &Path, db: &Connection) -> Result<(), String> {
         let names = entry_path(&name).ok_or_else(|| {
             format!("This znote file tries to put “{name}” outside its own folder, so it was not imported.")
         })?;
+        if let Some((&KEEP, folder)) = names.split_last()
+            && folder.iter().all(|name| check_name(name).is_ok())
+        {
+            fs::create_dir_all(staging.join(PathBuf::from_iter(folder))).map_err(unreadable)?;
+            continue;
+        }
         if names.iter().any(|name| check_name(name).is_err()) {
             continue;
         }
@@ -428,8 +441,12 @@ impl Home {
             for (name, source) in &found {
                 let stamp = stamp(source);
                 if before.get(name) != Some(&stamp) || !stored.contains(name) {
-                    put.execute(params![name, fs::read(source).map_err(unsaved)?])
-                        .map_err(unsaved)?;
+                    let data = if source.ends_with(KEEP) {
+                        Vec::new()
+                    } else {
+                        fs::read(source).map_err(unsaved)?
+                    };
+                    put.execute(params![name, data]).map_err(unsaved)?;
                     fresh.push(name.clone());
                 }
                 packed.insert(name.clone(), stamp);
@@ -762,6 +779,32 @@ mod tests {
                 .count(),
             1
         );
+    }
+
+    #[test]
+    fn an_empty_project_and_notebook_are_kept() {
+        let folder = scratch("empty");
+        let (home, themes, file) = (
+            Home(folder.join("home")),
+            folder.join("themes"),
+            folder.join("notes.znote"),
+        );
+        fs::create_dir_all(home.pages().join("Empty")).unwrap();
+        fs::create_dir_all(home.pages().join("Work/Empty")).unwrap();
+        put(home.pages().join("Work/Notes/A.typ"), "= A");
+        home.pack(&themes, &file, None, (None, Value::Null), PASSWORD)
+            .unwrap();
+        let stored = names(&file);
+        assert!(stored.contains(&"pages/Empty/.keep".to_string()));
+        assert!(stored.contains(&"pages/Work/Empty/.keep".to_string()));
+        assert!(!stored.contains(&"pages/Work/Notes/.keep".to_string()));
+
+        let opened = Home(folder.join("opened"));
+        opened.unpack(&file, PASSWORD).unwrap();
+        assert!(opened.pages().join("Empty").is_dir());
+        assert!(opened.pages().join("Work/Empty").is_dir());
+        assert!(!opened.pages().join("Work/Empty").join(KEEP).exists());
+        assert!(opened.pages().join("Work/Notes/A.typ").is_file());
     }
 
     #[test]

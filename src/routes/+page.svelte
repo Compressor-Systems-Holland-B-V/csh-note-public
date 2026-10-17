@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "$lib/state/assistant.svelte";
   import EyeOff from "@lucide/svelte/icons/eye-off";
   import FileBox from "@lucide/svelte/icons/file-box";
   import FileOutput from "@lucide/svelte/icons/file-output";
@@ -10,7 +11,7 @@
   import Sparkles from "@lucide/svelte/icons/sparkles";
   import Sun from "@lucide/svelte/icons/sun";
   import MessagesSquare from "@lucide/svelte/icons/messages-square";
-  import AgentPanel from "$lib/components/AgentPanel.svelte";
+  import AgentPanel from "@zsuite/assistant/components/AgentPanel";
   import ExportPanel from "$lib/components/ExportPanel.svelte";
   import EditorColumn from "$lib/components/EditorColumn.svelte";
   import KnowledgeUnlock from "$lib/components/KnowledgeUnlock.svelte";
@@ -21,7 +22,7 @@
   import ProjectNotices from "$lib/components/ProjectNotices.svelte";
   import ProjectPassword from "$lib/components/ProjectPassword.svelte";
   import ProjectStart from "$lib/components/ProjectStart.svelte";
-  import Picker from "$lib/components/Picker.svelte";
+  import { Picker } from "@zsuite/ui/picker";
   import SettingsDialog from "$lib/components/SettingsDialog.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SnapshotButtons from "$lib/components/SnapshotButtons.svelte";
@@ -69,7 +70,7 @@
   function saveOnShortcut(event: KeyboardEvent) {
     if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "s") return;
     event.preventDefault();
-    workspace.save();
+    projects.save();
   }
 </script>
 

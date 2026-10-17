@@ -23,7 +23,7 @@
     "badKey": "That does not look like an API key. Copy it again.",
     "keyFirst": "Paste your OpenRouter API key first.",
     "addressFirst": "Type the address of the server, for example http://localhost:11434/v1",
-    "unknown": "“{provider}” is not a provider znote knows.",
+    "unknown": "“{provider}” is not a known provider.",
     "noSecureConnection": "A secure connection could not be set up: {error}",
     "keyRejected": "The API key was not accepted.",
     "noCredit": "The account has no credit left.",

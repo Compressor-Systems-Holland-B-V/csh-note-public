@@ -63,6 +63,8 @@
     "recent": "Otwierane wcześniej",
     "forget": "Usuń z tej listy",
     "forgetFile": "Usuń {name} z tej listy",
+    "save": "Zapisz",
+    "saving": "Zapisywanie…",
     "copy": "Zapisz kopię tego pliku znote",
     "switch": "Otwórz lub utwórz inny plik znote",
     "savedAt": "Zapisano o {time}",

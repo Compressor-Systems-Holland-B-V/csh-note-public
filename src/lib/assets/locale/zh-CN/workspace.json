@@ -63,6 +63,8 @@
     "recent": "以前打开过",
     "forget": "从此列表中移除",
     "forgetFile": "将 {name} 从此列表中移除",
+    "save": "保存",
+    "saving": "正在保存…",
     "copy": "保存此 znote 文件的副本",
     "switch": "打开或创建另一个 znote 文件",
     "savedAt": "保存于 {time}",

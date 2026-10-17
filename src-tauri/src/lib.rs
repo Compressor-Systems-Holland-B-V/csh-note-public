@@ -1,13 +1,11 @@
 mod agent;
 mod compile;
 mod export;
-mod extract;
 mod knowledge;
 mod models;
 mod policy;
 mod privacy;
 mod project;
-mod sealed;
 mod snapshot;
 mod theme;
 mod workspace;
@@ -22,6 +20,16 @@ pub async fn blocking<T: Send + 'static>(
     tauri::async_runtime::spawn_blocking(work)
         .await
         .map_err(|_| "This could not be finished. Try again.".to_string())?
+}
+
+pub fn keep(file: &Path, bytes: &[u8]) -> std::io::Result<()> {
+    let mut temp = file.to_path_buf();
+    temp.as_mut_os_string().push(".tmp");
+    std::fs::File::create(&temp).and_then(|mut handle| {
+        std::io::Write::write_all(&mut handle, bytes)?;
+        handle.sync_all()
+    })?;
+    std::fs::rename(&temp, file)
 }
 
 pub fn guarded<T>(failure: &str, work: impl FnOnce() -> Result<T, String>) -> Result<T, String> {
@@ -54,9 +62,14 @@ pub fn run() {
         .manage(compile::Compiler::default())
         .manage(workspace::Workspace::default())
         .manage(export::Exports::default())
-        .manage(agent::Agent::default())
         .manage(project::Project::default())
-        .manage(knowledge::Knowledge::default())
+        .plugin(tauri_plugin_zsuite_assistant::init(
+            agent::Assistant,
+            agent::KEYS,
+            zsuite_sealed::Knowledge::new(policy::get().clone())
+                .with_glossary(privacy::default_glossary()),
+        ))
+        .manage(knowledge::Pending::default())
         .invoke_handler(tauri::generate_handler![
             app_version,
             compile::compile,
@@ -74,6 +87,7 @@ pub fn run() {
             theme::store_themes,
             theme::install_store_theme,
             theme::remove_theme,
+            project::project_save,
             project::save_snapshot,
             project::project_asked,
             project::project_open,
@@ -83,30 +97,6 @@ pub fn run() {
             export::export_page,
             export::open_export,
             export::show_export,
-            agent::agent_status,
-            agent::agent_install,
-            agent::agent_connect,
-            agent::agent_code,
-            agent::agent_disconnect,
-            agent::agent_cancel,
-            agent::agent_run,
-            agent::agent_attach,
-            agent::agent_preview,
-            agent::agent_files,
-            agent::agent_level,
-            agent::agent_in_scope,
-            agent::agent_forget,
-            agent::provider_connect,
-            agent::provider_models,
-            agent::chats_list,
-            agent::chat_save,
-            knowledge::privacy_options,
-            policy::privacy_policy,
-            knowledge::privacy_pages,
-            knowledge::privacy_view,
-            knowledge::privacy_override,
-            knowledge::privacy_overrides,
-            knowledge::privacy_forget,
             knowledge::knowledge_status,
             knowledge::knowledge_create,
             knowledge::knowledge_pick,
@@ -135,9 +125,8 @@ pub fn run() {
         .expect("error while running tauri application")
         .run(|app, event| {
             if let tauri::RunEvent::Exit = event {
-                app.state::<agent::Agent>().cancel_all();
+                app.state::<zsuite_agent::Agent>().cancel_all();
                 project::close(app);
-                agent::clear_mirrors(app);
             }
         });
 }

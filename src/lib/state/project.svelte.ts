@@ -9,7 +9,7 @@ import type { Settings } from "./settings.svelte";
 import { Workspace, nameOf, workspace } from "./workspace.svelte";
 import { t, translated } from "$lib/i18n.svelte";
 
-type Backend = Pick<typeof ipc, "projectOpen" | "projectNew" | "projectUnlock" | "projectAsked">;
+type Backend = Pick<typeof ipc, "projectOpen" | "projectNew" | "projectUnlock" | "projectAsked" | "saveProject">;
 
 const maxRecent = 8;
 const carried = ["theme", "hiddenTemplates", "hiddenLooks", "lastPage", "pageLevels"] as const;
@@ -25,6 +25,7 @@ export class Projects {
   busy = $state(false);
   failure = $state<string | null>(null);
   savedAt = $state<number | null>(null);
+  saving = $state(false);
   offer = $state<{ file: string; themes: string[] } | null>(null);
   locked = $state<string | null>(null);
   creating = $state<{ from: string | null } | null>(null);
@@ -130,6 +131,14 @@ export class Projects {
     this.choosing = this.choosing || this.file === null;
   }
 
+  // Saves what was typed, then the znote file now instead of after the next pause in typing.
+  save() {
+    return this.workspace.attempt(async () => {
+      await this.workspace.flush();
+      if (this.file !== null) await this.backend.saveProject();
+    });
+  }
+
   forget(file: string) {
     this.settings.set("recentProjects", this.settings.values.recentProjects.filter((recent) => recent !== file));
   }
@@ -158,14 +167,19 @@ export async function start() {
         clearTimeout(refreshTimer);
         refreshTimer = setTimeout(() => workspace.attempt(() => workspace.refresh()), refreshDelayMs);
       }),
+      ipc.onProjectSaving(() => (projects.saving = true)),
       ipc.onProjectSaved(() => {
+        projects.saving = false;
         projects.savedAt = Date.now();
         projects.failure = null;
       }),
       ipc.onProjectAsked((file) => {
         if (!agent.running && file !== projects.file) projects.open(file);
       }),
-      ipc.onProjectSaveFailed((message) => (projects.failure = translated(message))),
+      ipc.onProjectSaveFailed((message) => {
+        projects.saving = false;
+        projects.failure = translated(message);
+      }),
       ipc.onProjectFontsLeftOut((families) => (projects.leftOutFonts = [...new Set([...projects.leftOutFonts, ...families])])),
       ipc.onClosing(async (keepOpen) => {
         try {
@@ -223,6 +237,7 @@ if (import.meta.vitest) {
         return file === null ? null : opened(file);
       }),
       projectAsked: vi.fn(async () => asked.file),
+      saveProject: vi.fn(async () => {}),
       projectNew: vi.fn(async (_from: string | null, _password: string) => opened("C:\\Users\\me\\Documents\\My notes.znote")),
       projectUnlock: vi.fn(async (file: string, password: string): Promise<OpenedProject> => {
         if (password !== "right password") throw new Error("The password is wrong, or this is not a znote file.");
@@ -232,6 +247,17 @@ if (import.meta.vitest) {
     const space = new Workspace(files, new Document(async () => {}), chosen);
     return { projects: new Projects(backend, space, chosen), backend, chosen, space, files, order, disk, asked };
   }
+
+  test("saving writes what was typed first, and the znote file only once one is open", async () => {
+    const { projects, backend, space } = setup();
+    const flush = vi.spyOn(space, "flush");
+    await projects.save();
+    expect(flush).toHaveBeenCalled();
+    expect(backend.saveProject).not.toHaveBeenCalled();
+    await projects.open("C:\\notes\\Work.znote");
+    await projects.save();
+    expect(backend.saveProject).toHaveBeenCalledTimes(1);
+  });
 
   test("the last znote file is opened again at start, and without one the user is asked", async () => {
     const first = setup();

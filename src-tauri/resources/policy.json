@@ -1,5 +1,5 @@
 {
-  "$schema": "./policy.schema.json",
+  "$schema": "../../vendor/zsuite/crates/zsuite-veil/resources/policy.schema.json",
   "hideNames": "optional",
   "findNames": "optional",
   "hideAmounts": "optional",
