@@ -63,6 +63,8 @@
     "recent": "Eerder geopend",
     "forget": "Uit deze lijst verwijderen",
     "forgetFile": "{name} uit deze lijst verwijderen",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
     "copy": "Een kopie van dit znote-bestand opslaan",
     "switch": "Een ander znote-bestand openen of maken",
     "savedAt": "Opgeslagen om {time}",

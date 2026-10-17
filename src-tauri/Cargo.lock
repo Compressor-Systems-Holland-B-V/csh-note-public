@@ -6204,6 +6204,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-zsuite-assistant"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
+ "tauri-plugin-dialog",
+ "zsuite-agent",
+ "zsuite-sealed",
+ "zsuite-veil",
+]
+
+[[package]]
 name = "tauri-runtime"
 version = "2.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8543,43 +8556,29 @@ checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 
 [[package]]
 name = "znote"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
- "aho-corasick",
- "keyring",
- "lopdf",
- "model2vec-rs",
- "native-tls",
- "ndarray 0.16.1",
  "notify",
- "ort",
- "oxrdf",
- "oxrdfio",
- "regex",
- "roxmltree 0.21.1",
  "rusqlite",
  "serde",
  "serde_json",
- "sha2 0.10.9",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",
  "tauri-plugin-opener",
  "tauri-plugin-single-instance",
  "tauri-plugin-store",
- "tokenizers",
+ "tauri-plugin-zsuite-assistant",
  "trash",
  "typst",
- "typst-html",
  "typst-kit",
- "typst-layout",
- "typst-pdf",
- "typst-render",
- "typst-svg",
- "unicode-normalization",
- "ureq",
  "zip",
+ "zsuite-agent",
+ "zsuite-finder",
+ "zsuite-sealed",
  "zsuite-theme",
+ "zsuite-typst",
+ "zsuite-veil",
 ]
 
 [[package]]
@@ -8595,6 +8594,49 @@ dependencies = [
 ]
 
 [[package]]
+name = "zsuite-agent"
+version = "0.1.0"
+dependencies = [
+ "keyring",
+ "lopdf",
+ "native-tls",
+ "roxmltree 0.21.1",
+ "serde",
+ "serde_json",
+ "ureq",
+ "zip",
+ "zsuite-sealed",
+ "zsuite-veil",
+]
+
+[[package]]
+name = "zsuite-finder"
+version = "0.1.0"
+dependencies = [
+ "ndarray 0.16.1",
+ "ort",
+ "ort-sys",
+ "serde",
+ "sha2 0.10.9",
+ "tokenizers",
+ "zsuite-veil",
+]
+
+[[package]]
+name = "zsuite-sealed"
+version = "0.1.0"
+dependencies = [
+ "keyring",
+ "model2vec-rs",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "zsuite-finder",
+ "zsuite-veil",
+]
+
+[[package]]
 name = "zsuite-theme"
 version = "0.1.0"
 dependencies = [
@@ -8602,6 +8644,36 @@ dependencies = [
  "serde_json",
  "ttf-parser",
  "zip",
+]
+
+[[package]]
+name = "zsuite-typst"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "typst",
+ "typst-html",
+ "typst-kit",
+ "typst-layout",
+ "typst-pdf",
+ "typst-render",
+ "typst-svg",
+ "zip",
+ "zsuite-theme",
+]
+
+[[package]]
+name = "zsuite-veil"
+version = "0.1.0"
+dependencies = [
+ "aho-corasick",
+ "oxrdf",
+ "oxrdfio",
+ "regex",
+ "serde",
+ "serde_json",
+ "typst",
+ "unicode-normalization",
 ]
 
 [[package]]

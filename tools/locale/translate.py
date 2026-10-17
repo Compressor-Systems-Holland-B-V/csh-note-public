@@ -16,6 +16,7 @@ script. Chinese and Japanese go to GLM, every other language to Gemini.
     uv run tools/locale/translate.py --missing          # only strings not translated yet
     uv run tools/locale/translate.py --dry-run          # count what would be sent
     uv run tools/locale/translate.py --check            # check the files on disk, no API
+    uv run tools/locale/translate.py --folder vendor/zsuite/packages/assistant/src/locale
 
 scripts/translate_locale does the same with the key pulled from Bitwarden.
 """
@@ -277,7 +278,11 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="print what would be sent, send nothing")
     ap.add_argument("--check", action="store_true", help="check the locale files on disk against English, send nothing")
     ap.add_argument("--test", action="store_true", help="run the self-test of the JSON handling")
+    ap.add_argument("--folder", type=pathlib.Path, help="another locale folder, such as a zsuite package's")
     args = ap.parse_args()
+    if args.folder is not None:
+        global LOCALE
+        LOCALE = args.folder.resolve()
 
     if args.test:
         return test()

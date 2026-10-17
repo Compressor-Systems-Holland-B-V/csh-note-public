@@ -1,7 +1,7 @@
 [package]
 name = "znote"
 
-version = "1.0.0"
+version = "1.1.0"
 description = "A lightweight desktop editor for Typst with live preview, built with Tauri"
 license = "Apache-2.0"
 repository = "https://github.com/ZAL-Analytics/znote"
@@ -23,9 +23,6 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-keyring = "4"
-native-tls = "0.2"
-ureq = { version = "2", default-features = false, features = ["native-tls"] }
 notify = "8"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
@@ -37,28 +34,14 @@ tauri-plugin-store = "2"
 trash = "5"
 typst = "0.15.1"
 typst-kit = { version = "0.15.1", features = ["embedded-fonts", "scan-fonts", "system-packages", "system-downloader", "datetime"] }
-typst-html = "0.15.1"
-typst-layout = "0.15.1"
-typst-pdf = "0.15.1"
-typst-render = "0.15.1"
-typst-svg = "0.15.1"
 zip = { version = "9.0.2", default-features = false, features = ["deflate"] }
-zsuite-theme = { path = "../vendor/zsuite/crates/zsuite-theme" }
-lopdf = { version = "0.45.0", default-features = false }
-roxmltree = "0.21"
-aho-corasick = "1"
-regex = "1"
-unicode-normalization = "0.1"
-sha2 = "0.10"
-oxrdfio = "0.2"
-oxrdf = "0.3"
-ort = { version = "=2.0.0-rc.9", default-features = false, features = ["ndarray", "download-binaries"] }
-ndarray = "0.16"
-tokenizers = { version = "0.21", default-features = false, features = ["fancy-regex"] }
-# No features: its regex features also turn on tokenizers' C++ esaxx, built with the static CRT,
-# which clashes with onnxruntime's dynamic CRT when linking on Windows. tokenizers above
-# supplies fancy-regex.
-model2vec-rs = { version = "0.3", default-features = false }
+zsuite-theme = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-theme" }
+zsuite-veil = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-veil", features = ["typst"] }
+zsuite-finder = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-finder" }
+zsuite-typst = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-typst" }
+zsuite-sealed = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-sealed", features = ["typst"] }
+zsuite-agent = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-agent" }
+tauri-plugin-zsuite-assistant = { version = "0.1.0", path = "../vendor/zsuite/crates/tauri-plugin-zsuite-assistant" }
 
 [target.'cfg(windows)'.dependencies]
 rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }

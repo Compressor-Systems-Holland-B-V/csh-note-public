@@ -15,7 +15,7 @@
   import { projects, titleOf } from "$lib/state/project.svelte";
   import { settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
-  import Picker from "./Picker.svelte";
+  import { Picker } from "@zsuite/ui/picker";
   import { languageOptions, t } from "$lib/i18n.svelte";
 
   const first = $derived(projects.file === null);

@@ -63,6 +63,8 @@
     "recent": "Daha önce açılanlar",
     "forget": "Bu listeden kaldır",
     "forgetFile": "{name} öğesini bu listeden kaldır",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
     "copy": "Bu znote dosyasının bir kopyasını kaydet",
     "switch": "Başka bir znote dosyası aç veya oluştur",
     "savedAt": "{time} saatinde kaydedildi",

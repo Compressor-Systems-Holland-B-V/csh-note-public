@@ -12,8 +12,8 @@
   import { groupsOf, hideChoice, itemsOf, redaction, remember, unwanted, type Item, type Known } from "$lib/state/redaction.svelte";
   import { workspace } from "$lib/state/workspace.svelte";
   import { messageOf } from "$lib/utils";
-  import LevelSlider from "./LevelSlider.svelte";
-  import PrivacyView from "./PrivacyView.svelte";
+  import LevelPicker from "@zsuite/assistant/components/LevelPicker";
+  import PrivacyView from "@zsuite/assistant/components/PrivacyView";
   import { t } from "$lib/i18n.svelte";
 
   let { onsettings }: { onsettings: () => void } = $props();
@@ -111,7 +111,7 @@
     </div>
   {:else}
     {@const current = page}
-    <LevelSlider class="shrink-0 border-b px-3 py-2" {level} onlevel={(chosen) => privacy.setPageLevel(current, chosen)} />
+    <LevelPicker class="shrink-0 border-b px-3 py-2" {level} onlevel={(chosen) => privacy.setPageLevel(current, chosen)} />
     <Resizable.PaneGroup direction="vertical" autoSaveId="znote-redaction" class="min-h-0 flex-1">
       <Resizable.Pane defaultSize={40} minSize={15} class="flex min-h-0 flex-col">
         <div class="flex shrink-0 items-center gap-2 px-3 py-2">

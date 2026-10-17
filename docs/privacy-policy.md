@@ -1,8 +1,10 @@
 # Privacy policy and detection rules
 
-znote decides what reaches an assistant in Rust, from three kinds of data file in
-`src-tauri/resources/`. Each has a JSON schema next to it, so an editor that reads `$schema`
-checks it as you type. All three are built into the app: change them, then build znote again.
+znote decides what reaches an assistant in Rust, from three kinds of data file. `policy.json` is
+znote's own, in `src-tauri/resources/`. The language files and `detection.json` belong to the
+`zsuite-veil` crate, in `vendor/zsuite/crates/zsuite-veil/resources/`, next to the schemas of all
+three, so an editor that reads `$schema` checks them as you type. All three are built into the app:
+change them, then build znote again.
 
 ## `policy.json`: what users may change
 
@@ -11,7 +13,7 @@ that ships its own znote locks choices here:
 
 ```json
 {
-  "$schema": "./policy.schema.json",
+  "$schema": "../../vendor/zsuite/crates/zsuite-veil/resources/policy.schema.json",
   "hideNames": "required",
   "findNames": "optional",
   "hideAmounts": "required",
@@ -35,8 +37,7 @@ that ships its own znote locks choices here:
 | `zeroRetention` | `true`, `false` | OpenRouter only. `true` routes only to providers that keep nothing after the answer. |
 
 Every field is required and no other field is allowed. The hiding levels are: `0` the name finder
-finds nothing, `1` people, `2` also organisations, places and the glossary's own categories, `3`
-also products and projects. The glossary, "Always hide this" and the patterns in
+finds nothing, `1` people, `2` also organisations and places, `3` also products and projects. The glossary, "Always hide this" and the patterns in
 `detection.json` hide at every level.
 
 If the file cannot be read, or holds a field or value znote does not know, znote falls back to

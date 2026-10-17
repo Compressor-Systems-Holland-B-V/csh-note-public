@@ -63,6 +63,8 @@
     "recent": "以前開いたファイル",
     "forget": "この一覧から削除",
     "forgetFile": "{name} をこの一覧から削除",
+    "save": "保存",
+    "saving": "保存中…",
     "copy": "この znote ファイルのコピーを保存",
     "switch": "別の znote ファイルを開くか作成する",
     "savedAt": "{time} に保存",

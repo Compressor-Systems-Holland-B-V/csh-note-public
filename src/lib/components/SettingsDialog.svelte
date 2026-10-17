@@ -14,9 +14,9 @@
   import { fontSizes, settings } from "$lib/state/settings.svelte";
   import { theme } from "$lib/state/theme.svelte";
   import LayoutPicker from "./LayoutPicker.svelte";
-  import Picker from "./Picker.svelte";
+  import { Picker } from "@zsuite/ui/picker";
   import PrivacySettings from "./PrivacySettings.svelte";
-  import ProviderList from "./ProviderList.svelte";
+  import ProviderList from "@zsuite/assistant/components/ProviderList";
   import { languageOptions, t } from "$lib/i18n.svelte";
 
   let { open = $bindable(), section = $bindable("general") }: { open: boolean; section?: string } = $props();

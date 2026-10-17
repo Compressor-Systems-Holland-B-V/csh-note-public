@@ -14,10 +14,11 @@ use tauri_plugin_dialog::DialogExt;
 use typst::utils::hash128;
 use typst_kit::fonts;
 
-use crate::compile::{Compiler, UsedFont};
-use crate::sealed;
+use crate::compile::Compiler;
 use crate::snapshot::{self, Home, Manifest};
 use crate::theme;
+use zsuite_sealed::sealed;
+use zsuite_typst::UsedFont;
 
 const IDLE: Duration = Duration::from_secs(30);
 const MAX_FONT_BYTES: u64 = 64 * 1024 * 1024;
@@ -146,7 +147,7 @@ impl Home {
             dirty,
         };
         let bytes = serde_json::to_vec(&record).map_err(unsaved)?;
-        crate::agent::keep(&self.0.join("state.json"), &bytes).map_err(unsaved)
+        crate::keep(&self.0.join("state.json"), &bytes).map_err(unsaved)
     }
 
     fn used_fonts(&self) -> FontUse {
@@ -508,6 +509,7 @@ pub fn save(app: &AppHandle) {
     if !open.dirty.swap(false, Ordering::Relaxed) {
         return;
     }
+    let _ = app.emit("project-saving", ());
     let note = project
         .note
         .lock()
@@ -747,6 +749,16 @@ pub fn project_note(
         changed(&app);
     }
     Ok(())
+}
+
+/// Saves the open znote file now, instead of after the next pause in typing.
+#[tauri::command]
+pub async fn project_save(app: AppHandle) -> Result<(), String> {
+    crate::blocking(move || {
+        save(&app);
+        Ok(())
+    })
+    .await
 }
 
 #[tauri::command]

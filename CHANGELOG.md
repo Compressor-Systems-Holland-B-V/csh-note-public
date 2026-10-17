@@ -4,7 +4,64 @@ All notable changes to znote are written down here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0]
+## [1.1.0] - 2026-10-17
+
+### Added
+
+- Each chat has a mode below the message box. **Review** answers only in the
+  chat and changes no page. **Generate** creates or edits pages; only here do
+  you choose the notebook and template for new pages, and both can be cleared
+  back to the default. **Design** works on how pages look: the assistant may
+  change pages and can look at a picture of any page or slide in the chat,
+  drawn from the hidden text (names stay hidden, every image is a grey box),
+  and looks again after a change to check that everything fits.
+- A chat overview, behind the eye in the panel's top bar. **Sent** lists, per
+  message, everything that went to the assistant: the message, the pages and
+  files it read and the pictures of pages. **Pages and files** shows each one
+  the way the assistant sees it, where you choose how much is hidden, undo
+  your choices or remove a file from the chat. The eye under a message opens
+  the overview at that message.
+- A save button next to the file buttons, with Ctrl+S, and a spinner while the
+  `.znote` is being saved.
+
+### Changed
+
+- The assistant panel remembers which notebook new pages go in.
+- "What the assistant sees" is now the Pages and files tab of the chat
+  overview. It has Undo and Undo all changes for hidden words and the hiding
+  level, which is chosen with buttons instead of a slider.
+- The assistant, hiding and export code moved to the `vendor/zsuite`
+  submodule, so other apps can use it: the assistant panel and privacy views
+  (`@zsuite/assistant`), and the crates `zsuite-veil` (hiding),
+  `zsuite-finder` (name finder), `zsuite-sealed` (encrypted store and search),
+  `zsuite-agent` (providers and Claude Code), `zsuite-typst` (the compiler and
+  exports) and `tauri-plugin-zsuite-assistant`. znote passes in its glossary,
+  policy and model choice. The language files and `detection.json` now live in
+  `vendor/zsuite/crates/zsuite-veil/resources/`. CI also formats, lints and
+  tests the zsuite workspace.
+
+### Fixed
+
+- Word export keeps the layout of designed templates: a grid becomes a table
+  without lines, a filled box keeps its colour and coloured side, lines and
+  small marks (a dash under a heading) stay, and two tables in a row are no
+  longer merged into one.
+- Attaching the same file to a chat again no longer adds a second copy.
+- An attached file showed a level the policy did not allow, so you could not
+  go back to it. It now shows the level it really has.
+- A policy that makes hiding, the name finder or amounts mandatory now holds
+  before the user has chosen anything, not only after.
+- The name finder misses fewer names and mixes up people, companies and places
+  less often. It no longer asks for the glossary's categories ("customer",
+  "supplier"), which made it call companies by a kind that is hidden only at
+  the strict level. In a test with 70 names, the names left visible at the
+  medium level went from 20 to 3.
+- A capitalised word that only opens a sentence or a bullet, or sits in a
+  heading, is no longer taken for a name (on a slide deck: from about 55 hidden
+  ordinary words to none), and ordinary words hidden earlier stop spreading to
+  other pages.
+
+## [1.0.0] - 2026-10-15
 
 ### Added
 
@@ -166,4 +223,5 @@ All notable changes to znote are written down here. The format follows
 - The first version: a Tauri and SvelteKit window with the basic interface and a
   Windows build in CI.
 
+[1.1.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v1.0.0

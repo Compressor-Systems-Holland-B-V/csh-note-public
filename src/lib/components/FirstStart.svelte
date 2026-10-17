@@ -8,7 +8,7 @@
   import KnowledgeForm from "./KnowledgeForm.svelte";
   import LayoutPicker from "./LayoutPicker.svelte";
   import ModelDownload from "./ModelDownload.svelte";
-  import Picker from "./Picker.svelte";
+  import { Picker } from "@zsuite/ui/picker";
   import { languageOptions, t } from "$lib/i18n.svelte";
 
   type Step = "layout" | "privacy" | "file" | "create" | "import" | "downloads" | "marketplace";

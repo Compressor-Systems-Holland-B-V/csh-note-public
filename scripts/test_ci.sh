@@ -5,6 +5,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 WORKFLOW=.github/workflows/ci.yml
 RUNNER_IMAGE=catthehacker/ubuntu:act-24.04
 MANIFEST=src-tauri/Cargo.toml
+SHARED=vendor/zsuite/Cargo.toml
 
 usage() {
   cat <<'USAGE'
@@ -35,6 +36,7 @@ done
 if $fix; then
   echo "==> Formatting the rust backend"
   cargo fmt --manifest-path "$MANIFEST"
+  cargo fmt --manifest-path "$SHARED" --all
 fi
 
 if $use_act; then
@@ -60,10 +62,13 @@ backend() {
   [ -d src-tauri/dist ] || pnpm build
   echo "==> Checking rust formatting"
   cargo fmt --manifest-path "$MANIFEST" --check
+  cargo fmt --manifest-path "$SHARED" --all --check
   echo "==> Linting the rust backend"
   cargo clippy --manifest-path "$MANIFEST" -- -D warnings
+  cargo clippy --manifest-path "$SHARED" --workspace --all-targets --all-features -- -D warnings
   echo "==> Running the rust tests"
   cargo test --manifest-path "$MANIFEST"
+  cargo test --manifest-path "$SHARED" --workspace
 }
 
 set +e

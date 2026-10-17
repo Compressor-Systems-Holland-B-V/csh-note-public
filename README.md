@@ -7,6 +7,12 @@ Change how the app looks with a look (`.zth`) and add Typst page templates with 
 
 znote also has an assistant. Connect your own Claude subscription (it runs Claude Code), an OpenRouter key, or your own OpenAI-compatible server such as Ollama, and use the assistant to write new pages from a prompt, restructure sections, fix formatting, or edit in plain language. The assistant works directly on your `.typ` files, every change shows up live in the preview, and you review each change in the editor and keep or undo it.
 
+Below the message box you choose, per chat, how the assistant works:
+
+- **Review** answers only in the chat and changes no page.
+- **Generate** creates or edits pages. Only here do you choose the notebook new pages go in and their template.
+- **Design** works on how pages look. The assistant may change pages and can look at a picture of any page or slide in the chat, drawn from the text it may see (hidden names stay hidden, every image is a grey box), and looks again after a change to check that everything fits.
+
 More screenshots are in [`packaging/repo/demo/`](packaging/repo/demo/).
 
 ## Download
@@ -21,10 +27,10 @@ Get znote for Windows, macOS or Linux from the
 
 **Features**
 - Live Typst preview that updates as you type
-- Pages in projects and notebooks, kept in one encrypted `.znote` file with your assistant chats
+- Pages in projects and notebooks, kept in one encrypted `.znote` file with your assistant chats; save with the save button or Ctrl+S
 - Looks for the interface and Typst templates from the Marketplace
 - Export to PDF, PowerPoint and Word
-- Assistant panel, or a layout built around the assistant
+- Assistant panel, or a layout built around the assistant, with Review, Generate and Design modes
 - Names hidden from the assistant, and a private knowledge base it can search
 - Native, fast and small, powered by Tauri
 
@@ -61,8 +67,11 @@ finder that is not downloaded) nothing is sent and the chat says why.
 - text a glossary term is split by, such as `*Acme* Corp`, or a term broken over two lines
 
 Click the eye in the editor toolbar to see a page the way the assistant sees it, and to choose
-what is hidden. "Show what this message would send" shows a message as it will leave your computer,
-before it is sent. With hiding off, the assistant sees your pages as
+what is hidden. The chat overview, behind the eye in the assistant panel's top bar, has two tabs:
+**Sent** lists, per message, everything that went to the assistant (the message, the pages and
+files it read and the pictures of pages), and **Pages and files** shows each one the way the
+assistant sees it, where you choose how much is hidden, undo your choices or remove a file from the
+chat. The eye under a message opens the overview at that message. With hiding off, the assistant sees your pages as
 they are. A company that ships its own znote can make hiding mandatory; see
 [the privacy policy](docs/privacy-policy.md).
 
@@ -70,7 +79,8 @@ they are. A company that ships its own znote can make hiding mandatory; see
 
 znote needs [pnpm](https://pnpm.io), Rust and the
 [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your system. The interface
-kit comes from the `vendor/zsuite` submodule, so clone with it:
+kit, the assistant panel, hiding, the encrypted store, the name finder and the Typst compiler and
+exports come from the [`vendor/zsuite`](vendor/zsuite) submodule, so clone with it:
 
 ```sh
 git clone --recurse-submodules https://github.com/ZAL-Analytics/znote.git

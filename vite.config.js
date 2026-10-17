@@ -9,7 +9,7 @@ export default defineConfig(() => ({
   plugins: [tailwindcss(), sveltekit()],
   define: { "import.meta.vitest": "undefined" },
   test: {
-    includeSource: ["src/**/*.ts"],
+    includeSource: ["src/**/*.ts", "vendor/zsuite/packages/*/src/**/*.ts"],
     include: ["test/**/*.test.ts"],
   },
 

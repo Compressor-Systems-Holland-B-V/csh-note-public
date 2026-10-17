@@ -63,6 +63,8 @@
     "recent": "Recent",
     "forget": "Remove from list",
     "forgetFile": "Remove {name} from list",
+    "save": "Save",
+    "saving": "Saving…",
     "copy": "Save a copy",
     "switch": "Switch znote file",
     "savedAt": "Saved at {time}",

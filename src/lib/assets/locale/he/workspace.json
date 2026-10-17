@@ -63,6 +63,8 @@
     "recent": "נפתחו בעבר",
     "forget": "הסרה מרשימה זו",
     "forgetFile": "הסרת {name} מרשימה זו",
+    "save": "שמירה",
+    "saving": "שומר…",
     "copy": "שמירת עותק של קובץ znote זה",
     "switch": "פתיחה או יצירה של קובץ znote אחר",
     "savedAt": "נשמר ב-{time}",

@@ -63,6 +63,8 @@
     "recent": "Öppnade tidigare",
     "forget": "Ta bort från denna lista",
     "forgetFile": "Ta bort {name} från denna lista",
+    "save": "Spara",
+    "saving": "Sparar…",
     "copy": "Spara en kopia av denna znote-fil",
     "switch": "Öppna eller skapa en annan znote-fil",
     "savedAt": "Sparad kl. {time}",
