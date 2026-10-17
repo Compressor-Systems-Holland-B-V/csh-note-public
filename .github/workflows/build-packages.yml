@@ -5,12 +5,21 @@
 #   git tag build-pkg-deb && git push origin build-pkg-deb
 #   git tag build-pkg-rpm-exe && git push origin build-pkg-rpm-exe
 #   git tag build-pkg-all && git push origin build-pkg-all
+#
+# A push to main that changes the rust dependencies also builds every package.
+# Caches saved on a tag are visible only to that tag, so this is what leaves a
+# warm cargo cache on main for the release and build-pkg-* tags to restore.
 
 name: build packages
 
 on:
   push:
     tags: ['build-pkg-*']
+    branches: [main]
+    paths:
+      - src-tauri/Cargo.lock
+      - src-tauri/Cargo.toml
+      - vendor/zsuite
   workflow_dispatch:
     inputs:
       targets:
@@ -42,6 +51,8 @@ jobs:
 
           if [ -n "${DISPATCH_TARGETS:-}" ]; then
             raw="$(echo "$DISPATCH_TARGETS" | tr ',' ' ')"
+          elif [ "$GITHUB_REF_TYPE" = branch ]; then
+            raw=all
           else
             # build-pkg-rpm-exe becomes "rpm exe"
             raw="$(echo "${GITHUB_REF_NAME#build-pkg-}" | tr '-' ' ')"

@@ -17,7 +17,9 @@ include = ["src/**", "resources/**", "build.rs", "tauri.conf.json", "capabilitie
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "znote_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
+# Only the desktop binary links this. staticlib and cdylib are for mobile and each cost a
+# full LTO link of the whole app on every release build.
+crate-type = ["rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -50,8 +52,9 @@ rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"]
 rusqlite = { version = "0.40", features = ["bundled-sqlcipher"] }
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
+# codegen-units stays at the default: with lto the binary is barely larger, and a single
+# unit per crate made the Windows release build take most of an hour.
 [profile.release]
-codegen-units = 1
 lto = true
 opt-level = 3
 strip = true
