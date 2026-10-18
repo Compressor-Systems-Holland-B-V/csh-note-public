@@ -44,6 +44,8 @@
     "noAttachments": "Este chat não pode conter ficheiros anexados.",
     "notAttached": "Não foi possível anexar “{name}”: {error}",
     "tooLarge": "“{name}” é demasiado grande para ser anexado. O limite é 32 MB.",
+    "notSupported": "“{name}”: este tipo de ficheiro não é suportado.",
+    "notRead": "Não foi possível ler “{name}”.",
     "notSaved": "Não foi possível guardar este chat: {error}",
     "notSavedOther": "Não foi possível guardar o chat: {error}",
     "tooLong": "tornou-se demasiado longo. Inicie um novo chat.",

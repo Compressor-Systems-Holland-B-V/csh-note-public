@@ -113,7 +113,6 @@
         </div>
         <Switch id="start-marketplace" checked={settings.values.marketplace} onCheckedChange={(checked) => settings.set("marketplace", checked)} />
       </div>
-      <p class="text-xs text-muted-foreground">{t("privacy.start.later")}</p>
       <div class="flex justify-between">
         <Button variant="ghost" onclick={() => (step = "privacy")}>{t("common.back")}</Button>
         <Button onclick={finish}>{t("common.finish")}</Button>

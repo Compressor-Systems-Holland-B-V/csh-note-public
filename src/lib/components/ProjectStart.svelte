@@ -65,7 +65,6 @@
               <p class="text-4xl font-semibold tracking-tight">znote</p>
             {/if}
             <Dialog.Title class="text-xl font-normal">{t(first ? "workspace.file.welcome" : "workspace.file.title")}</Dialog.Title>
-            <Dialog.Description class="text-sm text-muted-foreground">{t("workspace.file.text")}</Dialog.Description>
           </div>
 
           <section class="grid gap-2" aria-labelledby="start-actions">

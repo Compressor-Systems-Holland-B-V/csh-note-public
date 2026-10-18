@@ -56,7 +56,6 @@
   "file": {
     "welcome": "Welcome to znote",
     "title": "Your znote files",
-    "text": "All your notes in one file you can copy.",
     "new": "New znote file…",
     "open": "Open znote file…",
     "bringIn": "Import existing notes…",

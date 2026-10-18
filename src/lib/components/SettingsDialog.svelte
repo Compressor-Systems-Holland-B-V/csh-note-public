@@ -139,12 +139,10 @@
         </Tabs.Content>
 
         <Tabs.Content value="assistant" class="grid gap-4">
-          <p class="text-xs text-muted-foreground">{t("providers.dialogText")}</p>
           <ProviderList />
         </Tabs.Content>
 
         <Tabs.Content value="privacy" class="grid gap-4">
-          <p class="text-xs text-muted-foreground">{t("privacy.settings.text")}</p>
           <PrivacySettings />
         </Tabs.Content>
       </div>

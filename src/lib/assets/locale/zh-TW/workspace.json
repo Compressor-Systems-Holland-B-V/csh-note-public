@@ -56,7 +56,6 @@
   "file": {
     "welcome": "歡迎使用 znote",
     "title": "您的 znote 檔案",
-    "text": "您的所有筆記都儲存在一個檔案中，可以複製到另一部電腦。",
     "new": "新增 znote 檔案…",
     "open": "開啟 znote 檔案…",
     "bringIn": "匯入我已有的筆記…",

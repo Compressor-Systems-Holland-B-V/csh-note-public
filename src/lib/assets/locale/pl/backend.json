@@ -44,6 +44,8 @@
     "noAttachments": "Ten czat nie może zawierać załączonych plików.",
     "notAttached": "Nie udało się załączyć „{name}”: {error}",
     "tooLarge": "„{name}” jest zbyt duży, aby go załączyć. Limit wynosi 32 MB.",
+    "notSupported": "„{name}”: ten typ pliku nie jest obsługiwany.",
+    "notRead": "Nie można odczytać „{name}”.",
     "notSaved": "Nie udało się zapisać tego czatu: {error}",
     "notSavedOther": "Nie udało się zapisać czatu: {error}",
     "tooLong": "stał się zbyt długi. Rozpocznij nowy czat.",

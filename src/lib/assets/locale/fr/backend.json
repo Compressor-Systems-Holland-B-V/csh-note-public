@@ -44,6 +44,8 @@
     "noAttachments": "Ce chat ne peut pas contenir de fichiers joints.",
     "notAttached": "« {name} » n’a pas pu être joint : {error}",
     "tooLarge": "« {name} » est trop volumineux pour être joint. La limite est de 32 Mo.",
+    "notSupported": "« {name} » : ce type de fichier n’est pas pris en charge.",
+    "notRead": "« {name} » n’a pas pu être lu.",
     "notSaved": "Ce chat n’a pas pu être enregistré : {error}",
     "notSavedOther": "Le chat n’a pas pu être enregistré : {error}",
     "tooLong": "il est devenu trop long. Démarrez un nouveau chat.",

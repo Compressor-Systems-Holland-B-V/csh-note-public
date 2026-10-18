@@ -72,7 +72,7 @@ if (import.meta.vitest) {
         handler({ kind: "text", text });
         handler({ kind: "done", session: "session-1", failure: null });
       }),
-      agentAttach: vi.fn(async () => [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
+      agentAttach: vi.fn(async () => ({ files: [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }], problems: [] as string[] })),
       agentFiles: vi.fn(async () => [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }]),
       agentSeen: vi.fn(async () => new ArrayBuffer(0)),
       agentDetach: vi.fn(async () => {}),
@@ -171,6 +171,19 @@ if (import.meta.vitest) {
     await agent.attach();
     await agent.attach();
     expect(agent.references.map(({ label }) => label)).toEqual(["report.pdf"]);
+  });
+
+  test("a file that could not be attached does not keep the others out", async () => {
+    const { agent, backend } = setup(["Done."]);
+    backend.agentAttach.mockResolvedValueOnce({
+      files: [{ name: "report.pdf", id: "1.pdf", path: "/data/assistant/1-report.pdf", text: null, level: 1 }],
+      problems: ["“tool.exe” could not be attached: This file cannot be read as text."],
+    });
+    await agent.attach();
+    expect(agent.references.map(({ label }) => label)).toEqual(["report.pdf"]);
+    expect(agent.failure).toContain("tool.exe");
+    await agent.attach();
+    expect(agent.failure).toBe(null);
   });
 
   test("the chosen preset decides the model, what the assistant may do, and whether it asks before deleting", async () => {

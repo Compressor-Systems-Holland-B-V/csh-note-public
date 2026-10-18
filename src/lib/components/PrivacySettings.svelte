@@ -50,11 +50,12 @@
   <KnowledgeFiles />
   {#if !usable}<p class="rounded-md bg-muted p-2 text-xs">{t("privacy.settings.needsFile")}</p>{/if}
   {#if privacy.blocked}<p class="rounded-md bg-destructive/10 p-2 text-xs text-destructive" role="alert">{t(`privacy.blocked.${privacy.blocked}`)}</p>{/if}
-  {#if privacy.required("hideNames")}<p class="rounded-md bg-muted p-2 text-xs">{t("privacy.panel.required")}</p>{/if}
   <Separator />
+  {#if privacy.required("hideNames")}<p class="rounded-md bg-muted p-2 text-xs">{t("privacy.panel.required")}</p>{/if}
   {#each switches.slice(0, 2) as { key, disabled } (key)}{@render toggle(key, disabled())}{/each}
   <ModelDownload id="names" />
   {@render toggle("privacyNames", switches[2].disabled())}
+  <Separator />
   <div class="flex items-center justify-between gap-3">
     <div class="min-w-0">
       <p class="text-sm font-medium">{t("privacy.glossary.title")}</p>

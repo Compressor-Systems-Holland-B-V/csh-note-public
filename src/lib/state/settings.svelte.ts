@@ -24,6 +24,7 @@ export type Settings = {
   assistantPreset: string | null;
   assistantModels: Record<string, string>;
   assistantPresets: Record<string, Preset[]>;
+  assistantRouting: "private" | "cheapest";
   privacyAsked: boolean;
   privacyVeil: boolean;
   privacyAmounts: boolean;
@@ -58,6 +59,7 @@ export const defaults: Settings = {
   assistantPreset: null,
   assistantModels: {},
   assistantPresets: {},
+  assistantRouting: "private",
   privacyAsked: false,
   privacyVeil: false,
   privacyAmounts: true,
@@ -103,6 +105,7 @@ export function merged(stored: Record<string, unknown>, osPrefersDark: boolean):
     assistantPreset: text(stored.assistantPreset),
     assistantModels: names(stored.assistantModels),
     assistantPresets: storedPresets(stored.assistantPresets),
+    assistantRouting: stored.assistantRouting === "cheapest" ? "cheapest" : "private",
     privacyAsked: flag(stored.privacyAsked, defaults.privacyAsked),
     privacyVeil: flag(stored.privacyVeil, defaults.privacyVeil),
     privacyAmounts: flag(stored.privacyAmounts, defaults.privacyAmounts),
@@ -154,6 +157,7 @@ if (import.meta.vitest) {
     expect(merged({ pageLevels: { "Work/A": 3, "Work/B": 7, "Work/C": "high" }, layout: "agent" }, false)).toMatchObject({ pageLevels: { "Work/A": 3 }, layout: "agent" });
     expect(merged({ layout: "huge" }, false).layout).toBe("edit");
     expect(merged({ assistantModels: { custom: "llama", claude: 7 }, assistantProvider: "custom" }, false)).toMatchObject({ assistantModels: { custom: "llama" }, assistantProvider: "custom" });
+    expect([merged({ assistantRouting: "cheapest" }, false), merged({ assistantRouting: "free" }, false)].map((values) => values.assistantRouting)).toEqual(["cheapest", "private"]);
   });
 
   test("with no saved theme the OS decides", () => {

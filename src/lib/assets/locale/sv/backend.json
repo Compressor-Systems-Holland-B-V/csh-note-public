@@ -44,6 +44,8 @@
     "noAttachments": "Den här chatten kan inte innehålla bifogade filer.",
     "notAttached": "”{name}” kunde inte bifogas: {error}",
     "tooLarge": "”{name}” är för stor för att bifogas. Gränsen är 32 MB.",
+    "notSupported": "”{name}”: den här filtypen stöds inte.",
+    "notRead": "”{name}” kunde inte läsas.",
     "notSaved": "Den här chatten kunde inte sparas: {error}",
     "notSavedOther": "Chatten kunde inte sparas: {error}",
     "tooLong": "Den har blivit för lång. Starta en ny chatt.",

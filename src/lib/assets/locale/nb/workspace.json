@@ -56,7 +56,6 @@
   "file": {
     "welcome": "Velkommen til znote",
     "title": "Dine znote-filer",
-    "text": "Alle notatene dine lagres i én fil som du kan kopiere til en annen datamaskin.",
     "new": "Ny znote-fil…",
     "open": "Åpne en znote-fil…",
     "bringIn": "Hent inn notater jeg allerede har…",

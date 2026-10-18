@@ -44,6 +44,8 @@
     "noAttachments": "Denne chatten kan ikke inneholde vedlagte filer.",
     "notAttached": "“{name}” kunne ikke legges ved: {error}",
     "tooLarge": "“{name}” er for stor til å legges ved. Grensen er 32 MB.",
+    "notSupported": "«{name}»: denne filtypen støttes ikke.",
+    "notRead": "«{name}» kunne ikke leses.",
     "notSaved": "Denne chatten kunne ikke lagres: {error}",
     "notSavedOther": "Chatten kunne ikke lagres: {error}",
     "tooLong": "den har blitt for lang. Start en ny chat.",
