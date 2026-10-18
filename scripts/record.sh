@@ -1,18 +1,21 @@
 #!/usr/bin/env bash
-# Records the demo of the real app: a clip, the stills and a gif of the stills,
-# all under packaging/repo.
+# Records the demo of the real app: a clip, the stills, a gif of the stills and
+# a 60 second trailer, all under packaging/repo (demo.mp4, demo.gif,
+# demo.trailer.mp4).
 #
 #   scripts/record.sh --sign-in        # once: sign Claude Code in for the demo app (in the terminal)
-#   scripts/record.sh --all            # record, then the gif and the clip
+#   scripts/record.sh --all            # record, then the gif, the clip and the trailer
 #   scripts/record.sh --record         # run the app and record the clip and stills
 #   scripts/record.sh --gif            # the gif, from the last stills
 #   scripts/record.sh --video [out]    # the clip, from the last recording
+#   scripts/record.sh --trailer        # the 60 second trailer, from the last recording
 #
 #   SKIP_BUILD=1 ...         reuse the current src-tauri/dist/
 #   DEMO_ASSISTANT=0 ...     leave out the parts that need Claude Code
 #   DEMO_HOLD=2.4 ...        a slower gif
 #   DEMO_SPEED=1.1 ...       speed of the clip as a whole
 #   DEMO_SKIP_SPEED=10 ...   speed of the waits (downloads, the assistant at work)
+#   DEMO_TRAILER=60 ...      length of the trailer in seconds
 #
 # The demo app runs under its own identifier, com.zalanalytics.znote.demo, so
 # it starts from a first run without touching a real install. Its Claude Code
@@ -140,6 +143,7 @@ cut_filter() {
   local cuts="$1" skip="$2" speed="$3"
   awk -v skip="$skip" -v speed="$speed" '
     $1 == "trim" { at = $2; next }
+    $1 == "scene" { next }
     {
       if ($1 > at) parts[n++] = sprintf("%s %s 1", at, $1)
       parts[n++] = sprintf("%s %s %s", $1, $2, skip)
@@ -154,6 +158,46 @@ cut_filter() {
         split(parts[i], p, " ")
         end = p[2] == "end" ? "" : ":end=" p[2]
         printf "[s%d]trim=start=%s%s,setpts=(PTS-STARTPTS)/%s/%s[p%d];", i, p[1], end, p[3], speed, i
+      }
+      for (i = 0; i < n; i++) printf "[p%d]", i
+      printf "concat=n=%d:v=1:a=0[out]", n
+    }' "$cuts"
+}
+
+# The filter that plays only the scenes the demo marked for the trailer, with the
+# waits inside them sped up, as fast as needed to last at most `length` seconds.
+trailer_filter() {
+  local cuts="$1" skip="$2" length="$3"
+  awk -v skip="$skip" -v limit="$length" '
+    BEGIN { n = 0; s = 0; k = 0 }
+    $1 == "trim" { next }
+    $1 == "scene" { from[s] = $2; to[s++] = $3; next }
+    { a[k] = $1; b[k++] = $2 }
+    function piece(start, end, speed) {
+      if (end <= start) return
+      parts[n] = start " " end " " speed
+      total += (end - start) / speed
+      n++
+    }
+    END {
+      for (i = 0; i < s; i++) {
+        at = from[i]
+        for (j = 0; j < k; j++) {
+          if (b[j] <= at || a[j] >= to[i]) continue
+          piece(at, a[j] > at ? a[j] : at, 1)
+          piece(a[j] > at ? a[j] : at, b[j] < to[i] ? b[j] : to[i], skip)
+          at = b[j] < to[i] ? b[j] : to[i]
+        }
+        piece(at, to[i], 1)
+      }
+      if (n == 0) exit 1
+      factor = total > limit ? total / limit : 1
+      printf "[0:v]split=%d", n
+      for (i = 0; i < n; i++) printf "[s%d]", i
+      printf ";"
+      for (i = 0; i < n; i++) {
+        split(parts[i], p, " ")
+        printf "[s%d]trim=start=%s:end=%s,setpts=(PTS-STARTPTS)/%s/%s[p%d];", i, p[1], p[2], p[3], factor, i
       }
       for (i = 0; i < n; i++) printf "[p%d]", i
       printf "concat=n=%d:v=1:a=0[out]", n
@@ -177,10 +221,21 @@ video() {
   local fit="scale=1920:1080:force_original_aspect_ratio=decrease:flags=lanczos"
   fit="$fit,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=$backdrop"
 
+  local cut pad=""
+  if [ "${2:-}" = trailer ]; then
+    out="$REPO/demo.trailer.mp4"
+    grep -q '^scene ' "$cuts" || { echo "$cuts has no scenes for the trailer, record again" >&2; exit 1; }
+    cut="$(trailer_filter "$cuts" "${DEMO_SKIP_SPEED:-10}" "${DEMO_TRAILER:-60}")"
+    # a short cut holds its last frame, the closing card, to the full length
+    pad=",tpad=stop_mode=clone:stop_duration=${DEMO_TRAILER:-60},trim=duration=${DEMO_TRAILER:-60}"
+  else
+    cut="$(cut_filter "$cuts" "${DEMO_SKIP_SPEED:-10}" "${DEMO_SPEED:-1.1}")"
+  fi
+
   echo "==> encoding $out"
   mkdir -p "$(dirname "$out")"
   ffmpeg -hide_banner -loglevel error -y -i "$webm" \
-    -filter_complex "$(cut_filter "$cuts" "${DEMO_SKIP_SPEED:-10}" "${DEMO_SPEED:-1.1}");[out]fps=30,$fit,format=yuv420p[v]" \
+    -filter_complex "$cut;[out]fps=30$pad,$fit,format=yuv420p[v]" \
     -map "[v]" -an -c:v libx264 -preset slow -crf 20 -profile:v high -level:v 4.0 -movflags +faststart \
     "$out"
 
@@ -191,16 +246,17 @@ video() {
 
 (($#)) || { usage; exit 1; }
 
-do_sign_in=0 do_record=0 do_gif=0 do_video=0
+do_sign_in=0 do_record=0 do_gif=0 do_video=0 do_trailer=0
 video_out=""
 
 while (($#)); do
   case "$1" in
-    --all) do_record=1 do_gif=1 do_video=1 ;;
+    --all) do_record=1 do_gif=1 do_video=1 do_trailer=1 ;;
     --sign-in) do_sign_in=1 ;;
     --record) do_record=1 ;;
     --gif) do_gif=1 ;;
     --video) do_video=1 ;;
+    --trailer) do_trailer=1 ;;
     -h | --help) usage; exit 0 ;;
     -*) echo "unknown flag $1" >&2; usage >&2; exit 1 ;;
     *) video_out="$1" ;;
@@ -212,4 +268,5 @@ done
 ((do_record)) && record
 ((do_gif)) && gif
 ((do_video)) && video "$video_out"
+((do_trailer)) && video "" trailer
 exit 0

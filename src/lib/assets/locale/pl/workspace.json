@@ -56,7 +56,6 @@
   "file": {
     "welcome": "Witaj w znote",
     "title": "Twoje pliki znote",
-    "text": "Wszystkie notatki są zapisywane w jednym pliku, który możesz skopiować na inny komputer.",
     "new": "Nowy plik znote…",
     "open": "Otwórz plik znote…",
     "bringIn": "Zaimportuj notatki, które już mam…",

@@ -44,6 +44,8 @@
     "noAttachments": "このチャットにはファイルを添付できません。",
     "notAttached": "「{name}」を添付できませんでした: {error}",
     "tooLarge": "「{name}」は大きすぎて添付できません。上限は 32 MB です。",
+    "notSupported": "「{name}」: この種類のファイルには対応していません。",
+    "notRead": "「{name}」を読み込めませんでした。",
     "notSaved": "このチャットを保存できませんでした: {error}",
     "notSavedOther": "チャットを保存できませんでした: {error}",
     "tooLong": "長くなりすぎました。新しいチャットを開始してください。",

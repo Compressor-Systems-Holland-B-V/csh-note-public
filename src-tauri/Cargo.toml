@@ -1,7 +1,7 @@
 [package]
 name = "znote"
 
-version = "1.1.0"
+version = "1.2.0"
 description = "A lightweight desktop editor for Typst with live preview, built with Tauri"
 license = "Apache-2.0"
 repository = "https://github.com/ZAL-Analytics/znote"
@@ -42,8 +42,8 @@ zsuite-veil = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-veil",
 zsuite-finder = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-finder" }
 zsuite-typst = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-typst" }
 zsuite-sealed = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-sealed", features = ["typst"] }
-zsuite-agent = { version = "0.1.0", path = "../vendor/zsuite/crates/zsuite-agent" }
-tauri-plugin-zsuite-assistant = { version = "0.1.0", path = "../vendor/zsuite/crates/tauri-plugin-zsuite-assistant" }
+zsuite-agent = { version = "0.2.0", path = "../vendor/zsuite/crates/zsuite-agent" }
+tauri-plugin-zsuite-assistant = { version = "0.2.0", path = "../vendor/zsuite/crates/tauri-plugin-zsuite-assistant" }
 
 [target.'cfg(windows)'.dependencies]
 rusqlite = { version = "0.40", features = ["bundled-sqlcipher-vendored-openssl"] }

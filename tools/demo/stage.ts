@@ -1,7 +1,8 @@
 import type { Locator, Page } from "@playwright/test";
 import { mkdirSync, writeFileSync } from "node:fs";
 
-export type Card = { title: string; lines: string[] };
+// A title card; icon is an image URL (the app icon), footer a line at the bottom.
+export type Card = { title: string; lines: string[]; icon?: string; footer?: string };
 
 type StageApi = {
   caption: (text: string) => void;
@@ -57,14 +58,19 @@ export function installStage(intro: Card): void {
     #stage-card {
       position: fixed; inset: 0; z-index: 2147483002;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 20px; background: #fafafa; color: #111;
-      font-family: ui-sans-serif, system-ui, sans-serif; text-align: center;
+      gap: 22px; color: #0a0a0a; text-align: center;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.09) 1px, transparent 1px) 0 0 / 24px 24px, #fafafa;
+      font-family: "Inter Variable", Inter, ui-sans-serif, system-ui, sans-serif;
       opacity: 0; transition: opacity 320ms ease; pointer-events: none;
     }
     #stage-card.on { opacity: 1; }
-    #stage-card .title { font-size: 64px; font-weight: 800; letter-spacing: -0.03em; }
-    #stage-card .line { font-size: 24px; color: #666; }
-    #stage-card .line.mono { font-family: ui-monospace, monospace; color: #111; }
+    #stage-card .icon { width: 140px; height: 140px; filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.18)); }
+    #stage-card .title { font-family: ui-monospace, "JetBrains Mono", monospace; font-size: 72px; font-weight: 700; letter-spacing: -0.04em; }
+    #stage-card .bar { width: 72px; height: 4px; border-radius: 2px; background: #A37D86; }
+    #stage-card .line { max-width: 70vw; font-size: 30px; font-weight: 400; color: #525252; }
+    #stage-card .line.mono { font-family: ui-monospace, monospace; color: #0a0a0a; }
+    #stage-card .footer { position: absolute; bottom: 56px; display: flex; gap: 16px; align-items: baseline; font-size: 20px; color: #737373; }
+    #stage-card .footer b { font-family: ui-monospace, monospace; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: #0a0a0a; }
   `;
 
   const build = (): void => {
@@ -108,7 +114,9 @@ export function installStage(intro: Card): void {
       const lines = next.lines
         .map((line) => `<div class="line${line.startsWith("$") ? " mono" : ""}">${line}</div>`)
         .join("");
-      card.innerHTML = `<div class="title">${next.title}</div>${lines}`;
+      const icon = next.icon ? `<img class="icon" src="${next.icon}" alt="">` : "";
+      const footer = next.footer ? `<div class="footer"><b>ZAL</b><span>${next.footer}</span></div>` : "";
+      card.innerHTML = `${icon}<div class="title">${next.title}</div><div class="bar"></div>${lines}${footer}`;
     };
 
     window.__stage = {
@@ -138,6 +146,8 @@ export function installStage(intro: Card): void {
 export class Stage {
   private readonly started = Date.now();
   private readonly skips: [number, number][] = [];
+  private readonly scenes: [number, number][] = [];
+  private scene: number | null = null;
   private trim = 0;
   private taken = 0;
 
@@ -191,6 +201,15 @@ export class Stage {
     return result;
   }
 
+  /** Starts or ends a stretch the 60 second trailer keeps. */
+  trailer(on: boolean): void {
+    if (on) this.scene ??= this.now();
+    else if (this.scene !== null) {
+      this.scenes.push([this.scene, this.now()]);
+      this.scene = null;
+    }
+  }
+
   /** Marks where the clip starts: anything before is the app starting up. */
   begin(): void {
     this.trim = this.now();
@@ -198,10 +217,15 @@ export class Stage {
 
   /**
    * Writes the cuts for scripts/record.sh: `trim <seconds>` first, then one
-   * `<from> <to>` line per sped up stretch.
+   * `<from> <to>` line per sped up stretch, then a `scene <from> <to>` line per
+   * stretch the trailer keeps.
    */
   saveCuts(file: string): void {
-    const lines = [`trim ${this.trim.toFixed(2)}`, ...this.skips.map(([from, to]) => `${from.toFixed(2)} ${to.toFixed(2)}`)];
+    const lines = [
+      `trim ${this.trim.toFixed(2)}`,
+      ...this.skips.map(([from, to]) => `${from.toFixed(2)} ${to.toFixed(2)}`),
+      ...this.scenes.map(([from, to]) => `scene ${from.toFixed(2)} ${to.toFixed(2)}`)
+    ];
     writeFileSync(file, `${lines.join("\n")}\n`);
   }
 

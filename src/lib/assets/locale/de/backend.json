@@ -44,6 +44,8 @@
     "noAttachments": "Dieser Chat kann keine angehängten Dateien enthalten.",
     "notAttached": "„{name}“ konnte nicht angehängt werden: {error}",
     "tooLarge": "„{name}“ ist zu groß zum Anhängen. Das Limit beträgt 32 MB.",
+    "notSupported": "„{name}“: Dieser Dateityp wird nicht unterstützt.",
+    "notRead": "„{name}“ konnte nicht gelesen werden.",
     "notSaved": "Dieser Chat konnte nicht gespeichert werden: {error}",
     "notSavedOther": "Der Chat konnte nicht gespeichert werden: {error}",
     "tooLong": "Er ist zu lang geworden. Starten Sie einen neuen Chat.",

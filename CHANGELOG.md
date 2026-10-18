@@ -4,6 +4,43 @@ All notable changes to znote are written down here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-10-18
+
+### Added
+
+- OpenRouter settings let you choose which providers answer: privacy first
+  (only providers that keep nothing) or cheapest first.
+- A 60 second trailer of the demo (`demo.trailer.mp4`,
+  `scripts/record.sh --trailer`). The demo and the trailer open and close on
+  a title card with the app icon.
+
+### Changed
+
+- The OpenRouter model list only offers models that can look at pictures, so
+  Design mode works with each of them. DeepSeek V4 Pro and GLM 5.3 are gone.
+- Shorter screens: the descriptions under the start screen, the chat
+  overview, the advanced settings, the connect screen and the Assistant and
+  Privacy settings are gone.
+- The Pages and files tab of the chat overview has Undo and Undo all changes
+  as icons, a "Remove all from chat" button above the list and a remove button
+  next to each page and file.
+- In the Privacy settings a note that your organisation requires hiding sits
+  with the switches it locks, and the glossary has its own section.
+- A file that cannot be attached says so in a few words: its type is not
+  supported, or it could not be read.
+- zsuite: `zsuite-agent`, `tauri-plugin-zsuite-assistant` and
+  `@zsuite/assistant` 0.2.0.
+
+### Fixed
+
+- One file that cannot be attached no longer keeps the other files you picked
+  with it out of the chat, and leaves no copy behind that broke the Pages and
+  files tab.
+- Two attached files with the same name no longer break the list above the
+  message box.
+- The assistant panel no longer flashes a red "no knowledge file" warning
+  while the app starts.
+
 ## [1.1.0] - 2026-10-17
 
 ### Added
@@ -223,5 +260,6 @@ All notable changes to znote are written down here. The format follows
 - The first version: a Tauri and SvelteKit window with the basic interface and a
   Windows build in CI.
 
+[1.2.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v1.2.0
 [1.1.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ZAL-Analytics/znote/releases/tag/v1.0.0

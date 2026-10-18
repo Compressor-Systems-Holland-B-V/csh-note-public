@@ -44,6 +44,8 @@
     "noAttachments": "Deze chat kan geen bijgevoegde bestanden bevatten.",
     "notAttached": "“{name}” kon niet worden bijgevoegd: {error}",
     "tooLarge": "“{name}” is te groot om bij te voegen. De limiet is 32 MB.",
+    "notSupported": "“{name}”: dit bestandstype wordt niet ondersteund.",
+    "notRead": "“{name}” kon niet worden gelezen.",
     "notSaved": "Deze chat kon niet worden opgeslagen: {error}",
     "notSavedOther": "De chat kon niet worden opgeslagen: {error}",
     "tooLong": "hij is te lang geworden. Begin een nieuwe chat.",

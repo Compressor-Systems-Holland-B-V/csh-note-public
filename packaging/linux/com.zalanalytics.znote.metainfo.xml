@@ -22,6 +22,7 @@
     <binary>znote</binary>
   </provides>
   <releases>
+    <release version="1.2.0" date="2026-10-18"/>
     <release version="1.1.0" date="2026-10-17"/>
     <release version="1.0.0" date="2026-10-15"/>
     <release version="0.9.0" date="2026-10-15"/>

@@ -44,6 +44,8 @@
     "noAttachments": "Bu sohbet ekli dosyaları tutamaz.",
     "notAttached": "“{name}” eklenemedi: {error}",
     "tooLarge": "“{name}” eklenemeyecek kadar büyük. Sınır 32 MB'tır.",
+    "notSupported": "“{name}”: bu dosya türü desteklenmiyor.",
+    "notRead": "“{name}” okunamadı.",
     "notSaved": "Bu sohbet kaydedilemedi: {error}",
     "notSavedOther": "Sohbet kaydedilemedi: {error}",
     "tooLong": "çok uzadı. Yeni bir sohbet başlatın.",

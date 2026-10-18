@@ -44,6 +44,8 @@
     "noAttachments": "此聊天不支持附加文件。",
     "notAttached": "无法附加“{name}”：{error}",
     "tooLarge": "“{name}”太大，无法附加。上限为 32 MB。",
+    "notSupported": "“{name}”：不支持此文件类型。",
+    "notRead": "无法读取“{name}”。",
     "notSaved": "无法保存此聊天：{error}",
     "notSavedOther": "无法保存聊天：{error}",
     "tooLong": "它已经变得太长了。请开始新的聊天。",

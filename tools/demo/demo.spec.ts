@@ -43,8 +43,8 @@ const WORDS = {
   meeting: "Meeting notes",
   report: "Quarterly report.pdf",
   letter: "Supplier letter.pdf",
-  intro: ["Typst notes with a live preview and an assistant"],
-  outro: ["Typst, live preview, an assistant that cannot see your names", "github.com/ZAL-Analytics/znote"],
+  intro: ["Smart note app with an AI assistant that cannot see your data"],
+  outro: ["An AI assistant that cannot see your data"],
   welcome: "One file holds all your notes",
   password: "Encrypted with a password of your own",
   layout: "First start: pick a layout",
@@ -81,8 +81,10 @@ const WORDS = {
   export: "Export to PDF, PowerPoint or Word"
 };
 
-const intro = { title: "znote", lines: WORDS.intro };
-const outro = { title: "znote", lines: WORDS.outro };
+// The title cards in the ZAL Analytics style, with the app icon.
+const icon = `data:image/png;base64,${readFileSync(join(root, "src-tauri/icons/128x128@2x.png")).toString("base64")}`;
+const intro = { title: "znote", lines: WORDS.intro, icon, footer: "github.com/ZAL-Analytics/znote" };
+const outro = { title: "znote", lines: WORDS.outro, icon, footer: "github.com/ZAL-Analytics/znote" };
 
 // Starts from a first run: everything the demo app kept is removed except the
 // Claude Code folder, which holds the sign-in made with `--sign-in`.
@@ -130,12 +132,13 @@ test("record the demo", async ({ page }) => {
       copyFileSync(source, copy);
       const listed = await relay.call("plugin:zsuite-assistant|agent_files", { chat });
       if (!listed.ok) return listed;
-      return { ok: true, value: (listed.value as { path: string }[]).filter((file) => file.path === copy) };
+      return { ok: true, value: { files: (listed.value as { path: string }[]).filter((file) => file.path === copy), problems: [] } };
     });
     const nextAttachment: string[] = [];
 
     await page.goto("/");
     stage.begin();
+    stage.trailer(true);
     const ui = new Ui(page, stage);
 
     await firstStart(ui);
@@ -145,7 +148,9 @@ test("record the demo", async ({ page }) => {
     await filtering(ui, nextAttachment);
     await extras(ui);
 
+    stage.trailer(true);
     await stage.card(outro, 2600);
+    stage.trailer(false);
     stage.saveCuts(join(work, "cuts.txt"));
   } finally {
     await relay.stop();
@@ -222,6 +227,7 @@ async function firstStart(ui: Ui): Promise<void> {
   await expect(ui.button(t("workspace.file.open"))).toBeVisible({ timeout: 60_000 });
   await stage.beat(900);
   await stage.hideCard();
+  stage.trailer(false);
 
   await stage.caption(WORDS.welcome, 900);
   await stage.still("Welcome");
@@ -239,12 +245,14 @@ async function firstStart(ui: Ui): Promise<void> {
   await stage.still("FirstStart_Layout");
   await ui.tap(ui.button(t("common.next")));
 
+  stage.trailer(true);
   await stage.caption(WORDS.privacy, 600);
   for (const id of ["veil", "names", "knowledge"]) {
     const toggle = page.locator(`#start-${id}`);
     if ((await toggle.getAttribute("aria-checked")) !== "true") await ui.tap(toggle, 350);
   }
   await stage.still("FirstStart_Privacy");
+  stage.trailer(false);
   await ui.tap(ui.button(t("common.next")));
 
   await stage.caption(WORDS.knowledge, 300);
@@ -284,6 +292,7 @@ async function layouts(ui: Ui): Promise<void> {
   await ui.open(WORDS.brief);
   await stage.still("Edit_ProjectBrief");
 
+  stage.trailer(true);
   await stage.caption(WORDS.typing, 200);
   const editor = page.locator(".cm-content").first();
   await editor.click();
@@ -304,6 +313,7 @@ async function layouts(ui: Ui): Promise<void> {
   await stage.caption(WORDS.redactLayout, 200);
   await ui.layout("redaction");
   await stage.still("Layout_Redact");
+  stage.trailer(false);
 
   await ui.layout("edit");
   await stage.hideCaption();
@@ -312,6 +322,7 @@ async function layouts(ui: Ui): Promise<void> {
 
 async function marketplace(ui: Ui): Promise<void> {
   const { page, stage } = ui;
+  stage.trailer(true);
   await stage.caption(WORDS.marketplace, 200);
   await ui.tap(ui.button(t("common.mode.marketplace")), 800);
   const search = t("themes.search");
@@ -331,6 +342,7 @@ async function marketplace(ui: Ui): Promise<void> {
   await stage.caption(WORDS.look, 200);
   await ui.tap(page.getByRole("button", { name: t("themes.use"), exact: true }).first(), 900);
   await stage.still("Marketplace_Installed");
+  stage.trailer(false);
 
   await stage.caption(WORDS.templates, 200);
   await ui.tap(ui.button(t("common.layout.edit")), 500);
@@ -361,6 +373,7 @@ async function assistant(ui: Ui, attachments: string[]): Promise<void> {
   await ui.layout("agent");
   await stage.caption(WORDS.claude, 400);
 
+  stage.trailer(true);
   await stage.caption(WORDS.document, 200);
   const target = ui.button(t("assistant.composer.target"));
   const template = ui.button(t("assistant.composer.template"));
@@ -370,6 +383,7 @@ async function assistant(ui: Ui, attachments: string[]): Promise<void> {
   await stage.still("Assistant_Output");
   await send(ui, WORDS.documentPrompt);
   await stage.still("Assistant_NewPage");
+  stage.trailer(false);
   // the composer keeps these choices across chats, so they are cleared for the next ones;
   // generate mode stays on, so the next chat may edit the page
   await ui.tap(ui.button(t("assistant.composer.targetClear")), 200);
@@ -411,13 +425,16 @@ async function assistant(ui: Ui, attachments: string[]): Promise<void> {
 async function filtering(ui: Ui, attachments: string[]): Promise<void> {
   const { page, stage } = ui;
   if (ASSISTANT) {
+    stage.trailer(true);
     await stage.caption(WORDS.sees, 300);
     await ui.chatFiles();
     await stage.still("Filter_ChatFiles");
     await page.keyboard.press("Escape");
+    stage.trailer(false);
   }
 
   await ui.layout("redaction");
+  stage.trailer(true);
   await stage.caption(WORDS.levels, 200);
   // a page button also names the page's level, so only its start is matched
   await ui.tap(page.getByRole("region", { name: t("workspace.browser.notebooks") }).getByRole("button", { name: /^Planning/ }), 300);
@@ -425,6 +442,7 @@ async function filtering(ui: Ui, attachments: string[]): Promise<void> {
   const redaction = page.getByRole("region", { name: t("privacy.redact.title") });
   for (const level of ["medium", "strict"]) await ui.tap(ui.level(redaction, t(`privacy.level.short.${level}`)), 1100);
   await stage.still("Filter_Strict");
+  stage.trailer(false);
   await ui.tap(ui.level(redaction, t("privacy.level.short.light")), 900);
   await stage.still("Filter_Light");
 
@@ -457,6 +475,7 @@ async function extras(ui: Ui): Promise<void> {
   await ui.layout("edit");
   await ui.open(WORDS.brief);
 
+  stage.trailer(true);
   await stage.caption(WORDS.languages, 200);
   // its name changes with the language, so it is found by its place
   const language = page.locator("header [data-slot=select-trigger]").first();
@@ -475,6 +494,7 @@ async function extras(ui: Ui): Promise<void> {
   await stage.caption(WORDS.export, 200);
   await ui.tap(ui.button(t("common.mode.export")), 900);
   await stage.still("Export");
+  stage.trailer(false);
   await ui.tap(ui.button(t("common.appearance.toLight")), 400);
   await stage.hideCaption();
   stage.mark("extras");

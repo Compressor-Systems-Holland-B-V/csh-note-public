@@ -56,7 +56,6 @@
   "file": {
     "welcome": "Bem-vindo ao znote",
     "title": "Os seus ficheiros znote",
-    "text": "Todas as suas notas são guardadas num ficheiro que pode copiar para outro computador.",
     "new": "Novo ficheiro znote…",
     "open": "Abrir um ficheiro znote…",
     "bringIn": "Importar as notas que já tenho…",
